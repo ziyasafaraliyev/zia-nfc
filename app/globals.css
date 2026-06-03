@@ -3,91 +3,173 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: light;
-  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+    color-scheme: light;
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
 }
 
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 html {
-  scroll-behavior: smooth;
+    scroll-behavior: smooth;
 }
 
 body {
-  min-height: 100vh;
-  font-family: var(--font-sans), Inter, Arial, sans-serif;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(56, 189, 248, 0.9) rgba(15, 23, 42, 0.45);
+    min-height: 100vh;
+    font-family: var(--font-sans), Inter, Arial, sans-serif;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(56, 189, 248, 0.9) rgba(15, 23, 42, 0.45);
 }
 
 body::-webkit-scrollbar {
-  width: 10px;
+    width: 10px;
 }
 
 body::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.45);
-  border-radius: 9999px;
+    background: rgba(15, 23, 42, 0.45);
+    border-radius: 9999px;
 }
 
 body::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(34, 211, 238, 0.95), rgba(56, 189, 248, 0.9));
-  border-radius: 9999px;
-  border: 2px solid rgba(15, 23, 42, 0.2);
+    background: linear-gradient(
+        180deg,
+        rgba(34, 211, 238, 0.95),
+        rgba(56, 189, 248, 0.9)
+    );
+    border-radius: 9999px;
+    border: 2px solid rgba(15, 23, 42, 0.2);
 }
 
 body::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(56, 189, 248, 1), rgba(34, 211, 238, 1));
+    background: linear-gradient(
+        180deg,
+        rgba(56, 189, 248, 1),
+        rgba(34, 211, 238, 1)
+    );
 }
 
 button,
 a {
-  -webkit-tap-highlight-color: transparent;
+    -webkit-tap-highlight-color: transparent;
 }
 
 ::selection {
-  background: #22d3ee;
-  color: #020617;
+    background: #22d3ee;
+    color: #020617;
 }
 
-.profile-aurora {
-  background:
-    radial-gradient(circle at 20% 18%, rgba(34, 211, 238, 0.25), transparent 30%),
-    radial-gradient(circle at 78% 16%, rgba(16, 185, 129, 0.22), transparent 28%),
-    linear-gradient(135deg, #020617 0%, #0f172a 56%, #0e7490 100%);
+.profile-shell {
+    position: relative;
+    background:
+        radial-gradient(
+            circle at 50% -10%,
+            rgba(34, 211, 238, 0.16),
+            transparent 34%
+        ),
+        radial-gradient(
+            circle at 100% 35%,
+            rgba(16, 185, 129, 0.12),
+            transparent 28%
+        ),
+        linear-gradient(180deg, #020617 0%, #08111f 48%, #020617 100%);
+}
+
+.profile-aurora,
+.profile-hero {
+    background:
+        radial-gradient(
+            circle at 20% 18%,
+            rgba(34, 211, 238, 0.25),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 78% 16%,
+            rgba(16, 185, 129, 0.22),
+            transparent 28%
+        ),
+        linear-gradient(135deg, #020617 0%, #0f172a 56%, #0e7490 100%);
+}
+
+.profile-card-enter {
+    animation: profile-card-enter 420ms var(--ease-out) both;
+}
+
+.premium-cta::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    transform: translateX(-120%) skewX(-18deg);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.22),
+        transparent
+    );
+    transition: transform 600ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .premium-cta:hover::after {
+        transform: translateX(120%) skewX(-18deg);
+    }
+}
+
+@keyframes profile-card-enter {
+    from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.985);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 .card-shine {
-  background:
-    linear-gradient(135deg, rgba(34, 211, 238, 0.24), transparent 38%),
-    linear-gradient(115deg, transparent 0%, rgba(255, 255, 255, 0.08) 38%, transparent 56%),
-    #020617;
+    background:
+        linear-gradient(135deg, rgba(34, 211, 238, 0.24), transparent 38%),
+        linear-gradient(
+            115deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.08) 38%,
+            transparent 56%
+        ),
+        #020617;
 }
 
 .nfc-card-flip {
-  perspective: 1200px;
+    perspective: 1200px;
 }
 
 .nfc-flip-inner {
-  transform-style: preserve-3d;
-  transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+    transform-style: preserve-3d;
+    transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .nfc-card-flip:hover .nfc-flip-inner,
 .nfc-card-flip:focus-within .nfc-flip-inner {
-  transform: rotateY(180deg);
+    transform: rotateY(180deg);
 }
 
 @media (hover: none) {
-  .nfc-card-flip:active .nfc-flip-inner {
-    transform: rotateY(180deg);
-  }
+    .nfc-card-flip:active .nfc-flip-inner {
+        transform: rotateY(180deg);
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
+    html {
+        scroll-behavior: auto;
+    }
+
+    .profile-card-enter {
+        animation: none;
+    }
+
+    .premium-cta::after {
+        display: none;
+    }
 }
