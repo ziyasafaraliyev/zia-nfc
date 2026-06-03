@@ -1,6 +1,8 @@
 import { getProfileBySlug } from "@/lib/profiles";
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 type Props = {
   params: Promise<{ slug: string }>;
 };
@@ -21,10 +23,12 @@ export async function GET(request: Request, { params }: Props) {
     `FN:${profile.name}`,
     profile.profession ? `TITLE:${profile.profession}` : "",
     profile.phone ? `TEL;TYPE=CELL:${profile.phone}` : "",
-    profile.website ? `URL:${profile.website}` : `URL:${siteUrl}/u/${profile.slug}`,
+    profile.website
+      ? `URL:${profile.website}`
+      : `URL:${siteUrl}/u/${profile.slug}`,
     profile.location ? `ADR;TYPE=WORK:;;${profile.location};;;;` : "",
     profile.bio ? `NOTE:${profile.bio}` : "",
-    "END:VCARD"
+    "END:VCARD",
   ]
     .filter(Boolean)
     .join("\n");
@@ -32,7 +36,7 @@ export async function GET(request: Request, { params }: Props) {
   return new NextResponse(vcard, {
     headers: {
       "Content-Type": "text/vcard; charset=utf-8",
-      "Content-Disposition": `attachment; filename="${profile.slug}.vcf"`
-    }
+      "Content-Disposition": `attachment; filename="${profile.slug}.vcf"`,
+    },
   });
 }
