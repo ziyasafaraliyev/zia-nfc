@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 const adminCookie = "zia_admin_email";
+const maxUploadSize = 5 * 1024 * 1024;
 
 async function requireAdmin() {
   const store = await cookies();
@@ -122,23 +123,31 @@ export async function saveProfile(formData: FormData) {
     redirectWithSaveError("reserved-slug");
   }
 
-  const avatar = await uploadFile(
-    formData.get("avatar") as File | null,
-    `avatars/${slug}`,
-  ).catch(() => redirectWithSaveError("upload"));
+  const avatarFile = formData.get("avatar") as File | null;
+  const backgroundFile = formData.get("background") as File | null;
+  const galleryFiles = formData
+    .getAll("galleryFiles")
+    .filter((entry): entry is File => entry instanceof File && entry.size > 0);
+
+  for (const file of [avatarFile, backgroundFile, ...galleryFiles]) {
+    if (file instanceof File && file.size > maxUploadSize) {
+      redirectWithSaveError("file-too-large");
+    }
+  }
+
+  const avatar = await uploadFile(avatarFile, `avatars/${slug}`).catch(() =>
+    redirectWithSaveError("upload"),
+  );
   const background = await uploadFile(
-    formData.get("background") as File | null,
+    backgroundFile,
     `backgrounds/${slug}`,
   ).catch(() => redirectWithSaveError("upload"));
   const galleryUploads = await Promise.all(
-    formData
-      .getAll("galleryFiles")
-      .filter((entry): entry is File => entry instanceof File && entry.size > 0)
-      .map((file) =>
-        uploadFile(file, `gallery/${slug}`).catch(() =>
-          redirectWithSaveError("upload"),
-        ),
+    galleryFiles.map((file) =>
+      uploadFile(file, `gallery/${slug}`).catch(() =>
+        redirectWithSaveError("upload"),
       ),
+    ),
   );
 
   const galleryUrls = [
