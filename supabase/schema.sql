@@ -1,0 +1,63 @@
+create extension if not exists "pgcrypto";
+
+create table if not exists public.profiles (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  enabled boolean not null default true,
+  name text not null,
+  profession text,
+  bio text,
+  phone text,
+  whatsapp text,
+  instagram text,
+  tiktok text,
+  website text,
+  location text,
+  avatar_url text,
+  background_url text,
+  gallery text[] not null default '{}',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table public.profiles add column if not exists background_url text;
+
+alter table public.profiles enable row level security;
+
+drop policy if exists "Enabled profiles are public" on public.profiles;
+create policy "Enabled profiles are public"
+on public.profiles for select
+using (enabled = true);
+
+drop policy if exists "Service role manages profiles" on public.profiles;
+create policy "Service role manages profiles"
+on public.profiles for all
+using (auth.role() = 'service_role')
+with check (auth.role() = 'service_role');
+
+create or replace function public.touch_updated_at()
+returns trigger language plpgsql as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+drop trigger if exists profiles_updated_at on public.profiles;
+create trigger profiles_updated_at
+before update on public.profiles
+for each row execute function public.touch_updated_at();
+
+insert into storage.buckets (id, name, public)
+values ('profiles', 'profiles', true)
+on conflict (id) do update set public = true;
+
+drop policy if exists "Public profile images are readable" on storage.objects;
+create policy "Public profile images are readable"
+on storage.objects for select
+using (bucket_id = 'profiles');
+
+drop policy if exists "Service role uploads profile images" on storage.objects;
+create policy "Service role uploads profile images"
+on storage.objects for insert
+with check (bucket_id = 'profiles' and auth.role() = 'service_role');

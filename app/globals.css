@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  font-family: var(--font-sans), Inter, Arial, sans-serif;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(56, 189, 248, 0.9) rgba(15, 23, 42, 0.45);
+}
+
+body::-webkit-scrollbar {
+  width: 10px;
+}
+
+body::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.45);
+  border-radius: 9999px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(34, 211, 238, 0.95), rgba(56, 189, 248, 0.9));
+  border-radius: 9999px;
+  border: 2px solid rgba(15, 23, 42, 0.2);
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(56, 189, 248, 1), rgba(34, 211, 238, 1));
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: #22d3ee;
+  color: #020617;
+}
+
+.profile-aurora {
+  background:
+    radial-gradient(circle at 20% 18%, rgba(34, 211, 238, 0.25), transparent 30%),
+    radial-gradient(circle at 78% 16%, rgba(16, 185, 129, 0.22), transparent 28%),
+    linear-gradient(135deg, #020617 0%, #0f172a 56%, #0e7490 100%);
+}
+
+.card-shine {
+  background:
+    linear-gradient(135deg, rgba(34, 211, 238, 0.24), transparent 38%),
+    linear-gradient(115deg, transparent 0%, rgba(255, 255, 255, 0.08) 38%, transparent 56%),
+    #020617;
+}
+
+.nfc-card-flip {
+  perspective: 1200px;
+}
+
+.nfc-flip-inner {
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.nfc-card-flip:hover .nfc-flip-inner,
+.nfc-card-flip:focus-within .nfc-flip-inner {
+  transform: rotateY(180deg);
+}
+
+@media (hover: none) {
+  .nfc-card-flip:active .nfc-flip-inner {
+    transform: rotateY(180deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
