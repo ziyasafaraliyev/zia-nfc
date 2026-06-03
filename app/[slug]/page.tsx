@@ -1,3 +1,3 @@
 export const dynamic = "force-dynamic";
 
-export { default } from "@/app/u/[slug]/page";
+export { default, generateMetadata } from "@/app/u/[slug]/page";
