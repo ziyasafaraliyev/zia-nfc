@@ -4,6 +4,7 @@ import DeleteProfileButton from "@/components/delete-profile-button";
 import { listProfiles } from "@/lib/profiles";
 import { hasSupabaseEnv } from "@/lib/supabase";
 import type { Profile } from "@/lib/types";
+import { getProfileUrl } from "@/lib/urls";
 import {
   Activity,
   AlertCircle,
@@ -45,12 +46,11 @@ export default async function AdminPage({ searchParams }: Props) {
   }
 
   const profiles = await listProfiles();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
   const enabledCount = profiles.filter((profile) => profile.enabled).length;
 
   const profilesWithQr = await Promise.all(
     profiles.map(async (profile) => {
-      const url = `${siteUrl}/u/${profile.slug}`;
+      const url = getProfileUrl(profile.slug);
       const qr = await QRCode.toDataURL(url, {
         margin: 1,
         width: 120,

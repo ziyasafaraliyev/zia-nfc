@@ -1,4 +1,5 @@
 import { getProfileBySlug } from "@/lib/profiles";
+import { getProfileUrl, getProfileVcardPath } from "@/lib/urls";
 import {
   Globe,
   Instagram,
@@ -30,8 +31,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
     notFound();
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-  const profileUrl = `${siteUrl}/u/${profile.slug}`;
+  const profileUrl = getProfileUrl(profile.slug);
   const qr = await QRCode.toDataURL(profileUrl, {
     margin: 1,
     width: 180,
@@ -141,7 +141,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
               />
             ) : null}
             <Social
-              href={`/u/${profile.slug}/vcard`}
+              href={getProfileVcardPath(profile.slug)}
               icon={<UserPlus size={18} />}
               label="Kontaktı yadda saxla"
             />

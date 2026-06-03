@@ -1,4 +1,5 @@
 import { getProfileBySlug } from "@/lib/profiles";
+import { getProfileUrl } from "@/lib/urls";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -16,7 +17,6 @@ export async function GET(request: Request, { params }: Props) {
     return new NextResponse("Not found", { status: 404 });
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
   const vcard = [
     "BEGIN:VCARD",
     "VERSION:3.0",
@@ -25,7 +25,7 @@ export async function GET(request: Request, { params }: Props) {
     profile.phone ? `TEL;TYPE=CELL:${profile.phone}` : "",
     profile.website
       ? `URL:${profile.website}`
-      : `URL:${siteUrl}/u/${profile.slug}`,
+      : `URL:${getProfileUrl(profile.slug)}`,
     profile.location ? `ADR;TYPE=WORK:;;${profile.location};;;;` : "",
     profile.bio ? `NOTE:${profile.bio}` : "",
     "END:VCARD",

@@ -39,7 +39,7 @@ async function uploadFile(file: File | null, folder: string) {
   const path = `${folder}/${crypto.randomUUID()}.${ext}`;
   const { error } = await supabase.storage.from("profiles").upload(path, file, {
     contentType: file.type || "application/octet-stream",
-    upsert: false
+    upsert: false,
   });
 
   if (error) {
@@ -56,7 +56,12 @@ export async function loginAdmin(formData: FormData) {
   const allowedEmail = process.env.ADMIN_EMAIL || "ziya@gmail.com";
   const allowedPassword = process.env.ADMIN_PASSWORD || "ziya";
 
-  if (!email || !password || email !== allowedEmail || password !== allowedPassword) {
+  if (
+    !email ||
+    !password ||
+    email !== allowedEmail ||
+    password !== allowedPassword
+  ) {
     redirect("/admin?error=login");
   }
 
@@ -66,7 +71,7 @@ export async function loginAdmin(formData: FormData) {
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 60 * 8,
-    path: "/"
+    path: "/",
   });
 
   redirect("/admin");
@@ -93,18 +98,27 @@ export async function saveProfile(formData: FormData) {
     throw new Error("Slug and name are required");
   }
 
-  const avatar = await uploadFile(formData.get("avatar") as File | null, `avatars/${slug}`);
-  const background = await uploadFile(formData.get("background") as File | null, `backgrounds/${slug}`);
+  const avatar = await uploadFile(
+    formData.get("avatar") as File | null,
+    `avatars/${slug}`,
+  );
+  const background = await uploadFile(
+    formData.get("background") as File | null,
+    `backgrounds/${slug}`,
+  );
   const galleryUploads = await Promise.all(
     formData
       .getAll("galleryFiles")
       .filter((entry): entry is File => entry instanceof File && entry.size > 0)
-      .map((file) => uploadFile(file, `gallery/${slug}`))
+      .map((file) => uploadFile(file, `gallery/${slug}`)),
   );
 
   const galleryUrls = [
-    ...(text(formData, "gallery")?.split("\n").map((item) => item.trim()).filter(Boolean) ?? []),
-    ...galleryUploads.filter((item): item is string => Boolean(item))
+    ...(text(formData, "gallery")
+      ?.split("\n")
+      .map((item) => item.trim())
+      .filter(Boolean) ?? []),
+    ...galleryUploads.filter((item): item is string => Boolean(item)),
   ];
 
   const payload = {
@@ -121,7 +135,7 @@ export async function saveProfile(formData: FormData) {
     location: text(formData, "location"),
     ...(avatar ? { avatar_url: avatar } : {}),
     ...(background ? { background_url: background } : {}),
-    gallery: galleryUrls
+    gallery: galleryUrls,
   };
 
   const query = id
@@ -134,6 +148,7 @@ export async function saveProfile(formData: FormData) {
   }
 
   revalidatePath("/admin");
+  revalidatePath(`/${slug}`);
   revalidatePath(`/u/${slug}`);
   redirect("/admin?saved=1");
 }
@@ -148,7 +163,10 @@ export async function toggleProfile(formData: FormData) {
     throw new Error("Missing Supabase or profile id");
   }
 
-  const { error } = await supabase.from("profiles").update({ enabled: !enabled }).eq("id", id);
+  const { error } = await supabase
+    .from("profiles")
+    .update({ enabled: !enabled })
+    .eq("id", id);
   if (error) {
     throw new Error(error.message);
   }
@@ -173,6 +191,7 @@ export async function deleteProfile(formData: FormData) {
   }
 
   revalidatePath("/admin");
+  revalidatePath(`/${slug}`);
   revalidatePath(`/u/${slug}`);
   redirect("/admin");
 }
