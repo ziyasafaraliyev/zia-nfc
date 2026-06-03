@@ -25,6 +25,25 @@ function bool(formData: FormData, key: string) {
   return formData.get(key) === "on";
 }
 
+function slugify(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[ə]/g, "e")
+    .replace(/[ı]/g, "i")
+    .replace(/[ö]/g, "o")
+    .replace(/[ü]/g, "u")
+    .replace(/[ş]/g, "s")
+    .replace(/[ç]/g, "c")
+    .replace(/[ğ]/g, "g")
+    .replace(/[^a-z0-9]+/g, "")
+    .replace(/^\/+|\/+$/g, "");
+}
+
+function redirectWithSaveError(error: string): never {
+  redirect(`/admin?error=${encodeURIComponent(error)}`);
+}
+
 async function uploadFile(file: File | null, folder: string) {
   if (!file || file.size === 0) {
     return null;
@@ -87,30 +106,39 @@ export async function saveProfile(formData: FormData) {
   await requireAdmin();
   const supabase = createServiceSupabaseClient();
   if (!supabase) {
-    throw new Error("Supabase service key is missing");
+    redirectWithSaveError("supabase");
   }
 
   const id = text(formData, "id");
-  const slug = text(formData, "slug");
+  const rawSlug = text(formData, "slug");
   const name = text(formData, "name");
+  const slug = slugify(rawSlug || name || "");
 
   if (!slug || !name) {
-    throw new Error("Slug and name are required");
+    redirectWithSaveError("required");
+  }
+
+  if (["admin", "u", "api"].includes(slug)) {
+    redirectWithSaveError("reserved-slug");
   }
 
   const avatar = await uploadFile(
     formData.get("avatar") as File | null,
     `avatars/${slug}`,
-  );
+  ).catch(() => redirectWithSaveError("upload"));
   const background = await uploadFile(
     formData.get("background") as File | null,
     `backgrounds/${slug}`,
-  );
+  ).catch(() => redirectWithSaveError("upload"));
   const galleryUploads = await Promise.all(
     formData
       .getAll("galleryFiles")
       .filter((entry): entry is File => entry instanceof File && entry.size > 0)
-      .map((file) => uploadFile(file, `gallery/${slug}`)),
+      .map((file) =>
+        uploadFile(file, `gallery/${slug}`).catch(() =>
+          redirectWithSaveError("upload"),
+        ),
+      ),
   );
 
   const galleryUrls = [
@@ -144,7 +172,11 @@ export async function saveProfile(formData: FormData) {
   const { error } = await query;
 
   if (error) {
-    throw new Error(error.message);
+    if (error.code === "23505") {
+      redirectWithSaveError("duplicate-slug");
+    }
+
+    redirectWithSaveError("save");
   }
 
   revalidatePath("/admin");
