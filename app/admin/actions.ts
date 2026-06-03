@@ -7,6 +7,12 @@ import { redirect } from "next/navigation";
 
 const adminCookie = "zia_admin_email";
 const maxUploadSize = 5 * 1024 * 1024;
+const allowedImageTypes = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+]);
 
 async function requireAdmin() {
   const store = await cookies();
@@ -130,8 +136,16 @@ export async function saveProfile(formData: FormData) {
     .filter((entry): entry is File => entry instanceof File && entry.size > 0);
 
   for (const file of [avatarFile, backgroundFile, ...galleryFiles]) {
-    if (file instanceof File && file.size > maxUploadSize) {
+    if (!(file instanceof File) || file.size === 0) {
+      continue;
+    }
+
+    if (file.size > maxUploadSize) {
       redirectWithSaveError("file-too-large");
+    }
+
+    if (!allowedImageTypes.has(file.type)) {
+      redirectWithSaveError("unsupported-image");
     }
   }
 

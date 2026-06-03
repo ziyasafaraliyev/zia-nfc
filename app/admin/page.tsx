@@ -56,6 +56,8 @@ function adminErrorMessage(error?: string) {
       return "Şəkil yüklənmədi. Supabase Storage bucket ayarlarını yoxlayın.";
     case "file-too-large":
       return "Hər şəkil maksimum 5MB olmalıdır. Ümumi forma limiti 30MB-dır.";
+    case "unsupported-image":
+      return "Şəkil formatı dəstəklənmir. JPG, PNG, WEBP və ya GIF yükləyin. iPhone HEIC formatını əvvəl JPG/PNG edin.";
     case "save":
       return "Profil yadda saxlanmadı. Supabase ayarlarını yoxlayıb yenidən cəhd edin.";
     default:
@@ -607,12 +609,12 @@ function UploadField({
         {multiple ? <ImagePlus size={17} /> : <Upload size={17} />} {label}
       </span>
       <span className="mt-2 block text-xs font-semibold text-slate-500">
-        Max 5MB per image
+        Max 5MB · JPG, PNG, WEBP və ya GIF
       </span>
       <input
         name={name}
         type="file"
-        accept="image/*"
+        accept="image/jpeg,image/png,image/webp,image/gif"
         multiple={multiple}
         className="mt-3 w-full text-sm font-semibold text-slate-500 file:mr-3 file:rounded-full file:border-0 file:bg-slate-950 file:px-4 file:py-2 file:text-sm file:font-black file:text-white"
       />
