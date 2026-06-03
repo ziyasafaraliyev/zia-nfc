@@ -120,15 +120,18 @@ export default async function ProfilePage({ params }: Props) {
         </nav>
 
         <section className="profile-card-enter overflow-hidden rounded-[2.25rem] border border-white/15 bg-white text-slate-950 shadow-[0_28px_90px_rgba(0,0,0,0.42)]">
-          <div className="profile-hero relative h-[25rem] overflow-hidden">
+          <div
+            className={`${profile.background_url ? "bg-slate-950" : "profile-hero"} relative h-[25rem] overflow-hidden`}
+          >
             {profile.background_url ? (
               <img
                 src={profile.background_url}
                 alt={`${profile.name} cover`}
                 className="absolute inset-0 h-full w-full object-cover"
               />
-            ) : null}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_22%_16%,rgba(34,211,238,0.18),transparent_34%),linear-gradient(180deg,rgba(2,6,23,0.05)_0%,rgba(2,6,23,0.82)_100%)]" />
+            ) : (
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_22%_16%,rgba(34,211,238,0.18),transparent_34%),linear-gradient(180deg,rgba(2,6,23,0.05)_0%,rgba(2,6,23,0.82)_100%)]" />
+            )}
             <div className="absolute inset-x-5 top-5 flex items-center justify-between gap-3">
               <span className="rounded-full border border-white/15 bg-white/15 px-3 py-1.5 text-xs font-black uppercase tracking-[0.14em] text-white backdrop-blur-xl">
                 Digital profile
