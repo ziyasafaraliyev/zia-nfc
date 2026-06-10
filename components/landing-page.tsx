@@ -21,13 +21,16 @@ import {
   ShieldCheck,
   Sparkles,
   UserPlus,
-  Zap
+  Zap,
+  Linkedin,
+  Github,
+  Youtube
 } from "lucide-react";
 import Link from "next/link";
 import NfcCardShowcase from "@/components/nfc-card-showcase";
 
 const navItems = [
-  ["Təcrübə", "#experience"],
+  ["İş Prinsipi", "#how-it-works"],
   ["Özəlliklər", "#features"],
   ["Kartlar", "#cards"],
   ["Qiymətlər", "#pricing"],
@@ -76,14 +79,14 @@ const steps = [
 
 const plans = [
   {
-    name: "Essential",
-    price: "49 AZN",
+    name: "Standart",
+    price: "39 AZN",
     note: "Fərdi peşəkarlar üçün",
     items: ["1 rəqəmsal profil", "WhatsApp və sosial linklər", "QR ehtiyat nüsxəsi", "Standart NFC kartı"]
   },
   {
     name: "Premium",
-    price: "89 AZN",
+    price: "59 AZN",
     note: "Ən çox tələb olunan",
     featured: true,
     items: ["Portfolio qalereyası", "Kontaktı yadda saxla (.vcf)", "Premium kart dizaynı", "Prioritet quraşdırma"]
@@ -139,11 +142,11 @@ export default function LandingPage() {
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
-                  href="#pricing"
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-6 py-4 font-extrabold text-white shadow-[0_18px_45px_rgba(14,165,233,0.28)] transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98]"
-                >
-                  Kart sifariş et <ArrowRight size={18} />
-                </a>
+                href="#pricing"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-6 py-4 font-extrabold text-white shadow-[0_18px_45px_rgba(14,165,233,0.28)] transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98]"
+              >
+                Kart sifariş et <ArrowRight size={18} />
+              </a>
             </div>
             <div className="mt-10 grid max-w-2xl grid-cols-3 gap-3">
               {metrics.map(([value, label]) => (
@@ -159,11 +162,11 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section id="experience" className="bg-slate-950 px-4 py-20 text-white sm:px-6 lg:px-8">
+      <section id="how-it-works" className="bg-slate-950 px-4 py-20 text-white sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-end">
             <div>
-              <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-300">Təcrübə</p>
+              <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-300">İş Prinsipi</p>
               <h2 className="mt-4 max-w-xl text-4xl font-black tracking-tight sm:text-5xl">Premium nəticə ilə sadə bir ritual.</h2>
             </div>
             <div className="grid gap-3 md:grid-cols-4">
@@ -223,7 +226,7 @@ export default function LandingPage() {
         <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[0.94fr_1.06fr]">
           <ProfileShowcase />
           <div>
-            <p className="text-sm font-black uppercase tracking-[0.22em] text-emerald-700">Mobil öncəlikli</p>
+            <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-700">Mobil öncəlikli</p>
             <h2 className="mt-4 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">Müştərinizin həqiqətən açdığı ekran üçün hazırlanmışdır.</h2>
             <p className="mt-5 text-lg leading-8 text-slate-600">
               İlk ekran kim olduğunuzu, nə etdiyinizi və sizinlə necə əlaqə saxlayacağınızı aydınlaşdırır. Qalereya, sosial linklər, vCard və QR ehtiyat nüsxəsi qarışıqlıq yaratmadan əlçatandır.
@@ -231,7 +234,7 @@ export default function LandingPage() {
             <div className="mt-8 grid gap-3 sm:grid-cols-2">
               {["Sürətli mobil profil", "Təmiz əlaqə düymələri", "Vizual portfolio", "Admin nəzarəti"].map((item) => (
                 <div key={item} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 font-bold text-slate-700 shadow-sm">
-                  <Check className="text-emerald-500" size={19} /> {item}
+                  <Check className="text-sky-500" size={19} /> {item}
                 </div>
               ))}
             </div>
@@ -249,24 +252,52 @@ export default function LandingPage() {
             {plans.map((plan) => (
               <div
                 key={plan.name}
-                className={`relative rounded-3xl border p-7 shadow-[0_16px_50px_rgba(15,23,42,0.07)] ${
-                  plan.featured ? "border-sky-300 bg-slate-950 text-white" : "border-slate-200 bg-white text-slate-950"
+                className={`relative flex flex-col justify-between rounded-3xl border p-7 shadow-[0_16px_50px_rgba(15,23,42,0.07)] transition duration-300 ease-out hover:scale-[1.03] hover:-translate-y-1.5 ${
+                  plan.featured
+                    ? "border-sky-300 bg-slate-950 text-white hover:shadow-[0_24px_80px_rgba(14,165,233,0.15)]"
+                    : "border-slate-200 bg-white text-slate-950 hover:border-slate-300 hover:shadow-[0_24px_80px_rgba(15,23,42,0.12)]"
                 }`}
               >
-                {plan.featured ? (
-                  <div className="absolute right-5 top-5 rounded-full bg-sky-300 px-3 py-1 text-xs font-black uppercase tracking-[0.12em] text-slate-950">
-                    Populyar
-                  </div>
-                ) : null}
-                <h3 className="text-2xl font-black tracking-tight">{plan.name}</h3>
-                <p className={`mt-2 text-sm font-bold ${plan.featured ? "text-slate-400" : "text-slate-500"}`}>{plan.note}</p>
-                <p className={`mt-6 text-4xl font-black tracking-tight ${plan.featured ? "text-sky-300" : "text-slate-950"}`}>{plan.price}</p>
-                <div className="mt-7 space-y-3">
-                  {plan.items.map((item) => (
-                    <div key={item} className={`flex items-center gap-3 text-sm font-semibold ${plan.featured ? "text-slate-200" : "text-slate-700"}`}>
-                      <BadgeCheck size={18} className={plan.featured ? "text-sky-300" : "text-emerald-500"} /> {item}
+                <div>
+                  {plan.featured ? (
+                    <div className="absolute right-5 top-5 rounded-full bg-sky-300 px-3 py-1 text-xs font-black uppercase tracking-[0.12em] text-slate-950">
+                      Populyar
                     </div>
-                  ))}
+                  ) : null}
+                  <h3 className="text-2xl font-black tracking-tight">{plan.name}</h3>
+                  <p className={`mt-2 text-sm font-bold ${plan.featured ? "text-slate-400" : "text-slate-500"}`}>{plan.note}</p>
+                  <p className={`mt-6 text-4xl font-black tracking-tight ${plan.featured ? "text-sky-300" : "text-slate-950"}`}>{plan.price}</p>
+                  <div className="mt-7 space-y-3">
+                    {plan.items.map((item) => (
+                      <div key={item} className={`flex items-center gap-3 text-sm font-semibold ${plan.featured ? "text-slate-200" : "text-slate-700"}`}>
+                        <BadgeCheck size={18} className={plan.featured ? "text-sky-300" : "text-sky-500"} /> {item}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="mt-8">
+                  {plan.name === "Studio" ? (
+                    <a
+                      href="https://wa.me/994702990252"
+                      className="block w-full text-center rounded-full bg-sky-500 py-3.5 px-4 text-sm font-black uppercase tracking-[0.14em] text-white shadow-[0_12px_30px_rgba(14,165,233,0.2)] transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98]"
+                    >
+                      Bizimlə əlaqə
+                    </a>
+                  ) : plan.featured ? (
+                    <a
+                      href="https://wa.me/994702990252"
+                      className="block w-full text-center rounded-full bg-sky-300 py-3.5 px-4 text-sm font-black uppercase tracking-[0.14em] text-slate-950 shadow-md transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-white active:scale-[0.98]"
+                    >
+                      Sifariş et
+                    </a>
+                  ) : (
+                    <a
+                      href="https://wa.me/994702990252"
+                      className="block w-full text-center rounded-full bg-slate-950 py-3.5 px-4 text-sm font-black uppercase tracking-[0.14em] text-white shadow-md transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-slate-800 active:scale-[0.98]"
+                    >
+                      Sifariş et
+                    </a>
+                  )}
                 </div>
               </div>
             ))}
@@ -302,7 +333,7 @@ export default function LandingPage() {
       <footer className="bg-slate-950 px-4 py-10 text-white sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div>
-            <div className="flex items-center gap-2.5 text-base font-black uppercase tracking-[0.24em] text-cyan-300">
+            <div className="flex items-center gap-2.5 text-base font-black uppercase tracking-[0.24em] text-sky-300">
               <img src="/logo.png" alt="Zia NFC" className="size-9 rounded-full object-cover" />
               Zia NFC
             </div>
@@ -374,7 +405,7 @@ function HeroMockup() {
 
       <div className="absolute bottom-16 left-2 hidden w-56 rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_20px_70px_rgba(15,23,42,0.13)] md:block">
         <div className="flex items-center gap-3">
-          <div className="grid size-10 place-items-center rounded-2xl bg-emerald-100 text-emerald-700">
+          <div className="grid size-10 place-items-center rounded-2xl bg-sky-100 text-sky-700">
             <BarChart3 size={20} />
           </div>
           <div>
@@ -390,7 +421,7 @@ function HeroMockup() {
 function ProfileShowcase() {
   return (
     <div className="relative mx-auto w-full max-w-[520px]">
-      <div className="absolute -right-3 top-12 hidden rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_18px_60px_rgba(15,23,42,0.1)] sm:block">
+      <div className="absolute -right-3 top-4 hidden rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_18px_60px_rgba(15,23,42,0.1)] sm:block z-20">
         <QrCode className="text-slate-950" size={70} strokeWidth={1.5} />
       </div>
       <div className="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-[0_24px_90px_rgba(15,23,42,0.1)]">
@@ -402,41 +433,76 @@ function ProfileShowcase() {
 
 function PhoneProfile({ compact = false }: { compact?: boolean }) {
   return (
-    <div className={`${compact ? "" : "p-1"} rounded-[1.5rem] bg-white`}>
-      <div className={`rounded-[1.35rem] bg-[linear-gradient(135deg,#0f172a,#0369a1)] px-5 ${compact ? "pb-12 pt-4" : "pb-20 pt-6"} text-white`}>
-        <div className="flex items-center justify-between">
-          <div className="rounded-full bg-white/12 px-3 py-1 text-xs font-black uppercase tracking-[0.14em] text-sky-100">Canlı</div>
-          <Layers3 size={compact ? 16 : 20} className="text-white/70" />
-        </div>
-        <div className={`flex items-end ${compact ? "mt-6 gap-3" : "mt-12 gap-4"}`}>
-          <div className={`grid ${compact ? "size-14 text-2xl rounded-2xl" : "size-20 text-3xl rounded-3xl"} place-items-center bg-sky-300 font-black text-slate-950 shadow-lg`}>
-            Z
-          </div>
-          <div>
-            <p className={`${compact ? "text-xs" : "text-sm"} font-bold text-sky-100`}>Premium bərbər</p>
-            <h3 className={`${compact ? "text-lg" : "text-2xl"} font-black tracking-tight`}>Ziya Safaraliyev</h3>
-          </div>
-        </div>
+    <div className={`${compact ? "" : "p-1"} rounded-[1.5rem] bg-white overflow-hidden`}>
+      {/* Cover section */}
+      <div className={`relative bg-[linear-gradient(145deg,#0f172a_0%,#0c2340_45%,#0369a1_100%)] ${compact ? "h-28" : "h-40"} overflow-visible flex flex-col items-center justify-center`}>
+        <div className="absolute inset-0 bg-[linear-gradient(115deg,transparent_30%,rgba(255,255,255,0.06)_50%,transparent_70%)]" />
+        <img
+          src="/logo.png"
+          alt="Zia NFC"
+          className={`relative z-10 rounded-full object-cover ring-2 ring-white/20 shadow-xl ${compact ? "size-12" : "size-20"}`}
+        />
+        <p className={`relative z-10 mt-1.5 font-black uppercase tracking-[0.18em] text-white/80 ${compact ? "text-[9px]" : "text-[11px]"}`}>ZIA NFC</p>
       </div>
-      <div className={`${compact ? "-mt-8 p-4" : "-mt-12 p-5"} rounded-[1.35rem] border border-slate-200 bg-white shadow-[0_18px_60px_rgba(15,23,42,0.12)]`}>
-        <p className={`${compact ? "text-xs leading-5" : "text-sm leading-6"} text-slate-600`}>Bakıda dəqiq kəsimlər, saqqal dizaynı və fərdi qulluq.</p>
-        <div className={`grid grid-cols-2 ${compact ? "mt-4 gap-1.5" : "mt-5 gap-2"}`}>
+
+      {/* White content card — sits cleanly below cover, no overlap issues */}
+      <div className={`${compact ? "p-4" : "p-5"} bg-white`}>
+        {/* Identity: avatar + name */}
+        <div className="flex items-center gap-3 mb-3">
+          <img
+            src="/ziya.jpg"
+            alt="Ziya Safaraliyev"
+            className={`object-cover shadow-lg border-2 border-slate-100 shrink-0 ${
+              compact ? "size-12 rounded-xl" : "size-16 rounded-2xl"
+            }`}
+          />
+          <div className="min-w-0">
+            <p className={`font-bold text-sky-600 truncate ${compact ? "text-[10px]" : "text-xs"}`}>Founder ZIA NFC</p>
+            <h3 className={`font-black tracking-tight text-slate-900 leading-tight truncate ${compact ? "text-base" : "text-xl"}`}>Ziya Safaraliyev</h3>
+            <p className={`text-slate-500 font-medium truncate ${compact ? "text-[9px]" : "text-[11px]"}`}>IT | Architect | Founder | Automation</p>
+          </div>
+        </div>
+
+        {/* Action buttons */}
+        <div className={`grid grid-cols-2 ${compact ? "gap-1.5" : "gap-2"}`}>
           <button className={`inline-flex items-center justify-center gap-1.5 rounded-full bg-slate-950 ${compact ? "px-3 py-2 text-xs" : "px-4 py-3 text-sm"} font-black text-white transition duration-150 ease-out active:scale-[0.98]`}>
             <Phone size={compact ? 12 : 16} /> Zəng et
           </button>
-          <button className={`inline-flex items-center justify-center gap-1.5 rounded-full bg-emerald-500 ${compact ? "px-3 py-2 text-xs" : "px-4 py-3 text-sm"} font-black text-white transition duration-150 ease-out active:scale-[0.98]`}>
+          <button className={`inline-flex items-center justify-center gap-1.5 rounded-full bg-sky-500 ${compact ? "px-3 py-2 text-xs" : "px-4 py-3 text-sm"} font-black text-white transition duration-150 ease-out active:scale-[0.98]`}>
             <MessageCircle size={compact ? 12 : 16} /> Çat
           </button>
         </div>
-        <div className={`grid grid-cols-3 ${compact ? "mt-3 gap-1.5" : "mt-4 gap-2"}`}>
-          {[Globe, Instagram, UserPlus].map((Icon, index) => (
-            <div key={index} className={`grid ${compact ? "h-11 rounded-xl" : "h-16 rounded-2xl"} place-items-center bg-slate-100 text-slate-700`}>
-              <Icon size={compact ? 16 : 22} />
+
+        {/* Social icons grid */}
+        <div className={`grid grid-cols-3 ${compact ? "mt-3 gap-1.5" : "mt-3 gap-2"}`}>
+          {[Globe, Instagram, MapPin, Linkedin, Github, Youtube].map((Icon, index) => (
+            <div key={index} className={`grid ${compact ? "h-10 rounded-xl" : "h-14 rounded-2xl"} place-items-center bg-slate-100 text-slate-700`}>
+              <Icon size={compact ? 15 : 20} />
             </div>
           ))}
         </div>
 
-  
+        {/* vCard button */}
+        <div className={compact ? "mt-3" : "mt-3"}>
+          <button className={`w-full flex items-center justify-center gap-2 rounded-2xl bg-sky-50 border border-sky-100/50 text-sky-700 font-extrabold ${compact ? "py-2 text-xs" : "py-3 text-sm"} transition duration-150 active:scale-[0.98]`}>
+            <UserPlus size={compact ? 13 : 16} /> Kontaktı yadda saxla
+          </button>
+        </div>
+
+        {/* QR backup */}
+        <div className={`flex items-center gap-3 rounded-2xl bg-slate-50 border border-slate-100 ${compact ? "mt-3 p-2.5" : "mt-3 p-3"}`}>
+          <div className="shrink-0 rounded-xl bg-white border border-slate-200/80 p-1.5 shadow-sm">
+            <QrCode size={compact ? 28 : 38} strokeWidth={1.5} className="text-slate-900" />
+          </div>
+          <div className="min-w-0 text-left">
+            <div className={`flex items-center gap-1.5 font-extrabold text-slate-800 ${compact ? "text-[10px]" : "text-xs"}`}>
+              <QrCode size={compact ? 10 : 12} className="text-sky-500" />
+              QR Kod ehtiyatı
+            </div>
+          </div>
+        </div>
+
+
       </div>
     </div>
   );

@@ -136,11 +136,11 @@ function FlipCard({ card }: { card: (typeof cards)[number] }) {
             <CardShine variant={card.variant} />
             <div className="relative flex h-full flex-col justify-between">
               <div className="flex items-start justify-between">
-                <div className={`grid size-11 place-items-center rounded-full text-lg font-black shadow-sm ${card.logoClass}`}>Z</div>
+                <img src="/logo.png" alt="Zia NFC Logo" className="size-11 rounded-full object-cover bg-white p-0.5 shadow-sm" />
                 <Sparkles className={`${card.frontAccent} opacity-80`} size={20} />
               </div>
               <div>
-                <p className={`text-[10px] font-black uppercase tracking-[0.24em] ${card.labelClass}`}>Sizin Logo</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.24em] text-sky-500">Sizin Logo</p>
                 <p className={`mt-1 text-lg font-black tracking-tight ${card.titleClass}`}>Rəqəmsal kimlik</p>
               </div>
             </div>
@@ -156,7 +156,7 @@ function FlipCard({ card }: { card: (typeof cards)[number] }) {
           >
             <CardShine variant={card.variant} subtle />
             <div className="relative flex h-full flex-col items-center justify-between text-center">
-              <p className={`text-[10px] font-black uppercase tracking-[0.22em] ${card.backMutedClass}`}>Arxa tərəf</p>
+              <img src="/logo.png" alt="Zia NFC Logo" className="size-8 rounded-full object-cover bg-white p-0.5 shadow-sm" />
               <div className="grid place-items-center gap-3">
                 <div
                   className={`grid size-14 place-items-center rounded-2xl ${
@@ -170,7 +170,7 @@ function FlipCard({ card }: { card: (typeof cards)[number] }) {
                 </div>
               </div>
               <div>
-                <p className={`text-xs font-black uppercase tracking-[0.18em] ${card.backMutedClass}`}>Touch · Share · Connect</p>
+                <p className="text-xs font-black uppercase tracking-[0.18em] text-sky-500">Touch · Share · Connect</p>
                 <p className={`mt-1 text-sm font-bold ${card.backTextClass}`}>NFC + QR ehtiyat</p>
               </div>
             </div>
