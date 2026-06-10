@@ -94,8 +94,6 @@ export default async function AdminPage({ searchParams }: Props) {
 
   return (
     <main className="min-h-screen bg-gradient-to-tr from-[#f8fafc] via-[#f1f5f9] to-[#eef2f6] px-4 py-5 text-slate-900 sm:px-6 lg:px-8 font-sans">
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       <div className="mx-auto max-w-7xl">
         <header className="overflow-hidden rounded-[2.25rem] border border-white/80 bg-white/60 shadow-[0_24px_70px_rgba(99,102,241,0.06)] backdrop-blur-xl transition-all duration-300 hover:shadow-[0_24px_85px_rgba(99,102,241,0.08)]">
           <div className="flex flex-col gap-6 p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between">
@@ -419,8 +417,6 @@ function StatusBadge({ enabled }: { enabled: boolean }) {
 function Login({ error }: { error: boolean }) {
   return (
     <main className="grid min-h-screen place-items-center bg-gradient-to-tr from-[#f8fafc] via-[#f1f5f9] to-[#eef2f6] px-4 py-10 text-slate-900 font-sans">
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       <form
         action={loginAdmin}
         className="w-full max-w-md rounded-[2.25rem] border border-white/80 bg-white/60 p-7 shadow-[0_30px_70px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:p-8 hover:shadow-[0_30px_80px_rgba(99,102,241,0.1)] transition-all duration-300"

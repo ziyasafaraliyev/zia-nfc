@@ -104,9 +104,6 @@ export default async function ProfilePage({ params }: Props) {
 
   return (
     <main className="lux-shell relative min-h-screen overflow-x-hidden">
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
