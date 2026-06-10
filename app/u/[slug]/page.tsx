@@ -65,7 +65,7 @@ export default async function ProfilePage({ params }: Props) {
   const qr = await QRCode.toDataURL(profileUrl, {
     margin: 1,
     width: 220,
-    color: { dark: "#e2e8f0", light: "#00000000" },
+    color: { dark: "#312e81", light: "#00000000" },
   });
   const whatsapp = profile.whatsapp?.replace(/[^\d]/g, "");
 
@@ -209,8 +209,8 @@ export default async function ProfilePage({ params }: Props) {
             {/* Location */}
             {profile.location ? (
               <div className="mt-3.5 inline-flex items-center gap-1.5 lux-location-chip rounded-full px-3 py-1.5">
-                <MapPin size={11} className="text-cyan-400/80 shrink-0" />
-                <span className="text-[11px] font-semibold tracking-wide text-slate-300/80 truncate">
+                <MapPin size={11} className="text-indigo-500 shrink-0" />
+                <span className="text-[11px] font-semibold tracking-wide text-slate-500 truncate">
                   {profile.location}
                 </span>
               </div>
@@ -257,11 +257,11 @@ export default async function ProfilePage({ params }: Props) {
             <span className="lux-save-icon grid size-9 place-items-center rounded-xl">
               <UserPlus size={16} />
             </span>
-            <span className="text-sm font-bold text-slate-200">Kontaktı yadda saxla</span>
+            <span className="text-sm font-bold text-gray-800">Kontaktı yadda saxla</span>
           </span>
           <ExternalLink
             size={15}
-            className="text-slate-500 transition-all duration-300 group-hover:text-cyan-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            className="text-gray-400 transition-all duration-300 group-hover:text-indigo-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
           />
         </a>
 
@@ -344,11 +344,11 @@ export default async function ProfilePage({ params }: Props) {
             />
           </div>
           <div className="min-w-0">
-            <div className="flex items-center gap-2 text-sm font-bold text-slate-100">
-              <QrCode size={14} className="text-cyan-400 shrink-0" />
+            <div className="flex items-center gap-2 text-sm font-bold text-gray-800">
+              <QrCode size={14} className="text-indigo-500 shrink-0" />
               <span>QR kod</span>
             </div>
-            <p className="mt-1 text-[11px] font-medium leading-[1.6] text-slate-500">
+            <p className="mt-1 text-[11px] font-medium leading-[1.6] text-gray-400">
               NFC işləmədikdə kamera ilə skan edin.
             </p>
           </div>
@@ -357,7 +357,7 @@ export default async function ProfilePage({ params }: Props) {
         {/* ── FOOTER ── */}
         <div className="mt-6 flex flex-col items-center gap-1.5">
           <div className="lux-footer-divider" />
-          <p className="mt-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-600">
+          <p className="mt-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-gray-400">
             Powered by{" "}
             <span className="lux-brand-text">Zia NFC</span>
           </p>
@@ -424,7 +424,7 @@ function SocialChip({
       <span className="lux-social-icon transition-transform duration-300 group-hover:scale-110">
         {icon}
       </span>
-      <span className="text-[10px] font-bold tracking-wide text-slate-300">{label}</span>
+      <span className="text-[10px] font-bold tracking-wide text-gray-500">{label}</span>
     </a>
   );
 }

@@ -186,37 +186,36 @@ a {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   LUX — Ultra Premium Profile Design System
+   iOS LIGHT — Modern White Profile Design System
    ═══════════════════════════════════════════════════════════ */
 
-/* Shell */
+/* Shell — iOS-style light background */
 .lux-shell {
     background: 
-        radial-gradient(ellipse 70% 60% at 50% -10%, rgba(99, 102, 241, 0.12) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 85% 30%, rgba(56, 189, 248, 0.08) 0%, transparent 60%),
-        radial-gradient(circle at 10% 70%, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
-        linear-gradient(180deg, #03000a 0%, #090616 35%, #05020c 70%, #020005 100%);
+        radial-gradient(ellipse 80% 50% at 50% -5%, rgba(99, 102, 241, 0.07) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 40% at 90% 20%, rgba(56, 189, 248, 0.05) 0%, transparent 55%),
+        linear-gradient(180deg, #f2f3f8 0%, #eef0f7 40%, #f5f6fa 100%);
     min-height: 100dvh;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    color: #f1f5f9;
+    color: #1a1a2e;
 }
 
-/* Ambient orbs with ultra-smooth organic motion */
+/* Ambient orbs — very subtle for light mode */
 .lux-orb-1 {
-    background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, rgba(99, 102, 241, 0.05) 50%, transparent 70%);
-    filter: blur(80px);
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, rgba(56, 189, 248, 0.03) 50%, transparent 70%);
+    filter: blur(90px);
     animation: lux-orb-float-1 25s ease-in-out infinite;
 }
 
 .lux-orb-2 {
-    background: radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, rgba(236, 72, 153, 0.04) 50%, transparent 70%);
-    filter: blur(90px);
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.06) 0%, rgba(236, 72, 153, 0.02) 50%, transparent 70%);
+    filter: blur(100px);
     animation: lux-orb-float-2 30s ease-in-out infinite;
 }
 
 .lux-orb-3 {
-    background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, rgba(56, 189, 248, 0.03) 60%, transparent 70%);
-    filter: blur(100px);
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.05) 0%, rgba(56, 189, 248, 0.02) 60%, transparent 70%);
+    filter: blur(110px);
     animation: lux-orb-float-3 28s ease-in-out infinite;
 }
 
@@ -237,12 +236,12 @@ a {
     80% { transform: translate(-30px, -20px) scale(1.1); }
 }
 
-/* Glowing grid overlay */
+/* Subtle grid overlay */
 .lux-grid {
     background-image:
-        linear-gradient(rgba(99, 102, 241, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(99, 102, 241, 0.02) 1px, transparent 1px);
-    background-size: 40px 40px;
+        linear-gradient(rgba(99, 102, 241, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.025) 1px, transparent 1px);
+    background-size: 44px 44px;
     mask-image: radial-gradient(ellipse 85% 75% at 50% 35%, black 0%, transparent 100%);
 }
 
@@ -253,48 +252,35 @@ a {
     background-size: 150px 150px;
 }
 
-/* Premium Card Design */
+/* iOS-style white card */
 .lux-card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.06);
     box-shadow:
-        0 24px 60px rgba(0, 0, 0, 0.6),
-        inset 0 1px 1px rgba(255, 255, 255, 0.06),
-        inset 0 -1px 2px rgba(0, 0, 0, 0.4),
-        0 0 40px rgba(99, 102, 241, 0.03);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
+        0 2px 8px rgba(0, 0, 0, 0.04),
+        0 12px 40px rgba(0, 0, 0, 0.08),
+        0 1px 2px rgba(0, 0, 0, 0.06);
     position: relative;
     z-index: 10;
 }
 
 .lux-card::before {
-    content: "";
-    position: absolute;
-    inset: -1px;
-    border-radius: inherit;
-    padding: 1px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02) 40%, rgba(99,102,241,0.05) 70%, rgba(56,189,248,0.12));
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-    z-index: 2;
+    display: none;
 }
 
 /* Sequential Load Animations */
-.lux-card-enter { animation: lux-fade-in-up 650ms cubic-bezier(0.16, 1, 0.3, 1) both; }
-.lux-card-enter-2 { animation: lux-fade-in-up 650ms cubic-bezier(0.16, 1, 0.3, 1) 100ms both; }
-.lux-card-enter-3 { animation: lux-fade-in-up 650ms cubic-bezier(0.16, 1, 0.3, 1) 150ms both; }
-.lux-card-enter-4 { animation: lux-fade-in-up 650ms cubic-bezier(0.16, 1, 0.3, 1) 200ms both; }
-.lux-card-enter-5 { animation: lux-fade-in-up 650ms cubic-bezier(0.16, 1, 0.3, 1) 250ms both; }
-.lux-card-enter-6 { animation: lux-fade-in-up 650ms cubic-bezier(0.16, 1, 0.3, 1) 300ms both; }
-.lux-card-enter-7 { animation: lux-fade-in-up 650ms cubic-bezier(0.16, 1, 0.3, 1) 350ms both; }
+.lux-card-enter { animation: lux-fade-in-up 580ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+.lux-card-enter-2 { animation: lux-fade-in-up 580ms cubic-bezier(0.16, 1, 0.3, 1) 80ms both; }
+.lux-card-enter-3 { animation: lux-fade-in-up 580ms cubic-bezier(0.16, 1, 0.3, 1) 130ms both; }
+.lux-card-enter-4 { animation: lux-fade-in-up 580ms cubic-bezier(0.16, 1, 0.3, 1) 180ms both; }
+.lux-card-enter-5 { animation: lux-fade-in-up 580ms cubic-bezier(0.16, 1, 0.3, 1) 230ms both; }
+.lux-card-enter-6 { animation: lux-fade-in-up 580ms cubic-bezier(0.16, 1, 0.3, 1) 280ms both; }
+.lux-card-enter-7 { animation: lux-fade-in-up 580ms cubic-bezier(0.16, 1, 0.3, 1) 330ms both; }
 
 @keyframes lux-fade-in-up {
     from {
         opacity: 0;
-        transform: translateY(16px) scale(0.98);
+        transform: translateY(20px) scale(0.97);
     }
     to {
         opacity: 1;
@@ -302,21 +288,21 @@ a {
     }
 }
 
-/* Premium Cover Gradient (Fallback) */
+/* Cover gradient (fallback — no background image) */
 .lux-hero {
     background:
-        radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.22) 0%, transparent 40%),
-        radial-gradient(circle at 85% 20%, rgba(139, 92, 246, 0.20) 0%, transparent 40%),
-        radial-gradient(circle at 50% 85%, rgba(236, 72, 153, 0.12) 0%, transparent 45%),
-        linear-gradient(135deg, #090b14 0%, #15102a 50%, #0d0918 100%);
+        radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.28) 0%, transparent 45%),
+        radial-gradient(circle at 80% 15%, rgba(56, 189, 248, 0.22) 0%, transparent 40%),
+        radial-gradient(circle at 50% 90%, rgba(168, 85, 247, 0.18) 0%, transparent 45%),
+        linear-gradient(145deg, #1e1b4b 0%, #312e81 45%, #1e3a5f 100%);
 }
 
-/* Elegant Shimmer Effect */
+/* Shimmer effect on cover */
 .lux-cover-shimmer {
     background: linear-gradient(
         105deg,
         transparent 35%,
-        rgba(255, 255, 255, 0.03) 50%,
+        rgba(255, 255, 255, 0.06) 50%,
         transparent 65%
     );
     background-size: 200% 100%;
@@ -329,18 +315,18 @@ a {
     100% { background-position: -150% 0; }
 }
 
-/* Badges */
+/* Top badges — remain dark since cover is dark */
 .lux-badge {
-    background: rgba(10, 5, 20, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .lux-badge-verified {
-    background: rgba(217, 119, 6, 0.15);
-    border: 1px solid rgba(245, 158, 11, 0.35);
+    background: rgba(217, 119, 6, 0.2);
+    border: 1px solid rgba(245, 158, 11, 0.5);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     box-shadow: 0 0 15px rgba(245, 158, 11, 0.15);
@@ -353,46 +339,45 @@ a {
 
 @keyframes lux-dot-pulse {
     0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.9); }
+    50% { opacity: 0.45; transform: scale(0.88); }
 }
 
-/* Identity Strip */
+/* Identity strip — white area below cover */
 .lux-identity {
-    background: transparent;
+    background: #ffffff;
 }
 
-/* Avatar Border Styling */
+/* Avatar ring — gradient border */
 .lux-avatar-ring {
-    background: linear-gradient(135deg, #38bdf8 0%, #818cf8 35%, #a855f7 70%, #ec4899 100%);
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 40%, #a855f7 70%, #38bdf8 100%);
     box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.08),
-        0 15px 35px rgba(0, 0, 0, 0.5),
-        0 0 25px rgba(99, 102, 241, 0.15);
+        0 0 0 3px #ffffff,
+        0 8px 24px rgba(99, 102, 241, 0.22),
+        0 2px 8px rgba(0, 0, 0, 0.12);
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .lux-avatar-ring:hover {
     transform: scale(1.03) rotate(2deg);
     box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.12),
-        0 20px 45px rgba(0, 0, 0, 0.6),
-        0 0 35px rgba(99, 102, 241, 0.25);
+        0 0 0 3px #ffffff,
+        0 12px 32px rgba(99, 102, 241, 0.32),
+        0 4px 12px rgba(0, 0, 0, 0.16);
 }
 
 .lux-avatar-fallback {
-    background: linear-gradient(135deg, #0ea5e9, #818cf8, #a855f7);
+    background: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7);
     font-family: 'Outfit', sans-serif;
 }
 
-/* Typography with Luxury Brand Feel */
+/* Typography — dark text for light background */
 .lux-overline {
     font-family: 'Outfit', sans-serif;
     font-size: 10px;
     font-weight: 800;
-    letter-spacing: 0.26em;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
-    color: rgba(56, 189, 248, 0.85);
-    text-shadow: 0 0 10px rgba(56, 189, 248, 0.15);
+    color: #6366f1;
 }
 
 .lux-name {
@@ -400,40 +385,37 @@ a {
     font-size: 1.85rem;
     font-weight: 800;
     letter-spacing: -0.03em;
-    color: #ffffff;
-    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    color: #111827;
 }
 
 .lux-bio {
     font-size: 13.5px;
-    font-weight: 400;
-    line-height: 1.75;
-    color: rgba(226, 232, 240, 0.75);
+    font-weight: 450;
+    line-height: 1.78;
+    color: #6b7280;
 }
 
 .lux-section-title {
     font-family: 'Outfit', sans-serif;
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     font-weight: 700;
     letter-spacing: -0.02em;
-    color: #f8fafc;
+    color: #111827;
 }
 
-/* Location Chip */
+/* Location chip — light style */
 .lux-location-chip {
-    background: rgba(56, 189, 248, 0.05);
-    border: 1px solid rgba(56, 189, 248, 0.15);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(99, 102, 241, 0.06);
+    border: 1px solid rgba(99, 102, 241, 0.18);
     transition: all 0.2s ease;
 }
 
 .lux-location-chip:hover {
-    border-color: rgba(56, 189, 248, 0.3);
-    background: rgba(56, 189, 248, 0.08);
+    background: rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.3);
 }
 
-/* WhatsApp Button styling */
+/* WhatsApp Button */
 .lux-btn-whatsapp {
     position: relative;
     overflow: hidden;
@@ -449,10 +431,10 @@ a {
     color: #ffffff;
     background: linear-gradient(135deg, #108e45 0%, #1fbe55 50%, #25d366 100%);
     box-shadow:
-        0 8px 25px rgba(37, 211, 102, 0.18),
+        0 4px 16px rgba(37, 211, 102, 0.28),
         inset 0 1px 0 rgba(255, 255, 255, 0.25);
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: none;
 }
 
 .lux-btn-whatsapp::after {
@@ -466,14 +448,12 @@ a {
 }
 
 .lux-btn-whatsapp:active {
-    transform: scale(0.95);
+    transform: scale(0.96);
 }
 
 @media (hover: hover) and (pointer: fine) {
     .lux-btn-whatsapp:hover {
-        box-shadow:
-            0 12px 30px rgba(37, 211, 102, 0.3),
-            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 28px rgba(37, 211, 102, 0.38);
         transform: translateY(-2px);
     }
     .lux-btn-whatsapp:hover::after {
@@ -481,7 +461,7 @@ a {
     }
 }
 
-/* Call Button styling */
+/* Call Button — iOS blue */
 .lux-btn-call {
     position: relative;
     overflow: hidden;
@@ -494,12 +474,12 @@ a {
     font-family: 'Outfit', sans-serif;
     font-size: 14px;
     font-weight: 700;
-    color: #f8fafc;
-    background: linear-gradient(135deg, #181528 0%, #0d0a14 100%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #60a5fa 100%);
+    border: none;
     box-shadow:
-        0 8px 25px rgba(0, 0, 0, 0.45),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        0 4px 16px rgba(59, 130, 246, 0.32),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -507,23 +487,19 @@ a {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
     transform: translateX(-150%) skewX(-25deg);
     transition: transform 750ms cubic-bezier(0.16, 1, 0.3, 1);
     pointer-events: none;
 }
 
 .lux-btn-call:active {
-    transform: scale(0.95);
+    transform: scale(0.96);
 }
 
 @media (hover: hover) and (pointer: fine) {
     .lux-btn-call:hover {
-        border-color: rgba(99, 102, 241, 0.35);
-        box-shadow:
-            0 12px 30px rgba(0, 0, 0, 0.55),
-            0 0 15px rgba(99, 102, 241, 0.15),
-            inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        box-shadow: 0 8px 28px rgba(59, 130, 246, 0.4);
         transform: translateY(-2px);
     }
     .lux-btn-call:hover::after {
@@ -531,16 +507,14 @@ a {
     }
 }
 
-/* Save Contact Container */
+/* Save Contact Row — subtle light style */
 .lux-save-contact {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.07);
     box-shadow:
-        0 12px 30px rgba(0, 0, 0, 0.35),
-        inset 0 1px 0 rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        0 2px 8px rgba(0, 0, 0, 0.05),
+        0 8px 24px rgba(0, 0, 0, 0.06);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
     overflow: hidden;
 }
@@ -549,22 +523,22 @@ a {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.05), rgba(168, 85, 247, 0.05), transparent);
+    background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.03), rgba(168, 85, 247, 0.03), transparent);
     opacity: 0;
-    transition: opacity 0.4s ease;
+    transition: opacity 0.35s ease;
 }
 
 .lux-save-contact:active {
     transform: scale(0.97);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 
 @media (hover: hover) and (pointer: fine) {
     .lux-save-contact:hover {
-        border-color: rgba(99, 102, 241, 0.3);
+        border-color: rgba(99, 102, 241, 0.25);
         box-shadow:
-            0 16px 40px rgba(0, 0, 0, 0.45),
-            0 0 20px rgba(99, 102, 241, 0.1),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            0 4px 16px rgba(0, 0, 0, 0.08),
+            0 0 0 3px rgba(99, 102, 241, 0.06);
         transform: translateY(-1px);
     }
     .lux-save-contact:hover::before {
@@ -573,20 +547,17 @@ a {
 }
 
 .lux-save-icon {
-    background: rgba(99, 102, 241, 0.12);
-    border: 1px solid rgba(99, 102, 241, 0.25);
-    color: #a5b4fc;
-    box-shadow: 0 0 10px rgba(99, 102, 241, 0.1);
+    background: rgba(99, 102, 241, 0.08);
+    border: 1px solid rgba(99, 102, 241, 0.18);
+    color: #6366f1;
 }
 
-/* Premium Social Chips */
+/* Social Chips — iOS-style light cards */
 .lux-social-chip {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .lux-social-chip:active {
@@ -594,97 +565,88 @@ a {
 }
 
 .lux-social-instagram:hover {
-    border-color: rgba(225, 48, 108, 0.4);
-    background: rgba(225, 48, 108, 0.08);
-    box-shadow:
-        0 12px 25px rgba(225, 48, 108, 0.15),
-        0 0 15px rgba(225, 48, 108, 0.1);
+    border-color: rgba(225, 48, 108, 0.3);
+    background: rgba(255, 240, 244, 1);
+    box-shadow: 0 8px 20px rgba(225, 48, 108, 0.14);
     transform: translateY(-2px);
 }
-.lux-social-instagram .lux-social-icon { color: #f43f5e; filter: drop-shadow(0 0 6px rgba(244,63,94,0.35)); }
+.lux-social-instagram .lux-social-icon { color: #e1306c; }
 
 .lux-social-tiktok:hover {
-    border-color: rgba(255, 255, 255, 0.22);
-    background: rgba(255, 255, 255, 0.05);
-    box-shadow:
-        0 12px 25px rgba(0, 0, 0, 0.4),
-        0 0 15px rgba(255, 255, 255, 0.1);
+    border-color: rgba(0, 0, 0, 0.15);
+    background: rgba(248, 248, 248, 1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     transform: translateY(-2px);
 }
-.lux-social-tiktok .lux-social-icon { color: #f8fafc; filter: drop-shadow(0 0 6px rgba(255,255,255,0.2)); }
+.lux-social-tiktok .lux-social-icon { color: #1a1a1a; }
 
 .lux-social-website:hover {
-    border-color: rgba(56, 189, 248, 0.4);
-    background: rgba(56, 189, 248, 0.08);
-    box-shadow:
-        0 12px 25px rgba(56, 189, 248, 0.15),
-        0 0 15px rgba(56, 189, 248, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+    background: rgba(239, 246, 255, 1);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.12);
     transform: translateY(-2px);
 }
-.lux-social-website .lux-social-icon { color: #38bdf8; filter: drop-shadow(0 0 6px rgba(56,189,248,0.35)); }
+.lux-social-website .lux-social-icon { color: #3b82f6; }
 
-/* Count Badge */
+/* "N iş" badge */
 .lux-count-badge {
-    background: rgba(99, 102, 241, 0.08);
-    border: 1px solid rgba(99, 102, 241, 0.2);
-    color: #c7d2fe;
+    background: rgba(99, 102, 241, 0.07);
+    border: 1px solid rgba(99, 102, 241, 0.18);
+    color: #6366f1;
     font-family: 'Outfit', sans-serif;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
 }
 
-/* Premium Gallery Items */
+/* Gallery items */
 .lux-gallery-item {
-    background: rgba(255, 255, 255, 0.01);
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    background: #f3f4f6;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .lux-gallery-item:hover {
-    border-color: rgba(99, 102, 241, 0.3);
+    border-color: rgba(99, 102, 241, 0.2);
     box-shadow: 
-        0 18px 45px rgba(0, 0, 0, 0.55), 
-        0 0 25px rgba(99, 102, 241, 0.12);
-    transform: translateY(-2px);
+        0 12px 32px rgba(0, 0, 0, 0.12), 
+        0 0 0 3px rgba(99, 102, 241, 0.08);
+    transform: translateY(-3px);
 }
 
 .lux-gallery-btn {
-    background: rgba(10, 5, 25, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    color: #ffffff;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: #1a1a2e;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
-/* QR Code Card */
+/* QR Code Card — white card */
 .lux-qr-card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.07);
     box-shadow:
-        0 12px 30px rgba(0, 0, 0, 0.35),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+        0 2px 8px rgba(0, 0, 0, 0.05),
+        0 8px 24px rgba(0, 0, 0, 0.07);
 }
 
+/* QR wrap — keep dark so QR is scannable */
 .lux-qr-wrap {
-    background: #020105;
-    border: 1px solid rgba(99, 102, 241, 0.2);
-    box-shadow: 
-        0 0 20px rgba(99, 102, 241, 0.08), 
-        inset 0 0 15px rgba(0, 0, 0, 0.6);
+    background: #1e1b4b;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    box-shadow: 0 0 16px rgba(99, 102, 241, 0.12);
 }
 
-/* Footer & Brand Styling */
+/* Footer divider */
 .lux-footer-divider {
     width: 60px;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.4), transparent);
+    background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.3), transparent);
 }
 
 .lux-brand-text {
-    background: linear-gradient(90deg, #38bdf8, #818cf8, #a855f7);
+    background: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -693,21 +655,21 @@ a {
     letter-spacing: 0.06em;
 }
 
-/* Sticky Bottom Action Bar */
+/* Sticky bottom action bar — frosted glass on light bg */
 .lux-sticky-bar {
-    background: rgba(6, 4, 12, 0.75);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.82);
+    border: 1px solid rgba(0, 0, 0, 0.08);
     box-shadow:
-        0 -10px 40px rgba(0, 0, 0, 0.7),
-        0 0 40px rgba(99, 102, 241, 0.05),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
+        0 -4px 24px rgba(0, 0, 0, 0.1),
+        0 -1px 0 rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
 }
 
 .lux-sticky-call {
-    background: linear-gradient(135deg, #151222, #0d0a14);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+    border: none;
+    color: #ffffff;
 }
 
 /* Reduce Motion Accessibility */
