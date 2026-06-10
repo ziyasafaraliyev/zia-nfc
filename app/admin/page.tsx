@@ -480,7 +480,6 @@ function ProfileForm({ profile }: { profile?: Profile }) {
   return (
     <form
       action={saveProfile}
-      encType="multipart/form-data"
       className="grid gap-4"
     >
       <input type="hidden" name="id" value={profile?.id ?? ""} />
