@@ -129,7 +129,7 @@ export default async function ProfilePage({ params }: Props) {
         <section className="lux-card lux-card-enter overflow-hidden rounded-[2.25rem]">
           {/* Cover image zone */}
           <div
-            className={`${profile.background_url ? "bg-[#060a12]" : "lux-hero"} relative ${coverH} overflow-hidden`}
+            className={`${profile.background_url ? "bg-[#1e1b4b]" : "lux-hero"} relative ${coverH} overflow-hidden`}
           >
             {profile.background_url ? (
               <>
