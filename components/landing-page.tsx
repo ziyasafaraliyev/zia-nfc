@@ -113,7 +113,8 @@ export default function LandingPage() {
       <section className="relative min-h-screen border-b border-slate-200/70 bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_56%,#eef6ff_100%)] px-4 pb-16 pt-4 sm:px-6 lg:px-8">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/70 to-transparent" />
         <nav className="mx-auto flex max-w-5xl items-center justify-center gap-6 rounded-full border border-white/70 px-4 py-2 shadow-[0_18px_60px_rgba(15,23,42,0.12)] backdrop-blur-xl">
-          <Link href="/" className="group flex items-center gap-3 rounded-full bg-slate-950 px-4 py-2 text-base font-black tracking-tight text-white shadow-lg shadow-slate-200/30 transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-slate-800">
+          <Link href="/" className="group flex items-center gap-2 rounded-full bg-slate-950 px-3.5 py-1.5 pr-4.5 text-base font-black tracking-tight text-white shadow-lg shadow-slate-200/30 transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-slate-800">
+            <img src="/logo.png" alt="Zia NFC" className="size-6 rounded-full object-cover" />
             Zia NFC
           </Link>
           <div className="hidden items-center gap-4 rounded-full border border-slate-200/70 bg-slate-950/5 px-3 py-1.5 text-base font-semibold text-slate-700 md:flex">
@@ -301,8 +302,8 @@ export default function LandingPage() {
       <footer className="bg-slate-950 px-4 py-10 text-white sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div>
-            <div className="flex items-center gap-3 text-base font-black uppercase tracking-[0.24em] text-cyan-300">
-              <span className="grid size-9 place-items-center rounded-full bg-white text-slate-950">Z</span>
+            <div className="flex items-center gap-2.5 text-base font-black uppercase tracking-[0.24em] text-cyan-300">
+              <img src="/logo.png" alt="Zia NFC" className="size-9 rounded-full object-cover" />
               Zia NFC
             </div>
             <p className="mt-4 max-w-xl text-sm leading-6 text-slate-400">
@@ -348,7 +349,7 @@ function HeroMockup() {
       >
         <div className="absolute inset-0 rounded-[1.65rem] bg-[linear-gradient(135deg,rgba(34,211,238,0.24),transparent_38%),linear-gradient(115deg,transparent_0%,rgba(255,255,255,0.08)_38%,transparent_56%)]" />
         <div className="relative flex items-start justify-between">
-          <div className="grid size-12 place-items-center rounded-full bg-cyan-300 text-lg font-black text-slate-950">Z</div>
+          <img src="/logo.png" alt="Zia NFC Logo" className="size-12 rounded-full object-cover bg-white p-0.5 shadow-sm" />
           <Copy className="text-white/55" />
         </div>
         <div className="relative mt-20">
