@@ -142,7 +142,7 @@ export default async function ProfilePage({ params }: Props) {
         <div className="lux-noise absolute inset-0 opacity-[0.03]" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-[440px] px-4 py-6 pb-36">
+      <div className="relative z-10 mx-auto max-w-[440px] px-4 py-6 pb-16">
 
         {/* ── COVER + IDENTITY CARD ── */}
         <section className="lux-card lux-card-enter overflow-hidden rounded-[2.25rem]">
@@ -187,7 +187,7 @@ export default async function ProfilePage({ params }: Props) {
           <div className="lux-identity px-5 pb-6 pt-0">
             <div className="flex items-end gap-4">
               {/* Avatar */}
-              <div className="-mt-16 shrink-0">
+              <div className="-mt-16 shrink-0 relative z-10">
                 {profile.avatar_url ? (
                   <div className="lux-avatar-ring p-[3px] rounded-[1.7rem]">
                     <img
@@ -425,35 +425,6 @@ export default async function ProfilePage({ params }: Props) {
         </div>
       </div>
 
-      {/* ── STICKY BOTTOM CTA ── */}
-      {whatsapp || profile.phone ? (
-        <div className="fixed inset-x-0 bottom-0 z-50 px-4 pb-safe-bottom">
-          <div className="mx-auto max-w-[440px] pb-4 pt-2">
-            <div className="lux-sticky-bar overflow-hidden rounded-[1.75rem] p-2">
-              <div
-                className={`grid gap-2 ${whatsapp && profile.phone ? "grid-cols-2" : "grid-cols-1"}`}
-              >
-                {whatsapp ? (
-                  <a
-                    href={`https://wa.me/${whatsapp}`}
-                    className="flex min-h-[3rem] items-center justify-center gap-2 rounded-2xl bg-[#25D366] text-sm font-black text-white transition-all duration-200 active:scale-[0.96] hover:brightness-110"
-                  >
-                    <MessageCircle size={17} /> WhatsApp
-                  </a>
-                ) : null}
-                {profile.phone ? (
-                  <a
-                    href={`tel:${profile.phone}`}
-                    className="lux-sticky-call flex min-h-[3rem] items-center justify-center gap-2 rounded-2xl text-sm font-black text-white transition-all duration-200 active:scale-[0.96]"
-                  >
-                    <Phone size={17} /> Zəng et
-                  </a>
-                ) : null}
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
     </main>
   );
 }
