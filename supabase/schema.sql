@@ -12,6 +12,10 @@ create table if not exists public.profiles (
   instagram text,
   tiktok text,
   website text,
+  facebook text,
+  x text,
+  linkedin text,
+  youtube text,
   location text,
   avatar_url text,
   background_url text,
@@ -25,6 +29,10 @@ create table if not exists public.profiles (
 alter table public.profiles add column if not exists background_url text;
 alter table public.profiles add column if not exists cover_style text not null default 'auto';
 alter table public.profiles add column if not exists cover_position text not null default 'center';
+alter table public.profiles add column if not exists facebook text;
+alter table public.profiles add column if not exists x text;
+alter table public.profiles add column if not exists linkedin text;
+alter table public.profiles add column if not exists youtube text;
 
 alter table public.profiles drop constraint if exists profiles_cover_style_check;
 alter table public.profiles add constraint profiles_cover_style_check
