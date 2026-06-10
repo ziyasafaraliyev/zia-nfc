@@ -549,6 +549,28 @@ function ProfileForm({ profile }: { profile?: Profile }) {
           placeholder="Hər linki yeni sətirdə yaz"
         />
       </label>
+      <div className="grid gap-4 md:grid-cols-2">
+        <SelectField
+          name="cover_style"
+          label="Cover görünüşü"
+          defaultValue={profile?.cover_style ?? "auto"}
+          options={[
+            { value: "auto", label: "Auto / premium" },
+            { value: "square", label: "Kvadrat / 1:1" },
+            { value: "banner", label: "Banner / aşağı hündürlük" },
+          ]}
+        />
+        <SelectField
+          name="cover_position"
+          label="Cover fokus yeri"
+          defaultValue={profile?.cover_position ?? "center"}
+          options={[
+            { value: "top", label: "Yuxarı" },
+            { value: "center", label: "Mərkəz" },
+            { value: "bottom", label: "Aşağı" },
+          ]}
+        />
+      </div>
       <div className="grid gap-4 md:grid-cols-3">
         <UploadField name="avatar" label="Profil şəkli" />
         <UploadField name="background" label="Cover şəkli" />
@@ -590,6 +612,31 @@ function Field({
         required={required}
         className={inputClass}
       />
+    </label>
+  );
+}
+
+function SelectField({
+  name,
+  label,
+  defaultValue,
+  options,
+}: {
+  name: string;
+  label: string;
+  defaultValue: string;
+  options: { value: string; label: string }[];
+}) {
+  return (
+    <label className="block text-sm font-black text-slate-700">
+      {label}
+      <select name={name} defaultValue={defaultValue} className={inputClass}>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
     </label>
   );
 }

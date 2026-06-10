@@ -11,6 +11,8 @@ import {
   Phone,
   QrCode,
   UserPlus,
+  Sparkles,
+  ExternalLink,
 } from "lucide-react";
 import { notFound } from "next/navigation";
 import QRCode from "qrcode";
@@ -62,8 +64,8 @@ export default async function ProfilePage({ params }: Props) {
   const profileUrl = getProfileUrl(profile.slug);
   const qr = await QRCode.toDataURL(profileUrl, {
     margin: 1,
-    width: 200,
-    color: { dark: "#0f172a", light: "#ffffff" },
+    width: 220,
+    color: { dark: "#e2e8f0", light: "#00000000" },
   });
   const whatsapp = profile.whatsapp?.replace(/[^\d]/g, "");
 
@@ -73,8 +75,8 @@ export default async function ProfilePage({ params }: Props) {
     coverStyle === "banner"
       ? "h-52"
       : coverStyle === "square"
-        ? "h-[28rem]"
-        : "h-[22rem]";
+        ? "h-[30rem]"
+        : "h-[24rem]";
   const objPos =
     coverPosition === "top"
       ? "object-top"
@@ -101,174 +103,213 @@ export default async function ProfilePage({ params }: Props) {
   const hasSocials = profile.instagram || profile.tiktok || profile.website;
 
   return (
-    <main className="ceo-shell relative min-h-screen overflow-x-hidden">
+    <main className="lux-shell relative min-h-screen overflow-x-hidden">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* ambient glow */}
-      <div aria-hidden className="pointer-events-none fixed inset-0 z-0">
-        <div className="absolute -top-40 left-1/2 h-[32rem] w-[32rem] -translate-x-1/2 rounded-full bg-cyan-500/10 blur-[96px]" />
-        <div className="absolute right-[-20%] top-[30%] h-80 w-80 rounded-full bg-violet-500/10 blur-[80px]" />
-        <div className="absolute bottom-[-10%] left-[-10%] h-96 w-96 rounded-full bg-emerald-500/10 blur-[80px]" />
+      {/* ── DEEP AMBIENT ATMOSPHERE ── */}
+      <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+        {/* Primary orb */}
+        <div className="lux-orb-1 absolute -top-32 left-1/2 -translate-x-1/2 h-[40rem] w-[40rem] rounded-full" />
+        {/* Secondary orb */}
+        <div className="lux-orb-2 absolute right-[-15%] top-[20%] h-[28rem] w-[28rem] rounded-full" />
+        {/* Tertiary orb */}
+        <div className="lux-orb-3 absolute bottom-[-8%] left-[-12%] h-[32rem] w-[32rem] rounded-full" />
+        {/* Grid overlay */}
+        <div className="lux-grid absolute inset-0" />
+        {/* Noise texture */}
+        <div className="lux-noise absolute inset-0 opacity-[0.03]" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-[420px] px-4 py-5 pb-32">
-        {/* ── COVER + IDENTITY ───────────────────────────── */}
-        <section className="ceo-card overflow-hidden rounded-[2rem]">
-          {/* cover */}
+      <div className="relative z-10 mx-auto max-w-[440px] px-4 py-6 pb-36">
+
+        {/* ── COVER + IDENTITY CARD ── */}
+        <section className="lux-card lux-card-enter overflow-hidden rounded-[2.25rem]">
+          {/* Cover image zone */}
           <div
-            className={`${profile.background_url ? "bg-slate-950" : "ceo-hero"} relative ${coverH} overflow-hidden`}
+            className={`${profile.background_url ? "bg-[#060a12]" : "lux-hero"} relative ${coverH} overflow-hidden`}
           >
             {profile.background_url ? (
-              <img
-                src={profile.background_url}
-                alt=""
-                role="presentation"
-                className={`absolute inset-0 h-full w-full object-cover ${objPos}`}
-              />
+              <>
+                <img
+                  src={profile.background_url}
+                  alt=""
+                  role="presentation"
+                  className={`absolute inset-0 h-full w-full object-cover ${objPos} opacity-70`}
+                />
+                {/* Gradient overlay on cover image */}
+                <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/60" />
+              </>
             ) : null}
+
+            {/* Animated shimmer overlay */}
+            <div className="lux-cover-shimmer absolute inset-0" />
+
+            {/* Top bar */}
             <div className="absolute inset-x-4 top-4 flex items-center justify-between gap-2">
-              <span className="rounded-full border border-white/20 bg-black/30 px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-white/90 backdrop-blur-md">
-                Zia NFC
-              </span>
-              <span className="rounded-full border border-white/20 bg-black/30 px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-white/80 backdrop-blur-md">
-                Verified ✦
-              </span>
+              <div className="lux-badge flex items-center gap-1.5 rounded-full px-3 py-1.5">
+                <div className="h-1.5 w-1.5 rounded-full bg-cyan-400 lux-pulse" />
+                <span className="text-[9px] font-black uppercase tracking-[0.22em] text-white/90">
+                  Zia NFC
+                </span>
+              </div>
+              <div className="lux-badge-verified flex items-center gap-1.5 rounded-full px-3 py-1.5">
+                <Sparkles size={9} className="text-amber-300" />
+                <span className="text-[9px] font-black uppercase tracking-[0.22em] text-amber-200/90">
+                  Verified
+                </span>
+              </div>
             </div>
           </div>
 
-          {/* identity strip */}
-          <div className="ceo-identity px-5 pb-5 pt-0">
+          {/* Identity strip */}
+          <div className="lux-identity px-5 pb-6 pt-0">
             <div className="flex items-end gap-4">
-              <div className="-mt-14 shrink-0">
+              {/* Avatar */}
+              <div className="-mt-16 shrink-0">
                 {profile.avatar_url ? (
-                  <img
-                    src={profile.avatar_url}
-                    alt={profile.name}
-                    className="size-[6.5rem] rounded-[1.6rem] border-4 border-white object-cover shadow-[0_16px_48px_rgba(0,0,0,0.22)]"
-                  />
+                  <div className="lux-avatar-ring p-[3px] rounded-[1.7rem]">
+                    <img
+                      src={profile.avatar_url}
+                      alt={profile.name}
+                      className="size-[7rem] rounded-[1.55rem] object-cover"
+                    />
+                  </div>
                 ) : (
-                  <div className="grid size-[6.5rem] place-items-center rounded-[1.6rem] border-4 border-white bg-gradient-to-br from-cyan-400 to-cyan-600 text-4xl font-black text-white shadow-[0_16px_48px_rgba(0,0,0,0.22)]">
-                    {profile.name.charAt(0)}
+                  <div className="lux-avatar-ring p-[3px] rounded-[1.7rem]">
+                    <div className="grid size-[7rem] place-items-center rounded-[1.55rem] lux-avatar-fallback text-4xl font-black text-white">
+                      {profile.name.charAt(0)}
+                    </div>
                   </div>
                 )}
               </div>
-              <div className="pb-1">
+
+              {/* Name + title */}
+              <div className="pb-1 min-w-0">
                 {profile.profession ? (
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                  <p className="lux-overline truncate">
                     {profile.profession}
                   </p>
                 ) : null}
-                <h1 className="mt-0.5 text-[1.65rem] font-black leading-tight tracking-[-0.04em] text-slate-950">
+                <h1 className="lux-name mt-1 leading-[1.1]">
                   {profile.name}
                 </h1>
               </div>
             </div>
 
+            {/* Bio */}
             {profile.bio ? (
-              <p className="mt-4 text-sm font-medium leading-[1.75] text-slate-500">
+              <p className="lux-bio mt-4">
                 {profile.bio}
               </p>
             ) : null}
 
+            {/* Location */}
             {profile.location ? (
-              <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-500">
-                <MapPin size={13} className="text-slate-400" />{" "}
-                {profile.location}
+              <div className="mt-3.5 inline-flex items-center gap-1.5 lux-location-chip rounded-full px-3 py-1.5">
+                <MapPin size={11} className="text-cyan-400/80 shrink-0" />
+                <span className="text-[11px] font-semibold tracking-wide text-slate-300/80 truncate">
+                  {profile.location}
+                </span>
               </div>
             ) : null}
           </div>
         </section>
 
-        {/* ── PRIMARY ACTIONS ────────────────────────────── */}
+        {/* ── PRIMARY ACTION BUTTONS ── */}
         {whatsapp || profile.phone ? (
-          <div className="mt-3 grid gap-2.5 grid-cols-2">
+          <div className="mt-3 grid gap-2.5" style={{ gridTemplateColumns: whatsapp && profile.phone ? "1fr 1fr" : "1fr" }}>
             {whatsapp ? (
               <a
                 href={`https://wa.me/${whatsapp}`}
-                className="cta-primary group flex min-h-[3.5rem] items-center justify-center gap-2 rounded-2xl bg-[#25D366] text-sm font-black text-white shadow-[0_12px_36px_rgba(37,211,102,0.32)] transition duration-150 active:scale-[0.96]"
+                className="lux-btn-whatsapp group lux-card-enter-2"
               >
                 <MessageCircle
                   size={18}
-                  className="transition-transform duration-200 group-hover:scale-110"
-                />{" "}
-                WhatsApp
+                  className="transition-transform duration-300 group-hover:scale-110 group-hover:rotate-[-6deg]"
+                />
+                <span>WhatsApp</span>
               </a>
             ) : null}
             {profile.phone ? (
               <a
                 href={`tel:${profile.phone}`}
-                className="cta-primary group flex min-h-[3.5rem] items-center justify-center gap-2 rounded-2xl bg-slate-950 text-sm font-black text-white shadow-[0_12px_36px_rgba(15,23,42,0.22)] transition duration-150 active:scale-[0.96]"
+                className="lux-btn-call group lux-card-enter-3"
               >
                 <Phone
                   size={18}
-                  className="transition-transform duration-200 group-hover:scale-110"
-                />{" "}
-                Zəng et
+                  className="transition-transform duration-300 group-hover:scale-110"
+                />
+                <span>Zəng et</span>
               </a>
             ) : null}
           </div>
         ) : null}
 
-        {/* ── SAVE CONTACT ───────────────────────────────── */}
+        {/* ── SAVE CONTACT ── */}
         <a
           href={getProfileVcardPath(profile.slug)}
-          className="mt-2.5 flex min-h-[3.25rem] w-full items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-black text-slate-800 shadow-sm transition duration-150 active:scale-[0.98]"
+          className="lux-save-contact group mt-2.5 flex min-h-[3.5rem] w-full items-center justify-between gap-3 rounded-2xl px-4 lux-card-enter-4"
         >
-          <span className="flex items-center gap-2.5">
-            <span className="grid size-8 place-items-center rounded-xl bg-slate-100 text-slate-600">
+          <span className="flex items-center gap-3">
+            <span className="lux-save-icon grid size-9 place-items-center rounded-xl">
               <UserPlus size={16} />
             </span>
-            Kontaktı yadda saxla
+            <span className="text-sm font-bold text-slate-200">Kontaktı yadda saxla</span>
           </span>
-          <ArrowUpRight size={16} className="text-slate-400" />
+          <ExternalLink
+            size={15}
+            className="text-slate-500 transition-all duration-300 group-hover:text-cyan-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+          />
         </a>
 
-        {/* ── SOCIAL LINKS ───────────────────────────────── */}
+        {/* ── SOCIAL LINKS ── */}
         {hasSocials ? (
-          <div className="mt-3 grid grid-cols-3 gap-2">
+          <div className="mt-3 grid grid-cols-3 gap-2 lux-card-enter-5">
             {profile.instagram ? (
               <SocialChip
                 href={profile.instagram}
-                icon={<Instagram size={17} />}
+                icon={<Instagram size={18} />}
                 label="Instagram"
+                variant="instagram"
               />
             ) : null}
             {profile.tiktok ? (
               <SocialChip
                 href={profile.tiktok}
-                icon={<Music2 size={17} />}
+                icon={<Music2 size={18} />}
                 label="TikTok"
+                variant="tiktok"
               />
             ) : null}
             {profile.website ? (
               <SocialChip
                 href={profile.website}
-                icon={<Globe size={17} />}
+                icon={<Globe size={18} />}
                 label="Website"
+                variant="website"
               />
             ) : null}
           </div>
         ) : null}
 
-        {/* ── PORTFOLIO ──────────────────────────────────── */}
+        {/* ── PORTFOLIO ── */}
         {profile.gallery.length > 0 ? (
-          <section className="mt-6">
-            <div className="mb-3 flex items-center justify-between">
+          <section className="mt-6 lux-card-enter-6">
+            {/* Section header */}
+            <div className="mb-4 flex items-center justify-between">
               <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-                  Selected work
-                </p>
-                <h2 className="mt-0.5 text-xl font-black tracking-[-0.03em] text-slate-950">
-                  Portfolio
-                </h2>
+                <p className="lux-overline">Selected work</p>
+                <h2 className="lux-section-title mt-1">Portfolio</h2>
               </div>
-              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-500">
+              <span className="lux-count-badge rounded-full px-3 py-1 text-xs font-bold">
                 {profile.gallery.length} iş
               </span>
             </div>
+
+            {/* Gallery grid */}
             <div className="grid grid-cols-2 gap-2.5">
               {profile.gallery.map((image, index) => (
                 <a
@@ -276,16 +317,16 @@ export default async function ProfilePage({ params }: Props) {
                   href={image}
                   target="_blank"
                   rel="noreferrer"
-                  className={`${index === 0 ? "col-span-2 aspect-[16/9]" : "aspect-square"} group relative overflow-hidden rounded-[1.4rem] bg-slate-100 ring-1 ring-slate-200/60 transition duration-200 active:scale-[0.98]`}
+                  className={`${index === 0 ? "col-span-2 aspect-[16/9]" : "aspect-square"} group relative overflow-hidden rounded-[1.5rem] lux-gallery-item`}
                 >
                   <img
                     src={image}
                     alt={`${profile.name} — iş ${index + 1}`}
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
+                    className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.06]"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition duration-200 group-hover:opacity-100" />
-                  <div className="absolute bottom-3 right-3 flex size-8 translate-y-1 items-center justify-center rounded-full bg-white/20 text-white opacity-0 backdrop-blur-md transition duration-200 group-hover:translate-y-0 group-hover:opacity-100">
-                    <ArrowUpRight size={15} />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 transition duration-300 group-hover:opacity-100" />
+                  <div className="absolute bottom-3 right-3 flex size-8 translate-y-2 items-center justify-center rounded-full lux-gallery-btn opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                    <ArrowUpRight size={14} />
                   </div>
                 </a>
               ))}
@@ -293,51 +334,58 @@ export default async function ProfilePage({ params }: Props) {
           </section>
         ) : null}
 
-        {/* ── QR ─────────────────────────────────────────── */}
-        <div className="mt-5 flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <img
-            src={qr}
-            alt={`${profile.name} QR`}
-            className="size-[4.5rem] rounded-xl bg-white ring-1 ring-slate-200"
-          />
-          <div>
-            <div className="flex items-center gap-1.5 text-sm font-black text-slate-950">
-              <QrCode size={15} className="text-slate-500" /> QR kod
+        {/* ── QR CODE CARD ── */}
+        <div className="mt-5 lux-qr-card flex items-center gap-5 rounded-2xl p-4 lux-card-enter-7">
+          <div className="lux-qr-wrap shrink-0 rounded-xl p-2">
+            <img
+              src={qr}
+              alt={`${profile.name} QR`}
+              className="size-[4.5rem] rounded-lg"
+            />
+          </div>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 text-sm font-bold text-slate-100">
+              <QrCode size={14} className="text-cyan-400 shrink-0" />
+              <span>QR kod</span>
             </div>
-            <p className="mt-1 text-xs font-medium leading-5 text-slate-400">
+            <p className="mt-1 text-[11px] font-medium leading-[1.6] text-slate-500">
               NFC işləmədikdə kamera ilə skan edin.
             </p>
           </div>
         </div>
 
-        {/* ── FOOTER ─────────────────────────────────────── */}
-        <p className="mt-5 text-center text-[11px] font-bold text-white/30">
-          Powered by <span className="text-white/50">Zia NFC</span>
-        </p>
+        {/* ── FOOTER ── */}
+        <div className="mt-6 flex flex-col items-center gap-1.5">
+          <div className="lux-footer-divider" />
+          <p className="mt-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-600">
+            Powered by{" "}
+            <span className="lux-brand-text">Zia NFC</span>
+          </p>
+        </div>
       </div>
 
-      {/* ── STICKY CTA ─────────────────────────────────── */}
+      {/* ── STICKY BOTTOM CTA ── */}
       {whatsapp || profile.phone ? (
         <div className="fixed inset-x-0 bottom-0 z-50 px-4 pb-safe-bottom">
-          <div className="mx-auto max-w-[420px] pb-4 pt-2">
-            <div className="overflow-hidden rounded-[1.75rem] border border-white/10 bg-slate-950/80 p-2 shadow-[0_8px_48px_rgba(0,0,0,0.35)] backdrop-blur-2xl">
+          <div className="mx-auto max-w-[440px] pb-4 pt-2">
+            <div className="lux-sticky-bar overflow-hidden rounded-[1.75rem] p-2">
               <div
                 className={`grid gap-2 ${whatsapp && profile.phone ? "grid-cols-2" : "grid-cols-1"}`}
               >
                 {whatsapp ? (
                   <a
                     href={`https://wa.me/${whatsapp}`}
-                    className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#25D366] text-sm font-black text-white transition duration-150 active:scale-[0.96]"
+                    className="flex min-h-[3rem] items-center justify-center gap-2 rounded-2xl bg-[#25D366] text-sm font-black text-white transition-all duration-200 active:scale-[0.96] hover:brightness-110"
                   >
-                    <MessageCircle size={18} /> WhatsApp
+                    <MessageCircle size={17} /> WhatsApp
                   </a>
                 ) : null}
                 {profile.phone ? (
                   <a
                     href={`tel:${profile.phone}`}
-                    className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-white text-sm font-black text-slate-950 transition duration-150 active:scale-[0.96]"
+                    className="lux-sticky-call flex min-h-[3rem] items-center justify-center gap-2 rounded-2xl text-sm font-black text-white transition-all duration-200 active:scale-[0.96]"
                   >
-                    <Phone size={18} /> Zəng et
+                    <Phone size={17} /> Zəng et
                   </a>
                 ) : null}
               </div>
@@ -353,20 +401,30 @@ function SocialChip({
   href,
   icon,
   label,
+  variant,
 }: {
   href: string;
   icon: React.ReactNode;
   label: string;
+  variant: "instagram" | "tiktok" | "website";
 }) {
+  const variantClass = {
+    instagram: "lux-social-instagram",
+    tiktok: "lux-social-tiktok",
+    website: "lux-social-website",
+  }[variant];
+
   return (
     <a
       href={href}
       target="_blank"
       rel="noreferrer"
-      className="flex min-h-12 flex-col items-center justify-center gap-1 rounded-2xl border border-slate-200 bg-white px-2 text-slate-700 shadow-sm transition duration-150 active:scale-[0.96]"
+      className={`lux-social-chip ${variantClass} group flex min-h-[3.75rem] flex-col items-center justify-center gap-1.5 rounded-2xl transition-all duration-200 active:scale-[0.95]`}
     >
-      <span className="text-slate-500">{icon}</span>
-      <span className="text-[10px] font-bold">{label}</span>
+      <span className="lux-social-icon transition-transform duration-300 group-hover:scale-110">
+        {icon}
+      </span>
+      <span className="text-[10px] font-bold tracking-wide text-slate-300">{label}</span>
     </a>
   );
 }

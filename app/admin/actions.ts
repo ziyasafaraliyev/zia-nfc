@@ -32,6 +32,16 @@ function bool(formData: FormData, key: string) {
   return formData.get(key) === "on";
 }
 
+function option(
+  formData: FormData,
+  key: string,
+  allowed: string[],
+  fallback: string,
+) {
+  const value = text(formData, key);
+  return value && allowed.includes(value) ? value : fallback;
+}
+
 function slugify(value: string) {
   return value
     .trim()
@@ -184,6 +194,18 @@ export async function saveProfile(formData: FormData) {
     tiktok: text(formData, "tiktok"),
     website: text(formData, "website"),
     location: text(formData, "location"),
+    cover_style: option(
+      formData,
+      "cover_style",
+      ["auto", "square", "banner"],
+      "auto",
+    ),
+    cover_position: option(
+      formData,
+      "cover_position",
+      ["top", "center", "bottom"],
+      "center",
+    ),
     ...(avatar ? { avatar_url: avatar } : {}),
     ...(background ? { background_url: background } : {}),
     gallery: galleryUrls,

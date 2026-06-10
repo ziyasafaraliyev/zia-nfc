@@ -15,12 +15,24 @@ create table if not exists public.profiles (
   location text,
   avatar_url text,
   background_url text,
+  cover_style text not null default 'auto',
+  cover_position text not null default 'center',
   gallery text[] not null default '{}',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
 alter table public.profiles add column if not exists background_url text;
+alter table public.profiles add column if not exists cover_style text not null default 'auto';
+alter table public.profiles add column if not exists cover_position text not null default 'center';
+
+alter table public.profiles drop constraint if exists profiles_cover_style_check;
+alter table public.profiles add constraint profiles_cover_style_check
+check (cover_style in ('auto', 'square', 'banner'));
+
+alter table public.profiles drop constraint if exists profiles_cover_position_check;
+alter table public.profiles add constraint profiles_cover_position_check
+check (cover_position in ('top', 'center', 'bottom'));
 
 alter table public.profiles enable row level security;
 
