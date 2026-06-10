@@ -182,6 +182,9 @@ export async function saveProfile(formData: FormData) {
     ...galleryUploads.filter((item): item is string => Boolean(item)),
   ];
 
+  const removeAvatar = bool(formData, "remove_avatar");
+  const removeBackground = bool(formData, "remove_background");
+
   const payload = {
     slug,
     enabled: bool(formData, "enabled"),
@@ -210,8 +213,8 @@ export async function saveProfile(formData: FormData) {
       ["top", "center", "bottom"],
       "center",
     ),
-    ...(avatar ? { avatar_url: avatar } : {}),
-    ...(background ? { background_url: background } : {}),
+    ...(avatar ? { avatar_url: avatar } : removeAvatar ? { avatar_url: null } : {}),
+    ...(background ? { background_url: background } : removeBackground ? { background_url: null } : {}),
     gallery: galleryUrls,
   };
 
