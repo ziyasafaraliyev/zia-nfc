@@ -111,7 +111,7 @@ export default function LandingPage() {
   return (
     <main className="min-h-screen overflow-hidden bg-white text-slate-950">
       <section className="relative min-h-screen border-b border-slate-200/70 bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_56%,#eef6ff_100%)] px-4 pb-16 pt-4 sm:px-6 lg:px-8">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/70 to-transparent" />
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/70 to-transparent" />
         <nav className="mx-auto flex max-w-5xl items-center justify-center gap-6 rounded-full border border-white/70 px-4 py-2 shadow-[0_18px_60px_rgba(15,23,42,0.12)] backdrop-blur-xl">
           <Link href="/" className="group flex items-center gap-2 rounded-full bg-slate-950 px-3.5 py-1.5 pr-4.5 text-base font-black tracking-tight text-white shadow-lg shadow-slate-200/30 transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-slate-800">
             <img src="/logo.png" alt="Zia NFC" className="size-6 rounded-full object-cover" />
@@ -128,7 +128,7 @@ export default function LandingPage() {
 
         <div className="mx-auto grid max-w-7xl items-center gap-12 pb-8 pt-14 lg:min-h-[calc(100vh-104px)] lg:grid-cols-[1.02fr_0.98fr] lg:pt-10">
           <motion.div initial="hidden" animate="show" variants={fadeUp} transition={{ duration: 0.58, ease: [0.23, 1, 0.32, 1] }}>
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-cyan-200/70 bg-cyan-50 px-3.5 py-2 text-sm font-bold text-cyan-800">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-sky-200/70 bg-sky-50 px-3.5 py-2 text-sm font-bold text-sky-800">
               <Sparkles size={16} /> Premium NFC kimlik platforması
             </div>
             <h1 className="max-w-4xl text-balance text-5xl font-black leading-[0.96] tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
@@ -140,7 +140,7 @@ export default function LandingPage() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
                   href="#pricing"
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-cyan-500 px-6 py-4 font-extrabold text-slate-950 shadow-[0_18px_45px_rgba(6,182,212,0.28)] transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-cyan-400 active:scale-[0.98]"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-6 py-4 font-extrabold text-white shadow-[0_18px_45px_rgba(14,165,233,0.28)] transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98]"
                 >
                   Kart sifariş et <ArrowRight size={18} />
                 </a>
@@ -163,7 +163,7 @@ export default function LandingPage() {
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-end">
             <div>
-              <p className="text-sm font-black uppercase tracking-[0.22em] text-cyan-300">Təcrübə</p>
+              <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-300">Təcrübə</p>
               <h2 className="mt-4 max-w-xl text-4xl font-black tracking-tight sm:text-5xl">Premium nəticə ilə sadə bir ritual.</h2>
             </div>
             <div className="grid gap-3 md:grid-cols-4">
@@ -177,7 +177,7 @@ export default function LandingPage() {
                   transition={{ duration: 0.45, delay: index * 0.05, ease: [0.23, 1, 0.32, 1] }}
                   className="rounded-2xl border border-white/10 bg-white/[0.045] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
                 >
-                  <div className="mb-8 text-sm font-black text-cyan-300">0{index + 1}</div>
+                  <div className="mb-8 text-sm font-black text-sky-300">0{index + 1}</div>
                   <h3 className="text-lg font-black tracking-tight">{title}</h3>
                   <p className="mt-3 text-sm leading-6 text-slate-400">{text}</p>
                 </motion.div>
@@ -191,7 +191,7 @@ export default function LandingPage() {
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
             <div>
-              <p className="text-sm font-black uppercase tracking-[0.22em] text-cyan-700">Özəlliklər</p>
+              <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-700">Özəlliklər</p>
               <h2 className="mt-4 max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
                 Müasir vizit kartın sahib olmalı olduğu hər şey tək bir sürətli profildə.
               </h2>
@@ -206,9 +206,9 @@ export default function LandingPage() {
                 viewport={{ once: true, margin: "-80px" }}
                 variants={fadeUp}
                 transition={{ duration: 0.42, delay: index * 0.035, ease: [0.23, 1, 0.32, 1] }}
-                className="group rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_16px_50px_rgba(15,23,42,0.06)] transition duration-200 ease-out hover:-translate-y-1 hover:border-cyan-200 hover:shadow-[0_22px_70px_rgba(15,23,42,0.1)]"
+                className="group rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_16px_50px_rgba(15,23,42,0.06)] transition duration-200 ease-out hover:-translate-y-1 hover:border-sky-200 hover:shadow-[0_22px_70px_rgba(15,23,42,0.1)]"
               >
-                <div className="grid size-12 place-items-center rounded-2xl bg-slate-950 text-cyan-300 transition-transform duration-200 ease-out group-hover:scale-[1.03]">
+                <div className="grid size-12 place-items-center rounded-2xl bg-slate-950 text-sky-300 transition-transform duration-200 ease-out group-hover:scale-[1.03]">
                   <Icon size={24} />
                 </div>
                 <h3 className="mt-6 text-xl font-black tracking-tight text-slate-950">{title}</h3>
@@ -243,28 +243,28 @@ export default function LandingPage() {
 
       <section id="pricing" className="bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <p className="text-sm font-black uppercase tracking-[0.22em] text-cyan-700">Qiymətlər</p>
+          <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-700">Qiymətlər</p>
           <h2 className="mt-4 max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">Rəqəmsal kimliyinizi başlatmaq üçün aydın paketlər.</h2>
           <div className="mt-10 grid gap-5 lg:grid-cols-3">
             {plans.map((plan) => (
               <div
                 key={plan.name}
                 className={`relative rounded-3xl border p-7 shadow-[0_16px_50px_rgba(15,23,42,0.07)] ${
-                  plan.featured ? "border-cyan-300 bg-slate-950 text-white" : "border-slate-200 bg-white text-slate-950"
+                  plan.featured ? "border-sky-300 bg-slate-950 text-white" : "border-slate-200 bg-white text-slate-950"
                 }`}
               >
                 {plan.featured ? (
-                  <div className="absolute right-5 top-5 rounded-full bg-cyan-300 px-3 py-1 text-xs font-black uppercase tracking-[0.12em] text-slate-950">
+                  <div className="absolute right-5 top-5 rounded-full bg-sky-300 px-3 py-1 text-xs font-black uppercase tracking-[0.12em] text-slate-950">
                     Populyar
                   </div>
                 ) : null}
                 <h3 className="text-2xl font-black tracking-tight">{plan.name}</h3>
                 <p className={`mt-2 text-sm font-bold ${plan.featured ? "text-slate-400" : "text-slate-500"}`}>{plan.note}</p>
-                <p className={`mt-6 text-4xl font-black tracking-tight ${plan.featured ? "text-cyan-300" : "text-slate-950"}`}>{plan.price}</p>
+                <p className={`mt-6 text-4xl font-black tracking-tight ${plan.featured ? "text-sky-300" : "text-slate-950"}`}>{plan.price}</p>
                 <div className="mt-7 space-y-3">
                   {plan.items.map((item) => (
                     <div key={item} className={`flex items-center gap-3 text-sm font-semibold ${plan.featured ? "text-slate-200" : "text-slate-700"}`}>
-                      <BadgeCheck size={18} className={plan.featured ? "text-cyan-300" : "text-emerald-500"} /> {item}
+                      <BadgeCheck size={18} className={plan.featured ? "text-sky-300" : "text-emerald-500"} /> {item}
                     </div>
                   ))}
                 </div>
@@ -277,7 +277,7 @@ export default function LandingPage() {
       <section id="faq" className="bg-slate-950 px-4 py-20 text-white sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.75fr_1.25fr]">
           <div>
-            <p className="text-sm font-black uppercase tracking-[0.22em] text-cyan-300">FAQ</p>
+            <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-300">FAQ</p>
             <h2 className="mt-4 text-4xl font-black tracking-tight">Tez-tez verilən suallar.</h2>
           </div>
           <div className="space-y-3">
@@ -314,7 +314,7 @@ export default function LandingPage() {
           <div className="flex flex-col items-start gap-4 md:items-end">
             <a
               href="https://wa.me/994702990252"
-              className="inline-flex items-center gap-2 rounded-full bg-cyan-500 px-5 py-3 text-sm font-black uppercase tracking-[0.14em] text-slate-950 transition duration-200 ease-out hover:bg-cyan-400"
+              className="inline-flex items-center gap-2 rounded-full bg-sky-500 px-5 py-3 text-sm font-black uppercase tracking-[0.14em] text-white transition duration-200 ease-out hover:bg-sky-400"
               aria-label="WhatsApp"
             >
               WhatsApp ilə əlaqə <MessageCircle size={16} />
@@ -340,20 +340,20 @@ function HeroMockup() {
       className="relative mx-auto h-[650px] w-full max-w-[590px]"
     >
       <div className="absolute left-2 top-8 hidden rounded-full border border-slate-200 bg-white/80 px-4 py-2 text-sm font-bold text-slate-600 shadow-sm backdrop-blur md:flex">
-        <Zap className="mr-2 text-cyan-500" size={16} /> Kart toxunduruldu
+        <Zap className="mr-2 text-sky-500" size={16} /> Kart toxunduruldu
       </div>
       <motion.div
         animate={{ transform: ["translateY(0) rotate(-7deg)", "translateY(-10px) rotate(-5deg)", "translateY(0) rotate(-7deg)"] }}
         transition={{ repeat: Infinity, duration: 4.2, ease: "easeInOut" }}
         className="absolute left-0 top-28 h-60 w-[390px] rounded-[1.65rem] border border-white/10 bg-slate-950 p-7 text-white shadow-[0_35px_100px_rgba(15,23,42,0.25)]"
       >
-        <div className="absolute inset-0 rounded-[1.65rem] bg-[linear-gradient(135deg,rgba(34,211,238,0.24),transparent_38%),linear-gradient(115deg,transparent_0%,rgba(255,255,255,0.08)_38%,transparent_56%)]" />
+        <div className="absolute inset-0 rounded-[1.65rem] bg-[linear-gradient(135deg,rgba(56,189,248,0.24),transparent_38%),linear-gradient(115deg,transparent_0%,rgba(255,255,255,0.08)_38%,transparent_56%)]" />
         <div className="relative flex items-start justify-between">
           <img src="/logo.png" alt="Zia NFC Logo" className="size-12 rounded-full object-cover bg-white p-0.5 shadow-sm" />
           <Copy className="text-white/55" />
         </div>
         <div className="relative mt-20">
-          <p className="text-xs font-bold uppercase tracking-[0.22em] text-cyan-200/80">NFC Kimlik Kartı</p>
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-sky-200/80">NFC Kimlik Kartı</p>
           <h3 className="mt-2 text-2xl font-black tracking-tight">Ziya Safaraliyev</h3>
         </div>
       </motion.div>
@@ -361,7 +361,7 @@ function HeroMockup() {
       <motion.div
         animate={{ opacity: [0.18, 0.6, 0.18], transform: ["scale(0.94)", "scale(1.08)", "scale(0.94)"] }}
         transition={{ repeat: Infinity, duration: 2.4, ease: "easeInOut" }}
-        className="absolute left-[48%] top-[34%] h-28 w-28 rounded-full border border-cyan-300/70"
+        className="absolute left-[48%] top-[34%] h-28 w-28 rounded-full border border-sky-300/70"
       />
 
       <div className="absolute bottom-0 right-2 h-[575px] w-[292px] rounded-[2.4rem] border-[8px] border-slate-950 bg-slate-950 shadow-[0_40px_110px_rgba(15,23,42,0.28)]">
@@ -403,17 +403,17 @@ function ProfileShowcase() {
 function PhoneProfile({ compact = false }: { compact?: boolean }) {
   return (
     <div className={`${compact ? "" : "p-1"} rounded-[1.5rem] bg-white`}>
-      <div className={`rounded-[1.35rem] bg-[linear-gradient(135deg,#0f172a,#0e7490)] px-5 ${compact ? "pb-12 pt-4" : "pb-20 pt-6"} text-white`}>
+      <div className={`rounded-[1.35rem] bg-[linear-gradient(135deg,#0f172a,#0369a1)] px-5 ${compact ? "pb-12 pt-4" : "pb-20 pt-6"} text-white`}>
         <div className="flex items-center justify-between">
-          <div className="rounded-full bg-white/12 px-3 py-1 text-xs font-black uppercase tracking-[0.14em] text-cyan-100">Canlı</div>
+          <div className="rounded-full bg-white/12 px-3 py-1 text-xs font-black uppercase tracking-[0.14em] text-sky-100">Canlı</div>
           <Layers3 size={compact ? 16 : 20} className="text-white/70" />
         </div>
         <div className={`flex items-end ${compact ? "mt-6 gap-3" : "mt-12 gap-4"}`}>
-          <div className={`grid ${compact ? "size-14 text-2xl rounded-2xl" : "size-20 text-3xl rounded-3xl"} place-items-center bg-cyan-300 font-black text-slate-950 shadow-lg`}>
+          <div className={`grid ${compact ? "size-14 text-2xl rounded-2xl" : "size-20 text-3xl rounded-3xl"} place-items-center bg-sky-300 font-black text-slate-950 shadow-lg`}>
             Z
           </div>
           <div>
-            <p className={`${compact ? "text-xs" : "text-sm"} font-bold text-cyan-100`}>Premium bərbər</p>
+            <p className={`${compact ? "text-xs" : "text-sm"} font-bold text-sky-100`}>Premium bərbər</p>
             <h3 className={`${compact ? "text-lg" : "text-2xl"} font-black tracking-tight`}>Ziya Safaraliyev</h3>
           </div>
         </div>
