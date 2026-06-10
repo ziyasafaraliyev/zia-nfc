@@ -99,8 +99,8 @@ export default async function AdminPage({ searchParams }: Props) {
         <header className="overflow-hidden rounded-[2.25rem] border border-white/80 bg-white/60 shadow-[0_24px_70px_rgba(99,102,241,0.06)] backdrop-blur-xl transition-all duration-300 hover:shadow-[0_24px_85px_rgba(99,102,241,0.08)]">
           <div className="flex flex-col gap-6 p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50/50 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-indigo-700">
-                <Sparkles size={14} className="text-indigo-650" /> Zia NFC Admin
+              <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50/50 px-2.5 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-indigo-700">
+                <img src="/logo.png" alt="Zia NFC" className="size-4 rounded-full object-cover" /> Zia NFC Admin
               </div>
               <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl" style={{ fontFamily: "'Outfit', sans-serif" }}>
                 Müştəri profilləri
@@ -422,8 +422,11 @@ function Login({ error }: { error: boolean }) {
         action={loginAdmin}
         className="w-full max-w-md rounded-[2.25rem] border border-white/80 bg-white/60 p-7 shadow-[0_30px_70px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:p-8 hover:shadow-[0_30px_80px_rgba(99,102,241,0.1)] transition-all duration-300"
       >
-        <div className="grid size-12 place-items-center rounded-2xl bg-indigo-600 text-white shadow-md shadow-indigo-500/10">
-          <LockKeyhole size={22} />
+        <div className="flex items-center gap-3">
+          <img src="/logo.png" alt="Zia NFC" className="size-12 rounded-2xl object-cover shadow-sm ring-1 ring-slate-100" />
+          <div className="grid size-12 place-items-center rounded-2xl bg-slate-900 text-white shadow-md">
+            <LockKeyhole size={20} />
+          </div>
         </div>
         <p className="mt-5 text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
           Admin login

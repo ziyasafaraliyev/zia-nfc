@@ -13,7 +13,11 @@ export const metadata: Metadata = {
   description:
     "Premium NFC business cards with digital profiles, portfolios, QR fallback, and contact sharing.",
   icons: {
-    icon: "/favicon.svg"
+    icon: [
+      { url: "/logo.png", type: "image/png" },
+      { url: "/favicon.svg", type: "image/svg+xml" }
+    ],
+    apple: "/logo.png"
   }
 };
 
