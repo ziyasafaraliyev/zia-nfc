@@ -588,6 +588,47 @@ a {
 }
 .lux-social-website .lux-social-icon { color: #3b82f6; }
 
+.lux-social-facebook:hover {
+    border-color: rgba(24, 119, 242, 0.3);
+    background: rgba(240, 245, 255, 1);
+    box-shadow: 0 8px 20px rgba(24, 119, 242, 0.14);
+    transform: translateY(-2px);
+}
+.lux-social-facebook .lux-social-icon { color: #1877f2; }
+
+.lux-social-x:hover {
+    border-color: rgba(15, 20, 25, 0.15);
+    background: rgba(245, 245, 245, 1);
+    box-shadow: 0 8px 20px rgba(15, 20, 25, 0.1);
+    transform: translateY(-2px);
+}
+.lux-social-x .lux-social-icon { color: #0f1419; }
+
+.lux-social-linkedin:hover {
+    border-color: rgba(10, 102, 194, 0.3);
+    background: rgba(240, 247, 255, 1);
+    box-shadow: 0 8px 20px rgba(10, 102, 194, 0.14);
+    transform: translateY(-2px);
+}
+.lux-social-linkedin .lux-social-icon { color: #0a66c2; }
+
+.lux-social-youtube:hover {
+    border-color: rgba(255, 0, 0, 0.3);
+    background: rgba(255, 240, 240, 1);
+    box-shadow: 0 8px 20px rgba(255, 0, 0, 0.14);
+    transform: translateY(-2px);
+}
+.lux-social-youtube .lux-social-icon { color: #ff0000; }
+
+.lux-social-whatsapp:hover {
+    border-color: rgba(37, 211, 102, 0.3);
+    background: rgba(240, 253, 244, 1);
+    box-shadow: 0 8px 20px rgba(37, 211, 102, 0.14);
+    transform: translateY(-2px);
+}
+.lux-social-whatsapp .lux-social-icon { color: #25d366; }
+
+
 /* "N iş" badge */
 .lux-count-badge {
     background: rgba(99, 102, 241, 0.07);

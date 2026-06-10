@@ -10,6 +10,10 @@ export type Profile = {
   instagram?: string | null;
   tiktok?: string | null;
   website?: string | null;
+  facebook?: string | null;
+  x?: string | null;
+  linkedin?: string | null;
+  youtube?: string | null;
   location?: string | null;
   avatar_url?: string | null;
   background_url?: string | null;

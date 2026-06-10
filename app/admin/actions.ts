@@ -193,6 +193,10 @@ export async function saveProfile(formData: FormData) {
     instagram: text(formData, "instagram"),
     tiktok: text(formData, "tiktok"),
     website: text(formData, "website"),
+    facebook: text(formData, "facebook"),
+    x: text(formData, "x"),
+    linkedin: text(formData, "linkedin"),
+    youtube: text(formData, "youtube"),
     location: text(formData, "location"),
     cover_style: option(
       formData,

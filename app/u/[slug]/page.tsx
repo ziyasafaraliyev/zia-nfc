@@ -13,6 +13,10 @@ import {
   UserPlus,
   Sparkles,
   ExternalLink,
+  Facebook,
+  Linkedin,
+  Youtube,
+  Twitter,
 } from "lucide-react";
 import { notFound } from "next/navigation";
 import QRCode from "qrcode";
@@ -84,9 +88,16 @@ export default async function ProfilePage({ params }: Props) {
         ? "object-bottom"
         : "object-center";
 
-  const sameAs = [profile.instagram, profile.tiktok, profile.website].filter(
-    Boolean,
-  ) as string[];
+  const sameAs = [
+    profile.instagram,
+    profile.tiktok,
+    profile.website,
+    profile.facebook,
+    profile.x,
+    profile.linkedin,
+    profile.youtube,
+    profile.whatsapp ? (profile.whatsapp.startsWith("http") ? profile.whatsapp : `https://wa.me/${profile.whatsapp.replace(/[^\d]/g, "")}`) : null,
+  ].filter(Boolean) as string[];
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -100,7 +111,15 @@ export default async function ProfilePage({ params }: Props) {
     sameAs,
   };
 
-  const hasSocials = profile.instagram || profile.tiktok || profile.website;
+  const hasSocials =
+    profile.instagram ||
+    profile.tiktok ||
+    profile.website ||
+    profile.facebook ||
+    profile.x ||
+    profile.linkedin ||
+    profile.youtube ||
+    profile.whatsapp;
 
   return (
     <main className="lux-shell relative min-h-screen overflow-x-hidden">
@@ -292,6 +311,46 @@ export default async function ProfilePage({ params }: Props) {
                 variant="website"
               />
             ) : null}
+            {profile.facebook ? (
+              <SocialChip
+                href={profile.facebook}
+                icon={<Facebook size={18} />}
+                label="Facebook"
+                variant="facebook"
+              />
+            ) : null}
+            {profile.x ? (
+              <SocialChip
+                href={profile.x}
+                icon={<Twitter size={18} />}
+                label="X"
+                variant="x"
+              />
+            ) : null}
+            {profile.linkedin ? (
+              <SocialChip
+                href={profile.linkedin}
+                icon={<Linkedin size={18} />}
+                label="LinkedIn"
+                variant="linkedin"
+              />
+            ) : null}
+            {profile.youtube ? (
+              <SocialChip
+                href={profile.youtube}
+                icon={<Youtube size={18} />}
+                label="YouTube"
+                variant="youtube"
+              />
+            ) : null}
+            {profile.whatsapp ? (
+              <SocialChip
+                href={profile.whatsapp.startsWith("http") ? profile.whatsapp : `https://wa.me/${profile.whatsapp.replace(/[^\d]/g, "")}`}
+                icon={<MessageCircle size={18} />}
+                label="WhatsApp"
+                variant="whatsapp"
+              />
+            ) : null}
           </div>
         ) : null}
 
@@ -408,12 +467,25 @@ function SocialChip({
   href: string;
   icon: React.ReactNode;
   label: string;
-  variant: "instagram" | "tiktok" | "website";
+  variant:
+    | "instagram"
+    | "tiktok"
+    | "website"
+    | "facebook"
+    | "x"
+    | "linkedin"
+    | "youtube"
+    | "whatsapp";
 }) {
   const variantClass = {
     instagram: "lux-social-instagram",
     tiktok: "lux-social-tiktok",
     website: "lux-social-website",
+    facebook: "lux-social-facebook",
+    x: "lux-social-x",
+    linkedin: "lux-social-linkedin",
+    youtube: "lux-social-youtube",
+    whatsapp: "lux-social-whatsapp",
   }[variant];
 
   return (

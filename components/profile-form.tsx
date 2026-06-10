@@ -151,6 +151,26 @@ export default function ProfileForm({ profile }: { profile?: Profile }) {
           label="Website URL"
           defaultValue={profile?.website}
         />
+        <Field
+          name="facebook"
+          label="Facebook URL"
+          defaultValue={profile?.facebook}
+        />
+        <Field
+          name="x"
+          label="X (Twitter) URL"
+          defaultValue={profile?.x}
+        />
+        <Field
+          name="linkedin"
+          label="LinkedIn URL"
+          defaultValue={profile?.linkedin}
+        />
+        <Field
+          name="youtube"
+          label="YouTube URL"
+          defaultValue={profile?.youtube}
+        />
       </div>
       <Field
         name="location"
