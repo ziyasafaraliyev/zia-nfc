@@ -68,8 +68,10 @@ export default async function ProfilePage({ params }: Props) {
   const profileUrl = getProfileUrl(profile.slug);
   const qr = await QRCode.toDataURL(profileUrl, {
     margin: 1,
-    width: 220,
-    color: { dark: "#312e81", light: "#00000000" },
+    width: 320,
+    // Light (background) rəngini şəffaf yox, dolu veririk ki qara QR “itib-batmasın”
+    // və skan üçün kontrast yaxşı olsun.
+    color: { dark: "#000000", light: "#ffffff" },
   });
   const whatsapp = profile.whatsapp?.replace(/[^\d]/g, "");
 
@@ -399,7 +401,8 @@ export default async function ProfilePage({ params }: Props) {
             <img
               src={qr}
               alt={`${profile.name} QR`}
-              className="size-[4.5rem] rounded-lg"
+              className="size-[7rem] rounded-lg"
+
             />
           </div>
           <div className="min-w-0">
