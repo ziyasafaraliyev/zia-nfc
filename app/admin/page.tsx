@@ -39,9 +39,10 @@ type Props = {
 };
 
 const inputClass =
-  "mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm outline-none transition duration-200 placeholder:text-slate-400 focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/20";
+  "mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none transition duration-200 placeholder:text-slate-400 focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/20" +
+  " font-[Outfit]"; 
 const quietButtonClass =
-  "grid size-11 place-items-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition duration-200 hover:border-[#29AEEE] hover:text-[#29AEEE] hover:bg-[#29AEEE]/5 active:scale-[0.96]";
+  "grid size-11 place-items-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition duration-200 hover:border-[#29AEEE] hover:text-[#29AEEE] hover:bg-[#29AEEE]/5 active:scale-[0.96]";
 
 
 function adminErrorMessage(error?: string) {
@@ -95,44 +96,40 @@ export default async function AdminPage({ searchParams }: Props) {
   );
 
   return (
-    <main className="min-h-screen dashboard-bg px-4 py-6 text-slate-900 sm:px-6 lg:px-8 font-sans">
+    <main className="min-h-screen dashboard-bg px-4 py-6 text-slate-900 sm:px-6 lg:px-8" style={{ fontFamily: "'Outfit', sans-serif" }}>
       <div className="mx-auto max-w-7xl">
         {/* Top bar */}
         <header className="dashboard-surface rounded-[2.25rem] overflow-hidden">
           <div className="flex flex-col gap-5 p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="min-w-0">
-              <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.22em] text-slate-700 shadow-sm">
+              <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-600 shadow-sm">
                 <img src="/logo.png" alt="Zia NFC" className="size-4 rounded-full object-cover" />
-                <span className="opacity-90">Zia NFC</span>
-                <span className="opacity-60">Admin</span>
+                <span className="text-slate-800 font-extrabold">Zia NFC</span>
+                <span className="text-[#29AEEE] font-black">Admin</span>
               </div>
 
               <h1
-                className="mt-4 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl"
-                style={{ fontFamily: "'Outfit', sans-serif" }}
+                className="mt-4 text-3xl font-black tracking-[-0.03em] text-slate-900 sm:text-4xl"
+                style={{ fontFamily: "'Outfit', sans-serif", letterSpacing: "-0.03em" }}
               >
-                Müştəri dashboard
+                Müştəri Paneli
               </h1>
-              <p className="mt-3 max-w-2xl text-base leading-7 text-slate-500">
-                Profil idarəetməsi, paylaşım axını və performans görünüşü—hamısı
-                bir premium paneldə.
+              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400 font-medium">
+                Profillər, QR kodlar və müştəri idarəetməsi bir yerdə.
               </p>
             </div>
 
             <div className="flex items-stretch gap-3 sm:flex-row sm:items-center">
-              <div className="hidden sm:flex items-center rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-700">
-                Data mode:{" "}
-                <span className="text-slate-900">
-                  {hasSupabaseEnv() ? "Live" : "Demo"}
-                </span>
-                <span className="ml-2 rounded-full bg-[#29AEEE]/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.18em] text-[#29AEEE]">
-                  {hasSupabaseEnv() ? "Online" : "Preview"}
-                </span>
+              <div className="hidden sm:flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-500" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                <span className="size-2 rounded-full"
+                  style={{ background: hasSupabaseEnv() ? '#22c55e' : '#f59e0b' }}
+                />
+                <span>{hasSupabaseEnv() ? "Live · Supabase" : "Demo modu"}</span>
               </div>
 
               <form action={logoutAdmin}>
-                <button className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 shadow-sm transition-all duration-200 hover:border-[#29AEEE] hover:text-[#29AEEE] active:scale-[0.98] sm:w-auto">
-                  <LogOut size={18} /> Çıxış
+                <button className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 shadow-sm transition-all duration-200 hover:border-red-300 hover:text-red-500 hover:bg-red-50 active:scale-[0.98]" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                  <LogOut size={15} /> Çıxış
                 </button>
               </form>
             </div>
@@ -182,13 +179,13 @@ export default async function AdminPage({ searchParams }: Props) {
                   <Plus size={23} />
                 </div>
                 <h2
-                  className="mt-4 text-2xl font-extrabold tracking-tight text-slate-900"
+                  className="mt-3 text-xl font-black tracking-tight text-slate-900"
                   style={{ fontFamily: "'Outfit', sans-serif" }}
                 >
-                  Yeni / redaktə
+                  Profil Yarat / Redaktə
                 </h2>
-                <p className="mt-2 text-sm leading-6 text-slate-500">
-                  Ad, kontaktlar, sosial linklər və portfolio—premium görünüş üçün.
+                <p className="mt-1 text-xs leading-relaxed text-slate-400 font-medium">
+                  Ad, kontakt, sosial linklər və portfolio məlumatları.
                 </p>
               </div>
             </div>
@@ -203,42 +200,42 @@ export default async function AdminPage({ searchParams }: Props) {
             <div className="rounded-[2.25rem] dashboard-surface-soft p-5 sm:p-6">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div className="min-w-0">
-                  <p className="text-[11px] font-black uppercase tracking-[0.22em] text-slate-500">
-                    Directory
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+                    Profil Siyahısı
                   </p>
                   <h2
-                    className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900"
+                    className="mt-1.5 text-2xl font-black tracking-tight text-slate-900"
                     style={{ fontFamily: "'Outfit', sans-serif" }}
                   >
                     Profillər
                   </h2>
                 </div>
-                <p className="text-sm font-semibold text-slate-500">
-                  Linklər avtomatik formatdadır: <span className="font-extrabold text-slate-700">/{"{slug}"}</span>
+                <p className="text-xs font-medium text-slate-400">
+                  Link formatı: <span className="font-bold text-slate-600">/{"{slug}"}</span>
                 </p>
               </div>
 
               {/* ultra-clean “analytics” placeholders */}
-              <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                <MiniMetric title="Aktiv paylaşımlar" value={String(enabledCount)} />
-                <MiniMetric title="Yenilik" value={profiles.length ? "—" : "0"} />
-                <MiniMetric title="Hazır QR" value={profiles.length ? String(profiles.length) : "0"} />
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                <MiniMetric title="Aktiv" value={String(enabledCount)} />
+                <MiniMetric title="Deaktiv" value={String(disabledCount)} />
+                <MiniMetric title="QR Hazır" value={profiles.length ? String(profiles.length) : "0"} />
               </div>
             </div>
 
             {profiles.length === 0 ? (
-              <div className="rounded-[2.25rem] border-2 border-dashed border-slate-200 bg-slate-50 p-10 text-center">
-                <div className="mx-auto grid size-12 place-items-center rounded-2xl bg-white border border-slate-200 shadow-sm">
-                  <Users size={22} className="text-[#29AEEE]" />
+              <div className="rounded-[2.25rem] border-2 border-dashed border-slate-200 bg-slate-50/70 p-10 text-center">
+                <div className="mx-auto grid size-14 place-items-center rounded-2xl bg-white border border-slate-200 shadow-sm">
+                  <Users size={24} className="text-[#29AEEE]" />
                 </div>
                 <h3
-                  className="mt-4 text-xl font-extrabold tracking-tight text-slate-900"
+                  className="mt-4 text-lg font-black tracking-tight text-slate-800"
                   style={{ fontFamily: "'Outfit', sans-serif" }}
                 >
-                  Hələ profil yoxdur
+                  Hələ heç bir profil yoxdur
                 </h3>
-                <p className="mt-2 text-sm leading-6 text-slate-500">
-                  Soldakı formdan ilk müştəri profilini yaradın.
+                <p className="mt-1.5 text-xs font-medium leading-relaxed text-slate-400">
+                  Soldakı formdan ilk müştəri profilini əlavə edin.
                 </p>
               </div>
             ) : null}
@@ -288,13 +285,12 @@ function AlertBanner({
 
 function MiniMetric({ title, value }: { title: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
-      <p className="text-[11px] font-black uppercase tracking-[0.22em] text-slate-500">
+    <div className="rounded-2xl border border-slate-100 bg-white px-4 py-3.5 shadow-sm" style={{ fontFamily: "'Outfit', sans-serif" }}>
+      <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
         {title}
       </p>
       <p
-        className="mt-2 text-xl font-extrabold tracking-tight text-slate-900"
-        style={{ fontFamily: "'Outfit', sans-serif" }}
+        className="mt-1.5 text-2xl font-black tracking-tight text-slate-900"
       >
         {value}
       </p>
@@ -312,19 +308,18 @@ function Stat({
   label: string;
 }) {
   return (
-    <div className="border-t border-slate-100 p-6 first:border-t-0 sm:border-l sm:border-t-0 sm:first:border-l-0 hover:bg-slate-50 transition-colors duration-200">
-      <div className="flex items-center gap-4">
-        <div className="grid size-12 place-items-center rounded-2xl bg-[#29AEEE]/10 border border-[#29AEEE]/20 text-[#29AEEE]">
+    <div className="border-t border-slate-100 px-6 py-5 first:border-t-0 sm:border-l sm:border-t-0 sm:first:border-l-0 hover:bg-slate-50/70 transition-colors duration-200" style={{ fontFamily: "'Outfit', sans-serif" }}>
+      <div className="flex items-center gap-3">
+        <div className="grid size-10 place-items-center rounded-xl bg-[#29AEEE]/10 border border-[#29AEEE]/15 text-[#29AEEE]">
           {icon}
         </div>
         <div>
           <p
-            className="text-3xl font-extrabold tracking-tight text-slate-900"
-            style={{ fontFamily: "'Outfit', sans-serif" }}
+            className="text-2xl font-black tracking-tight text-slate-900"
           >
             {value}
           </p>
-          <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
             {label}
           </p>
         </div>
@@ -364,17 +359,17 @@ function ProfileCard({
             )}
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <h3 className="truncate text-2xl font-extrabold tracking-tight text-slate-900" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                <h3 className="truncate text-xl font-black tracking-tight text-slate-900" style={{ fontFamily: "'Outfit', sans-serif" }}>
                   {profile.name}
                 </h3>
                 <StatusBadge enabled={profile.enabled} />
               </div>
-              <p className="mt-1 truncate text-sm font-semibold text-slate-500">
+              <p className="mt-1 truncate text-xs font-semibold text-slate-400" style={{ fontFamily: "'Outfit', sans-serif" }}>
                 /{profile.slug}
               </p>
 
               {profile.profession ? (
-                <p className="mt-2 text-sm font-semibold text-slate-500">
+                <p className="mt-1 text-xs font-semibold text-slate-500" style={{ fontFamily: "'Outfit', sans-serif" }}>
                   {profile.profession}
                 </p>
               ) : null}
@@ -432,13 +427,13 @@ function ProfileCard({
               alt={`${profile.name} QR kodu`}
               className="size-20 rounded-xl bg-white p-1.5 shadow-sm border border-slate-200"
             />
-            <div className="hidden pr-2 sm:block">
-              <div className="flex items-center gap-2 text-sm font-bold text-slate-900">
-                <QrCode size={16} className="text-[#29AEEE]" /> QR kod
-              </div>
-              <p className="mt-1 text-xs font-semibold text-slate-500">
-                Hazır paylaşım
-              </p>
+              <div className="hidden pr-2 sm:block" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                <div className="flex items-center gap-2 text-xs font-bold text-slate-800">
+                  <QrCode size={14} className="text-[#29AEEE]" /> QR Kod
+                </div>
+                <p className="mt-0.5 text-[11px] font-medium text-slate-400">
+                  Skan edərək paylaş
+                </p>
             </div>
           </div>
 
@@ -446,13 +441,13 @@ function ProfileCard({
       </div>
 
       <details className="group border-t border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-colors duration-200">
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 text-sm font-bold text-slate-700 transition sm:px-6">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 text-xs font-bold text-slate-600 transition sm:px-6" style={{ fontFamily: "'Outfit', sans-serif" }}>
           <span className="inline-flex items-center gap-2">
-            <WandSparkles size={17} className="text-[#29AEEE]" /> Profili redaktə et
+            <WandSparkles size={15} className="text-[#29AEEE]" /> Profili Redaktə Et
           </span>
           <ArrowUpRight
             className="transition-transform duration-150 ease-out group-open:rotate-45 text-slate-400"
-            size={17}
+            size={15}
           />
         </summary>
         <div className="border-t border-slate-100 bg-white p-5 sm:p-6">
@@ -496,16 +491,16 @@ function Login({ error }: { error: boolean }) {
             <LockKeyhole size={20} />
           </div>
         </div>
-        <p className="mt-5 text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
-          Admin login
+        <p className="mt-5 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400" style={{ fontFamily: "'Outfit', sans-serif" }}>
+          Admin Girişi
         </p>
         <h1
-          className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900"
+          className="mt-2 text-2xl font-black tracking-tight text-slate-900"
           style={{ fontFamily: "'Outfit', sans-serif" }}
         >
-          Zia NFC panel
+          Zia NFC Panel
         </h1>
-        <p className="mt-3 text-sm leading-6 text-slate-500">
+        <p className="mt-1.5 text-xs leading-relaxed text-slate-400 font-medium" style={{ fontFamily: "'Outfit', sans-serif" }}>
           Müştəri profillərini idarə etmək üçün daxil olun.
         </p>
         {error ? (
@@ -513,38 +508,40 @@ function Login({ error }: { error: boolean }) {
             <AlertCircle size={17} /> Email və ya şifrə yanlışdır.
           </div>
         ) : null}
-        <label className="mt-6 block text-sm font-bold text-slate-700">
-          Email
+        <label className="mt-6 block text-xs font-bold text-slate-600 uppercase tracking-wide" style={{ fontFamily: "'Outfit', sans-serif" }}>
+          E-poçt
           <div className="relative">
             <Mail
               className="pointer-events-none absolute left-4 top-1/2 mt-1 -translate-y-1/2 text-slate-400"
-              size={17}
+              size={16}
             />
             <input
               name="email"
               type="email"
               required
+              placeholder="admin@example.com"
               className={`${inputClass} pl-11 dashboard-focus-ring`}
             />
           </div>
         </label>
-        <label className="mt-4 block text-sm font-bold text-slate-700">
-          Password
+        <label className="mt-4 block text-xs font-bold text-slate-600 uppercase tracking-wide" style={{ fontFamily: "'Outfit', sans-serif" }}>
+          Şifrə
           <div className="relative">
             <LockKeyhole
               className="pointer-events-none absolute left-4 top-1/2 mt-1 -translate-y-1/2 text-slate-400"
-              size={17}
+              size={16}
             />
             <input
               name="password"
               type="password"
               required
+              placeholder="••••••••"
               className={`${inputClass} pl-11 dashboard-focus-ring`}
             />
           </div>
         </label>
-        <button className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#29AEEE] px-5 py-4 font-bold text-white shadow-md shadow-[#29AEEE]/20 transition-all duration-200 active:scale-[0.96] relative overflow-hidden hover:bg-[#1a9ad4]">
-          Daxil ol <ArrowUpRight size={18} />
+        <button className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#29AEEE] px-5 py-3.5 text-sm font-bold text-white shadow-md shadow-[#29AEEE]/20 transition-all duration-200 active:scale-[0.96] relative overflow-hidden hover:bg-[#1a9ad4]" style={{ fontFamily: "'Outfit', sans-serif" }}>
+          Daxil ol <ArrowUpRight size={17} />
         </button>
       </form>
     </main>

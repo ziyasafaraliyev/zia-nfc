@@ -35,21 +35,17 @@ body::-webkit-scrollbar-track {
 }
 
 body::-webkit-scrollbar-thumb {
-    background: linear-gradient(
-        180deg,
-        rgba(34, 211, 238, 0.95),
-        rgba(56, 189, 248, 0.9)
-    );
+    background: linear-gradient(180deg,
+            rgba(34, 211, 238, 0.95),
+            rgba(56, 189, 248, 0.9));
     border-radius: 9999px;
     border: 2px solid rgba(15, 23, 42, 0.2);
 }
 
 body::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(
-        180deg,
-        rgba(56, 189, 248, 1),
-        rgba(34, 211, 238, 1)
-    );
+    background: linear-gradient(180deg,
+            rgba(56, 189, 248, 1),
+            rgba(34, 211, 238, 1));
 }
 
 button,
@@ -62,7 +58,8 @@ a {
    ═══════════════════════════════════════════════════════════ */
 
 :root {
-    --brand-blue: #29AEEE; /* logo sky-blue */
+    --brand-blue: #29AEEE;
+    /* logo sky-blue */
     --brand-blue-dark: #1a9ad4;
 }
 
@@ -100,18 +97,23 @@ a {
     text-decoration: none;
     opacity: 0.88;
 }
-.dashboard-link:hover { opacity: 1; }
+
+.dashboard-link:hover {
+    opacity: 1;
+}
 
 .dashboard-primary {
     background: var(--brand-blue);
     color: #ffffff;
-    border: 1px solid rgba(255,255,255,0.15);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow:
         0 8px 24px rgba(41, 174, 238, 0.30),
-        inset 0 1px 0 rgba(255,255,255,0.20);
+        inset 0 1px 0 rgba(255, 255, 255, 0.20);
 }
 
-a.dashboard-primary:hover { filter: brightness(1.05); }
+a.dashboard-primary:hover {
+    filter: brightness(1.05);
+}
 
 .dashboard-primary::after {
     content: "";
@@ -119,7 +121,7 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
     inset: 0;
     border-radius: inherit;
     pointer-events: none;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
     transform: translateX(-140%) skewX(-18deg);
     transition: transform 600ms cubic-bezier(0.23, 1, 0.32, 1);
 }
@@ -139,48 +141,36 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
 .profile-shell {
     position: relative;
     background:
-        radial-gradient(
-            circle at 50% -10%,
+        radial-gradient(circle at 50% -10%,
             rgba(34, 211, 238, 0.16),
-            transparent 34%
-        ),
-        radial-gradient(
-            circle at 100% 35%,
+            transparent 34%),
+        radial-gradient(circle at 100% 35%,
             rgba(16, 185, 129, 0.12),
-            transparent 28%
-        ),
+            transparent 28%),
         linear-gradient(180deg, #020617 0%, #08111f 48%, #020617 100%);
 }
 
 .executive-profile-shell {
     position: relative;
     background:
-        radial-gradient(
-            circle at 50% -12%,
+        radial-gradient(circle at 50% -12%,
             rgba(14, 165, 233, 0.12),
-            transparent 30%
-        ),
-        radial-gradient(
-            circle at 88% 22%,
+            transparent 30%),
+        radial-gradient(circle at 88% 22%,
             rgba(99, 102, 241, 0.11),
-            transparent 28%
-        ),
+            transparent 28%),
         linear-gradient(180deg, #f8fafc 0%, #eef4f8 46%, #f8fafc 100%);
 }
 
 .mobile-profile-shell {
     position: relative;
     background:
-        radial-gradient(
-            circle at 50% -8%,
+        radial-gradient(circle at 50% -8%,
             rgba(34, 211, 238, 0.18),
-            transparent 32%
-        ),
-        radial-gradient(
-            circle at 100% 28%,
+            transparent 32%),
+        radial-gradient(circle at 100% 28%,
             rgba(16, 185, 129, 0.13),
-            transparent 26%
-        ),
+            transparent 26%),
         linear-gradient(180deg, #020617 0%, #08111f 48%, #020617 100%);
 }
 
@@ -201,16 +191,12 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
 
 .ceo-hero {
     background:
-        radial-gradient(
-            circle at 20% 20%,
+        radial-gradient(circle at 20% 20%,
             rgba(34, 211, 238, 0.22),
-            transparent 36%
-        ),
-        radial-gradient(
-            circle at 80% 14%,
+            transparent 36%),
+        radial-gradient(circle at 80% 14%,
             rgba(99, 102, 241, 0.2),
-            transparent 32%
-        ),
+            transparent 32%),
         linear-gradient(160deg, #0f172a 0%, #1e1b4b 55%, #0f172a 100%);
 }
 
@@ -229,12 +215,10 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
     position: absolute;
     inset: 0;
     transform: translateX(-130%) skewX(-20deg);
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.18),
-        transparent
-    );
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.18),
+            transparent);
     transition: transform 550ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
@@ -253,6 +237,7 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
         opacity: 0;
         transform: translateY(18px) scale(0.978);
     }
+
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -265,7 +250,7 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
 
 /* Shell — iOS-style light background */
 .lux-shell {
-    background: 
+    background:
         radial-gradient(ellipse 80% 50% at 50% -5%, rgba(99, 102, 241, 0.07) 0%, transparent 55%),
         radial-gradient(ellipse 60% 40% at 90% 20%, rgba(56, 189, 248, 0.05) 0%, transparent 55%),
         linear-gradient(180deg, #f2f3f8 0%, #eef0f7 40%, #f5f6fa 100%);
@@ -294,20 +279,47 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
 }
 
 @keyframes lux-orb-float-1 {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(30px, -50px) scale(1.15); }
-    66% { transform: translate(-20px, 40px) scale(0.9); }
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    33% {
+        transform: translate(30px, -50px) scale(1.15);
+    }
+
+    66% {
+        transform: translate(-20px, 40px) scale(0.9);
+    }
 }
 
 @keyframes lux-orb-float-2 {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(-40px, 30px) scale(1.2); }
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate(-40px, 30px) scale(1.2);
+    }
 }
 
 @keyframes lux-orb-float-3 {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    40% { transform: translate(25px, 60px) scale(0.85); }
-    80% { transform: translate(-30px, -20px) scale(1.1); }
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    40% {
+        transform: translate(25px, 60px) scale(0.85);
+    }
+
+    80% {
+        transform: translate(-30px, -20px) scale(1.1);
+    }
 }
 
 /* Subtle grid overlay */
@@ -343,19 +355,40 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
 }
 
 /* Sequential Load Animations */
-.lux-card-enter { animation: lux-fade-in-up 580ms cubic-bezier(0.16, 1, 0.3, 1) both; }
-.lux-card-enter-2 { animation: lux-fade-in-up 580ms cubic-bezier(0.16, 1, 0.3, 1) 80ms both; }
-.lux-card-enter-3 { animation: lux-fade-in-up 580ms cubic-bezier(0.16, 1, 0.3, 1) 130ms both; }
-.lux-card-enter-4 { animation: lux-fade-in-up 580ms cubic-bezier(0.16, 1, 0.3, 1) 180ms both; }
-.lux-card-enter-5 { animation: lux-fade-in-up 580ms cubic-bezier(0.16, 1, 0.3, 1) 230ms both; }
-.lux-card-enter-6 { animation: lux-fade-in-up 580ms cubic-bezier(0.16, 1, 0.3, 1) 280ms both; }
-.lux-card-enter-7 { animation: lux-fade-in-up 580ms cubic-bezier(0.16, 1, 0.3, 1) 330ms both; }
+.lux-card-enter {
+    animation: lux-fade-in-up 580ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.lux-card-enter-2 {
+    animation: lux-fade-in-up 580ms cubic-bezier(0.16, 1, 0.3, 1) 80ms both;
+}
+
+.lux-card-enter-3 {
+    animation: lux-fade-in-up 580ms cubic-bezier(0.16, 1, 0.3, 1) 130ms both;
+}
+
+.lux-card-enter-4 {
+    animation: lux-fade-in-up 580ms cubic-bezier(0.16, 1, 0.3, 1) 180ms both;
+}
+
+.lux-card-enter-5 {
+    animation: lux-fade-in-up 580ms cubic-bezier(0.16, 1, 0.3, 1) 230ms both;
+}
+
+.lux-card-enter-6 {
+    animation: lux-fade-in-up 580ms cubic-bezier(0.16, 1, 0.3, 1) 280ms both;
+}
+
+.lux-card-enter-7 {
+    animation: lux-fade-in-up 580ms cubic-bezier(0.16, 1, 0.3, 1) 330ms both;
+}
 
 @keyframes lux-fade-in-up {
     from {
         opacity: 0;
         transform: translateY(20px) scale(0.97);
     }
+
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -373,20 +406,23 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
 
 /* Shimmer effect on cover */
 .lux-cover-shimmer {
-    background: linear-gradient(
-        105deg,
-        transparent 35%,
-        rgba(255, 255, 255, 0.06) 50%,
-        transparent 65%
-    );
+    background: linear-gradient(105deg,
+            transparent 35%,
+            rgba(255, 255, 255, 0.06) 50%,
+            transparent 65%);
     background-size: 200% 100%;
     animation: lux-shimmer 6s ease-in-out infinite;
     pointer-events: none;
 }
 
 @keyframes lux-shimmer {
-    0% { background-position: 150% 0; }
-    100% { background-position: -150% 0; }
+    0% {
+        background-position: 150% 0;
+    }
+
+    100% {
+        background-position: -150% 0;
+    }
 }
 
 /* Top badges — remain dark since cover is dark */
@@ -395,7 +431,7 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
     border: 1px solid rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .lux-badge-verified {
@@ -412,8 +448,17 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
 }
 
 @keyframes lux-dot-pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.45; transform: scale(0.88); }
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.45;
+        transform: scale(0.88);
+    }
 }
 
 /* Identity strip — white area below cover */
@@ -530,6 +575,7 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
         box-shadow: 0 8px 28px rgba(37, 211, 102, 0.38);
         transform: translateY(-2px);
     }
+
     .lux-btn-whatsapp:hover::after {
         transform: translateX(150%) skewX(-25deg);
     }
@@ -576,6 +622,7 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
         box-shadow: 0 8px 28px rgba(59, 130, 246, 0.4);
         transform: translateY(-2px);
     }
+
     .lux-btn-call:hover::after {
         transform: translateX(150%) skewX(-25deg);
     }
@@ -604,7 +651,7 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
 
 .lux-save-contact:active {
     transform: scale(0.97);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -615,6 +662,7 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
             0 0 0 3px rgba(41, 174, 238, 0.06);
         transform: scale(1.02);
     }
+
     .lux-save-contact:hover::before {
         opacity: 1;
     }
@@ -644,7 +692,10 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
     box-shadow: 0 8px 20px rgba(225, 48, 108, 0.14);
     transform: scale(1.02);
 }
-.lux-social-instagram .lux-social-icon { color: #e1306c; }
+
+.lux-social-instagram .lux-social-icon {
+    color: #e1306c;
+}
 
 .lux-social-tiktok:hover {
     border-color: rgba(0, 0, 0, 0.15);
@@ -652,7 +703,10 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     transform: scale(1.02);
 }
-.lux-social-tiktok .lux-social-icon { color: #1a1a1a; }
+
+.lux-social-tiktok .lux-social-icon {
+    color: #1a1a1a;
+}
 
 .lux-social-website:hover {
     border-color: rgba(59, 130, 246, 0.3);
@@ -660,7 +714,10 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
     box-shadow: 0 8px 20px rgba(59, 130, 246, 0.12);
     transform: scale(1.02);
 }
-.lux-social-website .lux-social-icon { color: #3b82f6; }
+
+.lux-social-website .lux-social-icon {
+    color: #3b82f6;
+}
 
 .lux-social-facebook:hover {
     border-color: rgba(24, 119, 242, 0.3);
@@ -668,7 +725,10 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
     box-shadow: 0 8px 20px rgba(24, 119, 242, 0.14);
     transform: scale(1.02);
 }
-.lux-social-facebook .lux-social-icon { color: #1877f2; }
+
+.lux-social-facebook .lux-social-icon {
+    color: #1877f2;
+}
 
 .lux-social-x:hover {
     border-color: rgba(15, 20, 25, 0.15);
@@ -676,7 +736,10 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
     box-shadow: 0 8px 20px rgba(15, 20, 25, 0.1);
     transform: scale(1.02);
 }
-.lux-social-x .lux-social-icon { color: #0f1419; }
+
+.lux-social-x .lux-social-icon {
+    color: #0f1419;
+}
 
 .lux-social-linkedin:hover {
     border-color: rgba(10, 102, 194, 0.3);
@@ -684,7 +747,10 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
     box-shadow: 0 8px 20px rgba(10, 102, 194, 0.14);
     transform: scale(1.02);
 }
-.lux-social-linkedin .lux-social-icon { color: #0a66c2; }
+
+.lux-social-linkedin .lux-social-icon {
+    color: #0a66c2;
+}
 
 .lux-social-youtube:hover {
     border-color: rgba(255, 0, 0, 0.3);
@@ -692,7 +758,10 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
     box-shadow: 0 8px 20px rgba(255, 0, 0, 0.14);
     transform: scale(1.02);
 }
-.lux-social-youtube .lux-social-icon { color: #ff0000; }
+
+.lux-social-youtube .lux-social-icon {
+    color: #ff0000;
+}
 
 .lux-social-whatsapp:hover {
     border-color: rgba(37, 211, 102, 0.3);
@@ -700,7 +769,10 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
     box-shadow: 0 8px 20px rgba(37, 211, 102, 0.14);
     transform: scale(1.02);
 }
-.lux-social-whatsapp .lux-social-icon { color: #25d366; }
+
+.lux-social-whatsapp .lux-social-icon {
+    color: #25d366;
+}
 
 
 /* "N iş" badge */
@@ -722,8 +794,8 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
 
 .lux-gallery-item:hover {
     border-color: rgba(99, 102, 241, 0.2);
-    box-shadow: 
-        0 12px 32px rgba(0, 0, 0, 0.12), 
+    box-shadow:
+        0 12px 32px rgba(0, 0, 0, 0.12),
         0 0 0 3px rgba(99, 102, 241, 0.08);
     transform: translateY(-3px);
 }
@@ -789,6 +861,7 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
 
 /* Reduce Motion Accessibility */
 @media (prefers-reduced-motion: reduce) {
+
     .lux-card-enter,
     .lux-card-enter-2,
     .lux-card-enter-3,
@@ -798,12 +871,17 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
     .lux-card-enter-7 {
         animation: none;
     }
-    .lux-orb-1, .lux-orb-2, .lux-orb-3 {
+
+    .lux-orb-1,
+    .lux-orb-2,
+    .lux-orb-3 {
         animation: none;
     }
+
     .lux-cover-shimmer {
         animation: none;
     }
+
     .lux-pulse {
         animation: none;
     }
@@ -812,16 +890,12 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
 .profile-aurora,
 .profile-hero {
     background:
-        radial-gradient(
-            circle at 20% 18%,
+        radial-gradient(circle at 20% 18%,
             rgba(34, 211, 238, 0.25),
-            transparent 30%
-        ),
-        radial-gradient(
-            circle at 78% 16%,
+            transparent 30%),
+        radial-gradient(circle at 78% 16%,
             rgba(16, 185, 129, 0.22),
-            transparent 28%
-        ),
+            transparent 28%),
         linear-gradient(135deg, #020617 0%, #0f172a 56%, #0e7490 100%);
 }
 
@@ -836,12 +910,10 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
     position: absolute;
     inset: 0;
     transform: translateX(-120%) skewX(-18deg);
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.22),
-        transparent
-    );
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.22),
+            transparent);
     transition: transform 600ms var(--ease-out);
 }
 
@@ -856,6 +928,7 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
         opacity: 0;
         transform: translateY(14px) scale(0.985);
     }
+
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -865,12 +938,10 @@ a.dashboard-primary:hover { filter: brightness(1.05); }
 .card-shine {
     background:
         linear-gradient(135deg, rgba(34, 211, 238, 0.24), transparent 38%),
-        linear-gradient(
-            115deg,
+        linear-gradient(115deg,
             transparent 0%,
             rgba(255, 255, 255, 0.08) 38%,
-            transparent 56%
-        ),
+            transparent 56%),
         #020617;
 }
 

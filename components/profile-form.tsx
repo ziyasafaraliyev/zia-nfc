@@ -6,7 +6,8 @@ import { saveProfile } from "@/app/admin/actions";
 import type { Profile } from "@/lib/types";
 
 const inputClass =
-  "mt-2 w-full rounded-2xl border border-slate-200 bg-white/70 px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm outline-none backdrop-blur-sm transition duration-200 placeholder:text-slate-400 focus:border-[#29AEEE] focus:bg-white focus:ring-4 focus:ring-[#29AEEE]/20";
+  "mt-1.5 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none backdrop-blur-sm transition duration-200 placeholder:text-slate-400 focus:border-[#29AEEE] focus:bg-white focus:ring-4 focus:ring-[#29AEEE]/20" +
+  " font-[Outfit]";
 
 // Canvas-based client-side image compression function (preserves PNG transparency)
 async function compressImage(file: File, maxWidth = 1200, quality = 0.75): Promise<File> {
@@ -128,7 +129,7 @@ export default function ProfileForm({ profile }: { profile?: Profile }) {
   const [isPortfolioDragging, setIsPortfolioDragging] = useState(false);
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-6">
+    <form onSubmit={handleSubmit} className="grid gap-5" style={{ fontFamily: "'Outfit', sans-serif" }}>
       <input type="hidden" name="id" value={profile?.id ?? ""} />
       
       {/* ── ŞƏXSİ MƏLUMATLAR ── */}
@@ -208,12 +209,13 @@ export default function ProfileForm({ profile }: { profile?: Profile }) {
         />
       </div>
 
-      <label className="block text-sm font-bold text-slate-700">
+      <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide">
         Bio
         <textarea
           name="bio"
           defaultValue={profile?.bio ?? ""}
           rows={4}
+          placeholder="Özünüz haqqında qısa məlumat..."
           className={inputClass}
         />
       </label>
@@ -283,8 +285,8 @@ export default function ProfileForm({ profile }: { profile?: Profile }) {
 
       {/* ── PORTFOLIO ŞƏKİLLƏRİ ── */}
       <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-slate-50/50 p-6">
-        <span className="text-sm font-bold text-slate-800 flex items-center gap-2">
-          <ImagePlus size={16} className="text-[#29AEEE]" /> Portfolio Şəkilləri (Yeni)
+        <span className="text-xs font-bold text-slate-500 uppercase tracking-wide flex items-center gap-2">
+          <ImagePlus size={14} className="text-[#29AEEE]" /> Portfolio Şəkilləri
         </span>
         <div
           onDragOver={(e) => {
@@ -342,14 +344,14 @@ export default function ProfileForm({ profile }: { profile?: Profile }) {
         >
           <div className="flex flex-col items-center gap-2">
             <Upload size={24} className="text-[#29AEEE]" />
-            <span className="text-sm font-bold text-slate-700">Yeni portfolio şəkilləri seçin və ya bura sürükləyin</span>
-            <span className="text-xs font-semibold text-slate-400">Maksimum 5MB • Çoxlu şəkil seçilə bilər</span>
+            <span className="text-xs font-semibold text-slate-600">Şəkil seçin və ya bura sürükləyin</span>
+            <span className="text-[10px] font-medium text-slate-400">Maks. 5MB · JPG, PNG, WEBP, GIF</span>
           </div>
         </div>
         {selectedGalleryFiles.length > 0 && (
           <div className="mt-3 flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <span className="text-xs font-bold text-slate-500">Yüklənəcək yeni şəkillər ({selectedGalleryFiles.length}):</span>
+              <span className="text-[11px] font-bold text-slate-400">Yüklənəcək ({selectedGalleryFiles.length} şəkil):</span>
               <button
                 type="button"
                 onClick={() => setSelectedGalleryFiles([])}
@@ -382,8 +384,8 @@ export default function ProfileForm({ profile }: { profile?: Profile }) {
 
       {/* ── CV YÜKLƏMƏ (PDF) ── */}
       <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-slate-50/50 p-6">
-        <span className="text-sm font-bold text-slate-800 flex items-center gap-2">
-          CV / Resüme (yalnız PDF)
+        <span className="text-xs font-bold text-slate-500 uppercase tracking-wide flex items-center gap-2">
+          CV / Resüme <span className="text-[10px] text-slate-400 font-medium normal-case tracking-normal">(yalnız PDF)</span>
         </span>
         <input 
           type="file" 
@@ -407,7 +409,7 @@ export default function ProfileForm({ profile }: { profile?: Profile }) {
         <input type="hidden" name="remove_cv" value={removeCv ? "on" : "off"} />
       </div>
 
-      <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white/70 p-4 text-sm font-bold text-slate-700">
+      <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition">
         <span>Profil aktivdir</span>
         <input
           type="checkbox"
@@ -419,9 +421,10 @@ export default function ProfileForm({ profile }: { profile?: Profile }) {
 
       <button
         disabled={submitting}
-        className="inline-flex items-center justify-center gap-2 rounded-full bg-[#29AEEE] px-5 py-4 font-bold text-white shadow-md shadow-[#29AEEE]/20 transition-all duration-200 hover:bg-[#1a9ad4] hover:shadow-lg hover:shadow-[#29AEEE]/25 active:scale-[0.96] disabled:bg-slate-400 disabled:shadow-none"
+        className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#29AEEE] px-5 py-3.5 text-sm font-bold text-white shadow-md shadow-[#29AEEE]/20 transition-all duration-200 hover:bg-[#1a9ad4] hover:shadow-lg hover:shadow-[#29AEEE]/25 active:scale-[0.96] disabled:bg-slate-300 disabled:shadow-none"
+        style={{ fontFamily: "'Outfit', sans-serif" }}
       >
-        <Save size={18} /> {submitting ? statusText : "Yadda saxla"}
+        <Save size={16} /> {submitting ? statusText : "Yadda Saxla"}
       </button>
     </form>
   );
@@ -441,7 +444,7 @@ function Field({
   placeholder?: string;
 }) {
   return (
-    <label className="block text-sm font-bold text-slate-700">
+    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide">
       {label}
       <input
         name={name}
@@ -466,7 +469,7 @@ function SelectField({
   options: { value: string; label: string }[];
 }) {
   return (
-    <label className="block text-sm font-bold text-slate-700">
+    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide">
       {label}
       <select name={name} defaultValue={defaultValue} className={inputClass}>
         {options.map((option) => (
