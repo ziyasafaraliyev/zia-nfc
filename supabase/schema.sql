@@ -33,6 +33,8 @@ alter table public.profiles add column if not exists facebook text;
 alter table public.profiles add column if not exists x text;
 alter table public.profiles add column if not exists linkedin text;
 alter table public.profiles add column if not exists youtube text;
+alter table public.profiles add column if not exists location_url text;
+alter table public.profiles add column if not exists cv_url text;
 
 alter table public.profiles drop constraint if exists profiles_cover_style_check;
 alter table public.profiles add constraint profiles_cover_style_check

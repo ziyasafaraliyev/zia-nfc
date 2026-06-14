@@ -15,9 +15,11 @@ export type Profile = {
   linkedin?: string | null;
   youtube?: string | null;
   location?: string | null;
+  location_url?: string | null;
   avatar_url?: string | null;
   background_url?: string | null;
   cover_style?: "auto" | "square" | "banner" | null;
   cover_position?: "top" | "center" | "bottom" | null;
   gallery: string[];
+  cv_url?: string | null;
 };

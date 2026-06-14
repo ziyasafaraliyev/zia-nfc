@@ -19,7 +19,9 @@ import {
   Twitter,
 } from "lucide-react";
 import { notFound } from "next/navigation";
-import QRCode from "qrcode";
+import QrCodeModal from "@/components/qr-code-modal";
+import PortfolioSection from "@/components/portfolio-section";
+
 
 export const dynamic = "force-dynamic";
 
@@ -66,13 +68,10 @@ export default async function ProfilePage({ params }: Props) {
   if (!profile || !profile.enabled) notFound();
 
   const profileUrl = getProfileUrl(profile.slug);
-  const qr = await QRCode.toDataURL(profileUrl, {
-    margin: 1,
-    width: 320,
-    // Light (background) rəngini şəffaf yox, dolu veririk ki qara QR “itib-batmasın”
-    // və skan üçün kontrast yaxşı olsun.
-    color: { dark: "#000000", light: "#ffffff" },
-  });
+  // QR-ı DataURL kimi yükləmək bəzi hallarda “başqa linkdə ayrıca şəkil” kimi açılma davranışı yarada bilər.
+  // Bunun yerinə QR-ı image route-dan PNG kimi serv edirik.
+  const qrUrl = `/u/${profile.slug}/qr`;
+
   const whatsapp = profile.whatsapp?.replace(/[^\d]/g, "");
 
   const coverStyle = profile.cover_style ?? "auto";
@@ -147,7 +146,7 @@ export default async function ProfilePage({ params }: Props) {
       <div className="relative z-10 mx-auto max-w-[440px] px-4 py-6 pb-16">
 
         {/* ── COVER + IDENTITY CARD ── */}
-        <section className="lux-card lux-card-enter overflow-hidden rounded-[2.25rem]">
+        <section className="lux-card lux-card-enter overflow-hidden rounded-b-[2.25rem] rounded-t-none">
           {/* Cover image zone */}
           <div
             className={`${profile.background_url ? "bg-[#1e1b4b]" : "lux-hero"} relative ${coverH} overflow-hidden`}
@@ -174,12 +173,6 @@ export default async function ProfilePage({ params }: Props) {
                 <img src="/logo.png" alt="Zia NFC" className="size-[18px] rounded-full object-cover" />
                 <span className="text-[9px] font-black uppercase tracking-[0.22em] text-white/90">
                   Zia NFC
-                </span>
-              </div>
-              <div className="lux-badge-verified flex items-center gap-1.5 rounded-full px-3 py-1.5">
-                <Sparkles size={9} className="text-amber-300" />
-                <span className="text-[9px] font-black uppercase tracking-[0.22em] text-amber-200/90">
-                  Verified
                 </span>
               </div>
             </div>
@@ -227,15 +220,6 @@ export default async function ProfilePage({ params }: Props) {
               </p>
             ) : null}
 
-            {/* Location */}
-            {profile.location ? (
-              <div className="mt-3.5 inline-flex items-center gap-1.5 lux-location-chip rounded-full px-3 py-1.5">
-                <MapPin size={11} className="text-indigo-500 shrink-0" />
-                <span className="text-[11px] font-semibold tracking-wide text-slate-500 truncate">
-                  {profile.location}
-                </span>
-              </div>
-            ) : null}
           </div>
         </section>
 
@@ -245,7 +229,7 @@ export default async function ProfilePage({ params }: Props) {
             {whatsapp ? (
               <a
                 href={`https://wa.me/${whatsapp}`}
-                className="lux-btn-whatsapp group lux-card-enter-2"
+                className="lux-btn-whatsapp group lux-card-enter-2 transition-transform duration-200 hover:scale-[1.02]"
               >
                 <MessageCircle
                   size={18}
@@ -257,7 +241,7 @@ export default async function ProfilePage({ params }: Props) {
             {profile.phone ? (
               <a
                 href={`tel:${profile.phone}`}
-                className="lux-btn-call group lux-card-enter-3"
+                className="lux-btn-call group lux-card-enter-3 transition-transform duration-200 hover:scale-[1.02]"
               >
                 <Phone
                   size={18}
@@ -269,22 +253,7 @@ export default async function ProfilePage({ params }: Props) {
           </div>
         ) : null}
 
-        {/* ── SAVE CONTACT ── */}
-        <a
-          href={getProfileVcardPath(profile.slug)}
-          className="lux-save-contact group mt-2.5 flex min-h-[3.5rem] w-full items-center justify-between gap-3 rounded-2xl px-4 lux-card-enter-4"
-        >
-          <span className="flex items-center gap-3">
-            <span className="lux-save-icon grid size-9 place-items-center rounded-xl">
-              <UserPlus size={16} />
-            </span>
-            <span className="text-sm font-bold text-gray-800">Kontaktı yadda saxla</span>
-          </span>
-          <ExternalLink
-            size={15}
-            className="text-gray-400 transition-all duration-300 group-hover:text-indigo-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-          />
-        </a>
+
 
         {/* ── SOCIAL LINKS ── */}
         {hasSocials ? (
@@ -356,65 +325,78 @@ export default async function ProfilePage({ params }: Props) {
           </div>
         ) : null}
 
+        {/* ── SAVE CONTACT ── */}
+        <a
+          href={getProfileVcardPath(profile.slug)}
+          className="lux-save-contact group mt-2.5 flex h-14 w-full items-center justify-between gap-3 rounded-2xl px-4 lux-card-enter-4 transition-transform duration-200 hover:scale-[1.02]"
+        >
+          <span className="flex items-center gap-3">
+            <span className="lux-save-icon grid size-9 place-items-center rounded-xl">
+              <UserPlus size={16} />
+            </span>
+            <span className="text-sm font-bold text-gray-800">Kontaktı yadda saxla</span>
+          </span>
+          <ExternalLink
+            size={15}
+            className="text-gray-400 transition-all duration-300 group-hover:text-[#29AEEE] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+          />
+        </a>
+
+        {/* ── MAPS LOCATION BUTTON ── */}
+        {profile.location && profile.location_url ? (
+          <a
+            href={profile.location_url}
+            target="_blank"
+            rel="noreferrer"
+            className="lux-save-contact group mt-2.5 flex h-14 w-full items-center justify-between gap-3 rounded-2xl px-4 lux-card-enter-4 transition-transform duration-200 hover:scale-[1.02]"
+          >
+            <span className="flex items-center gap-3">
+              <span className="lux-save-icon grid size-9 place-items-center rounded-xl">
+                <MapPin size={16} className="text-[#29AEEE]" />
+              </span>
+              <span className="flex flex-col items-start leading-tight">
+                <span className="text-sm font-bold text-gray-800">Lokasiya</span>
+                <span className="text-[10px] font-semibold text-gray-400 mt-0.5">{profile.location}</span>
+              </span>
+            </span>
+            <ExternalLink
+              size={15}
+              className="text-gray-400 transition-all duration-300 group-hover:text-[#29AEEE] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            />
+          </a>
+        ) : null}
+
         {/* ── PORTFOLIO ── */}
         {profile.gallery.length > 0 ? (
-          <section className="mt-6 lux-card-enter-6">
-            {/* Section header */}
-            <div className="mb-4 flex items-center justify-between">
-              <div>
-                <p className="lux-overline">Selected work</p>
-                <h2 className="lux-section-title mt-1">Portfolio</h2>
-              </div>
-              <span className="lux-count-badge rounded-full px-3 py-1 text-xs font-bold">
-                {profile.gallery.length} iş
-              </span>
-            </div>
+          <PortfolioSection gallery={profile.gallery} profileName={profile.name} />
+        ) : null}
 
-            {/* Gallery grid */}
-            <div className="grid grid-cols-2 gap-2.5">
-              {profile.gallery.map((image, index) => (
-                <a
-                  key={image}
-                  href={image}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={`${index === 0 ? "col-span-2 aspect-[16/9]" : "aspect-square"} group relative overflow-hidden rounded-[1.5rem] lux-gallery-item`}
-                >
-                  <img
-                    src={image}
-                    alt={`${profile.name} — iş ${index + 1}`}
-                    className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.06]"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 transition duration-300 group-hover:opacity-100" />
-                  <div className="absolute bottom-3 right-3 flex size-8 translate-y-2 items-center justify-center rounded-full lux-gallery-btn opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                    <ArrowUpRight size={14} />
-                  </div>
-                </a>
-              ))}
-            </div>
-          </section>
+        {/* ── CV YÜKLƏ ── */}
+        {profile.cv_url ? (
+          <a
+            href={profile.cv_url}
+            target="_blank"
+            rel="noreferrer"
+            className="group mt-3 flex min-h-[3.5rem] w-full items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white/70 px-4 py-3 text-sm font-bold text-gray-800 transition-transform duration-200 hover:bg-white hover:scale-[1.02] active:scale-[0.98] shadow-sm shadow-black/5"
+          >
+            <span className="flex items-center gap-3">
+              <span className="grid size-9 place-items-center rounded-xl bg-red-500/10 text-red-500">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>
+              </span>
+              <span className="flex flex-col items-start leading-tight">
+                <span>CV (Resüme)</span>
+                <span className="text-[10px] font-semibold text-gray-400 mt-0.5">PDF formatında endir / bax</span>
+              </span>
+            </span>
+            <ExternalLink
+              size={15}
+              className="text-gray-400 transition-all duration-300 group-hover:text-red-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            />
+          </a>
         ) : null}
 
         {/* ── QR CODE CARD ── */}
-        <div className="mt-5 lux-qr-card flex items-center gap-5 rounded-2xl p-4 lux-card-enter-7">
-          <div className="lux-qr-wrap shrink-0 rounded-xl p-2">
-            <img
-              src={qr}
-              alt={`${profile.name} QR`}
-              className="size-[7rem] rounded-lg"
-
-            />
-          </div>
-          <div className="min-w-0">
-            <div className="flex items-center gap-2 text-sm font-bold text-gray-800">
-              <QrCode size={14} className="text-indigo-500 shrink-0" />
-              <span>QR kod</span>
-            </div>
-            <p className="mt-1 text-[11px] font-medium leading-[1.6] text-gray-400">
-              NFC işləmədikdə kamera ilə skan edin.
-            </p>
-          </div>
-        </div>
+        <QrCodeModal qrUrl={qrUrl} profileName={profile.name} />
 
         {/* ── FOOTER ── */}
         <div className="mt-6 flex flex-col items-center gap-2">
@@ -442,14 +424,14 @@ function SocialChip({
   icon: React.ReactNode;
   label: string;
   variant:
-    | "instagram"
-    | "tiktok"
-    | "website"
-    | "facebook"
-    | "x"
-    | "linkedin"
-    | "youtube"
-    | "whatsapp";
+  | "instagram"
+  | "tiktok"
+  | "website"
+  | "facebook"
+  | "x"
+  | "linkedin"
+  | "youtube"
+  | "whatsapp";
 }) {
   const variantClass = {
     instagram: "lux-social-instagram",
@@ -467,7 +449,7 @@ function SocialChip({
       href={href}
       target="_blank"
       rel="noreferrer"
-      className={`lux-social-chip ${variantClass} group flex min-h-[3.75rem] flex-col items-center justify-center gap-1.5 rounded-2xl transition-all duration-200 active:scale-[0.95]`}
+      className={`lux-social-chip ${variantClass} group flex min-h-[3.75rem] flex-col items-center justify-center gap-1.5 rounded-2xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.95]`}
     >
       <span className="lux-social-icon transition-transform duration-300 group-hover:scale-110">
         {icon}

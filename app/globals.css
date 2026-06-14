@@ -57,6 +57,80 @@ a {
     -webkit-tap-highlight-color: transparent;
 }
 
+/* ═══════════════════════════════════════════════════════════
+   Dashboard Design System (BLACK / WHITE / BRAND-BLUE ONLY)
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+    --brand-blue: #29AEEE; /* logo sky-blue */
+    --brand-blue-dark: #1a9ad4;
+}
+
+.dashboard-bg {
+    background: #f5f7fa;
+}
+
+.dashboard-surface {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow:
+        0 1px 0 rgba(0, 0, 0, 0.04),
+        0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-surface-soft {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.dashboard-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.10), transparent);
+}
+
+.dashboard-focus-ring:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(41, 174, 238, 0.22);
+    border-color: rgba(41, 174, 238, 0.55);
+}
+
+.dashboard-link {
+    color: #1a1a2e;
+    text-decoration: none;
+    opacity: 0.88;
+}
+.dashboard-link:hover { opacity: 1; }
+
+.dashboard-primary {
+    background: var(--brand-blue);
+    color: #ffffff;
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow:
+        0 8px 24px rgba(41, 174, 238, 0.30),
+        inset 0 1px 0 rgba(255,255,255,0.20);
+}
+
+a.dashboard-primary:hover { filter: brightness(1.05); }
+
+.dashboard-primary::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
+    transform: translateX(-140%) skewX(-18deg);
+    transition: transform 600ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .dashboard-primary:hover::after {
+        transform: translateX(140%) skewX(-18deg);
+    }
+}
+
+
 ::selection {
     background: #22d3ee;
     color: #020617;
@@ -347,12 +421,12 @@ a {
     background: #ffffff;
 }
 
-/* Avatar ring — gradient border */
+/* Avatar ring — brand blue border */
 .lux-avatar-ring {
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 40%, #a855f7 70%, #38bdf8 100%);
+    background: #29AEEE;
     box-shadow:
         0 0 0 3px #ffffff,
-        0 8px 24px rgba(99, 102, 241, 0.22),
+        0 8px 24px rgba(41, 174, 238, 0.22),
         0 2px 8px rgba(0, 0, 0, 0.12);
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -361,12 +435,12 @@ a {
     transform: scale(1.03) rotate(2deg);
     box-shadow:
         0 0 0 3px #ffffff,
-        0 12px 32px rgba(99, 102, 241, 0.32),
+        0 12px 32px rgba(41, 174, 238, 0.32),
         0 4px 12px rgba(0, 0, 0, 0.16);
 }
 
 .lux-avatar-fallback {
-    background: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7);
+    background: #29AEEE;
     font-family: 'Outfit', sans-serif;
 }
 
@@ -377,7 +451,7 @@ a {
     font-weight: 800;
     letter-spacing: 0.24em;
     text-transform: uppercase;
-    color: #6366f1;
+    color: #29AEEE;
 }
 
 .lux-name {
@@ -523,7 +597,7 @@ a {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.03), rgba(168, 85, 247, 0.03), transparent);
+    background: linear-gradient(90deg, transparent, rgba(41, 174, 238, 0.03), rgba(41, 174, 238, 0.05), transparent);
     opacity: 0;
     transition: opacity 0.35s ease;
 }
@@ -535,11 +609,11 @@ a {
 
 @media (hover: hover) and (pointer: fine) {
     .lux-save-contact:hover {
-        border-color: rgba(99, 102, 241, 0.25);
+        border-color: rgba(41, 174, 238, 0.25);
         box-shadow:
             0 4px 16px rgba(0, 0, 0, 0.08),
-            0 0 0 3px rgba(99, 102, 241, 0.06);
-        transform: translateY(-1px);
+            0 0 0 3px rgba(41, 174, 238, 0.06);
+        transform: scale(1.02);
     }
     .lux-save-contact:hover::before {
         opacity: 1;
@@ -547,9 +621,9 @@ a {
 }
 
 .lux-save-icon {
-    background: rgba(99, 102, 241, 0.08);
-    border: 1px solid rgba(99, 102, 241, 0.18);
-    color: #6366f1;
+    background: rgba(41, 174, 238, 0.08);
+    border: 1px solid rgba(41, 174, 238, 0.18);
+    color: #29AEEE;
 }
 
 /* Social Chips — iOS-style light cards */
@@ -561,14 +635,14 @@ a {
 }
 
 .lux-social-chip:active {
-    transform: scale(0.93);
+    transform: scale(0.95);
 }
 
 .lux-social-instagram:hover {
     border-color: rgba(225, 48, 108, 0.3);
     background: rgba(255, 240, 244, 1);
     box-shadow: 0 8px 20px rgba(225, 48, 108, 0.14);
-    transform: translateY(-2px);
+    transform: scale(1.02);
 }
 .lux-social-instagram .lux-social-icon { color: #e1306c; }
 
@@ -576,7 +650,7 @@ a {
     border-color: rgba(0, 0, 0, 0.15);
     background: rgba(248, 248, 248, 1);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
+    transform: scale(1.02);
 }
 .lux-social-tiktok .lux-social-icon { color: #1a1a1a; }
 
@@ -584,7 +658,7 @@ a {
     border-color: rgba(59, 130, 246, 0.3);
     background: rgba(239, 246, 255, 1);
     box-shadow: 0 8px 20px rgba(59, 130, 246, 0.12);
-    transform: translateY(-2px);
+    transform: scale(1.02);
 }
 .lux-social-website .lux-social-icon { color: #3b82f6; }
 
@@ -592,7 +666,7 @@ a {
     border-color: rgba(24, 119, 242, 0.3);
     background: rgba(240, 245, 255, 1);
     box-shadow: 0 8px 20px rgba(24, 119, 242, 0.14);
-    transform: translateY(-2px);
+    transform: scale(1.02);
 }
 .lux-social-facebook .lux-social-icon { color: #1877f2; }
 
@@ -600,7 +674,7 @@ a {
     border-color: rgba(15, 20, 25, 0.15);
     background: rgba(245, 245, 245, 1);
     box-shadow: 0 8px 20px rgba(15, 20, 25, 0.1);
-    transform: translateY(-2px);
+    transform: scale(1.02);
 }
 .lux-social-x .lux-social-icon { color: #0f1419; }
 
@@ -608,7 +682,7 @@ a {
     border-color: rgba(10, 102, 194, 0.3);
     background: rgba(240, 247, 255, 1);
     box-shadow: 0 8px 20px rgba(10, 102, 194, 0.14);
-    transform: translateY(-2px);
+    transform: scale(1.02);
 }
 .lux-social-linkedin .lux-social-icon { color: #0a66c2; }
 
@@ -616,7 +690,7 @@ a {
     border-color: rgba(255, 0, 0, 0.3);
     background: rgba(255, 240, 240, 1);
     box-shadow: 0 8px 20px rgba(255, 0, 0, 0.14);
-    transform: translateY(-2px);
+    transform: scale(1.02);
 }
 .lux-social-youtube .lux-social-icon { color: #ff0000; }
 
@@ -624,7 +698,7 @@ a {
     border-color: rgba(37, 211, 102, 0.3);
     background: rgba(240, 253, 244, 1);
     box-shadow: 0 8px 20px rgba(37, 211, 102, 0.14);
-    transform: translateY(-2px);
+    transform: scale(1.02);
 }
 .lux-social-whatsapp .lux-social-icon { color: #25d366; }
 

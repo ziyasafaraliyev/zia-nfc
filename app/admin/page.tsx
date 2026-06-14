@@ -39,9 +39,10 @@ type Props = {
 };
 
 const inputClass =
-  "mt-2 w-full rounded-2xl border border-slate-200 bg-white/70 px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm outline-none backdrop-blur-sm transition duration-200 placeholder:text-slate-400 focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-100";
+  "mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm outline-none transition duration-200 placeholder:text-slate-400 focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/20";
 const quietButtonClass =
-  "grid size-11 place-items-center rounded-full border border-slate-200 bg-white/80 text-slate-700 shadow-sm backdrop-blur-sm transition duration-200 hover:border-slate-300 hover:bg-white hover:text-slate-950 hover:shadow-md active:scale-[0.96]";
+  "grid size-11 place-items-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition duration-200 hover:border-[#29AEEE] hover:text-[#29AEEE] hover:bg-[#29AEEE]/5 active:scale-[0.96]";
+
 
 function adminErrorMessage(error?: string) {
   switch (error) {
@@ -94,65 +95,67 @@ export default async function AdminPage({ searchParams }: Props) {
   );
 
   return (
-    <main className="min-h-screen bg-gradient-to-tr from-[#f8fafc] via-[#f1f5f9] to-[#eef2f6] px-4 py-5 text-slate-900 sm:px-6 lg:px-8 font-sans">
+    <main className="min-h-screen dashboard-bg px-4 py-6 text-slate-900 sm:px-6 lg:px-8 font-sans">
       <div className="mx-auto max-w-7xl">
-        <header className="overflow-hidden rounded-[2.25rem] border border-white/80 bg-white/60 shadow-[0_24px_70px_rgba(99,102,241,0.06)] backdrop-blur-xl transition-all duration-300 hover:shadow-[0_24px_85px_rgba(99,102,241,0.08)]">
-          <div className="flex flex-col gap-6 p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50/50 px-2.5 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-indigo-700">
-                <img src="/logo.png" alt="Zia NFC" className="size-4 rounded-full object-cover" /> Zia NFC Admin
+        {/* Top bar */}
+        <header className="dashboard-surface rounded-[2.25rem] overflow-hidden">
+          <div className="flex flex-col gap-5 p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between">
+            <div className="min-w-0">
+              <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.22em] text-slate-700 shadow-sm">
+                <img src="/logo.png" alt="Zia NFC" className="size-4 rounded-full object-cover" />
+                <span className="opacity-90">Zia NFC</span>
+                <span className="opacity-60">Admin</span>
               </div>
-              <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl" style={{ fontFamily: "'Outfit', sans-serif" }}>
-                Müştəri profilləri
+
+              <h1
+                className="mt-4 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl"
+                style={{ fontFamily: "'Outfit', sans-serif" }}
+              >
+                Müştəri dashboard
               </h1>
               <p className="mt-3 max-w-2xl text-base leading-7 text-slate-500">
-                Profil yarat, linki paylaş, QR kodu hazırla və kartların canlı
-                statusunu bir sadə paneldən idarə et.
+                Profil idarəetməsi, paylaşım axını və performans görünüşü—hamısı
+                bir premium paneldə.
               </p>
             </div>
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <div className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-sm px-4 py-3 text-sm font-bold text-slate-600 shadow-sm">
+
+            <div className="flex items-stretch gap-3 sm:flex-row sm:items-center">
+              <div className="hidden sm:flex items-center rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-700">
                 Data mode:{" "}
-                <span
-                  className={
-                    hasSupabaseEnv() ? "text-emerald-600" : "text-amber-600"
-                  }
-                >
+                <span className="text-slate-900">
                   {hasSupabaseEnv() ? "Live" : "Demo"}
                 </span>
+                <span className="ml-2 rounded-full bg-[#29AEEE]/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.18em] text-[#29AEEE]">
+                  {hasSupabaseEnv() ? "Online" : "Preview"}
+                </span>
               </div>
+
               <form action={logoutAdmin}>
-                <button className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-slate-900 px-5 py-3 text-sm font-bold text-white shadow-sm transition-all duration-200 hover:bg-slate-800 active:scale-[0.96] sm:w-auto">
+                <button className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 shadow-sm transition-all duration-200 hover:border-[#29AEEE] hover:text-[#29AEEE] active:scale-[0.98] sm:w-auto">
                   <LogOut size={18} /> Çıxış
                 </button>
               </form>
             </div>
           </div>
 
-          <div className="grid border-t border-slate-200/50 bg-white/30 sm:grid-cols-3">
+          {/* Stats */}
+          <div className="dashboard-divider" />
+          <div className="grid sm:grid-cols-3">
             <Stat
               icon={<Users size={18} />}
               value={String(profiles.length)}
-              label="Ümumi profil"
+              label="Ümumi"
             />
-            <Stat
-              icon={<Activity size={18} />}
-              value={String(enabledCount)}
-              label="Aktiv profil"
-            />
-            <Stat
-              icon={<Database size={18} />}
-              value={String(disabledCount)}
-              label="Deaktiv profil"
-            />
+            <Stat icon={<Activity size={18} />} value={String(enabledCount)} label="Aktiv" />
+            <Stat icon={<Database size={18} />} value={String(disabledCount)} label="Deaktiv" />
           </div>
         </header>
 
+        {/* Alerts */}
         <div className="mt-5 space-y-3">
           {!hasSupabaseEnv() ? (
             <AlertBanner tone="warning" icon={<AlertCircle size={19} />}>
-              Supabase environment values yoxdur. Demo profil görünə bilər, amma
-              real create/edit üçün Vercel env-ləri lazımdır.
+              Supabase env-ləri tapılmadı. Demo profil görünə bilər.
             </AlertBanner>
           ) : null}
 
@@ -169,63 +172,79 @@ export default async function AdminPage({ searchParams }: Props) {
           ) : null}
         </div>
 
-        <section className="mt-6 grid gap-6 lg:grid-cols-[0.88fr_1.12fr]">
-          <aside className="self-start rounded-[2.25rem] border border-white/80 bg-white/60 p-5 shadow-[0_20px_50px_rgba(15,23,42,0.05)] backdrop-blur-xl sm:p-6 lg:sticky lg:top-6">
-            <div className="mb-6 flex items-start justify-between gap-4">
-              <div>
-                <div className="grid size-12 place-items-center rounded-2xl bg-indigo-650 text-white shadow-md shadow-indigo-500/10">
+        {/* Layout */}
+        <section className="mt-6 grid gap-6 lg:grid-cols-[0.86fr_1.14fr]">
+          {/* Left: profile management */}
+          <aside className="dashboard-surface rounded-[2.25rem] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.25)] sm:p-6 lg:sticky lg:top-6 self-start">
+            <div className="flex items-start justify-between gap-4 mb-6">
+              <div className="min-w-0">
+                <div className="grid size-12 place-items-center rounded-2xl bg-[#29AEEE] text-white shadow-sm">
                   <Plus size={23} />
                 </div>
-                <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-slate-900" style={{ fontFamily: "'Outfit', sans-serif" }}>
-                  Yeni profil
+                <h2
+                  className="mt-4 text-2xl font-extrabold tracking-tight text-slate-900"
+                  style={{ fontFamily: "'Outfit', sans-serif" }}
+                >
+                  Yeni / redaktə
                 </h2>
                 <p className="mt-2 text-sm leading-6 text-slate-500">
-                  Ad, əlaqələr, sosial linklər və portfolio şəkillərini əlavə
-                  et.
+                  Ad, kontaktlar, sosial linklər və portfolio—premium görünüş üçün.
                 </p>
               </div>
             </div>
-            <ProfileForm />
+
+            <div className="rounded-[1.8rem] bg-slate-50 border border-slate-200 p-4 sm:p-5">
+              <ProfileForm />
+            </div>
           </aside>
 
+          {/* Right: directory + analytics */}
           <section className="space-y-4">
-            <div className="flex flex-col gap-3 rounded-[2.25rem] border border-white/80 bg-white/50 p-5 shadow-sm backdrop-blur-xl sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
-                  Directory
+            <div className="rounded-[2.25rem] dashboard-surface-soft p-5 sm:p-6">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <div className="min-w-0">
+                  <p className="text-[11px] font-black uppercase tracking-[0.22em] text-slate-500">
+                    Directory
+                  </p>
+                  <h2
+                    className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900"
+                    style={{ fontFamily: "'Outfit', sans-serif" }}
+                  >
+                    Profillər
+                  </h2>
+                </div>
+                <p className="text-sm font-semibold text-slate-500">
+                  Linklər avtomatik formatdadır: <span className="font-extrabold text-slate-700">/{"{slug}"}</span>
                 </p>
-                <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900" style={{ fontFamily: "'Outfit', sans-serif" }}>
-                  İdarə olunan profillər
-                </h2>
               </div>
-              <p className="text-sm font-semibold text-slate-400">
-                Linklər artıq{" "}
-                <span className="font-extrabold text-slate-800">/{"{slug}"}</span>{" "}
-                formatındadır.
-              </p>
+
+              {/* ultra-clean “analytics” placeholders */}
+              <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                <MiniMetric title="Aktiv paylaşımlar" value={String(enabledCount)} />
+                <MiniMetric title="Yenilik" value={profiles.length ? "—" : "0"} />
+                <MiniMetric title="Hazır QR" value={profiles.length ? String(profiles.length) : "0"} />
+              </div>
             </div>
 
             {profiles.length === 0 ? (
-              <div className="rounded-[2.25rem] border border-dashed border-slate-200 bg-white/40 p-10 text-center shadow-sm">
-                <div className="mx-auto grid size-12 place-items-center rounded-2xl bg-indigo-50 text-indigo-500 border border-indigo-100">
-                  <Users size={22} />
+              <div className="rounded-[2.25rem] border-2 border-dashed border-slate-200 bg-slate-50 p-10 text-center">
+                <div className="mx-auto grid size-12 place-items-center rounded-2xl bg-white border border-slate-200 shadow-sm">
+                  <Users size={22} className="text-[#29AEEE]" />
                 </div>
-                <h3 className="mt-4 text-xl font-extrabold tracking-tight text-slate-900" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                <h3
+                  className="mt-4 text-xl font-extrabold tracking-tight text-slate-900"
+                  style={{ fontFamily: "'Outfit', sans-serif" }}
+                >
                   Hələ profil yoxdur
                 </h3>
                 <p className="mt-2 text-sm leading-6 text-slate-500">
-                  İlk müştəri profilini soldakı formdan yarat.
+                  Soldakı formdan ilk müştəri profilini yaradın.
                 </p>
               </div>
             ) : null}
 
             {profilesWithQr.map(({ profile, url, qr }) => (
-              <ProfileCard
-                key={profile.slug}
-                profile={profile}
-                url={url}
-                qr={qr}
-              />
+              <ProfileCard key={profile.slug} profile={profile} url={url} qr={qr} />
             ))}
           </section>
         </section>
@@ -233,6 +252,7 @@ export default async function AdminPage({ searchParams }: Props) {
     </main>
   );
 }
+
 
 function AlertBanner({
   tone,
@@ -243,18 +263,41 @@ function AlertBanner({
   icon: React.ReactNode;
   children: React.ReactNode;
 }) {
+  // Palette restricted to black / white / brand-blue only.
   const styles = {
-    success: "border-emerald-100 bg-emerald-50/80 text-emerald-800",
-    warning: "border-amber-100 bg-amber-50/80 text-amber-900",
-    error: "border-rose-100 bg-rose-50/80 text-rose-800",
+    success:
+      "border-white/15 bg-white/5 text-white",
+    warning:
+      "border-white/15 bg-white/5 text-white",
+    error:
+      "border-white/15 bg-white/5 text-white",
   }[tone];
 
   return (
     <div
       className={`flex items-start gap-3 rounded-2xl border p-4 text-sm font-semibold leading-6 shadow-sm backdrop-blur-sm ${styles}`}
     >
-      {icon}
+      <span className="grid size-6 place-items-center rounded-xl border border-white/15 bg-white/5">
+        {icon}
+      </span>
       <span>{children}</span>
+    </div>
+  );
+}
+
+
+function MiniMetric({ title, value }: { title: string; value: string }) {
+  return (
+    <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
+      <p className="text-[11px] font-black uppercase tracking-[0.22em] text-slate-500">
+        {title}
+      </p>
+      <p
+        className="mt-2 text-xl font-extrabold tracking-tight text-slate-900"
+        style={{ fontFamily: "'Outfit', sans-serif" }}
+      >
+        {value}
+      </p>
     </div>
   );
 }
@@ -269,19 +312,29 @@ function Stat({
   label: string;
 }) {
   return (
-    <div className="border-t border-slate-200/50 p-6 first:border-t-0 sm:border-l sm:border-t-0 sm:first:border-l-0 hover:bg-white/30 transition-colors duration-200">
+    <div className="border-t border-slate-100 p-6 first:border-t-0 sm:border-l sm:border-t-0 sm:first:border-l-0 hover:bg-slate-50 transition-colors duration-200">
       <div className="flex items-center gap-4">
-        <div className="grid size-12 place-items-center rounded-2xl bg-indigo-50 text-indigo-600 shadow-sm border border-indigo-100/50">
+        <div className="grid size-12 place-items-center rounded-2xl bg-[#29AEEE]/10 border border-[#29AEEE]/20 text-[#29AEEE]">
           {icon}
         </div>
         <div>
-          <p className="text-3xl font-extrabold tracking-tight text-slate-900" style={{ fontFamily: "'Outfit', sans-serif" }}>{value}</p>
-          <p className="text-xs font-bold uppercase tracking-wider text-slate-400">{label}</p>
+          <p
+            className="text-3xl font-extrabold tracking-tight text-slate-900"
+            style={{ fontFamily: "'Outfit', sans-serif" }}
+          >
+            {value}
+          </p>
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            {label}
+          </p>
         </div>
       </div>
     </div>
   );
 }
+
+
+
 
 function ProfileCard({
   profile,
@@ -293,7 +346,7 @@ function ProfileCard({
   qr: string;
 }) {
   return (
-    <article className="overflow-hidden rounded-[2.25rem] border border-white/80 bg-white/60 shadow-[0_16px_50px_rgba(15,23,42,0.04)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_60px_rgba(99,102,241,0.08)]">
+    <article className="overflow-hidden rounded-[2.25rem] border border-slate-100 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
       <div className="p-5 sm:p-6">
         <div className="flex flex-col justify-between gap-5 md:flex-row md:items-start">
           <div className="flex min-w-0 gap-4">
@@ -304,9 +357,10 @@ function ProfileCard({
                 className="size-16 rounded-3xl object-cover shadow-sm ring-1 ring-slate-100"
               />
             ) : (
-              <div className="grid size-16 shrink-0 place-items-center rounded-3xl bg-indigo-50 text-2xl font-bold text-indigo-600 shadow-sm border border-indigo-100/50">
+              <div className="grid size-16 shrink-0 place-items-center rounded-3xl bg-[#29AEEE]/10 text-2xl font-bold text-[#29AEEE] shadow-sm border border-[#29AEEE]/20">
                 {profile.name.charAt(0)}
               </div>
+
             )}
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
@@ -315,9 +369,10 @@ function ProfileCard({
                 </h3>
                 <StatusBadge enabled={profile.enabled} />
               </div>
-              <p className="mt-1 truncate text-sm font-semibold text-indigo-650">
+              <p className="mt-1 truncate text-sm font-semibold text-slate-500">
                 /{profile.slug}
               </p>
+
               {profile.profession ? (
                 <p className="mt-2 text-sm font-semibold text-slate-500">
                   {profile.profession}
@@ -356,51 +411,55 @@ function ProfileCard({
                 <DeleteProfileButton id={profile.id} slug={profile.slug} />
               </>
             ) : null}
+
           </div>
         </div>
 
-        <div className="mt-5 grid gap-3 lg:grid-cols-[1fr_auto]">
-          <div className="flex min-w-0 items-center gap-2 rounded-2xl border border-slate-100 bg-slate-50/50 px-4 py-3 text-sm font-semibold text-slate-500">
+      <div className="mt-5 grid gap-3 lg:grid-cols-[1fr_auto]">
+          <div className="flex min-w-0 items-center gap-2 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">
             <Link2 size={17} className="shrink-0 text-slate-400" />
             <a
               href={url}
-              className="min-w-0 break-all transition-colors hover:text-indigo-600"
+              className="min-w-0 break-all transition-colors hover:text-white"
             >
               {url}
             </a>
           </div>
-          <div className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-white/70 backdrop-blur-sm p-3 text-slate-900">
+
+      <div className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-3 text-slate-700">
             <img
               src={qr}
               alt={`${profile.name} QR kodu`}
-              className="size-20 rounded-xl bg-slate-50 p-1.5 shadow-sm border border-slate-100"
+              className="size-20 rounded-xl bg-white p-1.5 shadow-sm border border-slate-200"
             />
             <div className="hidden pr-2 sm:block">
-              <div className="flex items-center gap-2 text-sm font-bold text-slate-700">
-                <QrCode size={16} className="text-indigo-650" /> QR kod
+              <div className="flex items-center gap-2 text-sm font-bold text-slate-900">
+                <QrCode size={16} className="text-[#29AEEE]" /> QR kod
               </div>
-              <p className="mt-1 text-xs font-semibold text-slate-400">
+              <p className="mt-1 text-xs font-semibold text-slate-500">
                 Hazır paylaşım
               </p>
             </div>
           </div>
+
         </div>
       </div>
 
-      <details className="group border-t border-slate-100/60 bg-slate-50/40 hover:bg-slate-50/70 transition-colors duration-200">
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 text-sm font-bold text-slate-800 transition sm:px-6">
+      <details className="group border-t border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-colors duration-200">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 text-sm font-bold text-slate-700 transition sm:px-6">
           <span className="inline-flex items-center gap-2">
-            <WandSparkles size={17} className="text-indigo-600" /> Profili redaktə et
+            <WandSparkles size={17} className="text-[#29AEEE]" /> Profili redaktə et
           </span>
           <ArrowUpRight
             className="transition-transform duration-150 ease-out group-open:rotate-45 text-slate-400"
             size={17}
           />
         </summary>
-        <div className="border-t border-slate-200/50 bg-white/50 backdrop-blur-md p-5 sm:p-6">
+        <div className="border-t border-slate-100 bg-white p-5 sm:p-6">
           <ProfileForm profile={profile} />
         </div>
       </details>
+
     </article>
   );
 }
@@ -408,37 +467,49 @@ function ProfileCard({
 function StatusBadge({ enabled }: { enabled: boolean }) {
   return (
     <span
-      className={`rounded-full px-3 py-1 text-xs font-bold ${enabled ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100" : "bg-amber-50 text-amber-700 ring-1 ring-amber-100"}`}
+      className={`rounded-full px-3 py-1 text-xs font-bold border ${
+        enabled
+          ? "bg-[#29AEEE]/10 border-[#29AEEE]/30 text-[#29AEEE]"
+          : "bg-slate-100 border-slate-200 text-slate-500"
+      }`}
     >
       {enabled ? "Aktiv" : "Deaktiv"}
     </span>
   );
 }
 
+
 function Login({ error }: { error: boolean }) {
   return (
-    <main className="grid min-h-screen place-items-center bg-gradient-to-tr from-[#f8fafc] via-[#f1f5f9] to-[#eef2f6] px-4 py-10 text-slate-900 font-sans">
+    <main className="grid min-h-screen place-items-center bg-[#f5f7fa] px-4 py-10 font-sans">
       <form
         action={loginAdmin}
-        className="w-full max-w-md rounded-[2.25rem] border border-white/80 bg-white/60 p-7 shadow-[0_30px_70px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:p-8 hover:shadow-[0_30px_80px_rgba(99,102,241,0.1)] transition-all duration-300"
+        className="w-full max-w-md rounded-[2.25rem] border border-slate-200 bg-white p-7 shadow-[0_20px_60px_rgba(0,0,0,0.12)] sm:p-8 transition-all duration-300"
       >
         <div className="flex items-center gap-3">
-          <img src="/logo.png" alt="Zia NFC" className="size-12 rounded-2xl object-cover shadow-sm ring-1 ring-slate-100" />
-          <div className="grid size-12 place-items-center rounded-2xl bg-slate-900 text-white shadow-md">
+          <img
+            src="/logo.png"
+            alt="Zia NFC"
+            className="size-12 rounded-2xl object-cover shadow-sm ring-1 ring-slate-200"
+          />
+          <div className="grid size-12 place-items-center rounded-2xl bg-[#29AEEE]/10 text-[#29AEEE] shadow-md border border-[#29AEEE]/20">
             <LockKeyhole size={20} />
           </div>
         </div>
-        <p className="mt-5 text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
+        <p className="mt-5 text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
           Admin login
         </p>
-        <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 font-serif" style={{ fontFamily: "'Outfit', sans-serif" }}>
+        <h1
+          className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900"
+          style={{ fontFamily: "'Outfit', sans-serif" }}
+        >
           Zia NFC panel
         </h1>
         <p className="mt-3 text-sm leading-6 text-slate-500">
           Müştəri profillərini idarə etmək üçün daxil olun.
         </p>
         {error ? (
-          <div className="mt-5 flex gap-2 rounded-2xl border border-rose-200 bg-rose-50 p-3 text-sm font-semibold text-rose-700">
+          <div className="mt-5 flex gap-2 rounded-2xl border border-red-100 bg-red-50 p-3 text-sm font-semibold text-red-600">
             <AlertCircle size={17} /> Email və ya şifrə yanlışdır.
           </div>
         ) : null}
@@ -453,7 +524,7 @@ function Login({ error }: { error: boolean }) {
               name="email"
               type="email"
               required
-              className={`${inputClass} pl-11`}
+              className={`${inputClass} pl-11 dashboard-focus-ring`}
             />
           </div>
         </label>
@@ -468,14 +539,15 @@ function Login({ error }: { error: boolean }) {
               name="password"
               type="password"
               required
-              className={`${inputClass} pl-11`}
+              className={`${inputClass} pl-11 dashboard-focus-ring`}
             />
           </div>
         </label>
-        <button className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-indigo-600 px-5 py-4 font-bold text-white shadow-md shadow-indigo-500/10 transition-all duration-200 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-500/20 active:scale-[0.96]">
+        <button className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#29AEEE] px-5 py-4 font-bold text-white shadow-md shadow-[#29AEEE]/20 transition-all duration-200 active:scale-[0.96] relative overflow-hidden hover:bg-[#1a9ad4]">
           Daxil ol <ArrowUpRight size={18} />
         </button>
       </form>
     </main>
   );
 }
+

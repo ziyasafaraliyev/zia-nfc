@@ -141,6 +141,7 @@ export async function saveProfile(formData: FormData) {
 
   const avatarFile = formData.get("avatar") as File | null;
   const backgroundFile = formData.get("background") as File | null;
+  const cvFile = formData.get("cv") as File | null;
   const galleryFiles = formData
     .getAll("galleryFiles")
     .filter((entry): entry is File => entry instanceof File && entry.size > 0);
@@ -159,12 +160,25 @@ export async function saveProfile(formData: FormData) {
     }
   }
 
+  if (cvFile && cvFile.size > 0) {
+    if (cvFile.size > maxUploadSize) {
+      redirectWithSaveError("file-too-large");
+    }
+    if (cvFile.type !== "application/pdf") {
+      redirectWithSaveError("unsupported-cv");
+    }
+  }
+
   const avatar = await uploadFile(avatarFile, `avatars/${slug}`).catch(() =>
     redirectWithSaveError("upload"),
   );
   const background = await uploadFile(
     backgroundFile,
     `backgrounds/${slug}`,
+  ).catch(() => redirectWithSaveError("upload"));
+  const cv = await uploadFile(
+    cvFile,
+    `cvs/${slug}`,
   ).catch(() => redirectWithSaveError("upload"));
   const galleryUploads = await Promise.all(
     galleryFiles.map((file) =>
@@ -184,6 +198,7 @@ export async function saveProfile(formData: FormData) {
 
   const removeAvatar = bool(formData, "remove_avatar");
   const removeBackground = bool(formData, "remove_background");
+  const removeCv = bool(formData, "remove_cv");
 
   const payload = {
     slug,
@@ -201,6 +216,7 @@ export async function saveProfile(formData: FormData) {
     linkedin: text(formData, "linkedin"),
     youtube: text(formData, "youtube"),
     location: text(formData, "location"),
+    location_url: text(formData, "location_url"),
     cover_style: option(
       formData,
       "cover_style",
@@ -215,6 +231,7 @@ export async function saveProfile(formData: FormData) {
     ),
     ...(avatar ? { avatar_url: avatar } : removeAvatar ? { avatar_url: null } : {}),
     ...(background ? { background_url: background } : removeBackground ? { background_url: null } : {}),
+    ...(cv ? { cv_url: cv } : removeCv ? { cv_url: null } : {}),
     gallery: galleryUrls,
   };
 
