@@ -71,6 +71,7 @@ export default function ProfileForm({ profile }: { profile?: Profile }) {
   const [removeBackground, setRemoveBackground] = useState(false);
   const [removeCv, setRemoveCv] = useState(false);
 
+  const [existingGalleryUrls, setExistingGalleryUrls] = useState<string[]>(profile?.gallery ?? []);
   const [selectedGalleryFiles, setSelectedGalleryFiles] = useState<{ name: string; previewUrl: string; file?: File }[]>([]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -131,6 +132,7 @@ export default function ProfileForm({ profile }: { profile?: Profile }) {
   return (
     <form onSubmit={handleSubmit} className="grid gap-5" style={{ fontFamily: "'Outfit', sans-serif" }}>
       <input type="hidden" name="id" value={profile?.id ?? ""} />
+      <textarea name="gallery" className="hidden" readOnly value={existingGalleryUrls.join("\n")} />
       
       {/* ── ŞƏXSİ MƏLUMATLAR ── */}
       <div className="grid gap-4 md:grid-cols-2">
@@ -348,10 +350,43 @@ export default function ProfileForm({ profile }: { profile?: Profile }) {
             <span className="text-[10px] font-medium text-slate-400">Maks. 5MB · JPG, PNG, WEBP, GIF</span>
           </div>
         </div>
+        {/* Existing gallery images */}
+        {existingGalleryUrls.length > 0 && (
+          <div className="mt-3 flex flex-col gap-2">
+            <div className="flex justify-between items-center">
+              <span className="text-[11px] font-bold text-green-600">Mövcud şəkillər ({existingGalleryUrls.length}):</span>
+              <button
+                type="button"
+                onClick={() => setExistingGalleryUrls([])}
+                className="text-xs text-red-500 hover:underline font-bold"
+              >
+                Hamısını sil
+              </button>
+            </div>
+            <div className="grid grid-cols-4 gap-2">
+              {existingGalleryUrls.map((url, idx) => (
+                <div key={url} className="relative aspect-square overflow-hidden rounded-xl border border-green-200 bg-white group">
+                  <img src={url} alt={`Portfolio ${idx + 1}`} className="h-full w-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setExistingGalleryUrls(prev => prev.filter((_, i) => i !== idx));
+                    }}
+                    className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                  >
+                    <Trash2 size={16} className="text-white" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        {/* New gallery files to upload */}
         {selectedGalleryFiles.length > 0 && (
           <div className="mt-3 flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <span className="text-[11px] font-bold text-slate-400">Yüklənəcək ({selectedGalleryFiles.length} şəkil):</span>
+              <span className="text-[11px] font-bold text-slate-400">Yüklənəcək ({selectedGalleryFiles.length} yeni şəkil):</span>
               <button
                 type="button"
                 onClick={() => setSelectedGalleryFiles([])}
