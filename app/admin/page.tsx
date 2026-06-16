@@ -93,6 +93,7 @@ export default async function AdminPage({ searchParams }: Props) {
         margin: 1,
         width: 256,
         errorCorrectionLevel: "H",
+        version: 5,
         color: { dark: "#29AEEE", light: "#ffffff" },
       });
 
@@ -102,15 +103,15 @@ export default async function AdminPage({ searchParams }: Props) {
           const qrJimp = await Jimp.read(qrBuffer);
           const logoJimp = await Jimp.read(logoPath);
 
-          logoJimp.resize({ w: 34, h: 34 });
+          logoJimp.resize({ w: 22, h: 22 });
 
           // Create a white background container for the logo
-          const whiteBg = new Jimp({ width: 42, height: 42, color: 0xffffffff });
-          whiteBg.composite(logoJimp, 4, 4);
+          const whiteBg = new Jimp({ width: 28, height: 28, color: 0xffffffff });
+          whiteBg.composite(logoJimp, 3, 3);
 
           // Center on 256x256 QR code
-          // (256 - 42) / 2 = 107
-          qrJimp.composite(whiteBg, 107, 107);
+          // (256 - 28) / 2 = 114
+          qrJimp.composite(whiteBg, 114, 114);
 
           qrBuffer = await qrJimp.getBuffer("image/png");
         }
