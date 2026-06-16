@@ -33,6 +33,9 @@ import {
 } from "lucide-react";
 import { cookies } from "next/headers";
 import QRCode from "qrcode";
+import path from "path";
+import fs from "fs";
+import { Jimp } from "jimp";
 
 type Props = {
   searchParams: Promise<{ error?: string; saved?: string }>;
@@ -86,11 +89,35 @@ export default async function AdminPage({ searchParams }: Props) {
   const profilesWithQr = await Promise.all(
     profiles.map(async (profile) => {
       const url = getProfileUrl(profile.slug);
-      const qr = await QRCode.toDataURL(url, {
+      let qrBuffer = await QRCode.toBuffer(url, {
         margin: 1,
-        width: 128,
-        color: { dark: "#020617", light: "#ffffff" },
+        width: 256,
+        color: { dark: "#29AEEE", light: "#ffffff" },
       });
+
+      try {
+        const logoPath = path.join(process.cwd(), "public", "logo.png");
+        if (fs.existsSync(logoPath)) {
+          const qrJimp = await Jimp.read(qrBuffer);
+          const logoJimp = await Jimp.read(logoPath);
+
+          logoJimp.resize({ w: 50, h: 50 });
+
+          // Create a white background container for the logo
+          const whiteBg = new Jimp({ width: 62, height: 62, color: 0xffffffff });
+          whiteBg.composite(logoJimp, 6, 6);
+
+          // Center on 256x256 QR code
+          // (256 - 62) / 2 = 97
+          qrJimp.composite(whiteBg, 97, 97);
+
+          qrBuffer = await qrJimp.getBuffer("image/png");
+        }
+      } catch (error) {
+        console.error("Error drawing logo on admin page QR code:", error);
+      }
+
+      const qr = `data:image/png;base64,${qrBuffer.toString("base64")}`;
       return { profile, url, qr };
     }),
   );
