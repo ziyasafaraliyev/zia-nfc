@@ -179,11 +179,11 @@ export default async function ProfilePage({ params }: Props) {
           </div>
 
           {/* Identity strip */}
-          <div className="lux-identity px-5 pb-6 pt-0">
+          <div className={`lux-identity px-5 pb-6 ${profile.avatar_url ? "pt-0" : "pt-5"}`}>
             <div className="flex items-end gap-4">
               {/* Avatar */}
-              <div className="-mt-16 shrink-0 relative z-10">
-                {profile.avatar_url ? (
+              {profile.avatar_url ? (
+                <div className="-mt-16 shrink-0 relative z-10">
                   <div className="lux-avatar-ring p-[3px] rounded-[1.7rem]">
                     <img
                       src={profile.avatar_url}
@@ -191,14 +191,8 @@ export default async function ProfilePage({ params }: Props) {
                       className="size-[7rem] rounded-[1.55rem] object-cover"
                     />
                   </div>
-                ) : (
-                  <div className="lux-avatar-ring p-[3px] rounded-[1.7rem]">
-                    <div className="grid size-[7rem] place-items-center rounded-[1.55rem] lux-avatar-fallback text-4xl font-black text-white">
-                      {profile.name.charAt(0)}
-                    </div>
-                  </div>
-                )}
-              </div>
+                </div>
+              ) : null}
 
               {/* Name + title */}
               <div className="pb-1 min-w-0">
