@@ -23,6 +23,7 @@ export async function GET(
   let png = await QRCode.toBuffer(profileUrl, {
     margin: 2,
     width: 512,
+    errorCorrectionLevel: "H",
     color: { dark: "#29AEEE", light: "#ffffff" },
   });
 
@@ -32,15 +33,15 @@ export async function GET(
       const qrJimp = await Jimp.read(png);
       const logoJimp = await Jimp.read(logoPath);
 
-      logoJimp.resize({ w: 100, h: 100 });
+      logoJimp.resize({ w: 68, h: 68 });
 
       // Create a white background container for the logo so it stands out and scans reliably
-      const whiteBg = new Jimp({ width: 124, height: 124, color: 0xffffffff });
-      whiteBg.composite(logoJimp, 12, 12);
+      const whiteBg = new Jimp({ width: 86, height: 86, color: 0xffffffff });
+      whiteBg.composite(logoJimp, 9, 9);
 
       // Center on the 512x512 QR code
-      // (512 - 124) / 2 = 194
-      qrJimp.composite(whiteBg, 194, 194);
+      // (512 - 86) / 2 = 213
+      qrJimp.composite(whiteBg, 213, 213);
 
       png = await qrJimp.getBuffer("image/png");
     }
