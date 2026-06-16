@@ -103,15 +103,15 @@ export default async function AdminPage({ searchParams }: Props) {
           const qrJimp = await Jimp.read(qrBuffer);
           const logoJimp = await Jimp.read(logoPath);
 
-          logoJimp.resize({ w: 22, h: 22 });
+          logoJimp.resize({ w: 13, h: 13 });
 
           // Create a white background container for the logo
-          const whiteBg = new Jimp({ width: 28, height: 28, color: 0xffffffff });
-          whiteBg.composite(logoJimp, 3, 3);
+          const whiteBg = new Jimp({ width: 18, height: 18, color: 0xffffffff });
+          whiteBg.composite(logoJimp, 2, 2);
 
           // Center on 256x256 QR code
-          // (256 - 28) / 2 = 114
-          qrJimp.composite(whiteBg, 114, 114);
+          // (256 - 18) / 2 = 119
+          qrJimp.composite(whiteBg, 119, 119);
 
           qrBuffer = await qrJimp.getBuffer("image/png");
         }

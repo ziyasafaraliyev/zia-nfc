@@ -34,15 +34,15 @@ export async function GET(
       const qrJimp = await Jimp.read(png);
       const logoJimp = await Jimp.read(logoPath);
 
-      logoJimp.resize({ w: 44, h: 44 });
+      logoJimp.resize({ w: 26, h: 26 });
 
       // Create a white background container for the logo so it stands out and scans reliably
-      const whiteBg = new Jimp({ width: 56, height: 56, color: 0xffffffff });
-      whiteBg.composite(logoJimp, 6, 6);
+      const whiteBg = new Jimp({ width: 36, height: 36, color: 0xffffffff });
+      whiteBg.composite(logoJimp, 5, 5);
 
       // Center on the 512x512 QR code
-      // (512 - 56) / 2 = 228
-      qrJimp.composite(whiteBg, 228, 228);
+      // (512 - 36) / 2 = 238
+      qrJimp.composite(whiteBg, 238, 238);
 
       png = await qrJimp.getBuffer("image/png");
     }
