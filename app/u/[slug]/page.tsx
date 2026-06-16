@@ -70,7 +70,7 @@ export default async function ProfilePage({ params }: Props) {
   const profileUrl = getProfileUrl(profile.slug);
   // QR-ı DataURL kimi yükləmək bəzi hallarda “başqa linkdə ayrıca şəkil” kimi açılma davranışı yarada bilər.
   // Bunun yerinə QR-ı image route-dan PNG kimi serv edirik.
-  const qrUrl = `/u/${profile.slug}/qr`;
+  const qrUrl = `/u/${profile.slug}/qr?v=logo`;
 
   const whatsapp = profile.whatsapp?.replace(/[^\d]/g, "");
 

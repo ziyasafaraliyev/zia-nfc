@@ -52,7 +52,7 @@ export async function GET(
     status: 200,
     headers: {
       "Content-Type": "image/png",
-      "Cache-Control": "public, max-age=31536000, immutable",
+      "Cache-Control": "public, max-age=86400, must-revalidate",
     },
   });
 }
