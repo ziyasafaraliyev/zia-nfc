@@ -818,11 +818,11 @@ a.dashboard-primary:hover {
         0 8px 24px rgba(0, 0, 0, 0.07);
 }
 
-/* QR wrap — keep dark so QR is scannable */
+/* QR wrap — keep white so QR is cleanly displayed without dark borders */
 .lux-qr-wrap {
-    background: #1e1b4b;
-    border: 1px solid rgba(99, 102, 241, 0.3);
-    box-shadow: 0 0 16px rgba(99, 102, 241, 0.12);
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 /* Footer divider */
