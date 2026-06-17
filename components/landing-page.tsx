@@ -489,6 +489,14 @@ function PhoneProfile({ compact = false }: { compact?: boolean }) {
           </button>
         </div>
 
+        {/* PDF button */}
+        <div className="mt-3">
+          <button className={`w-full flex items-center justify-center gap-2 rounded-2xl bg-red-50 border border-red-100/50 text-red-600 font-extrabold ${compact ? "py-2 text-xs" : "py-3 text-sm"} transition duration-150 active:scale-[0.98]`}>
+            <svg xmlns="http://www.w3.org/2000/svg" width={compact ? 13 : 16} height={compact ? 13 : 16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" /><polyline points="14 2 14 8 20 8" /><path d="M12 18v-6" /><path d="m9 15 3 3 3-3" /></svg>
+            <span>PDF (CV / Menyu)</span>
+          </button>
+        </div>
+
         {/* QR backup */}
         <div className={`flex items-center gap-3 rounded-2xl bg-slate-50 border border-slate-100 ${compact ? "mt-3 p-2.5" : "mt-3 p-3"}`}>
           <div className="shrink-0 rounded-xl bg-white border border-slate-200/80 p-1.5 shadow-sm">
