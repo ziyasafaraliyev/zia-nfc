@@ -2,9 +2,7 @@ import { NextResponse } from "next/server";
 import QRCode from "qrcode";
 import { getProfileBySlug } from "@/lib/profiles";
 import { getProfileUrl } from "@/lib/urls";
-import path from "path";
-import fs from "fs";
-import { Jimp } from "jimp";
+
 
 export const dynamic = "force-dynamic";
 
@@ -28,27 +26,7 @@ export async function GET(
     color: { dark: "#29AEEE", light: "#ffffff" },
   });
 
-  try {
-    const logoPath = path.join(process.cwd(), "public", "logo.png");
-    if (fs.existsSync(logoPath)) {
-      const qrJimp = await Jimp.read(png);
-      const logoJimp = await Jimp.read(logoPath);
 
-      logoJimp.resize({ w: 26, h: 26 });
-
-      // Create a white background container for the logo so it stands out and scans reliably
-      const whiteBg = new Jimp({ width: 36, height: 36, color: 0xffffffff });
-      whiteBg.composite(logoJimp, 5, 5);
-
-      // Center on the 512x512 QR code
-      // (512 - 36) / 2 = 238
-      qrJimp.composite(whiteBg, 238, 238);
-
-      png = await qrJimp.getBuffer("image/png");
-    }
-  } catch (error) {
-    console.error("Error drawing logo on QR code:", error);
-  }
 
   return new NextResponse(png as unknown as BodyInit, {
     status: 200,
