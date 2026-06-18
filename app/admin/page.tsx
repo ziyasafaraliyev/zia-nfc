@@ -1,4 +1,5 @@
 import {
+  isAdminAuthenticated,
   loginAdmin,
   logoutAdmin,
   saveProfile,
@@ -73,12 +74,10 @@ function adminErrorMessage(error?: string) {
 
 export default async function AdminPage({ searchParams }: Props) {
   const params = await searchParams;
-  const store = await cookies();
-  const allowedEmail = process.env.ADMIN_EMAIL || "ziya@gmail.com";
-  const isAdmin = store.get("zia_admin_email")?.value === allowedEmail;
+  const isAdmin = await isAdminAuthenticated();
 
   if (!isAdmin) {
-    return <Login error={params.error === "login"} />;
+    return <Login error={params.error} />;
   }
 
   const profiles = await listProfiles();
@@ -503,7 +502,7 @@ function StatusBadge({ enabled }: { enabled: boolean }) {
 }
 
 
-function Login({ error }: { error: boolean }) {
+function Login({ error }: { error?: string }) {
   return (
     <main className="grid min-h-screen place-items-center bg-[#f5f7fa] px-4 py-10 font-sans">
       <form
@@ -534,7 +533,10 @@ function Login({ error }: { error: boolean }) {
         </p>
         {error ? (
           <div className="mt-5 flex gap-2 rounded-2xl border border-red-100 bg-red-50 p-3 text-sm font-semibold text-red-600">
-            <AlertCircle size={17} /> Email və ya şifrə yanlışdır.
+            <AlertCircle size={17} />{" "}
+            {error === "rate-limited"
+              ? "Çox sayda uğursuz cəhd. Zəhmət olmasa 1 dəqiqə gözləyin."
+              : "Email və ya şifrə yanlışdır."}
           </div>
         ) : null}
         <label className="mt-6 block text-xs font-bold text-slate-600 uppercase tracking-wide" style={{ fontFamily: "'Outfit', sans-serif" }}>

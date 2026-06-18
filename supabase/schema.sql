@@ -80,6 +80,8 @@ on storage.objects for select
 using (bucket_id = 'profiles');
 
 drop policy if exists "Service role uploads profile images" on storage.objects;
-create policy "Service role uploads profile images"
-on storage.objects for insert
+drop policy if exists "Service role manages profile images" on storage.objects;
+create policy "Service role manages profile images"
+on storage.objects for all
+using (bucket_id = 'profiles' and auth.role() = 'service_role')
 with check (bucket_id = 'profiles' and auth.role() = 'service_role');

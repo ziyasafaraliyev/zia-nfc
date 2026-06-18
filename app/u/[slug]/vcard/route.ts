@@ -17,21 +17,31 @@ export async function GET(request: Request, { params }: Props) {
     return new NextResponse("Not found", { status: 404 });
   }
 
+  const escapeVCardValue = (val: string) => {
+    return val
+      .replace(/\\/g, "\\\\")
+      .replace(/;/g, "\\;")
+      .replace(/,/g, "\\,")
+      .replace(/\r?\n/g, "\\n");
+  };
+
+  const cleanUrl = (url: string) => url.replace(/[\r\n]/g, "");
+
   const vcard = [
     "BEGIN:VCARD",
     "VERSION:3.0",
-    `FN:${profile.name}`,
-    profile.profession ? `TITLE:${profile.profession}` : "",
-    profile.phone ? `TEL;TYPE=CELL:${profile.phone}` : "",
+    `FN:${escapeVCardValue(profile.name)}`,
+    profile.profession ? `TITLE:${escapeVCardValue(profile.profession)}` : "",
+    profile.phone ? `TEL;TYPE=CELL:${escapeVCardValue(profile.phone)}` : "",
     profile.website
-      ? `URL:${profile.website}`
-      : `URL:${getProfileUrl(profile.slug)}`,
-    profile.location ? `ADR;TYPE=WORK:;;${profile.location};;;;` : "",
-    profile.bio ? `NOTE:${profile.bio}` : "",
+      ? `URL:${cleanUrl(profile.website)}`
+      : `URL:${cleanUrl(getProfileUrl(profile.slug))}`,
+    profile.location ? `ADR;TYPE=WORK:;;${escapeVCardValue(profile.location)};;;;` : "",
+    profile.bio ? `NOTE:${escapeVCardValue(profile.bio)}` : "",
     "END:VCARD",
   ]
     .filter(Boolean)
-    .join("\n");
+    .join("\r\n");
 
   return new NextResponse(vcard, {
     headers: {
