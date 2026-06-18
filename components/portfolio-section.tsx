@@ -23,14 +23,14 @@ export default function PortfolioSection({ gallery, profileName }: { gallery: st
           setCurrentIndex(0);
           setIsOpen(true);
         }}
-        className="mt-3 flex min-h-[3.5rem] w-full items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white/70 px-4 py-3 text-sm font-bold text-gray-800 hover:bg-white hover:scale-[1.02] transition duration-200 active:scale-[0.98] shadow-sm shadow-black/5"
+        className="lux-save-contact group mt-2.5 flex h-14 w-full items-center justify-between gap-3 rounded-2xl px-4 lux-card-enter-4 transition-transform duration-200 hover:scale-[1.02]"
       >
         <span className="flex items-center gap-3">
-          <span className="grid size-9 place-items-center rounded-xl bg-[#29AEEE]/15 text-[#29AEEE]">
+          <span className="lux-save-icon grid size-9 place-items-center rounded-xl">
             <Image size={18} />
           </span>
           <span className="flex flex-col items-start leading-tight">
-            <span>Portfolio</span>
+            <span className="text-sm font-bold text-gray-800">Portfolio</span>
             <span className="text-[10px] font-semibold text-gray-400 mt-0.5">{gallery.length} iş nümayiş olunur</span>
           </span>
         </span>
