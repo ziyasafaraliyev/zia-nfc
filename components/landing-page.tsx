@@ -33,6 +33,7 @@ const navItems = [
   ["İş Prinsipi", "#how-it-works"],
   ["Özəlliklər", "#features"],
   ["Kartlar", "#cards"],
+  ["Məhsullar", "#nfc-products"],
   ["Qiymətlər", "#pricing"],
   ["FAQ", "#faq"]
 ];
@@ -89,7 +90,7 @@ const plans = [
     price: "59 AZN",
     note: "Ən çox tələb olunan",
     featured: true,
-    items: ["Portfolio qalereyası", "Kontaktı yadda saxla (.vcf)", "Premium kart dizaynı", "Prioritet quraşdırma"]
+    items: ["Portfolio qalereyası", "Kontaktı yadda saxla (.vcf)", "Premium kart dizaynı", "Premium qablaşdırma"]
   },
   {
     name: "Studio",
@@ -115,14 +116,14 @@ export default function LandingPage() {
     <main className="min-h-screen overflow-hidden bg-white text-slate-950">
       <section className="relative min-h-screen border-b border-slate-200/70 bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_56%,#eef6ff_100%)] px-4 pb-16 pt-4 sm:px-6 lg:px-8">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/70 to-transparent" />
-        <nav className="mx-auto flex max-w-5xl items-center justify-center gap-6 rounded-full border border-white/70 px-4 py-2 shadow-[0_18px_60px_rgba(15,23,42,0.12)] backdrop-blur-xl">
-          <Link href="/" className="group flex items-center gap-2 rounded-full bg-slate-950 px-3.5 py-1.5 pr-4.5 text-base font-black tracking-tight text-white shadow-lg shadow-slate-200/30 transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-slate-800">
-            <img src="/logo.png" alt="Zia NFC" className="size-6 rounded-full object-cover" />
+        <nav className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 rounded-full border border-white/70 px-6 py-2.5 shadow-[0_18px_60px_rgba(15,23,42,0.12)] backdrop-blur-xl">
+          <Link href="/" className="group flex shrink-0 items-center gap-2 rounded-full bg-slate-950 px-3.5 py-1.5 pr-4.5 text-base font-black tracking-tight text-white shadow-lg shadow-slate-200/30 transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-slate-800">
+            <img src="/logo.png" alt="Zia NFC" className="size-9 rounded-full object-cover" />
             Zia NFC
           </Link>
-          <div className="hidden items-center gap-4 rounded-full border border-slate-200/70 bg-slate-950/5 px-3 py-1.5 text-base font-semibold text-slate-700 md:flex">
+          <div className="hidden shrink-0 items-center gap-1 rounded-full border border-slate-200/70 bg-slate-950/5 px-2 py-1.5 text-sm font-semibold text-slate-700 md:flex">
             {navItems.map(([label, href]) => (
-              <a key={label} href={href} className="rounded-full px-5 py-2 text-base font-bold uppercase tracking-[0.14em] text-slate-900 transition duration-200 ease-out hover:bg-white hover:text-slate-950">
+              <a key={label} href={href} className="whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-bold uppercase tracking-[0.1em] text-slate-900 transition duration-200 ease-out hover:bg-white hover:text-slate-950 lg:px-4 lg:text-base lg:tracking-[0.12em]">
                 {label}
               </a>
             ))}
@@ -162,12 +163,87 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <section className="bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[0.94fr_1.06fr]">
+          <ProfileShowcase />
+          <div>
+            <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-700">Mobil öncəlikli</p>
+            <h2 className="mt-4 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">Telefonlarda sürətli açılan və rahat istifadə olunan profil səhifəsi.</h2>
+            <p className="mt-5 text-lg leading-8 text-slate-600">
+              İlk ekran kim olduğunuzu, nə etdiyinizi və sizinlə necə əlaqə saxlayacağınızı aydınlaşdırır. Qalereya, sosial linklər, vCard və QR ehtiyat nüsxəsi qarışıqlıq yaratmadan əlçatandır.
+            </p>
+            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+              {["Sürətli mobil profil", "Təmiz əlaqə düymələri", "Vizual portfolio", "Admin nəzarəti"].map((item) => (
+                <div key={item} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 font-bold text-slate-700 shadow-sm">
+                  <Check className="text-sky-500" size={19} /> {item}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <NfcCardShowcase />
+
+      <section id="nfc-products" className="bg-white px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-700">Məhsullar</p>
+          <h2 className="mt-4 max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">NFC məhsulları</h2>
+          <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
+            Biznesinizi rəqəmsallaşdıracaq premium NFC məhsullarımız ilə tanış olun.
+          </p>
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              { title: "NFC Vizit Kart", desc: "Premium dizaynlı NFC smart vizit kartı ilə müştərilərinizə təsirli ilk tanışlıq yaradın.", image: "/vizit-kart.jpg" },
+              { title: "NFC Stiker", desc: "Telefon, noutbuk və ya istənilən səthə yapışdırıla bilən kompakt NFC stiker.", image: "/stiker.jpg" },
+              { title: "NFC Masa Standı", desc: "Kafe, restoran və ofislər üçün masaüstü NFC menyu və ya profil standı.", image: "/masa-standi.jpg" },
+            ].map((product, index) => (
+              <motion.div
+                key={product.title}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, margin: "-80px" }}
+                variants={fadeUp}
+                transition={{ duration: 0.45, delay: index * 0.05, ease: [0.23, 1, 0.32, 1] }}
+                className="group flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_16px_50px_rgba(15,23,42,0.06)] transition duration-200 ease-out hover:-translate-y-1 hover:border-sky-200 hover:shadow-[0_22px_70px_rgba(15,23,42,0.1)]"
+              >
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
+                  {product.image ? (
+                    <img
+                      src={product.image}
+                      alt={product.title}
+                      className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center text-slate-300">
+                      <Layers3 size={48} />
+                    </div>
+                  )}
+                </div>
+                <div className="flex flex-1 flex-col p-6">
+                  <h3 className="text-xl font-black tracking-tight text-slate-950">{product.title}</h3>
+                  <p className="mt-3 flex-1 leading-7 text-slate-600">{product.desc}</p>
+                  <a
+                    href="https://wa.me/994702990252"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-sky-500 py-3.5 text-sm font-black uppercase tracking-[0.14em] text-white shadow-[0_12px_30px_rgba(14,165,233,0.2)] transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98]"
+                  >
+                    Sifariş et <ArrowRight size={16} />
+                  </a>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section id="how-it-works" className="bg-slate-950 px-4 py-20 text-white sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-end">
+          <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-300">İş Prinsipi</p>
-              <h2 className="mt-4 max-w-xl text-4xl font-black tracking-tight sm:text-5xl">Premium nəticə ilə sadə bir ritual.</h2>
+              <h2 className="mt-4 max-w-xl text-4xl font-black tracking-tight sm:text-5xl">NFC texnologiyası ilə innovativ həllər.</h2>
             </div>
             <div className="grid gap-3 md:grid-cols-4">
               {steps.map(([title, text], index) => (
@@ -189,60 +265,6 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-
-      <section id="features" className="bg-white px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
-            <div>
-              <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-700">Özəlliklər</p>
-              <h2 className="mt-4 max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-                Müasir vizit kartın sahib olmalı olduğu hər şey tək bir sürətli profildə.
-              </h2>
-            </div>
-          </div>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map(({ icon: Icon, title, text }, index) => (
-              <motion.div
-                key={title}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, margin: "-80px" }}
-                variants={fadeUp}
-                transition={{ duration: 0.42, delay: index * 0.035, ease: [0.23, 1, 0.32, 1] }}
-                className="group rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_16px_50px_rgba(15,23,42,0.06)] transition duration-200 ease-out hover:-translate-y-1 hover:border-sky-200 hover:shadow-[0_22px_70px_rgba(15,23,42,0.1)]"
-              >
-                <div className="grid size-12 place-items-center rounded-2xl bg-slate-950 text-sky-300 transition-transform duration-200 ease-out group-hover:scale-[1.03]">
-                  <Icon size={24} />
-                </div>
-                <h3 className="mt-6 text-xl font-black tracking-tight text-slate-950">{title}</h3>
-                <p className="mt-3 leading-7 text-slate-600">{text}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[0.94fr_1.06fr]">
-          <ProfileShowcase />
-          <div>
-            <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-700">Mobil öncəlikli</p>
-            <h2 className="mt-4 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">Müştərinizin həqiqətən açdığı ekran üçün hazırlanmışdır.</h2>
-            <p className="mt-5 text-lg leading-8 text-slate-600">
-              İlk ekran kim olduğunuzu, nə etdiyinizi və sizinlə necə əlaqə saxlayacağınızı aydınlaşdırır. Qalereya, sosial linklər, vCard və QR ehtiyat nüsxəsi qarışıqlıq yaratmadan əlçatandır.
-            </p>
-            <div className="mt-8 grid gap-3 sm:grid-cols-2">
-              {["Sürətli mobil profil", "Təmiz əlaqə düymələri", "Vizual portfolio", "Admin nəzarəti"].map((item) => (
-                <div key={item} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 font-bold text-slate-700 shadow-sm">
-                  <Check className="text-sky-500" size={19} /> {item}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <NfcCardShowcase />
 
       <section id="pricing" className="bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
@@ -305,6 +327,38 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <section id="features" className="bg-white px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
+            <div>
+              <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-700">Özəlliklər</p>
+              <h2 className="mt-4 max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
+                Müasir vizit kartın sahib olmalı olduğu hər şey tək bir sürətli profildə.
+              </h2>
+            </div>
+          </div>
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {features.map(({ icon: Icon, title, text }, index) => (
+              <motion.div
+                key={title}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, margin: "-80px" }}
+                variants={fadeUp}
+                transition={{ duration: 0.42, delay: index * 0.035, ease: [0.23, 1, 0.32, 1] }}
+                className="group rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_16px_50px_rgba(15,23,42,0.06)] transition duration-200 ease-out hover:-translate-y-1 hover:border-sky-200 hover:shadow-[0_22px_70px_rgba(15,23,42,0.1)]"
+              >
+                <div className="grid size-12 place-items-center rounded-2xl bg-slate-950 text-sky-300 transition-transform duration-200 ease-out group-hover:scale-[1.03]">
+                  <Icon size={24} />
+                </div>
+                <h3 className="mt-6 text-xl font-black tracking-tight text-slate-950">{title}</h3>
+                <p className="mt-3 leading-7 text-slate-600">{text}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section id="faq" className="bg-slate-950 px-4 py-20 text-white sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.75fr_1.25fr]">
           <div>
@@ -343,13 +397,43 @@ export default function LandingPage() {
           </div>
 
           <div className="flex flex-col items-start gap-4 md:items-end">
-            <a
-              href="https://wa.me/994702990252"
-              className="inline-flex items-center gap-2 rounded-full bg-sky-500 px-5 py-3 text-sm font-black uppercase tracking-[0.14em] text-white transition duration-200 ease-out hover:bg-sky-400"
-              aria-label="WhatsApp"
-            >
-              WhatsApp ilə əlaqə <MessageCircle size={16} />
-            </a>
+            <div className="flex flex-wrap items-center gap-3">
+              <a
+                href="https://www.instagram.com/zianfc.az"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-full bg-sky-500 px-5 py-3 text-sm font-black uppercase tracking-[0.14em] text-white transition duration-200 ease-out hover:bg-sky-400"
+                aria-label="Instagram"
+              >
+                <Instagram size={16} /> Instagram
+              </a>
+              <a
+                href="https://www.tiktok.com/@zianfc.az"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-full bg-sky-500 px-5 py-3 text-sm font-black uppercase tracking-[0.14em] text-white transition duration-200 ease-out hover:bg-sky-400"
+                aria-label="TikTok"
+              >
+                <Music2 size={16} /> TikTok
+              </a>
+              <a
+                href="https://mail.google.com/mail/?view=cm&to=nfczia@gmail.com"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-full bg-sky-500 px-5 py-3 text-sm font-black uppercase tracking-[0.14em] text-white transition duration-200 ease-out hover:bg-sky-400"
+                aria-label="E-poçt"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                E-poçt
+              </a>
+              <a
+                href="https://wa.me/994702990252"
+                className="inline-flex items-center gap-2 rounded-full bg-sky-500 px-5 py-3 text-sm font-black uppercase tracking-[0.14em] text-white transition duration-200 ease-out hover:bg-sky-400"
+                aria-label="WhatsApp"
+              >
+                <MessageCircle size={16} /> WhatsApp
+              </a>
+            </div>
             <div className="flex flex-wrap gap-4 text-sm text-slate-500">
               <span>© {new Date().getFullYear()} Zia NFC</span>
               <a href="#" className="transition-colors hover:text-white">Məxfilik</a>
@@ -484,14 +568,14 @@ function PhoneProfile({ compact = false }: { compact?: boolean }) {
 
         {/* vCard button */}
         <div className={compact ? "mt-3" : "mt-3"}>
-          <button className={`w-full flex items-center justify-center gap-2 rounded-2xl bg-sky-50 border border-sky-100/50 text-sky-700 font-extrabold ${compact ? "py-2 text-xs" : "py-3 text-sm"} transition duration-150 active:scale-[0.98]`}>
+          <button className={`w-full flex items-center justify-center gap-2 rounded-2xl bg-sky-50 border border-sky-100/50 text-sky-700 font-extrabold ${compact ? "py-3 text-xs" : "py-4 text-sm"} transition duration-150 active:scale-[0.98]`}>
             <UserPlus size={compact ? 13 : 16} /> Kontaktı yadda saxla
           </button>
         </div>
 
         {/* PDF button */}
         <div className="mt-3">
-          <button className={`w-full flex items-center justify-center gap-2 rounded-2xl bg-red-50 border border-red-100/50 text-red-600 font-extrabold ${compact ? "py-2 text-xs" : "py-3 text-sm"} transition duration-150 active:scale-[0.98]`}>
+          <button className={`w-full flex items-center justify-center gap-2 rounded-2xl bg-sky-50 border border-sky-100/50 text-sky-700 font-extrabold ${compact ? "py-3 text-xs" : "py-4 text-sm"} transition duration-150 active:scale-[0.98]`}>
             <svg xmlns="http://www.w3.org/2000/svg" width={compact ? 13 : 16} height={compact ? 13 : 16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" /><polyline points="14 2 14 8 20 8" /><path d="M12 18v-6" /><path d="m9 15 3 3 3-3" /></svg>
             <span>PDF (CV / Menyu)</span>
           </button>
