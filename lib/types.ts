@@ -23,4 +23,6 @@ export type Profile = {
   gallery: string[];
   cv_url?: string | null;
   theme?: "light" | "dark" | null;
+  client_email?: string | null;
+  client_password?: string | null;
 };

@@ -61,7 +61,7 @@ async function compressImage(file: File, maxWidth = 1200, quality = 0.75): Promi
   });
 }
 
-export default function ProfileForm({ profile }: { profile?: Profile }) {
+export default function ProfileForm({ profile, userRole = "super_admin" }: { profile?: Profile; userRole?: "super_admin" | "client" }) {
   const [submitting, setSubmitting] = useState(false);
   const [statusText, setStatusText] = useState("");
 
@@ -148,6 +148,7 @@ export default function ProfileForm({ profile }: { profile?: Profile }) {
           label="Profil linki / slug"
           defaultValue={profile?.slug}
           required
+          readOnly={userRole === "client"}
         />
         <Field
           name="profession"
@@ -483,15 +484,38 @@ export default function ProfileForm({ profile }: { profile?: Profile }) {
         <input type="hidden" name="remove_cv" value={removeCv ? "on" : "off"} />
       </div>
 
-      <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition">
-        <span>Profil aktivdir</span>
-        <input
-          type="checkbox"
-          name="enabled"
-          defaultChecked={profile?.enabled ?? true}
-          className="size-5 rounded accent-indigo-650"
-        />
-      </label>
+      {userRole === "super_admin" && (
+        <>
+          <div className="rounded-3xl border border-slate-200 bg-white p-5 space-y-4">
+            <span className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide">
+              Müştəri Giriş Məlumatları
+            </span>
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field
+                name="client_email"
+                label="Müştəri E-poçtu"
+                defaultValue={profile?.client_email}
+                placeholder="musteri@example.com"
+              />
+              <Field
+                name="client_password"
+                label="Yeni Şifrə (dəyişmək üçün doldurun)"
+                placeholder="••••••••"
+              />
+            </div>
+          </div>
+
+          <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition">
+            <span>Profil aktivdir</span>
+            <input
+              type="checkbox"
+              name="enabled"
+              defaultChecked={profile?.enabled ?? true}
+              className="size-5 rounded accent-indigo-650"
+            />
+          </label>
+        </>
+      )}
 
       <button
         disabled={submitting}
@@ -510,12 +534,14 @@ function Field({
   defaultValue,
   required = false,
   placeholder,
+  readOnly = false,
 }: {
   name: string;
   label: string;
   defaultValue?: string | null;
   required?: boolean;
   placeholder?: string;
+  readOnly?: boolean;
 }) {
   return (
     <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide">
@@ -525,7 +551,8 @@ function Field({
         defaultValue={defaultValue ?? ""}
         required={required}
         placeholder={placeholder}
-        className={inputClass}
+        readOnly={readOnly}
+        className={`${inputClass} ${readOnly ? "bg-slate-100 cursor-not-allowed opacity-80" : ""}`}
       />
     </label>
   );

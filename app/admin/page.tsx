@@ -1,5 +1,5 @@
 import {
-  isAdminAuthenticated,
+  getAdminSession,
   loginAdmin,
   logoutAdmin,
   saveProfile,
@@ -69,18 +69,99 @@ function adminErrorMessage(error?: string) {
 
 export default async function AdminPage({ searchParams }: Props) {
   const params = await searchParams;
-  const isAdmin = await isAdminAuthenticated();
+  const session = await getAdminSession();
 
-  if (!isAdmin) {
+  if (!session) {
     return <Login error={params.error} />;
   }
 
   const profiles = await listProfiles();
-  const enabledCount = profiles.filter((profile) => profile.enabled).length;
-  const disabledCount = profiles.length - enabledCount;
+  const isSuper = session.role === "super_admin";
   const errorMessage = adminErrorMessage(params.error);
 
+  if (!isSuper) {
+    const profile = profiles.find((p) => p.id === session.profileId);
+    if (!profile) {
+      return (
+        <main className="grid min-h-screen place-items-center bg-[#f5f7fa] px-4 py-10 font-sans">
+          <div className="text-center">
+            <h1 className="text-2xl font-black text-red-500">Xəta</h1>
+            <p className="mt-2 text-slate-500">Hesabınıza uyğun profil tapılmadı.</p>
+          </div>
+        </main>
+      );
+    }
 
+    return (
+      <main className="min-h-screen dashboard-bg px-4 py-6 text-slate-900 sm:px-6 lg:px-8" style={{ fontFamily: "'Outfit', sans-serif" }}>
+        <div className="mx-auto max-w-3xl">
+          {/* Top bar */}
+          <header className="dashboard-surface rounded-[2.25rem] overflow-hidden">
+            <div className="flex flex-col gap-5 p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between">
+              <div className="min-w-0">
+                <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-600 shadow-sm">
+                  <img src="/logo.png" alt="Zia NFC" className="size-4 rounded-full object-cover" />
+                  <span className="text-slate-800 font-extrabold">Zia NFC</span>
+                  <span className="text-[#29AEEE] font-black">Müştəri</span>
+                </div>
+
+                <h1 className="mt-4 text-3xl font-black tracking-[-0.03em] text-slate-900 sm:text-4xl">
+                  Profil Paneli
+                </h1>
+                <p className="mt-2 text-sm leading-relaxed text-slate-400 font-medium">
+                  Xoş gəlmisiniz! Aşağıdakı form vasitəsilə profil məlumatlarınızı yeniləyə bilərsiniz.
+                </p>
+              </div>
+
+              <div className="flex items-stretch gap-3 sm:flex-row sm:items-center">
+                <a
+                  href={getProfileUrl(profile.slug)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 shadow-sm transition-all duration-200 hover:border-[#29AEEE] hover:text-[#29AEEE] hover:bg-[#29AEEE]/5 active:scale-[0.98]"
+                >
+                  <ArrowUpRight size={15} /> Profilə bax
+                </a>
+                <form action={logoutAdmin}>
+                  <button className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 shadow-sm transition-all duration-200 hover:border-red-300 hover:text-red-500 hover:bg-red-50 active:scale-[0.98]">
+                    <LogOut size={15} /> Çıxış
+                  </button>
+                </form>
+              </div>
+            </div>
+          </header>
+
+          {/* Alerts */}
+          <div className="mt-5 space-y-3">
+            {params.saved ? (
+              <AlertBanner tone="success" icon={<BadgeCheck size={19} />}>
+                Profiliniz uğurla yadda saxlanıldı.
+              </AlertBanner>
+            ) : null}
+
+            {errorMessage ? (
+              <AlertBanner tone="error" icon={<AlertCircle size={19} />}>
+                {errorMessage}
+              </AlertBanner>
+            ) : null}
+          </div>
+
+          {/* Edit Form */}
+          <section className="mt-6 dashboard-surface rounded-[2.25rem] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.25)] sm:p-6">
+            <h2 className="text-xl font-black tracking-tight text-slate-900 mb-6">
+              Məlumatların Redaktəsi
+            </h2>
+            <div className="rounded-[1.8rem] bg-slate-50 border border-slate-200 p-4 sm:p-5">
+              <ProfileForm profile={profile} userRole="client" />
+            </div>
+          </section>
+        </div>
+      </main>
+    );
+  }
+
+  const enabledCount = profiles.filter((profile) => profile.enabled).length;
+  const disabledCount = profiles.length - enabledCount;
 
   return (
     <main className="min-h-screen dashboard-bg px-4 py-6 text-slate-900 sm:px-6 lg:px-8" style={{ fontFamily: "'Outfit', sans-serif" }}>
@@ -99,7 +180,7 @@ export default async function AdminPage({ searchParams }: Props) {
                 className="mt-4 text-3xl font-black tracking-[-0.03em] text-slate-900 sm:text-4xl"
                 style={{ fontFamily: "'Outfit', sans-serif", letterSpacing: "-0.03em" }}
               >
-                Müştəri Paneli
+                Super Admin
               </h1>
               <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400 font-medium">
                 Profillər, QR kodlar və müştəri idarəetməsi bir yerdə.

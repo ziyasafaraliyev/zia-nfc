@@ -133,6 +133,10 @@ async function getClientIp(): Promise<string> {
 // ──────────────────────────────────────────────
 // Admin Auth Helpers
 // ──────────────────────────────────────────────
+function hashPassword(password: string): string {
+  return crypto.createHash("sha256").update(password).digest("hex");
+}
+
 async function getAdminEmail(): Promise<string | null> {
   const store = await cookies();
   const token = store.get(ADMIN_COOKIE)?.value;
@@ -140,23 +144,63 @@ async function getAdminEmail(): Promise<string | null> {
   return verifySessionToken(token);
 }
 
-async function requireAdmin() {
+export type AdminSession = {
+  email: string;
+  role: "super_admin" | "client";
+  profileId?: string;
+  profileSlug?: string;
+};
+
+export async function getAdminSession(): Promise<AdminSession | null> {
   const email = await getAdminEmail();
+  if (!email) return null;
+
   const allowedEmail = process.env.ADMIN_EMAIL;
-  if (!allowedEmail) {
-    throw new Error("ADMIN_EMAIL environment variable is not set");
+  if (allowedEmail && email === allowedEmail) {
+    return { email, role: "super_admin" };
   }
-  if (!email || email !== allowedEmail) {
+
+  const supabase = createServiceSupabaseClient();
+  if (!supabase) return null;
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("id, slug")
+    .eq("client_email", email)
+    .single();
+
+  if (profile) {
+    return {
+      email,
+      role: "client",
+      profileId: profile.id,
+      profileSlug: profile.slug,
+    };
+  }
+
+  return null;
+}
+
+async function requireSuperAdmin() {
+  const session = await getAdminSession();
+  if (!session || session.role !== "super_admin") {
+    throw new Error("Super Admin session required");
+  }
+  return session;
+}
+
+async function requireAdmin() {
+  const session = await getAdminSession();
+  if (!session) {
     throw new Error("Admin session not found or invalid");
   }
+  return session;
 }
 
 /** Exported for admin page.tsx to check session */
 export async function isAdminAuthenticated(): Promise<boolean> {
-  const email = await getAdminEmail();
-  const allowedEmail = process.env.ADMIN_EMAIL;
-  if (!allowedEmail || !email) return false;
-  return email === allowedEmail;
+  const session = await getAdminSession();
+  return session !== null;
 }
 
 // ──────────────────────────────────────────────
@@ -234,11 +278,36 @@ function sanitizeUrl(formData: FormData, key: string): string | null {
     return value;
   }
 
-  if (!isValidUrl(value)) {
-    return null; // silently strip invalid URLs
+  // If it already starts with http:// or https://, validate it
+  if (value.startsWith("http://") || value.startsWith("https://")) {
+    return isValidUrl(value) ? value : null;
   }
 
-  return value;
+  // If it contains a dot, it's likely a partial URL (e.g. instagram.com/user)
+  if (value.includes(".")) {
+    const prefixed = `https://${value}`;
+    return isValidUrl(prefixed) ? prefixed : null;
+  }
+
+  // If it's a social key and looks like a username (e.g. "ziya" or "@ziya")
+  const username = value.replace(/^@/, "");
+  switch (key) {
+    case "instagram":
+      return `https://instagram.com/${username}`;
+    case "tiktok":
+      return `https://tiktok.com/@${username}`;
+    case "facebook":
+      return `https://facebook.com/${username}`;
+    case "x":
+      return `https://x.com/${username}`;
+    case "linkedin":
+      return `https://linkedin.com/in/${username}`;
+    case "youtube":
+      return `https://youtube.com/@${username}`;
+    default:
+      const defaultPrefixed = `https://${value}`;
+      return isValidUrl(defaultPrefixed) ? defaultPrefixed : null;
+  }
 }
 
 // ──────────────────────────────────────────────
@@ -297,34 +366,64 @@ export async function loginAdmin(formData: FormData) {
   const allowedEmail = process.env.ADMIN_EMAIL;
   const allowedPassword = process.env.ADMIN_PASSWORD;
 
-  if (!allowedEmail || !allowedPassword) {
-    throw new Error("ADMIN_EMAIL and ADMIN_PASSWORD environment variables must be set");
-  }
-
-  if (
-    !email ||
-    !password ||
-    email !== allowedEmail ||
-    password !== allowedPassword
-  ) {
-    recordLoginAttempt(ip);
+  if (!email || !password) {
     redirect("/admin?error=login");
   }
 
-  // Successful login — clear rate limit record
-  clearLoginAttempts(ip);
+  // 1. Try Super Admin login
+  if (
+    allowedEmail &&
+    allowedPassword &&
+    email === allowedEmail &&
+    password === allowedPassword
+  ) {
+    clearLoginAttempts(ip);
 
-  const token = createSessionToken(email);
-  const store = await cookies();
-  store.set(ADMIN_COOKIE, token, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 60 * 8,
-    path: "/",
-  });
+    const token = createSessionToken(email);
+    const store = await cookies();
+    store.set(ADMIN_COOKIE, token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 8,
+      path: "/",
+    });
 
-  redirect("/admin");
+    redirect("/admin");
+  }
+
+  // 2. Try Client Admin login
+  const supabase = createServiceSupabaseClient();
+  if (supabase) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("client_email, client_password")
+      .eq("client_email", email)
+      .single();
+
+    if (profile && profile.client_password) {
+      const hashedPassword = hashPassword(password);
+      if (profile.client_password === hashedPassword) {
+        clearLoginAttempts(ip);
+
+        const token = createSessionToken(email);
+        const store = await cookies();
+        store.set(ADMIN_COOKIE, token, {
+          httpOnly: true,
+          sameSite: "lax",
+          secure: process.env.NODE_ENV === "production",
+          maxAge: 60 * 60 * 8,
+          path: "/",
+        });
+
+        redirect("/admin");
+      }
+    }
+  }
+
+  // Failed login
+  recordLoginAttempt(ip);
+  redirect("/admin?error=login");
 }
 
 export async function logoutAdmin() {
@@ -332,9 +431,8 @@ export async function logoutAdmin() {
   store.delete(ADMIN_COOKIE);
   redirect("/admin");
 }
-
 export async function saveProfile(formData: FormData) {
-  await requireAdmin();
+  const session = await requireAdmin();
   const supabase = createServiceSupabaseClient();
   if (!supabase) {
     redirectWithSaveError("supabase");
@@ -343,15 +441,43 @@ export async function saveProfile(formData: FormData) {
   const id = text(formData, "id");
   const rawSlug = text(formData, "slug");
   const name = text(formData, "name");
-  const slug = slugify(rawSlug || name || "");
+
+  // Load existing profile if it's a Client Admin to preserve critical fields
+  let existingProfile: any = null;
+  const isSuper = session.role === "super_admin";
+
+  if (!isSuper) {
+    if (!id || id !== session.profileId) {
+      redirectWithSaveError("unauthorized");
+    }
+    const { data } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", id)
+      .single();
+    if (!data) {
+      redirectWithSaveError("save");
+    }
+    existingProfile = data;
+  }
+
+  const slug = isSuper
+    ? slugify(rawSlug || name || "")
+    : existingProfile.slug;
+
+  const enabled = isSuper
+    ? bool(formData, "enabled")
+    : existingProfile.enabled;
 
   if (!slug || !name) {
     redirectWithSaveError("required");
   }
 
-  const slugError = validateSlug(slug);
-  if (slugError) {
-    redirectWithSaveError(slugError);
+  if (isSuper) {
+    const slugError = validateSlug(slug);
+    if (slugError) {
+      redirectWithSaveError(slugError);
+    }
   }
 
   const avatarFile = formData.get("avatar") as File | null;
@@ -415,9 +541,20 @@ export async function saveProfile(formData: FormData) {
   const removeBackground = bool(formData, "remove_background");
   const removeCv = bool(formData, "remove_cv");
 
+  let client_email = undefined;
+  let client_password = undefined;
+
+  if (isSuper) {
+    client_email = text(formData, "client_email") || null;
+    const rawPass = text(formData, "client_password");
+    if (rawPass) {
+      client_password = hashPassword(rawPass);
+    }
+  }
+
   const payload = {
     slug,
-    enabled: bool(formData, "enabled"),
+    enabled,
     name,
     profession: text(formData, "profession"),
     bio: text(formData, "bio"),
@@ -454,6 +591,8 @@ export async function saveProfile(formData: FormData) {
     ...(background ? { background_url: background } : removeBackground ? { background_url: null } : {}),
     ...(cv ? { cv_url: cv } : removeCv ? { cv_url: null } : {}),
     gallery: galleryUrls,
+    ...(isSuper ? { client_email } : {}),
+    ...(isSuper && client_password !== undefined ? { client_password } : {}),
   };
 
   const query = id
@@ -476,7 +615,7 @@ export async function saveProfile(formData: FormData) {
 }
 
 export async function toggleProfile(formData: FormData) {
-  await requireAdmin();
+  await requireSuperAdmin();
   const supabase = createServiceSupabaseClient();
   const id = text(formData, "id");
   const enabled = formData.get("enabled") === "true";
@@ -498,7 +637,7 @@ export async function toggleProfile(formData: FormData) {
 }
 
 export async function deleteProfile(formData: FormData) {
-  await requireAdmin();
+  await requireSuperAdmin();
   const supabase = createServiceSupabaseClient();
   const id = text(formData, "id");
   const slug = text(formData, "slug");
