@@ -86,7 +86,11 @@ export default function Chatbot() {
       <style dangerouslySetInnerHTML={{ __html: `
         #tidio-chat-iframe,
         .tidio-chat-iframe,
-        #tidio-chat {
+        #tidio-chat,
+        iframe[src*="tidio.co"],
+        iframe[src*="tidio.com"],
+        div[class*="tidio"],
+        iframe[title*="Tidio"] {
           display: ${isOpen ? "block" : "none"} !important;
         }
       `}} />
