@@ -5,40 +5,36 @@ import Script from "next/script";
 
 export default function Chatbot() {
   const [ready, setReady] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const handleTidioReady = () => {
       setReady(true);
+      if (window.tidioChatApi) {
+        // Hide the default bubble initially
+        window.tidioChatApi.hide();
+        
+        // When the chat is closed, hide the bubble again
+        window.tidioChatApi.on("close", () => {
+          window.tidioChatApi?.hide();
+        });
+      }
     };
 
-    const handleTidioOpen = () => {
-      setIsOpen(true);
-    };
-
-    const handleTidioClose = () => {
-      setIsOpen(false);
-    };
-
-    document.addEventListener("tidioChat-ready", handleTidioReady);
-    document.addEventListener("tidioChat-open", handleTidioOpen);
-    document.addEventListener("tidioChat-close", handleTidioClose);
-
-    // Initial check if Tidio is already loaded
-    if (window.tidioChat) {
-      setReady(true);
+    if (window.tidioChatApi) {
+      handleTidioReady();
+    } else {
+      document.addEventListener("tidioChat-ready", handleTidioReady);
     }
 
     return () => {
       document.removeEventListener("tidioChat-ready", handleTidioReady);
-      document.removeEventListener("tidioChat-open", handleTidioOpen);
-      document.removeEventListener("tidioChat-close", handleTidioClose);
     };
   }, []);
 
   const handleOpenChat = () => {
-    if (window.tidioChat) {
-      window.tidioChat.open();
+    if (window.tidioChatApi) {
+      window.tidioChatApi.show();
+      window.tidioChatApi.open();
     } else {
       console.warn("Tidio is not loaded yet.");
     }
@@ -50,7 +46,8 @@ export default function Chatbot() {
         src="https://code.tidio.co/czthpvfnredauldg6xwb3irtbvdz8u8y.js"
         strategy="lazyOnload"
         onLoad={() => {
-          if (window.tidioChat) {
+          if (window.tidioChatApi) {
+            window.tidioChatApi.hide();
             setReady(true);
           }
         }}
@@ -81,21 +78,6 @@ export default function Chatbot() {
           <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
         </span>
       </button>
-
-      {/* Hide the default Tidio iframe entirely until the chat window is opened */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        #tidio-chat-iframe,
-        .tidio-chat-iframe,
-        #tidio-chat,
-        iframe[src*="tidio.co"],
-        iframe[src*="tidio.com"],
-        div[class*="tidio"],
-        iframe[title*="Tidio"] {
-          opacity: ${isOpen ? "1" : "0"} !important;
-          pointer-events: ${isOpen ? "auto" : "none"} !important;
-          visibility: ${isOpen ? "visible" : "hidden"} !important;
-        }
-      `}} />
     </>
   );
 }
@@ -103,11 +85,12 @@ export default function Chatbot() {
 // Global declaration for TypeScript
 declare global {
   interface Window {
-    tidioChat?: {
-      hide: () => void;
-      show: () => void;
+    tidioChatApi?: {
+      on: (event: string, callback: () => void) => void;
       open: () => void;
       close: () => void;
+      show: () => void;
+      hide: () => void;
     };
   }
 }
