@@ -444,6 +444,12 @@ export async function saveProfile(formData: FormData) {
       ["top", "center", "bottom"],
       "center",
     ),
+    theme: option(
+      formData,
+      "theme",
+      ["light", "dark"],
+      "light",
+    ),
     ...(avatar ? { avatar_url: avatar } : removeAvatar ? { avatar_url: null } : {}),
     ...(background ? { background_url: background } : removeBackground ? { background_url: null } : {}),
     ...(cv ? { cv_url: cv } : removeCv ? { cv_url: null } : {}),

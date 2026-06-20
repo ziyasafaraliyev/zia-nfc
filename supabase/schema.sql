@@ -22,6 +22,7 @@ create table if not exists public.profiles (
   cover_style text not null default 'auto',
   cover_position text not null default 'center',
   gallery text[] not null default '{}',
+  theme text not null default 'light',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -35,6 +36,7 @@ alter table public.profiles add column if not exists linkedin text;
 alter table public.profiles add column if not exists youtube text;
 alter table public.profiles add column if not exists location_url text;
 alter table public.profiles add column if not exists cv_url text;
+alter table public.profiles add column if not exists theme text not null default 'light';
 
 alter table public.profiles drop constraint if exists profiles_cover_style_check;
 alter table public.profiles add constraint profiles_cover_style_check

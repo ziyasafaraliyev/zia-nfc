@@ -22,4 +22,5 @@ export type Profile = {
   cover_position?: "top" | "center" | "bottom" | null;
   gallery: string[];
   cv_url?: string | null;
+  theme?: "light" | "dark" | null;
 };

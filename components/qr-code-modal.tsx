@@ -1,10 +1,31 @@
 "use client";
 
 import React, { useState } from "react";
-import { QrCode, X, ZoomIn } from "lucide-react";
+import { Download, QrCode, X, ZoomIn } from "lucide-react";
 
 export default function QrCodeModal({ qrUrl, profileName }: { qrUrl: string; profileName: string }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+
+  async function handleDownload() {
+    setDownloading(true);
+    try {
+      const res = await fetch(qrUrl);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${profileName.replace(/\s+/g, "-").toLowerCase()}-qr.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch {
+      // silent
+    } finally {
+      setDownloading(false);
+    }
+  }
 
   return (
     <>
@@ -59,9 +80,18 @@ export default function QrCodeModal({ qrUrl, profileName }: { qrUrl: string; pro
             <p className="text-xs font-semibold text-slate-400 mt-4 text-center">
               Digər cihazın kamerası ilə skan edərək profili tez aça bilərsiniz.
             </p>
+            <button
+              onClick={handleDownload}
+              disabled={downloading}
+              className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#29AEEE] px-5 py-3 text-sm font-bold text-white shadow-md shadow-[#29AEEE]/20 transition-all duration-200 hover:bg-[#1a9ad4] active:scale-[0.96] disabled:bg-slate-300 disabled:shadow-none"
+            >
+              <Download size={16} />
+              {downloading ? "Endirilir..." : "PNG olaraq endir"}
+            </button>
           </div>
         </div>
       )}
     </>
   );
 }
+

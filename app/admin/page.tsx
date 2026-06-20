@@ -25,7 +25,6 @@ import {
   Mail,
   Plus,
   Power,
-  QrCode,
   Save,
   Sparkles,
   Upload,
@@ -33,10 +32,6 @@ import {
   WandSparkles,
 } from "lucide-react";
 import { cookies } from "next/headers";
-import QRCode from "qrcode";
-import path from "path";
-import fs from "fs";
-import { Jimp } from "jimp";
 
 type Props = {
   searchParams: Promise<{ error?: string; saved?: string }>;
@@ -85,43 +80,7 @@ export default async function AdminPage({ searchParams }: Props) {
   const disabledCount = profiles.length - enabledCount;
   const errorMessage = adminErrorMessage(params.error);
 
-  const profilesWithQr = await Promise.all(
-    profiles.map(async (profile) => {
-      const url = getProfileUrl(profile.slug);
-      let qrBuffer = await QRCode.toBuffer(url, {
-        margin: 1,
-        width: 256,
-        errorCorrectionLevel: "H",
-        version: 5,
-        color: { dark: "#29AEEE", light: "#ffffff" },
-      });
 
-      try {
-        const logoPath = path.join(process.cwd(), "public", "logo.png");
-        if (fs.existsSync(logoPath)) {
-          const qrJimp = await Jimp.read(qrBuffer);
-          const logoJimp = await Jimp.read(logoPath);
-
-          logoJimp.resize({ w: 13, h: 13 });
-
-          // Create a white background container for the logo
-          const whiteBg = new Jimp({ width: 18, height: 18, color: 0xffffffff });
-          whiteBg.composite(logoJimp, 2, 2);
-
-          // Center on 256x256 QR code
-          // (256 - 18) / 2 = 119
-          qrJimp.composite(whiteBg, 119, 119);
-
-          qrBuffer = await qrJimp.getBuffer("image/png");
-        }
-      } catch (error) {
-        console.error("Error drawing logo on admin page QR code:", error);
-      }
-
-      const qr = `data:image/png;base64,${qrBuffer.toString("base64")}`;
-      return { profile, url, qr };
-    }),
-  );
 
   return (
     <main className="min-h-screen dashboard-bg px-4 py-6 text-slate-900 sm:px-6 lg:px-8" style={{ fontFamily: "'Outfit', sans-serif" }}>
@@ -244,10 +203,9 @@ export default async function AdminPage({ searchParams }: Props) {
               </div>
 
               {/* ultra-clean “analytics” placeholders */}
-              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 <MiniMetric title="Aktiv" value={String(enabledCount)} />
                 <MiniMetric title="Deaktiv" value={String(disabledCount)} />
-                <MiniMetric title="QR Hazır" value={profiles.length ? String(profiles.length) : "0"} />
               </div>
             </div>
 
@@ -268,9 +226,12 @@ export default async function AdminPage({ searchParams }: Props) {
               </div>
             ) : null}
 
-            {profilesWithQr.map(({ profile, url, qr }) => (
-              <ProfileCard key={profile.slug} profile={profile} url={url} qr={qr} />
-            ))}
+            {profiles.map((profile) => {
+              const url = getProfileUrl(profile.slug);
+              return (
+                <ProfileCard key={profile.slug} profile={profile} url={url} />
+              );
+            })}
           </section>
         </section>
       </div>
@@ -362,11 +323,9 @@ function Stat({
 function ProfileCard({
   profile,
   url,
-  qr,
 }: {
   profile: Profile;
   url: string;
-  qr: string;
 }) {
   return (
     <article className="overflow-hidden rounded-[2.25rem] border border-slate-100 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
@@ -438,33 +397,18 @@ function ProfileCard({
           </div>
         </div>
 
-      <div className="mt-5 grid gap-3 lg:grid-cols-[1fr_auto]">
+        <div className="mt-5">
           <div className="flex min-w-0 items-center gap-2 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">
             <Link2 size={17} className="shrink-0 text-slate-400" />
             <a
               href={url}
-              className="min-w-0 break-all transition-colors hover:text-white"
+              target="_blank"
+              rel="noreferrer"
+              className="min-w-0 break-all transition-colors hover:text-[#29AEEE]"
             >
               {url}
             </a>
           </div>
-
-      <div className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-3 text-slate-700">
-            <img
-              src={qr}
-              alt={`${profile.name} QR kodu`}
-              className="size-20 rounded-xl bg-white p-1.5 shadow-sm border border-slate-200"
-            />
-              <div className="hidden pr-2 sm:block" style={{ fontFamily: "'Outfit', sans-serif" }}>
-                <div className="flex items-center gap-2 text-xs font-bold text-slate-800">
-                  <QrCode size={14} className="text-[#29AEEE]" /> QR Kod
-                </div>
-                <p className="mt-0.5 text-[11px] font-medium text-slate-400">
-                  Skan edərək paylaş
-                </p>
-            </div>
-          </div>
-
         </div>
       </div>
 

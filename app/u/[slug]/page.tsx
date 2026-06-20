@@ -119,11 +119,12 @@ export default async function ProfilePage({ params }: Props) {
     profile.facebook ||
     profile.x ||
     profile.linkedin ||
-    profile.youtube ||
-    profile.whatsapp;
+    profile.youtube;
+
+  const isDark = profile.theme === "dark";
 
   return (
-    <main className="lux-shell relative min-h-screen overflow-x-hidden">
+    <main className={`lux-shell relative min-h-screen overflow-x-hidden ${isDark ? "dark-theme" : ""}`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -311,14 +312,6 @@ export default async function ProfilePage({ params }: Props) {
                 icon={<Youtube size={18} />}
                 label="YouTube"
                 variant="youtube"
-              />
-            ) : null}
-            {profile.whatsapp ? (
-              <SocialChip
-                href={profile.whatsapp.startsWith("http") ? profile.whatsapp : `https://wa.me/${profile.whatsapp.replace(/[^\d]/g, "")}`}
-                icon={<MessageCircle size={18} />}
-                label="WhatsApp"
-                variant="whatsapp"
               />
             ) : null}
           </div>

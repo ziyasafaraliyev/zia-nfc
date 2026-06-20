@@ -73,6 +73,7 @@ export default function ProfileForm({ profile }: { profile?: Profile }) {
 
   const [existingGalleryUrls, setExistingGalleryUrls] = useState<string[]>(profile?.gallery ?? []);
   const [selectedGalleryFiles, setSelectedGalleryFiles] = useState<{ name: string; previewUrl: string; file?: File }[]>([]);
+  const [theme, setTheme] = useState(profile?.theme || "light");
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -283,6 +284,44 @@ export default function ProfileForm({ profile }: { profile?: Profile }) {
             { value: "bottom", label: "Aşağı" },
           ]}
         />
+      </div>
+
+      <div className="rounded-3xl border border-slate-200 bg-white p-5">
+        <span className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-2.5">
+          Profil Teması
+        </span>
+        <div className="grid grid-cols-2 gap-3">
+          <label className={`flex items-center justify-center gap-2 rounded-2xl border p-3 text-xs font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
+            theme === "light"
+              ? "border-[#29AEEE] bg-[#29AEEE]/5 text-[#29AEEE] shadow-sm"
+              : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+          }`}>
+            <input
+              type="radio"
+              name="theme"
+              value="light"
+              checked={theme === "light"}
+              onChange={() => setTheme("light")}
+              className="sr-only"
+            />
+            <span>Ağ (Light)</span>
+          </label>
+          <label className={`flex items-center justify-center gap-2 rounded-2xl border p-3 text-xs font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
+            theme === "dark"
+              ? "border-slate-800 bg-slate-900 text-white shadow-md shadow-slate-900/20"
+              : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+          }`}>
+            <input
+              type="radio"
+              name="theme"
+              value="dark"
+              checked={theme === "dark"}
+              onChange={() => setTheme("dark")}
+              className="sr-only"
+            />
+            <span>Qara (Dark)</span>
+          </label>
+        </div>
       </div>
 
       {/* ── PORTFOLIO ŞƏKİLLƏRİ ── */}
