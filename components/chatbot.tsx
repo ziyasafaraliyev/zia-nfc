@@ -7,18 +7,42 @@ export default function Chatbot() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const handleTidioReady = () => {
-      setReady(true);
-      // Hide the default Tidio widget trigger so we can use our custom styled one
+    const hideWidget = () => {
       if (window.tidioChat) {
         window.tidioChat.hide();
+        return true;
       }
+      return false;
+    };
+
+    // Try immediately
+    if (hideWidget()) {
+      setReady(true);
+    }
+
+    const handleTidioReady = () => {
+      setReady(true);
+      hideWidget();
+    };
+
+    const handleTidioClose = () => {
+      hideWidget();
     };
 
     document.addEventListener("tidioChat-ready", handleTidioReady);
+    document.addEventListener("tidioChat-close", handleTidioClose);
+
+    // Poll to ensure it is hidden as soon as it loads
+    const interval = setInterval(() => {
+      if (hideWidget()) {
+        clearInterval(interval);
+      }
+    }, 100);
 
     return () => {
       document.removeEventListener("tidioChat-ready", handleTidioReady);
+      document.removeEventListener("tidioChat-close", handleTidioClose);
+      clearInterval(interval);
     };
   }, []);
 
@@ -33,7 +57,7 @@ export default function Chatbot() {
   return (
     <>
       <Script
-        src="//code.tidio.co/czthpvfnredauldg6xwb3irtbvdz8u8y.js"
+        src="https://code.tidio.co/czthpvfnredauldg6xwb3irtbvdz8u8y.js"
         strategy="lazyOnload"
         onLoad={() => {
           // Fallback if event already fired before mount
