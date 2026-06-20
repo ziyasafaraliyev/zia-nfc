@@ -33,7 +33,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: "Content-Security-Policy",
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://code.tidio.co https://*.tidio.co https://*.tidio.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.tidio.co https://*.tidio.com; img-src 'self' blob: data: https://*.supabase.co https://*.tidio.co https://*.tidio.com; font-src 'self' data: https://fonts.gstatic.com https://*.tidio.co https://*.tidio.com; connect-src 'self' https://*.supabase.co https://*.tidio.co wss://*.tidio.co https://*.tidio.com wss://*.tidio.com; frame-src 'self' https://*.tidio.co https://*.tidio.com; media-src 'self' https://*.tidio.co https://*.tidio.com; frame-ancestors 'none';",
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://code.tidio.co https://*.tidio.co https://*.tidio.com https://*.tidiochat.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.tidio.co https://*.tidio.com https://*.tidiochat.com; img-src 'self' blob: data: https://*.supabase.co https://*.tidio.co https://*.tidio.com https://*.tidiochat.com; font-src 'self' data: https://fonts.gstatic.com https://*.tidio.co https://*.tidio.com https://*.tidiochat.com; connect-src 'self' https://*.supabase.co https://*.tidio.co wss://*.tidio.co https://*.tidio.com wss://*.tidio.com https://*.tidiochat.com wss://*.tidiochat.com; frame-src 'self' https://*.tidio.co https://*.tidio.com https://*.tidiochat.com; media-src 'self' https://*.tidio.co https://*.tidio.com https://*.tidiochat.com; frame-ancestors 'none';",
           },
         ],
       },
