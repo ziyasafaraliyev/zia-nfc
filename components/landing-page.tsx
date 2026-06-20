@@ -30,11 +30,11 @@ import Link from "next/link";
 import NfcCardShowcase from "@/components/nfc-card-showcase";
 
 const navItems = [
-  ["İş Prinsipi", "#how-it-works"],
-  ["Özəlliklər", "#features"],
   ["Kartlar", "#cards"],
   ["Məhsullar", "#nfc-products"],
+  ["İş Prinsipi", "#how-it-works"],
   ["Qiymətlər", "#pricing"],
+  ["Özəlliklər", "#features"],
   ["FAQ", "#faq"]
 ];
 
