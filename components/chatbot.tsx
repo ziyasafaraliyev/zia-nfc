@@ -5,44 +5,34 @@ import Script from "next/script";
 
 export default function Chatbot() {
   const [ready, setReady] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const hideWidget = () => {
-      if (window.tidioChat) {
-        window.tidioChat.hide();
-        return true;
-      }
-      return false;
-    };
-
-    // Try immediately
-    if (hideWidget()) {
-      setReady(true);
-    }
-
     const handleTidioReady = () => {
       setReady(true);
-      hideWidget();
+    };
+
+    const handleTidioOpen = () => {
+      setIsOpen(true);
     };
 
     const handleTidioClose = () => {
-      hideWidget();
+      setIsOpen(false);
     };
 
     document.addEventListener("tidioChat-ready", handleTidioReady);
+    document.addEventListener("tidioChat-open", handleTidioOpen);
     document.addEventListener("tidioChat-close", handleTidioClose);
 
-    // Poll to ensure it is hidden as soon as it loads
-    const interval = setInterval(() => {
-      if (hideWidget()) {
-        clearInterval(interval);
-      }
-    }, 100);
+    // Initial check if Tidio is already loaded
+    if (window.tidioChat) {
+      setReady(true);
+    }
 
     return () => {
       document.removeEventListener("tidioChat-ready", handleTidioReady);
+      document.removeEventListener("tidioChat-open", handleTidioOpen);
       document.removeEventListener("tidioChat-close", handleTidioClose);
-      clearInterval(interval);
     };
   }, []);
 
@@ -60,9 +50,7 @@ export default function Chatbot() {
         src="https://code.tidio.co/czthpvfnredauldg6xwb3irtbvdz8u8y.js"
         strategy="lazyOnload"
         onLoad={() => {
-          // Fallback if event already fired before mount
           if (window.tidioChat) {
-            window.tidioChat.hide();
             setReady(true);
           }
         }}
@@ -94,12 +82,12 @@ export default function Chatbot() {
         </span>
       </button>
 
-      {/* Inject custom CSS to force hide the default Tidio button in case of latency */}
+      {/* Hide the default Tidio iframe entirely until the chat window is opened */}
       <style dangerouslySetInnerHTML={{ __html: `
         #tidio-chat-iframe,
         .tidio-chat-iframe,
         #tidio-chat {
-          display: block !important;
+          display: ${isOpen ? "block" : "none"} !important;
         }
       `}} />
     </>
