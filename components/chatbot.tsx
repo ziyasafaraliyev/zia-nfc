@@ -91,7 +91,9 @@ export default function Chatbot() {
         iframe[src*="tidio.com"],
         div[class*="tidio"],
         iframe[title*="Tidio"] {
-          display: ${isOpen ? "block" : "none"} !important;
+          opacity: ${isOpen ? "1" : "0"} !important;
+          pointer-events: ${isOpen ? "auto" : "none"} !important;
+          visibility: ${isOpen ? "visible" : "hidden"} !important;
         }
       `}} />
     </>
