@@ -128,6 +128,9 @@ export default function LandingPage() {
               </a>
             ))}
           </div>
+          <Link href="/admin" className="inline-flex items-center justify-center gap-1.5 rounded-full bg-slate-950 px-4 py-2 text-xs font-black uppercase tracking-[0.1em] text-white shadow-md transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-slate-800 active:scale-[0.98] sm:px-5 sm:py-2.5 sm:text-sm">
+            Admin
+          </Link>
         </nav>
 
         <div className="mx-auto grid max-w-7xl items-center gap-12 pb-8 pt-14 lg:min-h-[calc(100vh-104px)] lg:grid-cols-[1.02fr_0.98fr] lg:pt-10">
