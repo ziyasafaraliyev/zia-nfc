@@ -117,8 +117,8 @@ export default function LandingPage() {
       <section className="relative min-h-screen border-b border-slate-200/70 bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_56%,#eef6ff_100%)] px-4 pb-16 pt-4 sm:px-6 lg:px-8">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/70 to-transparent" />
         <nav className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 rounded-full border border-white/70 px-6 py-2.5 shadow-[0_18px_60px_rgba(15,23,42,0.12)] backdrop-blur-xl">
-          <Link href="/" className="group flex shrink-0 items-center gap-2 rounded-full bg-slate-950 px-3.5 py-1.5 pr-4.5 text-base font-black tracking-tight text-white shadow-lg shadow-slate-200/30 transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-slate-800">
-            <img src="/logo.png" alt="Zia NFC" className="size-9 rounded-full object-cover" />
+          <Link href="/" className="group flex shrink-0 items-center gap-2.5 text-xl font-black tracking-tight text-slate-950 transition duration-200 ease-out hover:-translate-y-0.5">
+            <img src="/logo.png" alt="Zia NFC" className="size-11 rounded-full object-cover" />
             Zia NFC
           </Link>
           <div className="hidden shrink-0 items-center gap-1 rounded-full border border-slate-200/70 bg-slate-950/5 px-2 py-1.5 text-sm font-semibold text-slate-700 md:flex">

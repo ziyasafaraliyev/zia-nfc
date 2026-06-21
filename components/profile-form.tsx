@@ -490,18 +490,22 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
             <span className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide">
               Müştəri Giriş Məlumatları
             </span>
-            <div className="grid gap-4 md:grid-cols-2">
-              <Field
-                name="client_email"
-                label="Müştəri E-poçtu"
-                defaultValue={profile?.client_email}
-                placeholder="musteri@example.com"
-              />
-              <Field
-                name="client_password"
-                label="Yeni Şifrə (dəyişmək üçün doldurun)"
-                placeholder="••••••••"
-              />
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1">
+                <Field
+                  name="client_email"
+                  label="Müştəri E-poçtu"
+                  defaultValue={profile?.client_email}
+                  placeholder="musteri@example.com"
+                />
+              </div>
+              <div className="flex-1">
+                <Field
+                  name="client_password"
+                  label="Yeni Şifrə (dəyişmək üçün doldurun)"
+                  placeholder="••••••••"
+                />
+              </div>
             </div>
           </div>
 

@@ -9,13 +9,41 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Zia NFC | Premium NFC business card platform",
+  title: "Zia NFC | Premium NFC vizit kart platforması",
   description:
-    "Premium NFC business cards with digital profiles, portfolios, QR fallback, and contact sharing.",
+    "Premium NFC vizit kartları, rəqəmsal profillər, portfoliolar və kontakt paylaşımı üçün mükəmməl həll.",
+  metadataBase: new URL("https://zianfc.vercel.app"),
+  openGraph: {
+    title: "Zia NFC | Premium NFC vizit kart platforması",
+    description: "Premium NFC vizit kartları, rəqəmsal profillər, portfoliolar və kontakt paylaşımı üçün mükəmməl həll.",
+    url: "https://zianfc.vercel.app",
+    siteName: "Zia NFC",
+    locale: "az_AZ",
+    type: "website",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 630,
+        alt: "Zia NFC Logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Zia NFC | Premium NFC vizit kart platforması",
+    description: "Premium NFC vizit kartları, rəqəmsal profillər, portfoliolar və kontakt paylaşımı üçün mükəmməl həll.",
+    images: ["/logo.png"],
+  },
   icons: {
-    icon: "/logo.png",
-    apple: "/logo.png"
-  }
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/logo.png", type: "image/png" },
+    ],
+    apple: [
+      { url: "/logo.png" },
+    ],
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
