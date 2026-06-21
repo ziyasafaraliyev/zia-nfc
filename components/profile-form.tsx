@@ -9,6 +9,24 @@ const inputClass =
   "mt-1.5 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none backdrop-blur-sm transition duration-200 placeholder:text-slate-400 focus:border-[#29AEEE] focus:bg-white focus:ring-4 focus:ring-[#29AEEE]/20" +
   " font-[Outfit]";
 
+const socialBaseUrls = {
+  whatsapp: "https://wa.me/994",
+  instagram: "https://www.instagram.com/",
+  tiktok: "https://www.tiktok.com/@",
+  website: "https://www.",
+  facebook: "https://www.facebook.com/",
+  x: "https://x.com/",
+  linkedin: "https://www.linkedin.com/in/",
+  youtube: "https://www.youtube.com/@",
+} as const;
+
+function getSocialFieldValue(
+  key: keyof typeof socialBaseUrls,
+  value?: string | null,
+) {
+  return value?.trim() ? value : socialBaseUrls[key];
+}
+
 // Canvas-based client-side image compression function (preserves PNG transparency)
 async function compressImage(file: File, maxWidth = 1200, quality = 0.75): Promise<File> {
   return new Promise((resolve) => {
@@ -159,42 +177,42 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
         <Field
           name="whatsapp"
           label="WhatsApp"
-          defaultValue={profile?.whatsapp}
+          defaultValue={getSocialFieldValue("whatsapp", profile?.whatsapp)}
         />
         <Field
           name="instagram"
           label="Instagram URL"
-          defaultValue={profile?.instagram}
+          defaultValue={getSocialFieldValue("instagram", profile?.instagram)}
         />
         <Field
           name="tiktok"
           label="TikTok URL"
-          defaultValue={profile?.tiktok}
+          defaultValue={getSocialFieldValue("tiktok", profile?.tiktok)}
         />
         <Field
           name="website"
           label="Website URL"
-          defaultValue={profile?.website}
+          defaultValue={getSocialFieldValue("website", profile?.website)}
         />
         <Field
           name="facebook"
           label="Facebook URL"
-          defaultValue={profile?.facebook}
+          defaultValue={getSocialFieldValue("facebook", profile?.facebook)}
         />
         <Field
           name="x"
           label="X (Twitter) URL"
-          defaultValue={profile?.x}
+          defaultValue={getSocialFieldValue("x", profile?.x)}
         />
         <Field
           name="linkedin"
           label="LinkedIn URL"
-          defaultValue={profile?.linkedin}
+          defaultValue={getSocialFieldValue("linkedin", profile?.linkedin)}
         />
         <Field
           name="youtube"
           label="YouTube URL"
-          defaultValue={profile?.youtube}
+          defaultValue={getSocialFieldValue("youtube", profile?.youtube)}
         />
       </div>
 

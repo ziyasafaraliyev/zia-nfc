@@ -89,6 +89,7 @@ export default function ReservationModal({
   const [lastName, setLastName] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
+  const [note, setNote] = useState("");
   const minDate = getTomorrowDateISO();
 
   // Initialize with current date when modal opens
@@ -128,6 +129,7 @@ export default function ReservationModal({
     // Format WhatsApp message with Azerbaijani date format
     const formattedDate = formatDateAz(date);
     const formattedTime = formatTime24(time);
+    const noteLine = note.trim() ? `\nQeyd: ${note.trim()}` : "";
 
     const message = `Salam ${profileName}.
 
@@ -136,7 +138,7 @@ Yeni rezervasiya müraciəti:
 Ad: ${firstName}
 Soyad: ${lastName}
 Tarix: ${formattedDate}
-Saat: ${formattedTime}`;
+Saat: ${formattedTime}${noteLine}`;
 
     // Clean WhatsApp number (remove non-digits)
     const cleanNumber = whatsappNumber.replace(/[^\d]/g, "");
@@ -152,6 +154,7 @@ Saat: ${formattedTime}`;
     setLastName("");
     setDate(minDate);
     setTime("");
+    setNote("");
     onClose();
   };
 
@@ -259,6 +262,19 @@ Saat: ${formattedTime}`;
                 </span>
               )}
             </div>
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-xs font-bold text-slate-500 uppercase tracking-wide">
+              Qeyd
+            </label>
+            <textarea
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder="Əlavə qeyd yaza bilərsiniz"
+              rows={3}
+              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none transition focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/20"
+            />
           </div>
         </div>
 

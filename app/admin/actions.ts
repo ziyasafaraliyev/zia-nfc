@@ -276,13 +276,44 @@ function isValidUrl(url: string): boolean {
   }
 }
 
+const socialBaseUrls = {
+  whatsapp: "https://wa.me/994",
+  instagram: "https://www.instagram.com/",
+  tiktok: "https://www.tiktok.com/@",
+  website: "https://www.",
+  facebook: "https://www.facebook.com/",
+  x: "https://x.com/",
+  linkedin: "https://www.linkedin.com/in/",
+  youtube: "https://www.youtube.com/@",
+} as const;
+
+function normalizeUrlForCompare(value: string) {
+  return value.trim().replace(/\/+$/, "").toLowerCase();
+}
+
+function isBareSocialBaseUrl(key: string, value: string) {
+  const baseUrl = socialBaseUrls[key as keyof typeof socialBaseUrls];
+  if (!baseUrl) return false;
+  return normalizeUrlForCompare(value) === normalizeUrlForCompare(baseUrl);
+}
+
 function sanitizeUrl(formData: FormData, key: string): string | null {
   const value = text(formData, key);
   if (!value) return null;
 
-  // Allow phone-like values for whatsapp field (just digits)
+  if (isBareSocialBaseUrl(key, value)) {
+    return null;
+  }
+
+  // Ignore the bare WhatsApp prefix until the user adds the remaining digits.
+  if (key === "whatsapp" && normalizeUrlForCompare(value) === normalizeUrlForCompare(socialBaseUrls.whatsapp)) {
+    return null;
+  }
+
+  // Allow phone-like values for whatsapp field and normalize them into wa.me links.
   if (key === "whatsapp" && /^\+?[\d\s\-()]+$/.test(value)) {
-    return value;
+    const digits = value.replace(/\D/g, "");
+    return digits ? `https://wa.me/${digits}` : null;
   }
 
   // If it already starts with http:// or https://, validate it
@@ -300,17 +331,17 @@ function sanitizeUrl(formData: FormData, key: string): string | null {
   const username = value.replace(/^@/, "");
   switch (key) {
     case "instagram":
-      return `https://instagram.com/${username}`;
+      return `https://www.instagram.com/${username}`;
     case "tiktok":
-      return `https://tiktok.com/@${username}`;
+      return `https://www.tiktok.com/@${username}`;
     case "facebook":
-      return `https://facebook.com/${username}`;
+      return `https://www.facebook.com/${username}`;
     case "x":
       return `https://x.com/${username}`;
     case "linkedin":
-      return `https://linkedin.com/in/${username}`;
+      return `https://www.linkedin.com/in/${username}`;
     case "youtube":
-      return `https://youtube.com/@${username}`;
+      return `https://www.youtube.com/@${username}`;
     default:
       const defaultPrefixed = `https://${value}`;
       return isValidUrl(defaultPrefixed) ? defaultPrefixed : null;
