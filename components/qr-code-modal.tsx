@@ -2,10 +2,36 @@
 
 import React, { useState } from "react";
 import { Download, QrCode, X, ZoomIn } from "lucide-react";
+import type { Profile } from "@/lib/types";
 
-export default function QrCodeModal({ qrUrl, profileName }: { qrUrl: string; profileName: string }) {
+const qrThemeColors: Record<NonNullable<Profile["theme"]>, { accent: string; hover: string; shadow: string; text: string }> = {
+  light: { accent: "#1a1a2e", hover: "#111827", shadow: "rgba(26, 26, 46, 0.2)", text: "#ffffff" },
+  dark: { accent: "#38bdf8", hover: "#0ea5e9", shadow: "rgba(56, 189, 248, 0.24)", text: "#082f49" },
+  premium: { accent: "#d4af37", hover: "#b8941f", shadow: "rgba(212, 175, 55, 0.26)", text: "#1a1206" },
+  emerald: { accent: "#10b981", hover: "#059669", shadow: "rgba(16, 185, 129, 0.24)", text: "#052e25" },
+  ruby: { accent: "#e11d48", hover: "#be123c", shadow: "rgba(225, 29, 72, 0.24)", text: "#ffffff" },
+  violet: { accent: "#8b5cf6", hover: "#7c3aed", shadow: "rgba(139, 92, 246, 0.24)", text: "#ffffff" },
+  sapphire: { accent: "#29AEEE", hover: "#1a9ad4", shadow: "rgba(41, 174, 238, 0.24)", text: "#ffffff" },
+  sunset: { accent: "#fb7185", hover: "#f43f5e", shadow: "rgba(251, 113, 133, 0.24)", text: "#44131d" },
+  copper: { accent: "#1da2f1", hover: "#0284c7", shadow: "rgba(29, 162, 241, 0.24)", text: "#ffffff" },
+};
+
+function getQrThemeColor(theme: Profile["theme"]) {
+  return qrThemeColors[theme ?? "light"] ?? qrThemeColors.light;
+}
+
+export default function QrCodeModal({
+  qrUrl,
+  profileName,
+  theme,
+}: {
+  qrUrl: string;
+  profileName: string;
+  theme?: Profile["theme"];
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const themeColor = getQrThemeColor(theme);
 
   async function handleDownload() {
     setDownloading(true);
@@ -83,7 +109,18 @@ export default function QrCodeModal({ qrUrl, profileName }: { qrUrl: string; pro
             <button
               onClick={handleDownload}
               disabled={downloading}
-              className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#29AEEE] px-5 py-3 text-sm font-bold text-white shadow-md shadow-[#29AEEE]/20 transition-all duration-200 hover:bg-[#1a9ad4] active:scale-[0.96] disabled:bg-slate-300 disabled:shadow-none"
+              className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-bold shadow-md transition-all duration-200 active:scale-[0.96] disabled:bg-slate-300 disabled:text-white disabled:shadow-none"
+              style={{
+                backgroundColor: downloading ? "#cbd5e1" : themeColor.accent,
+                color: downloading ? "#ffffff" : themeColor.text,
+                boxShadow: downloading ? "none" : `0 10px 24px ${themeColor.shadow}`,
+              }}
+              onMouseEnter={(event) => {
+                if (!downloading) event.currentTarget.style.backgroundColor = themeColor.hover;
+              }}
+              onMouseLeave={(event) => {
+                if (!downloading) event.currentTarget.style.backgroundColor = themeColor.accent;
+              }}
             >
               <Download size={16} />
               {downloading ? "Endirilir..." : "PNG olaraq endir"}

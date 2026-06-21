@@ -398,7 +398,7 @@ export default async function ProfilePage({ params }: Props) {
         ) : null}
 
         {/* ── QR CODE CARD ── */}
-        <QrCodeModal qrUrl={qrUrl} profileName={profile.name} />
+        <QrCodeModal qrUrl={qrUrl} profileName={profile.name} theme={profile.theme} />
 
         {/* ── FOOTER ── */}
         <div className="mt-6 flex flex-col items-center gap-2">
