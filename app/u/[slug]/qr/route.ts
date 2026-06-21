@@ -2,8 +2,25 @@ import { NextResponse } from "next/server";
 import QRCode from "qrcode";
 import { getProfileBySlug } from "@/lib/profiles";
 import { getProfileUrl } from "@/lib/urls";
+import type { Profile } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
+
+const qrThemeColors: Record<NonNullable<Profile["theme"]>, string> = {
+  light: "#1a1a2e",
+  dark: "#38bdf8",
+  premium: "#d4af37",
+  emerald: "#10b981",
+  ruby: "#e11d48",
+  violet: "#8b5cf6",
+  sapphire: "#29AEEE",
+  sunset: "#fb7185",
+  copper: "#1da2f1",
+};
+
+function getQrColor(theme: Profile["theme"]) {
+  return qrThemeColors[theme ?? "light"] ?? qrThemeColors.light;
+}
 
 // Validate slug format to prevent injection
 function isValidSlug(slug: string): boolean {
@@ -28,6 +45,7 @@ export async function GET(
     }
 
     const profileUrl = getProfileUrl(profile.slug);
+    const qrColor = getQrColor(profile.theme);
 
     // Node mühitində işləməsi üçün "npm install canvas" olunmalıdır
     const png = await QRCode.toBuffer(profileUrl, {
@@ -36,7 +54,7 @@ export async function GET(
       width: 512,
       errorCorrectionLevel: "H",
       color: {
-        dark: "#29AEEE",
+        dark: qrColor,
         light: "#ffffff",
       },
     });
@@ -46,7 +64,7 @@ export async function GET(
       headers: {
         "Content-Type": "image/png",
         "Content-Disposition": `inline; filename="${profile.slug}-qr.png"`,
-        "Cache-Control": "public, max-age=86400, must-revalidate",
+        "Cache-Control": "no-store, max-age=0",
       },
     });
   } catch {
