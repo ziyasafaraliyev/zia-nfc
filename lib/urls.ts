@@ -13,6 +13,13 @@ export function getSiteUrl() {
   return url.replace(/\/+$/, "");
 }
 
+// Block dangerous URL protocols like javascript:, data:, etc.
+export function isSafeUrl(url: string): boolean {
+  const normalizedUrl = url.trim().toLowerCase();
+  const dangerousProtocols = ["javascript:", "data:", "vbscript:", "file:"];
+  return !dangerousProtocols.some((protocol) => normalizedUrl.startsWith(protocol));
+}
+
 export function getProfilePath(slug: string) {
   return `/${slug}`;
 }

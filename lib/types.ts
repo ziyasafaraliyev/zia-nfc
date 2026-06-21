@@ -2,6 +2,7 @@ export type Profile = {
   id?: string;
   slug: string;
   enabled: boolean;
+  reservation_enabled?: boolean;
   name: string;
   profession?: string | null;
   bio?: string | null;
@@ -22,7 +23,17 @@ export type Profile = {
   cover_position?: "top" | "center" | "bottom" | null;
   gallery: string[];
   cv_url?: string | null;
-  theme?: "light" | "dark" | null;
+  theme?:
+    | "light"
+    | "dark"
+    | "premium"
+    | "emerald"
+    | "ruby"
+    | "violet"
+    | "sapphire"
+    | "sunset"
+    | "copper"
+    | null;
   client_email?: string | null;
   client_password?: string | null;
 };

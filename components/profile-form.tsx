@@ -291,7 +291,7 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
         <span className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-2.5">
           Profil Teması
         </span>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid gap-3 sm:grid-cols-3">
           <label className={`flex items-center justify-center gap-2 rounded-2xl border p-3 text-xs font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
             theme === "light"
               ? "border-[#29AEEE] bg-[#29AEEE]/5 text-[#29AEEE] shadow-sm"
@@ -321,6 +321,117 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
               className="sr-only"
             />
             <span>Qara (Dark)</span>
+          </label>
+          <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-3 text-xs font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
+            theme === "premium"
+              ? "border-[#d4af37] bg-[linear-gradient(135deg,#120f08_0%,#23180a_45%,#3a2a10_100%)] text-[#f5deb3] shadow-[0_12px_30px_rgba(212,175,55,0.22)]"
+              : "border-slate-200 bg-[linear-gradient(135deg,#fffaf0_0%,#ffffff_100%)] text-slate-700 hover:border-[#d4af37]/50 hover:bg-[#fffaf0]"
+          }`}>
+            <span
+              aria-hidden
+              className={`absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(245,222,179,0.9),transparent)] transition-opacity duration-200 ${
+                theme === "premium" ? "opacity-100" : "opacity-0"
+              }`}
+            />
+            <input
+              type="radio"
+              name="theme"
+              value="premium"
+              checked={theme === "premium"}
+              onChange={() => setTheme("premium")}
+              className="sr-only"
+            />
+            <span>Premium Gold</span>
+          </label>
+          <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-3 text-xs font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
+            theme === "emerald"
+              ? "border-[#10b981] bg-[linear-gradient(135deg,#062c22_0%,#0d4334_45%,#116b53_100%)] text-[#d1fae5] shadow-[0_12px_30px_rgba(16,185,129,0.22)]"
+              : "border-slate-200 bg-[linear-gradient(135deg,#ecfdf5_0%,#ffffff_100%)] text-slate-700 hover:border-[#10b981]/50 hover:bg-[#ecfdf5]"
+          }`}>
+            <input
+              type="radio"
+              name="theme"
+              value="emerald"
+              checked={theme === "emerald"}
+              onChange={() => setTheme("emerald")}
+              className="sr-only"
+            />
+            <span>Zümrüd</span>
+          </label>
+          <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-3 text-xs font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
+            theme === "ruby"
+              ? "border-[#e11d48] bg-[linear-gradient(135deg,#310814_0%,#5e1028_45%,#881337_100%)] text-[#ffe4e6] shadow-[0_12px_30px_rgba(225,29,72,0.22)]"
+              : "border-slate-200 bg-[linear-gradient(135deg,#fff1f2_0%,#ffffff_100%)] text-slate-700 hover:border-[#e11d48]/50 hover:bg-[#fff1f2]"
+          }`}>
+            <input
+              type="radio"
+              name="theme"
+              value="ruby"
+              checked={theme === "ruby"}
+              onChange={() => setTheme("ruby")}
+              className="sr-only"
+            />
+            <span>Yaqut</span>
+          </label>
+          <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-3 text-xs font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
+            theme === "violet"
+              ? "border-[#8b5cf6] bg-[linear-gradient(135deg,#1e1038_0%,#35205f_45%,#5b21b6_100%)] text-[#ede9fe] shadow-[0_12px_30px_rgba(139,92,246,0.22)]"
+              : "border-slate-200 bg-[linear-gradient(135deg,#f5f3ff_0%,#ffffff_100%)] text-slate-700 hover:border-[#8b5cf6]/50 hover:bg-[#f5f3ff]"
+          }`}>
+            <input
+              type="radio"
+              name="theme"
+              value="violet"
+              checked={theme === "violet"}
+              onChange={() => setTheme("violet")}
+              className="sr-only"
+            />
+            <span>Bənövşəyi</span>
+          </label>
+          <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-3 text-xs font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
+            theme === "sapphire"
+              ? "border-[#29AEEE] bg-[linear-gradient(135deg,#071821_0%,#0c2d40_45%,#155978_100%)] text-[#e6f8ff] shadow-[0_12px_30px_rgba(41,174,238,0.24)]"
+              : "border-slate-200 bg-[linear-gradient(135deg,#eefaff_0%,#ffffff_100%)] text-slate-700 hover:border-[#29AEEE]/50 hover:bg-[#eefaff]"
+          }`}>
+            <input
+              type="radio"
+              name="theme"
+              value="sapphire"
+              checked={theme === "sapphire"}
+              onChange={() => setTheme("sapphire")}
+              className="sr-only"
+            />
+            <span>Mavi</span>
+          </label>
+          <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-3 text-xs font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
+            theme === "sunset"
+              ? "border-[#fb7185] bg-[linear-gradient(135deg,#2f1118_0%,#5b2434_45%,#9f4058_100%)] text-[#fff1f2] shadow-[0_12px_30px_rgba(251,113,133,0.22)]"
+              : "border-slate-200 bg-[linear-gradient(135deg,#fff1f2_0%,#ffffff_100%)] text-slate-700 hover:border-[#fb7185]/50 hover:bg-[#fff1f2]"
+          }`}>
+            <input
+              type="radio"
+              name="theme"
+              value="sunset"
+              checked={theme === "sunset"}
+              onChange={() => setTheme("sunset")}
+              className="sr-only"
+            />
+            <span>Günbatımı</span>
+          </label>
+          <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-3 text-xs font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
+            theme === "copper"
+              ? "border-[#1da2f1] bg-[linear-gradient(135deg,#0a1824_0%,#10314a_45%,#1d4f73_100%)] text-[#eef8ff] shadow-[0_12px_30px_rgba(29,162,241,0.2)]"
+              : "border-slate-200 bg-[linear-gradient(135deg,#eff8ff_0%,#ffffff_100%)] text-slate-700 hover:border-[#1da2f1]/40 hover:bg-[#eff8ff]"
+          }`}>
+            <input
+              type="radio"
+              name="theme"
+              value="copper"
+              checked={theme === "copper"}
+              onChange={() => setTheme("copper")}
+              className="sr-only"
+            />
+            <span>Digital</span>
           </label>
         </div>
       </div>
@@ -515,6 +626,16 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
               type="checkbox"
               name="enabled"
               defaultChecked={profile?.enabled ?? true}
+              className="size-5 rounded accent-indigo-650"
+            />
+          </label>
+
+          <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition">
+            <span>Rezervasiya sistemi aktivdir</span>
+            <input
+              type="checkbox"
+              name="reservation_enabled"
+              defaultChecked={profile?.reservation_enabled ?? false}
               className="size-5 rounded accent-indigo-650"
             />
           </label>

@@ -5,12 +5,22 @@ import { getProfileUrl } from "@/lib/urls";
 
 export const dynamic = "force-dynamic";
 
+// Validate slug format to prevent injection
+function isValidSlug(slug: string): boolean {
+  return /^[a-z0-9-]+$/.test(slug) && slug.length >= 2 && slug.length <= 50;
+}
+
 export async function GET(
   _req: Request,
   ctx: { params: Promise<{ slug: string }> },
 ) {
   try {
     const { slug } = await ctx.params;
+
+    // Validate slug format
+    if (!isValidSlug(slug)) {
+      return new NextResponse("Invalid slug format", { status: 400 });
+    }
 
     const profile = await getProfileBySlug(slug);
     if (!profile || !profile.enabled) {
@@ -39,8 +49,7 @@ export async function GET(
         "Cache-Control": "public, max-age=86400, must-revalidate",
       },
     });
-  } catch (error) {
-    console.error("QR Generation Error:", error);
+  } catch {
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

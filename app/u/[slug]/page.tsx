@@ -21,6 +21,7 @@ import {
 import { notFound } from "next/navigation";
 import QrCodeModal from "@/components/qr-code-modal";
 import PortfolioSection from "@/components/portfolio-section";
+import ReservationButton from "@/components/reservation-button";
 
 
 export const dynamic = "force-dynamic";
@@ -121,10 +122,11 @@ export default async function ProfilePage({ params }: Props) {
     profile.linkedin ||
     profile.youtube;
 
-  const isDark = profile.theme === "dark";
+  const themeClass =
+    profile.theme && profile.theme !== "light" ? `${profile.theme}-theme` : "";
 
   return (
-    <main className={`lux-shell relative min-h-screen overflow-x-hidden ${isDark ? "dark-theme" : ""}`}>
+    <main className={`lux-shell relative min-h-screen overflow-x-hidden ${themeClass}`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -333,6 +335,14 @@ export default async function ProfilePage({ params }: Props) {
             className="text-gray-400 transition-all duration-300 group-hover:text-[#29AEEE] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
           />
         </a>
+
+        {/* ── RESERVATION BUTTON ── */}
+        {profile.reservation_enabled && profile.whatsapp ? (
+          <ReservationButton
+            profileName={profile.name}
+            whatsappNumber={profile.whatsapp}
+          />
+        ) : null}
 
         {/* ── MAPS LOCATION BUTTON ── */}
         {profile.location && profile.location_url ? (

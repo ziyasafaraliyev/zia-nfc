@@ -1185,3 +1185,543 @@ a.dashboard-primary:hover {
 .lux-shell.dark-theme .lux-save-contact svg {
     color: #29AEEE;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   PREMIUM GOLD MODE OVERRIDES
+   ═══════════════════════════════════════════════════════════ */
+
+.lux-shell.premium-theme {
+    background:
+        radial-gradient(ellipse 75% 55% at 50% -10%, rgba(212, 175, 55, 0.18) 0%, transparent 58%),
+        radial-gradient(ellipse 55% 35% at 88% 14%, rgba(245, 222, 179, 0.1) 0%, transparent 55%),
+        linear-gradient(180deg, #080603 0%, #120d07 42%, #050402 100%) !important;
+    color: #f7ecd0 !important;
+}
+
+.lux-shell.premium-theme .lux-overline,
+.lux-shell.premium-theme .lux-brand-text {
+    color: #d4af37;
+}
+
+.lux-shell.premium-theme .lux-orb-1 {
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.18) 0%, rgba(245, 222, 179, 0.06) 50%, transparent 72%);
+}
+
+.lux-shell.premium-theme .lux-orb-2 {
+    background: radial-gradient(circle, rgba(184, 134, 11, 0.12) 0%, rgba(212, 175, 55, 0.06) 50%, transparent 72%);
+}
+
+.lux-shell.premium-theme .lux-orb-3 {
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.08) 0%, rgba(212, 175, 55, 0.04) 60%, transparent 72%);
+}
+
+.lux-shell.premium-theme .lux-grid {
+    background-image:
+        linear-gradient(rgba(212, 175, 55, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(212, 175, 55, 0.05) 1px, transparent 1px);
+}
+
+.lux-shell.premium-theme .lux-card,
+.lux-shell.premium-theme .lux-identity,
+.lux-shell.premium-theme .lux-save-contact,
+.lux-shell.premium-theme .lux-social-chip,
+.lux-shell.premium-theme .lux-qr-card {
+    background: linear-gradient(180deg, rgba(27, 20, 11, 0.96) 0%, rgba(18, 13, 7, 0.96) 100%);
+    border-color: rgba(212, 175, 55, 0.18);
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.42),
+        0 0 0 1px rgba(245, 222, 179, 0.03);
+}
+
+.lux-shell.premium-theme .lux-name,
+.lux-shell.premium-theme .lux-section-title,
+.lux-shell.premium-theme .lux-qr-card .text-slate-800,
+.lux-shell.premium-theme .lux-save-contact .text-gray-800 {
+    color: #f8edd1;
+}
+
+.lux-shell.premium-theme .lux-bio,
+.lux-shell.premium-theme .lux-social-chip span,
+.lux-shell.premium-theme .lux-qr-card .text-slate-400 {
+    color: #c9b78f;
+}
+
+.lux-shell.premium-theme .lux-avatar-ring {
+    background: linear-gradient(180deg, #1a130b 0%, #0e0a05 100%);
+    box-shadow:
+        0 0 0 3px #120d07,
+        0 0 0 5px rgba(212, 175, 55, 0.18),
+        0 12px 28px rgba(0, 0, 0, 0.38);
+}
+
+.lux-shell.premium-theme .lux-avatar-ring:hover {
+    box-shadow:
+        0 0 0 3px #120d07,
+        0 0 0 5px rgba(212, 175, 55, 0.3),
+        0 16px 34px rgba(0, 0, 0, 0.45);
+}
+
+.lux-shell.premium-theme .lux-save-contact:hover,
+.lux-shell.premium-theme .lux-gallery-item:hover,
+.lux-shell.premium-theme .lux-social-chip:hover {
+    border-color: rgba(212, 175, 55, 0.45);
+    box-shadow:
+        0 14px 34px rgba(0, 0, 0, 0.45),
+        0 0 0 3px rgba(212, 175, 55, 0.12);
+}
+
+.lux-shell.premium-theme .lux-save-icon {
+    background: linear-gradient(180deg, rgba(212, 175, 55, 0.16) 0%, rgba(184, 134, 11, 0.12) 100%);
+    border-color: rgba(212, 175, 55, 0.32);
+    color: #d4af37;
+}
+
+.lux-shell.premium-theme .lux-location-chip {
+    background: rgba(212, 175, 55, 0.08);
+    border-color: rgba(212, 175, 55, 0.18);
+    color: #e9d8ac;
+}
+
+.lux-shell.premium-theme .lux-gallery-item {
+    background: linear-gradient(180deg, rgba(31, 23, 13, 0.98) 0%, rgba(20, 14, 8, 0.98) 100%);
+    border-color: rgba(212, 175, 55, 0.14);
+}
+
+.lux-shell.premium-theme .lux-gallery-btn {
+    background: rgba(20, 14, 8, 0.88);
+    border-color: rgba(212, 175, 55, 0.22);
+    color: #f8edd1;
+}
+
+.lux-shell.premium-theme .lux-save-contact svg,
+.lux-shell.premium-theme .lux-social-icon {
+    color: #d4af37;
+}
+
+.lux-shell.premium-theme .lux-btn-whatsapp,
+.lux-shell.premium-theme .lux-btn-call {
+    color: #1a1206;
+    background: linear-gradient(135deg, #b8860b 0%, #d4af37 48%, #f4d77b 100%);
+    box-shadow:
+        0 8px 24px rgba(212, 175, 55, 0.28),
+        inset 0 1px 0 rgba(255, 248, 220, 0.45);
+}
+
+.lux-shell.premium-theme .lux-btn-whatsapp svg,
+.lux-shell.premium-theme .lux-btn-call svg {
+    color: #1a1206;
+}
+
+.lux-shell.premium-theme .lux-btn-whatsapp::after,
+.lux-shell.premium-theme .lux-btn-call::after {
+    background: linear-gradient(90deg, transparent, rgba(255, 248, 220, 0.35), transparent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .lux-shell.premium-theme .lux-btn-whatsapp:hover,
+    .lux-shell.premium-theme .lux-btn-call:hover {
+        box-shadow: 0 14px 32px rgba(212, 175, 55, 0.36);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   EXTRA COLOR THEMES
+   ═══════════════════════════════════════════════════════════ */
+
+.lux-shell.emerald-theme {
+    --theme-page-bg:
+        radial-gradient(ellipse 78% 52% at 50% -8%, rgba(16, 185, 129, 0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 52% 34% at 88% 18%, rgba(52, 211, 153, 0.1) 0%, transparent 55%),
+        linear-gradient(180deg, #04130f 0%, #07241c 44%, #03100c 100%);
+    --theme-accent: #10b981;
+    --theme-accent-soft: #d1fae5;
+    --theme-accent-glow: rgba(16, 185, 129, 0.28);
+    --theme-surface-start: rgba(7, 31, 24, 0.97);
+    --theme-surface-end: rgba(5, 20, 16, 0.97);
+    --theme-text-primary: #e7fff7;
+    --theme-text-muted: #9dd9c5;
+    --theme-button-text: #052e25;
+}
+
+.lux-shell.ruby-theme {
+    --theme-page-bg:
+        radial-gradient(ellipse 78% 52% at 50% -8%, rgba(225, 29, 72, 0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 52% 34% at 88% 18%, rgba(244, 63, 94, 0.1) 0%, transparent 55%),
+        linear-gradient(180deg, #17050a 0%, #2a0814 44%, #100307 100%);
+    --theme-accent: #e11d48;
+    --theme-accent-soft: #ffe4e6;
+    --theme-accent-glow: rgba(225, 29, 72, 0.28);
+    --theme-surface-start: rgba(39, 9, 18, 0.97);
+    --theme-surface-end: rgba(24, 6, 12, 0.97);
+    --theme-text-primary: #fff0f3;
+    --theme-text-muted: #f2b8c3;
+    --theme-button-text: #3d0918;
+}
+
+.lux-shell.violet-theme {
+    --theme-page-bg:
+        radial-gradient(ellipse 78% 52% at 50% -8%, rgba(139, 92, 246, 0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 52% 34% at 88% 18%, rgba(168, 85, 247, 0.1) 0%, transparent 55%),
+        linear-gradient(180deg, #100816 0%, #1d1030 44%, #09040e 100%);
+    --theme-accent: #8b5cf6;
+    --theme-accent-soft: #ede9fe;
+    --theme-accent-glow: rgba(139, 92, 246, 0.28);
+    --theme-surface-start: rgba(28, 18, 48, 0.97);
+    --theme-surface-end: rgba(16, 10, 30, 0.97);
+    --theme-text-primary: #f5f1ff;
+    --theme-text-muted: #c9b7ef;
+    --theme-button-text: #1f1241;
+}
+
+.lux-shell.sapphire-theme {
+    --theme-page-bg:
+        radial-gradient(ellipse 78% 52% at 50% -8%, rgba(41, 174, 238, 0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 52% 34% at 88% 18%, rgba(125, 223, 255, 0.08) 0%, transparent 55%),
+        linear-gradient(180deg, #06131a 0%, #0b2330 44%, #040b10 100%);
+    --theme-accent: #29AEEE;
+    --theme-accent-soft: #e6f8ff;
+    --theme-accent-glow: rgba(41, 174, 238, 0.24);
+    --theme-surface-start: rgba(10, 30, 40, 0.97);
+    --theme-surface-end: rgba(6, 17, 24, 0.97);
+    --theme-text-primary: #eefbff;
+    --theme-text-muted: #a9d7e8;
+    --theme-button-text: #08202a;
+}
+
+.lux-shell.sunset-theme {
+    --theme-page-bg:
+        radial-gradient(ellipse 78% 52% at 50% -8%, rgba(251, 113, 133, 0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 52% 34% at 88% 18%, rgba(253, 164, 175, 0.08) 0%, transparent 55%),
+        linear-gradient(180deg, #18090d 0%, #30151c 44%, #0f0407 100%);
+    --theme-accent: #fb7185;
+    --theme-accent-soft: #fff1f2;
+    --theme-accent-glow: rgba(251, 113, 133, 0.24);
+    --theme-surface-start: rgba(47, 18, 25, 0.97);
+    --theme-surface-end: rgba(23, 8, 12, 0.97);
+    --theme-text-primary: #fff4f5;
+    --theme-text-muted: #efbcc5;
+    --theme-button-text: #44131d;
+}
+
+.lux-shell.copper-theme {
+    --theme-page-bg:
+        radial-gradient(ellipse 78% 52% at 50% -8%, rgba(29, 162, 241, 0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 52% 34% at 88% 18%, rgba(125, 211, 252, 0.07) 0%, transparent 55%),
+        linear-gradient(180deg, #06121b 0%, #0a202f 44%, #040a10 100%);
+    --theme-accent: #1da2f1;
+    --theme-accent-soft: #e8f7ff;
+    --theme-accent-glow: rgba(29, 162, 241, 0.24);
+    --theme-surface-start: rgba(10, 28, 41, 0.97);
+    --theme-surface-end: rgba(6, 16, 24, 0.97);
+    --theme-text-primary: #edf8ff;
+    --theme-text-muted: #a9d3e9;
+    --theme-button-text: #ffffff;
+}
+
+.lux-shell.emerald-theme,
+.lux-shell.ruby-theme,
+.lux-shell.violet-theme,
+.lux-shell.sapphire-theme,
+.lux-shell.sunset-theme,
+.lux-shell.copper-theme {
+    background: var(--theme-page-bg) !important;
+    color: var(--theme-text-primary) !important;
+}
+
+.lux-shell.emerald-theme .lux-overline,
+.lux-shell.emerald-theme .lux-brand-text,
+.lux-shell.ruby-theme .lux-overline,
+.lux-shell.ruby-theme .lux-brand-text,
+.lux-shell.violet-theme .lux-overline,
+.lux-shell.violet-theme .lux-brand-text,
+.lux-shell.sapphire-theme .lux-overline,
+.lux-shell.sapphire-theme .lux-brand-text,
+.lux-shell.sunset-theme .lux-overline,
+.lux-shell.sunset-theme .lux-brand-text,
+.lux-shell.copper-theme .lux-overline,
+.lux-shell.copper-theme .lux-brand-text {
+    color: var(--theme-accent);
+}
+
+.lux-shell.emerald-theme .lux-orb-1,
+.lux-shell.ruby-theme .lux-orb-1,
+.lux-shell.violet-theme .lux-orb-1,
+.lux-shell.sapphire-theme .lux-orb-1,
+.lux-shell.sunset-theme .lux-orb-1,
+.lux-shell.copper-theme .lux-orb-1 {
+    background: radial-gradient(circle, var(--theme-accent-glow) 0%, rgba(255, 255, 255, 0.03) 50%, transparent 72%);
+}
+
+.lux-shell.emerald-theme .lux-orb-2,
+.lux-shell.ruby-theme .lux-orb-2,
+.lux-shell.violet-theme .lux-orb-2,
+.lux-shell.sapphire-theme .lux-orb-2,
+.lux-shell.sunset-theme .lux-orb-2,
+.lux-shell.copper-theme .lux-orb-2 {
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, var(--theme-accent-glow) 55%, transparent 75%);
+}
+
+.lux-shell.emerald-theme .lux-orb-3,
+.lux-shell.ruby-theme .lux-orb-3,
+.lux-shell.violet-theme .lux-orb-3,
+.lux-shell.sapphire-theme .lux-orb-3,
+.lux-shell.sunset-theme .lux-orb-3,
+.lux-shell.copper-theme .lux-orb-3 {
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, var(--theme-accent-glow) 60%, transparent 75%);
+}
+
+.lux-shell.emerald-theme .lux-grid,
+.lux-shell.ruby-theme .lux-grid,
+.lux-shell.violet-theme .lux-grid,
+.lux-shell.sapphire-theme .lux-grid,
+.lux-shell.sunset-theme .lux-grid,
+.lux-shell.copper-theme .lux-grid {
+    background-image:
+        linear-gradient(color-mix(in srgb, var(--theme-accent) 12%, transparent) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in srgb, var(--theme-accent) 12%, transparent) 1px, transparent 1px);
+}
+
+.lux-shell.emerald-theme .lux-card,
+.lux-shell.emerald-theme .lux-identity,
+.lux-shell.emerald-theme .lux-save-contact,
+.lux-shell.emerald-theme .lux-social-chip,
+.lux-shell.emerald-theme .lux-qr-card,
+.lux-shell.ruby-theme .lux-card,
+.lux-shell.ruby-theme .lux-identity,
+.lux-shell.ruby-theme .lux-save-contact,
+.lux-shell.ruby-theme .lux-social-chip,
+.lux-shell.ruby-theme .lux-qr-card,
+.lux-shell.violet-theme .lux-card,
+.lux-shell.violet-theme .lux-identity,
+.lux-shell.violet-theme .lux-save-contact,
+.lux-shell.violet-theme .lux-social-chip,
+.lux-shell.violet-theme .lux-qr-card,
+.lux-shell.sapphire-theme .lux-card,
+.lux-shell.sapphire-theme .lux-identity,
+.lux-shell.sapphire-theme .lux-save-contact,
+.lux-shell.sapphire-theme .lux-social-chip,
+.lux-shell.sapphire-theme .lux-qr-card,
+.lux-shell.sunset-theme .lux-card,
+.lux-shell.sunset-theme .lux-identity,
+.lux-shell.sunset-theme .lux-save-contact,
+.lux-shell.sunset-theme .lux-social-chip,
+.lux-shell.sunset-theme .lux-qr-card,
+.lux-shell.copper-theme .lux-card,
+.lux-shell.copper-theme .lux-identity,
+.lux-shell.copper-theme .lux-save-contact,
+.lux-shell.copper-theme .lux-social-chip,
+.lux-shell.copper-theme .lux-qr-card {
+    background: linear-gradient(180deg, var(--theme-surface-start) 0%, var(--theme-surface-end) 100%);
+    border-color: color-mix(in srgb, var(--theme-accent) 24%, transparent);
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.42),
+        0 0 0 1px rgba(255, 255, 255, 0.02);
+}
+
+.lux-shell.emerald-theme .lux-name,
+.lux-shell.emerald-theme .lux-section-title,
+.lux-shell.emerald-theme .lux-qr-card .text-slate-800,
+.lux-shell.emerald-theme .lux-save-contact .text-gray-800,
+.lux-shell.ruby-theme .lux-name,
+.lux-shell.ruby-theme .lux-section-title,
+.lux-shell.ruby-theme .lux-qr-card .text-slate-800,
+.lux-shell.ruby-theme .lux-save-contact .text-gray-800,
+.lux-shell.violet-theme .lux-name,
+.lux-shell.violet-theme .lux-section-title,
+.lux-shell.violet-theme .lux-qr-card .text-slate-800,
+.lux-shell.violet-theme .lux-save-contact .text-gray-800,
+.lux-shell.sapphire-theme .lux-name,
+.lux-shell.sapphire-theme .lux-section-title,
+.lux-shell.sapphire-theme .lux-qr-card .text-slate-800,
+.lux-shell.sapphire-theme .lux-save-contact .text-gray-800,
+.lux-shell.sunset-theme .lux-name,
+.lux-shell.sunset-theme .lux-section-title,
+.lux-shell.sunset-theme .lux-qr-card .text-slate-800,
+.lux-shell.sunset-theme .lux-save-contact .text-gray-800,
+.lux-shell.copper-theme .lux-name,
+.lux-shell.copper-theme .lux-section-title,
+.lux-shell.copper-theme .lux-qr-card .text-slate-800,
+.lux-shell.copper-theme .lux-save-contact .text-gray-800 {
+    color: var(--theme-text-primary);
+}
+
+.lux-shell.emerald-theme .lux-bio,
+.lux-shell.emerald-theme .lux-social-chip span,
+.lux-shell.emerald-theme .lux-qr-card .text-slate-400,
+.lux-shell.ruby-theme .lux-bio,
+.lux-shell.ruby-theme .lux-social-chip span,
+.lux-shell.ruby-theme .lux-qr-card .text-slate-400,
+.lux-shell.violet-theme .lux-bio,
+.lux-shell.violet-theme .lux-social-chip span,
+.lux-shell.violet-theme .lux-qr-card .text-slate-400,
+.lux-shell.sapphire-theme .lux-bio,
+.lux-shell.sapphire-theme .lux-social-chip span,
+.lux-shell.sapphire-theme .lux-qr-card .text-slate-400,
+.lux-shell.sunset-theme .lux-bio,
+.lux-shell.sunset-theme .lux-social-chip span,
+.lux-shell.sunset-theme .lux-qr-card .text-slate-400,
+.lux-shell.copper-theme .lux-bio,
+.lux-shell.copper-theme .lux-social-chip span,
+.lux-shell.copper-theme .lux-qr-card .text-slate-400 {
+    color: var(--theme-text-muted);
+}
+
+.lux-shell.emerald-theme .lux-avatar-ring,
+.lux-shell.ruby-theme .lux-avatar-ring,
+.lux-shell.violet-theme .lux-avatar-ring,
+.lux-shell.sapphire-theme .lux-avatar-ring,
+.lux-shell.sunset-theme .lux-avatar-ring,
+.lux-shell.copper-theme .lux-avatar-ring {
+    background: linear-gradient(180deg, var(--theme-surface-start) 0%, var(--theme-surface-end) 100%);
+    box-shadow:
+        0 0 0 3px color-mix(in srgb, var(--theme-surface-end) 90%, black),
+        0 0 0 5px color-mix(in srgb, var(--theme-accent) 24%, transparent),
+        0 12px 28px rgba(0, 0, 0, 0.36);
+}
+
+.lux-shell.emerald-theme .lux-save-contact:hover,
+.lux-shell.emerald-theme .lux-gallery-item:hover,
+.lux-shell.emerald-theme .lux-social-chip:hover,
+.lux-shell.ruby-theme .lux-save-contact:hover,
+.lux-shell.ruby-theme .lux-gallery-item:hover,
+.lux-shell.ruby-theme .lux-social-chip:hover,
+.lux-shell.violet-theme .lux-save-contact:hover,
+.lux-shell.violet-theme .lux-gallery-item:hover,
+.lux-shell.violet-theme .lux-social-chip:hover,
+.lux-shell.sapphire-theme .lux-save-contact:hover,
+.lux-shell.sapphire-theme .lux-gallery-item:hover,
+.lux-shell.sapphire-theme .lux-social-chip:hover,
+.lux-shell.sunset-theme .lux-save-contact:hover,
+.lux-shell.sunset-theme .lux-gallery-item:hover,
+.lux-shell.sunset-theme .lux-social-chip:hover,
+.lux-shell.copper-theme .lux-save-contact:hover,
+.lux-shell.copper-theme .lux-gallery-item:hover,
+.lux-shell.copper-theme .lux-social-chip:hover {
+    border-color: color-mix(in srgb, var(--theme-accent) 48%, transparent);
+    box-shadow:
+        0 14px 34px rgba(0, 0, 0, 0.45),
+        0 0 0 3px color-mix(in srgb, var(--theme-accent) 14%, transparent);
+}
+
+.lux-shell.emerald-theme .lux-save-icon,
+.lux-shell.ruby-theme .lux-save-icon,
+.lux-shell.violet-theme .lux-save-icon,
+.lux-shell.sapphire-theme .lux-save-icon,
+.lux-shell.sunset-theme .lux-save-icon,
+.lux-shell.copper-theme .lux-save-icon {
+    background: color-mix(in srgb, var(--theme-accent) 14%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent) 30%, transparent);
+    color: var(--theme-accent);
+}
+
+.lux-shell.emerald-theme .lux-location-chip,
+.lux-shell.ruby-theme .lux-location-chip,
+.lux-shell.violet-theme .lux-location-chip,
+.lux-shell.sapphire-theme .lux-location-chip,
+.lux-shell.sunset-theme .lux-location-chip,
+.lux-shell.copper-theme .lux-location-chip {
+    background: color-mix(in srgb, var(--theme-accent) 10%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent) 22%, transparent);
+    color: var(--theme-accent-soft);
+}
+
+.lux-shell.emerald-theme .lux-gallery-item,
+.lux-shell.ruby-theme .lux-gallery-item,
+.lux-shell.violet-theme .lux-gallery-item,
+.lux-shell.sapphire-theme .lux-gallery-item,
+.lux-shell.sunset-theme .lux-gallery-item,
+.lux-shell.copper-theme .lux-gallery-item {
+    background: linear-gradient(180deg, color-mix(in srgb, var(--theme-surface-start) 100%, black) 0%, color-mix(in srgb, var(--theme-surface-end) 100%, black) 100%);
+    border-color: color-mix(in srgb, var(--theme-accent) 18%, transparent);
+}
+
+.lux-shell.emerald-theme .lux-gallery-btn,
+.lux-shell.ruby-theme .lux-gallery-btn,
+.lux-shell.violet-theme .lux-gallery-btn,
+.lux-shell.sapphire-theme .lux-gallery-btn,
+.lux-shell.sunset-theme .lux-gallery-btn,
+.lux-shell.copper-theme .lux-gallery-btn {
+    background: color-mix(in srgb, var(--theme-surface-end) 88%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent) 20%, transparent);
+    color: var(--theme-text-primary);
+}
+
+.lux-shell.emerald-theme .lux-save-contact svg,
+.lux-shell.emerald-theme .lux-social-icon,
+.lux-shell.ruby-theme .lux-save-contact svg,
+.lux-shell.ruby-theme .lux-social-icon,
+.lux-shell.violet-theme .lux-save-contact svg,
+.lux-shell.violet-theme .lux-social-icon,
+.lux-shell.sapphire-theme .lux-save-contact svg,
+.lux-shell.sapphire-theme .lux-social-icon,
+.lux-shell.sunset-theme .lux-save-contact svg,
+.lux-shell.sunset-theme .lux-social-icon,
+.lux-shell.copper-theme .lux-save-contact svg,
+.lux-shell.copper-theme .lux-social-icon {
+    color: var(--theme-accent);
+}
+
+.lux-shell.emerald-theme .lux-btn-whatsapp,
+.lux-shell.emerald-theme .lux-btn-call,
+.lux-shell.ruby-theme .lux-btn-whatsapp,
+.lux-shell.ruby-theme .lux-btn-call,
+.lux-shell.violet-theme .lux-btn-whatsapp,
+.lux-shell.violet-theme .lux-btn-call,
+.lux-shell.sapphire-theme .lux-btn-whatsapp,
+.lux-shell.sapphire-theme .lux-btn-call,
+.lux-shell.sunset-theme .lux-btn-whatsapp,
+.lux-shell.sunset-theme .lux-btn-call,
+.lux-shell.copper-theme .lux-btn-whatsapp,
+.lux-shell.copper-theme .lux-btn-call {
+    color: var(--theme-button-text);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--theme-accent) 78%, black) 0%, var(--theme-accent) 52%, color-mix(in srgb, var(--theme-accent-soft) 72%, white) 100%);
+    box-shadow:
+        0 8px 24px color-mix(in srgb, var(--theme-accent) 28%, transparent),
+        inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+.lux-shell.emerald-theme .lux-btn-whatsapp svg,
+.lux-shell.emerald-theme .lux-btn-call svg,
+.lux-shell.ruby-theme .lux-btn-whatsapp svg,
+.lux-shell.ruby-theme .lux-btn-call svg,
+.lux-shell.violet-theme .lux-btn-whatsapp svg,
+.lux-shell.violet-theme .lux-btn-call svg,
+.lux-shell.sapphire-theme .lux-btn-whatsapp svg,
+.lux-shell.sapphire-theme .lux-btn-call svg,
+.lux-shell.sunset-theme .lux-btn-whatsapp svg,
+.lux-shell.sunset-theme .lux-btn-call svg,
+.lux-shell.copper-theme .lux-btn-whatsapp svg,
+.lux-shell.copper-theme .lux-btn-call svg {
+    color: var(--theme-button-text);
+}
+
+.lux-shell.sapphire-theme .lux-btn-whatsapp,
+.lux-shell.sapphire-theme .lux-btn-call {
+    color: #ffffff;
+    background: linear-gradient(135deg, #178fcb 0%, #29AEEE 52%, #63caf7 100%);
+    box-shadow:
+        0 10px 28px rgba(41, 174, 238, 0.34),
+        inset 0 1px 0 rgba(255, 255, 255, 0.24);
+}
+
+.lux-shell.sapphire-theme .lux-btn-whatsapp svg,
+.lux-shell.sapphire-theme .lux-btn-call svg {
+    color: #ffffff;
+}
+
+.lux-shell.copper-theme .lux-btn-whatsapp,
+.lux-shell.copper-theme .lux-btn-call {
+    color: #ffffff;
+    background: #1da2f1;
+    box-shadow: none;
+}
+
+.lux-shell.copper-theme .lux-btn-whatsapp::after,
+.lux-shell.copper-theme .lux-btn-call::after {
+    background: none;
+}
+
+.lux-shell.copper-theme .lux-btn-whatsapp svg,
+.lux-shell.copper-theme .lux-btn-call svg {
+    color: #ffffff;
+}

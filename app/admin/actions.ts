@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import crypto from "crypto";
+import bcrypt from "bcrypt";
 
 // ──────────────────────────────────────────────
 // Constants
@@ -39,9 +40,9 @@ const SLUG_MAX_LENGTH = 50;
 // HMAC Session Token
 // ──────────────────────────────────────────────
 function getSessionSecret(): string {
-  const secret = process.env.SESSION_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const secret = process.env.SESSION_SECRET;
   if (!secret) {
-    throw new Error("SESSION_SECRET or SUPABASE_SERVICE_ROLE_KEY must be set");
+    throw new Error("SESSION_SECRET environment variable must be set");
   }
   return secret;
 }
@@ -92,7 +93,7 @@ function verifySessionToken(token: string): string | null {
 // Rate Limiting (in-memory, per-process)
 // ──────────────────────────────────────────────
 const loginAttempts = new Map<string, { count: number; resetAt: number }>();
-const MAX_LOGIN_ATTEMPTS = 5;
+const MAX_LOGIN_ATTEMPTS = 10;
 const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minute
 
 function isRateLimited(ip: string): boolean {
@@ -133,8 +134,14 @@ async function getClientIp(): Promise<string> {
 // ──────────────────────────────────────────────
 // Admin Auth Helpers
 // ──────────────────────────────────────────────
-function hashPassword(password: string): string {
-  return crypto.createHash("sha256").update(password).digest("hex");
+const BCRYPT_SALT_ROUNDS = 12;
+
+async function hashPassword(password: string): Promise<string> {
+  return bcrypt.hash(password, BCRYPT_SALT_ROUNDS);
+}
+
+async function verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
+  return bcrypt.compare(password, hashedPassword);
 }
 
 async function getAdminEmail(): Promise<string | null> {
@@ -374,7 +381,7 @@ export async function loginAdmin(formData: FormData) {
   if (
     allowedEmail &&
     allowedPassword &&
-    email === allowedEmail &&
+    email.toLowerCase() === allowedEmail.toLowerCase() &&
     password === allowedPassword
   ) {
     clearLoginAttempts(ip);
@@ -398,12 +405,11 @@ export async function loginAdmin(formData: FormData) {
     const { data: profile } = await supabase
       .from("profiles")
       .select("client_email, client_password")
-      .eq("client_email", email)
+      .eq("client_email", email.toLowerCase())
       .single();
 
     if (profile && profile.client_password) {
-      const hashedPassword = hashPassword(password);
-      if (profile.client_password === hashedPassword) {
+      if (await verifyPassword(password, profile.client_password)) {
         clearLoginAttempts(ip);
 
         const token = createSessionToken(email);
@@ -548,13 +554,14 @@ export async function saveProfile(formData: FormData) {
     client_email = text(formData, "client_email") || null;
     const rawPass = text(formData, "client_password");
     if (rawPass) {
-      client_password = hashPassword(rawPass);
+      client_password = await hashPassword(rawPass);
     }
   }
 
   const payload = {
     slug,
     enabled,
+    reservation_enabled: isSuper ? bool(formData, "reservation_enabled") : existingProfile.reservation_enabled,
     name,
     profession: text(formData, "profession"),
     bio: text(formData, "bio"),
@@ -584,7 +591,7 @@ export async function saveProfile(formData: FormData) {
     theme: option(
       formData,
       "theme",
-      ["light", "dark"],
+      ["light", "dark", "premium", "emerald", "ruby", "violet", "sapphire", "sunset", "copper"],
       "light",
     ),
     ...(avatar ? { avatar_url: avatar } : removeAvatar ? { avatar_url: null } : {}),
