@@ -37,3 +37,37 @@ export type Profile = {
   client_email?: string | null;
   client_password?: string | null;
 };
+
+export type Restaurant = {
+  id?: string;
+  slug: string;
+  enabled: boolean;
+  name: string;
+  description?: string | null;
+  phone?: string | null;
+  instagram?: string | null;
+  tiktok?: string | null;
+  facebook?: string | null;
+  menu_url?: string | null;
+  location_name?: string | null;
+  location_url?: string | null;
+  avatar_url?: string | null;
+  cover_url?: string | null;
+  cover_style?: "auto" | "square" | "banner" | null;
+  cover_position?: "top" | "center" | "bottom" | null;
+  gallery: string[];
+  theme?:
+    | "light"
+    | "dark"
+    | "premium"
+    | "emerald"
+    | "ruby"
+    | "violet"
+    | "sapphire"
+    | "sunset"
+    | "copper"
+    | null;
+  revenue?: number;
+  orders_count?: number;
+  rating?: number;
+};

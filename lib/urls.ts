@@ -31,3 +31,11 @@ export function getProfileUrl(slug: string) {
 export function getProfileVcardPath(slug: string) {
   return `${getProfilePath(slug)}/vcard`;
 }
+
+export function getRestaurantPath(slug: string) {
+  return `/${slug}`;
+}
+
+export function getRestaurantUrl(slug: string) {
+  return `${getSiteUrl()}${getRestaurantPath(slug)}`;
+}

@@ -708,3 +708,221 @@ export async function deleteProfile(formData: FormData) {
   revalidatePath(`/u/${slug}`);
   redirect("/admin");
 }
+
+// RESTAURANT ACTIONS
+
+const socialBaseUrlsForRestaurant = {
+  instagram: "https://www.instagram.com/",
+  tiktok: "https://www.tiktok.com/@",
+  facebook: "https://www.facebook.com/",
+} as const;
+
+function isBareSocialBaseUrlForRestaurant(key: string, value: string) {
+  const baseUrl = socialBaseUrlsForRestaurant[key as keyof typeof socialBaseUrlsForRestaurant];
+  if (!baseUrl) return false;
+  return normalizeUrlForCompare(value) === normalizeUrlForCompare(baseUrl);
+}
+
+function sanitizeRestaurantUrl(formData: FormData, key: string): string | null {
+  const value = text(formData, key);
+  if (!value) return null;
+
+  if (isBareSocialBaseUrlForRestaurant(key, value)) {
+    return null;
+  }
+
+  if (value.startsWith("http://") || value.startsWith("https://")) {
+    return isValidUrl(value) ? value : null;
+  }
+
+  if (value.includes(".")) {
+    const prefixed = `https://${value}`;
+    return isValidUrl(prefixed) ? prefixed : null;
+  }
+
+  const username = value.replace(/^@/, "");
+  switch (key) {
+    case "instagram":
+      return `https://www.instagram.com/${username}`;
+    case "tiktok":
+      return `https://www.tiktok.com/@${username}`;
+    case "facebook":
+      return `https://www.facebook.com/${username}`;
+    default:
+      const defaultPrefixed = `https://${value}`;
+      return isValidUrl(defaultPrefixed) ? defaultPrefixed : null;
+  }
+}
+
+export async function saveRestaurant(formData: FormData) {
+  await requireSuperAdmin();
+  const supabase = createServiceSupabaseClient();
+  if (!supabase) {
+    redirectWithSaveError("supabase");
+  }
+
+  const id = text(formData, "id");
+  const rawSlug = text(formData, "slug");
+  const name = text(formData, "name");
+
+  const slug = slugify(rawSlug || name || "");
+
+  if (!slug || !name) {
+    redirectWithSaveError("required");
+  }
+
+  const slugError = validateSlug(slug);
+  if (slugError) {
+    redirectWithSaveError(slugError);
+  }
+
+  const avatarFile = formData.get("avatar") as File | null;
+  const coverFile = formData.get("cover") as File | null;
+  const galleryFiles = formData
+    .getAll("galleryFiles")
+    .filter((entry): entry is File => entry instanceof File && entry.size > 0);
+
+  for (const file of [avatarFile, coverFile, ...galleryFiles]) {
+    if (!(file instanceof File) || file.size === 0) {
+      continue;
+    }
+
+    if (file.size > MAX_UPLOAD_SIZE) {
+      redirectWithSaveError("file-too-large");
+    }
+
+    if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
+      redirectWithSaveError("unsupported-image");
+    }
+  }
+
+  const avatar = await uploadFile(avatarFile, `restaurants/avatars/${slug}`).catch(() =>
+    redirectWithSaveError("upload")
+  );
+  const cover = await uploadFile(coverFile, `restaurants/covers/${slug}`).catch(() =>
+    redirectWithSaveError("upload")
+  );
+  const galleryUploads = await Promise.all(
+    galleryFiles.map((file) =>
+      uploadFile(file, `restaurants/gallery/${slug}`).catch(() =>
+        redirectWithSaveError("upload")
+      )
+    )
+  );
+
+  const existingGalleryUrls = text(formData, "gallery")?.split("\n").map((item) => item.trim()).filter((item) => item && isValidUrl(item)) ?? [];
+  const galleryUrls = [...existingGalleryUrls, ...galleryUploads.filter((item): item is string => Boolean(item))];
+
+  const removeAvatar = bool(formData, "remove_avatar");
+  const removeCover = bool(formData, "remove_cover");
+
+  const payload = {
+    slug,
+    enabled: bool(formData, "enabled"),
+    name,
+    description: text(formData, "description"),
+    phone: text(formData, "phone"),
+    instagram: sanitizeRestaurantUrl(formData, "instagram"),
+    tiktok: sanitizeRestaurantUrl(formData, "tiktok"),
+    facebook: sanitizeRestaurantUrl(formData, "facebook"),
+    menu_url: sanitizeRestaurantUrl(formData, "menu_url"),
+    location_name: text(formData, "location_name"),
+    location_url: sanitizeRestaurantUrl(formData, "location_url"),
+    cover_style: option(
+      formData,
+      "cover_style",
+      ["auto", "square", "banner"],
+      "auto"
+    ),
+    cover_position: option(
+      formData,
+      "cover_position",
+      ["top", "center", "bottom"],
+      "center"
+    ),
+    theme: option(
+      formData,
+      "theme",
+      ["light", "dark", "premium", "emerald", "ruby", "violet", "sapphire", "sunset", "copper"],
+      "light"
+    ),
+    ...(avatar ? { avatar_url: avatar } : removeAvatar ? { avatar_url: null } : {}),
+    ...(cover ? { cover_url: cover } : removeCover ? { cover_url: null } : {}),
+    gallery: galleryUrls,
+    revenue: parseFloat(text(formData, "revenue") || "0") || 0,
+    orders_count: parseInt(text(formData, "orders_count") || "0") || 0,
+    rating: parseFloat(text(formData, "rating") || "0") || 0,
+  };
+
+  const query = id
+    ? supabase.from("restaurants").update(payload).eq("id", id)
+    : supabase.from("restaurants").insert(payload);
+  const { error } = await query;
+
+  if (error) {
+    if (error.code === "23505") {
+      redirectWithSaveError("duplicate-slug");
+    }
+    redirectWithSaveError("save");
+  }
+
+  revalidatePath("/admin");
+  revalidatePath("/restoran");
+  redirect("/restoran?saved=1");
+}
+
+export async function toggleRestaurant(formData: FormData) {
+  await requireSuperAdmin();
+  const supabase = createServiceSupabaseClient();
+  const id = text(formData, "id");
+  const enabled = formData.get("enabled") === "true";
+
+  if (!supabase || !id) {
+    throw new Error("Missing Supabase or restaurant id");
+  }
+
+  const { error } = await supabase
+    .from("restaurants")
+    .update({ enabled: !enabled })
+    .eq("id", id);
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/admin");
+  revalidatePath("/restoran");
+  redirect("/restoran");
+}
+
+export async function deleteRestaurant(formData: FormData) {
+  await requireSuperAdmin();
+  const supabase = createServiceSupabaseClient();
+  const id = text(formData, "id");
+  const slug = text(formData, "slug");
+
+  if (!supabase || !id || !slug) {
+    throw new Error("Missing Supabase or restaurant id or slug");
+  }
+
+  const folders = [`restaurants/avatars/${slug}`, `restaurants/covers/${slug}`, `restaurants/gallery/${slug}`];
+  for (const folder of folders) {
+    try {
+      const { data: files } = await supabase.storage.from("profiles").list(folder);
+      if (files && files.length > 0) {
+        const paths = files.map((f) => `${folder}/${f.name}`);
+        await supabase.storage.from("profiles").remove(paths);
+      }
+    } catch {
+      // Storage cleanup is best-effort
+    }
+  }
+
+  const { error } = await supabase.from("restaurants").delete().eq("id", id);
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/admin");
+  revalidatePath("/restoran");
+  redirect("/restoran");
+}

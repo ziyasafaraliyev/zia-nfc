@@ -121,20 +121,25 @@ export default function LandingPage() {
             <img src="/logo.png" alt="Zia NFC" className="size-11 rounded-full object-cover" />
             Zia NFC
           </Link>
-          <div className="hidden shrink-0 items-center gap-1 rounded-full border border-slate-200/70 bg-slate-950/5 px-2 py-1.5 text-sm font-semibold text-slate-700 md:flex">
+          <div className="hidden shrink-0 items-center gap-2 rounded-full border border-slate-200/70 bg-slate-950/5 px-2 py-1.5 text-sm font-semibold text-slate-700 md:flex">
             {navItems.map(([label, href]) => (
               <a key={label} href={href} className="whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-bold uppercase tracking-[0.1em] text-slate-900 transition duration-200 ease-out hover:bg-white hover:text-slate-950 lg:px-4 lg:text-base lg:tracking-[0.12em]">
                 {label}
               </a>
             ))}
           </div>
-          <Link href="/admin" className="inline-flex items-center justify-center gap-1.5 rounded-full bg-slate-950 px-4 py-2 text-xs font-black uppercase tracking-[0.1em] text-white shadow-md transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-slate-800 active:scale-[0.98] sm:px-5 sm:py-2.5 sm:text-sm">
-            Admin
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link href="/restoran" className="inline-flex items-center justify-center gap-1.5 rounded-full bg-sky-500 px-4 py-2 text-xs font-black uppercase tracking-[0.1em] text-white shadow-md transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98] sm:px-5 sm:py-2.5 sm:text-sm">
+              Restoran
+            </Link>
+            <Link href="/admin" className="inline-flex items-center justify-center gap-1.5 rounded-full bg-sky-500 px-4 py-2 text-xs font-black uppercase tracking-[0.1em] text-white shadow-md transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98] sm:px-5 sm:py-2.5 sm:text-sm">
+              Admin
+            </Link>
+          </div>
         </nav>
 
         <div className="mx-auto grid max-w-7xl items-center gap-12 pb-8 pt-14 lg:min-h-[calc(100vh-104px)] lg:grid-cols-[1.02fr_0.98fr] lg:pt-10">
-          <motion.div initial="hidden" animate="show" variants={fadeUp} transition={{ duration: 0.58, ease: [0.23, 1, 0.32, 1] }}>
+          <div>
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-sky-200/70 bg-sky-50 px-3.5 py-2 text-sm font-bold text-sky-800">
               <Sparkles size={16} /> Premium NFC kimlik platforması
             </div>
@@ -160,7 +165,7 @@ export default function LandingPage() {
                 </div>
               ))}
             </div>
-          </motion.div>
+          </div>
 
           <HeroMockup />
         </div>
@@ -342,13 +347,8 @@ export default function LandingPage() {
           </div>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {features.map(({ icon: Icon, title, text }, index) => (
-              <motion.div
+              <div
                 key={title}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, margin: "-80px" }}
-                variants={fadeUp}
-                transition={{ duration: 0.42, delay: index * 0.035, ease: [0.23, 1, 0.32, 1] }}
                 className="group rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_16px_50px_rgba(15,23,42,0.06)] transition duration-200 ease-out hover:-translate-y-1 hover:border-sky-200 hover:shadow-[0_22px_70px_rgba(15,23,42,0.1)]"
               >
                 <div className="grid size-12 place-items-center rounded-2xl bg-slate-950 text-sky-300 transition-transform duration-200 ease-out group-hover:scale-[1.03]">
@@ -356,7 +356,7 @@ export default function LandingPage() {
                 </div>
                 <h3 className="mt-6 text-xl font-black tracking-tight text-slate-950">{title}</h3>
                 <p className="mt-3 leading-7 text-slate-600">{text}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>

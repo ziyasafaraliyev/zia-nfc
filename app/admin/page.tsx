@@ -12,6 +12,7 @@ import { listProfiles } from "@/lib/profiles";
 import { hasSupabaseEnv } from "@/lib/supabase";
 import type { Profile } from "@/lib/types";
 import { getProfileUrl } from "@/lib/urls";
+import Link from "next/link";
 import {
   Activity,
   AlertCircle,
@@ -19,6 +20,7 @@ import {
   BadgeCheck,
   Database,
   ImagePlus,
+  LayoutDashboard,
   Link2,
   LockKeyhole,
   LogOut,
