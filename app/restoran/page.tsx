@@ -16,7 +16,6 @@ import {
   Power,
   BadgeCheck,
   AlertCircle,
-  Phone,
   ExternalLink,
 } from "lucide-react";
 import RestaurantForm from "@/components/restaurant-form";
@@ -322,15 +321,6 @@ function RestaurantCard({ restaurant }: { restaurant: any }) {
             >
               <ExternalLink size={18} />
             </Link>
-            {restaurant.phone && (
-              <a
-                href={`tel:${restaurant.phone}`}
-                className={quietButtonClass}
-                title="Zeng et"
-              >
-                <Phone size={18} />
-              </a>
-            )}
             <form action={toggleRestaurant}>
               <input type="hidden" name="id" value={restaurant.id} />
               <input type="hidden" name="enabled" value={String(restaurant.enabled)} />
