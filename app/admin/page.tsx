@@ -36,7 +36,7 @@ import {
 import { cookies } from "next/headers";
 
 type Props = {
-  searchParams: Promise<{ error?: string; saved?: string }>;
+  searchParams: Promise<{ error?: string; saved?: string; redirectTo?: string }>;
 };
 
 const inputClass =
