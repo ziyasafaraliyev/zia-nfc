@@ -122,7 +122,7 @@ export default function RestaurantForm({ restaurant, userRole = "super_admin" }:
       window.location.reload();
     } catch (err: any) {
       if (err.message === "NEXT_REDIRECT" || err.digest?.includes("NEXT_REDIRECT")) {
-        window.location.href = "/dashboard?saved=1";
+        window.location.href = "/restoran?saved=1";
         return;
       }
       setStatusText("Xəta baş verdi: " + err.message);

@@ -74,7 +74,7 @@ export default async function AdminPage({ searchParams }: Props) {
   const session = await getAdminSession();
 
   if (!session) {
-    return <Login error={params.error} />;
+    return <Login error={params.error} redirectTo={params.redirectTo} />;
   }
 
   const profiles = await listProfiles();
@@ -529,13 +529,16 @@ function StatusBadge({ enabled }: { enabled: boolean }) {
 }
 
 
-function Login({ error }: { error?: string }) {
+function Login({ error, redirectTo }: { error?: string, redirectTo?: string }) {
   return (
     <main className="grid min-h-screen place-items-center bg-[#f5f7fa] px-4 py-10 font-sans">
       <form
         action={loginAdmin}
         className="w-full max-w-md rounded-[2.25rem] border border-slate-200 bg-white p-7 shadow-[0_20px_60px_rgba(0,0,0,0.12)] sm:p-8 transition-all duration-300"
       >
+        {redirectTo && (
+          <input type="hidden" name="redirectTo" value={redirectTo} />
+        )}
         <div className="flex items-center gap-3">
           <img
             src="/logo.png"
@@ -556,7 +559,9 @@ function Login({ error }: { error?: string }) {
           Zia NFC Panel
         </h1>
         <p className="mt-1.5 text-xs leading-relaxed text-slate-400 font-medium" style={{ fontFamily: "'Outfit', sans-serif" }}>
-          Müştəri profillərini idarə etmək üçün daxil olun.
+          {redirectTo === "/restoran" 
+            ? "Restoranları idarə etmək üçün daxil olun."
+            : "Müştəri profillərini idarə etmək üçün daxil olun."}
         </p>
         {error ? (
           <div className="mt-5 flex gap-2 rounded-2xl border border-red-100 bg-red-50 p-3 text-sm font-semibold text-red-600">

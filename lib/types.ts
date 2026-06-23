@@ -71,3 +71,11 @@ export type Restaurant = {
   orders_count?: number;
   rating?: number;
 };
+
+export type RestaurantReview = {
+  id?: string;
+  restaurant_id: string;
+  rating: number;
+  comment?: string | null;
+  created_at?: Date;
+};

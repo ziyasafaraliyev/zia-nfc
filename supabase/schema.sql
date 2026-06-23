@@ -58,6 +58,61 @@ create table if not exists public.restaurants (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.restaurant_reviews (
+  id uuid primary key default gen_random_uuid(),
+  restaurant_id uuid not null references public.restaurants(id) on delete cascade,
+  rating numeric not null check (rating between 1 and 5),
+  comment text,
+  created_at timestamptz not null default now()
+);
+
+-- Function to automatically calculate average rating when reviews are changed
+create or replace function public.update_restaurant_rating()
+returns trigger language plpgsql as $$
+declare
+  avg_rating numeric;
+begin
+  select avg(rating) into avg_rating
+  from public.restaurant_reviews
+  where restaurant_id = coalesce(new.restaurant_id, old.restaurant_id);
+
+  update public.restaurants
+  set rating = coalesce(avg_rating, 0)
+  where id = coalesce(new.restaurant_id, old.restaurant_id);
+
+  return coalesce(new, old);
+end;
+$$;
+
+-- Trigger to update rating when reviews are added/changed/deleted
+drop trigger if exists restaurant_reviews_rating_update on public.restaurant_reviews;
+create trigger restaurant_reviews_rating_update
+after insert or update or delete on public.restaurant_reviews
+for each row execute function public.update_restaurant_rating();
+
+alter table public.restaurants enable row level security;
+drop policy if exists "Enabled restaurants are public" on public.restaurants;
+create policy "Enabled restaurants are public"
+on public.restaurants for select
+using (enabled = true);
+
+drop policy if exists "Service role manages restaurants" on public.restaurants;
+create policy "Service role manages restaurants"
+on public.restaurants for all
+using (auth.role() = 'service_role')
+with check (auth.role() = 'service_role');
+
+alter table public.restaurant_reviews enable row level security;
+drop policy if exists "Anyone can insert restaurant reviews" on public.restaurant_reviews;
+create policy "Anyone can insert restaurant reviews"
+on public.restaurant_reviews for insert
+with check (true);
+
+drop policy if exists "Restaurant reviews are public" on public.restaurant_reviews;
+create policy "Restaurant reviews are public"
+on public.restaurant_reviews for select
+using (true);
+
 alter table public.profiles add column if not exists background_url text;
 alter table public.profiles add column if not exists cover_style text not null default 'auto';
 alter table public.profiles add column if not exists cover_position text not null default 'center';

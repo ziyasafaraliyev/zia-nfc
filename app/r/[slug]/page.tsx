@@ -1,4 +1,4 @@
-import { getRestaurantBySlug } from "@/lib/restaurants";
+import { getRestaurantBySlug, getReviewsForRestaurant } from "@/lib/restaurants";
 import type { Metadata } from "next";
 import {
   Instagram,
@@ -10,6 +10,7 @@ import {
   Menu,
 } from "lucide-react";
 import { notFound } from "next/navigation";
+import RestaurantRating from "@/components/restaurant-rating";
 
 export const dynamic = "force-dynamic";
 
@@ -51,6 +52,8 @@ export default async function RestaurantPage({ params }: Props) {
   const { slug } = await params;
   const restaurant = await getRestaurantBySlug(slug);
   if (!restaurant || !restaurant.enabled) notFound();
+
+  const reviews = restaurant.id ? await getReviewsForRestaurant(restaurant.id) : [];
 
   const coverStyle = restaurant.cover_style ?? "auto";
   const coverPosition = restaurant.cover_position ?? "center";
@@ -250,6 +253,13 @@ export default async function RestaurantPage({ params }: Props) {
             </div>
           </div>
         ) : null}
+
+        {/* ── RATING & REVIEWS ── */}
+        {restaurant.id && <RestaurantRating 
+          restaurantId={restaurant.id}
+          currentRating={restaurant.rating}
+          reviews={reviews}
+        />}
 
         {/* ── FOOTER ── */}
         <div className="mt-6 flex flex-col items-center gap-2">

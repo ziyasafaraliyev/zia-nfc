@@ -351,8 +351,8 @@ function sanitizeUrl(formData: FormData, key: string): string | null {
 // ──────────────────────────────────────────────
 // Redirect helpers
 // ──────────────────────────────────────────────
-function redirectWithSaveError(error: string): never {
-  redirect(`/admin?error=${encodeURIComponent(error)}`);
+function redirectWithSaveError(error: string, basePath = "/admin"): never {
+  redirect(`${basePath}?error=${encodeURIComponent(error)}`);
 }
 
 // ──────────────────────────────────────────────
@@ -393,10 +393,11 @@ async function uploadFile(file: File | null, folder: string) {
 
 export async function loginAdmin(formData: FormData) {
   const ip = await getClientIp();
+  const redirectTo = text(formData, "redirectTo");
 
   // Rate limit check
   if (isRateLimited(ip)) {
-    redirect("/admin?error=rate-limited");
+    redirect(`/admin?error=rate-limited${redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""}`);
   }
 
   const email = text(formData, "email");
@@ -405,7 +406,7 @@ export async function loginAdmin(formData: FormData) {
   const allowedPassword = process.env.ADMIN_PASSWORD;
 
   if (!email || !password) {
-    redirect("/admin?error=login");
+    redirect(`/admin?error=login${redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""}`);
   }
 
   // 1. Try Super Admin login
@@ -427,7 +428,7 @@ export async function loginAdmin(formData: FormData) {
       path: "/",
     });
 
-    redirect("/admin");
+    redirect(redirectTo || "/admin");
   }
 
   // 2. Try Client Admin login
@@ -453,14 +454,14 @@ export async function loginAdmin(formData: FormData) {
           path: "/",
         });
 
-        redirect("/admin");
+        redirect(redirectTo || "/admin");
       }
     }
   }
 
   // Failed login
   recordLoginAttempt(ip);
-  redirect("/admin?error=login");
+  redirect(`/admin?error=login${redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""}`);
 }
 
 export async function logoutAdmin() {
@@ -758,7 +759,7 @@ export async function saveRestaurant(formData: FormData) {
   await requireSuperAdmin();
   const supabase = createServiceSupabaseClient();
   if (!supabase) {
-    redirectWithSaveError("supabase");
+    redirectWithSaveError("supabase", "/restoran");
   }
 
   const id = text(formData, "id");
@@ -768,12 +769,12 @@ export async function saveRestaurant(formData: FormData) {
   const slug = slugify(rawSlug || name || "");
 
   if (!slug || !name) {
-    redirectWithSaveError("required");
+    redirectWithSaveError("required", "/restoran");
   }
 
   const slugError = validateSlug(slug);
   if (slugError) {
-    redirectWithSaveError(slugError);
+    redirectWithSaveError(slugError, "/restoran");
   }
 
   const avatarFile = formData.get("avatar") as File | null;
@@ -788,24 +789,24 @@ export async function saveRestaurant(formData: FormData) {
     }
 
     if (file.size > MAX_UPLOAD_SIZE) {
-      redirectWithSaveError("file-too-large");
+      redirectWithSaveError("file-too-large", "/restoran");
     }
 
     if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
-      redirectWithSaveError("unsupported-image");
+      redirectWithSaveError("unsupported-image", "/restoran");
     }
   }
 
   const avatar = await uploadFile(avatarFile, `restaurants/avatars/${slug}`).catch(() =>
-    redirectWithSaveError("upload")
+    redirectWithSaveError("upload", "/restoran")
   );
   const cover = await uploadFile(coverFile, `restaurants/covers/${slug}`).catch(() =>
-    redirectWithSaveError("upload")
+    redirectWithSaveError("upload", "/restoran")
   );
   const galleryUploads = await Promise.all(
     galleryFiles.map((file) =>
       uploadFile(file, `restaurants/gallery/${slug}`).catch(() =>
-        redirectWithSaveError("upload")
+        redirectWithSaveError("upload", "/restoran")
       )
     )
   );
@@ -861,9 +862,9 @@ export async function saveRestaurant(formData: FormData) {
 
   if (error) {
     if (error.code === "23505") {
-      redirectWithSaveError("duplicate-slug");
+      redirectWithSaveError("duplicate-slug", "/restoran");
     }
-    redirectWithSaveError("save");
+    redirectWithSaveError("save", "/restoran");
   }
 
   revalidatePath("/admin");
@@ -925,4 +926,36 @@ export async function deleteRestaurant(formData: FormData) {
   revalidatePath("/admin");
   revalidatePath("/restoran");
   redirect("/restoran");
+}
+
+export async function submitRestaurantReview(formData: FormData) {
+  const supabase = createServiceSupabaseClient();
+  const restaurantId = text(formData, "restaurant_id");
+  const rating = parseInt(text(formData, "rating") || "0", 10);
+  const comment = text(formData, "comment");
+
+  if (!supabase || !restaurantId || !rating || rating < 1 || rating > 5) {
+    throw new Error("Invalid input");
+  }
+
+  const { error } = await supabase.from("restaurant_reviews").insert({
+    restaurant_id: restaurantId,
+    rating,
+    comment
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  // Get the slug to revalidate
+  const { data: restaurant } = await supabase
+    .from("restaurants")
+    .select("slug")
+    .eq("id", restaurantId)
+    .single();
+
+  if (restaurant) {
+    revalidatePath(`/${restaurant.slug}`);
+  }
 }

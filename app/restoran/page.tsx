@@ -58,7 +58,7 @@ export default async function DashboardPage({ searchParams }: Props) {
   const session = await getAdminSession();
 
   if (!session || session.role !== "super_admin") {
-    redirect("/admin");
+    redirect("/admin?redirectTo=/restoran");
   }
 
   const restaurants = await listRestaurants();

@@ -1,5 +1,5 @@
 import { createPublicSupabaseClient, createServiceSupabaseClient } from "@/lib/supabase";
-import type { Restaurant } from "@/lib/types";
+import type { Restaurant, RestaurantReview } from "@/lib/types";
 
 export async function getRestaurantBySlug(slug: string): Promise<Restaurant | null> {
   const supabase = createPublicSupabaseClient();
@@ -20,6 +20,21 @@ export async function getRestaurantBySlug(slug: string): Promise<Restaurant | nu
     ...data,
     gallery: data.gallery || []
   } as Restaurant;
+}
+
+export async function getReviewsForRestaurant(restaurantId: string): Promise<RestaurantReview[]> {
+  const supabase = createPublicSupabaseClient();
+  if (!supabase) {
+    return [];
+  }
+
+  const { data } = await supabase
+    .from("restaurant_reviews")
+    .select("*")
+    .eq("restaurant_id", restaurantId)
+    .order("created_at", { ascending: false });
+
+  return (data ?? []) as RestaurantReview[];
 }
 
 export async function listRestaurants(): Promise<Restaurant[]> {
