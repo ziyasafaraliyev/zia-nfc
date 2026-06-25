@@ -74,6 +74,7 @@ export default async function ProfilePage({ params }: Props) {
   const qrUrl = `/u/${profile.slug}/qr`;
 
   const whatsapp = profile.whatsapp?.replace(/[^\d]/g, "");
+  const whatsapp2 = profile.whatsapp2?.replace(/[^\d]/g, "");
 
   const coverStyle = profile.cover_style ?? "auto";
   const coverPosition = profile.cover_position ?? "center";
@@ -226,8 +227,16 @@ export default async function ProfilePage({ params }: Props) {
         </section>
 
         {/* ── PRIMARY ACTION BUTTONS ── */}
-        {whatsapp || profile.phone ? (
-          <div className="mt-3 grid gap-2.5" style={{ gridTemplateColumns: whatsapp && profile.phone ? "1fr 1fr" : "1fr" }}>
+        <div className="mt-3 grid gap-2.5">
+          <div
+            className="grid gap-2.5"
+            style={{
+              gridTemplateColumns:
+                (whatsapp || whatsapp2) && (profile.phone || profile.phone2)
+                  ? "1fr 1fr"
+                  : "1fr",
+            }}
+          >
             {whatsapp ? (
               <a
                 href={`https://wa.me/${whatsapp}`}
@@ -238,6 +247,18 @@ export default async function ProfilePage({ params }: Props) {
                   className="transition-transform duration-300 group-hover:scale-110 group-hover:rotate-[-6deg]"
                 />
                 <span>WhatsApp</span>
+              </a>
+            ) : null}
+            {whatsapp2 ? (
+              <a
+                href={`https://wa.me/${whatsapp2}`}
+                className="lux-btn-whatsapp group lux-card-enter-2 transition-transform duration-200 hover:scale-[1.02]"
+              >
+                <MessageCircle
+                  size={18}
+                  className="transition-transform duration-300 group-hover:scale-110 group-hover:rotate-[-6deg]"
+                />
+                <span>WhatsApp 2</span>
               </a>
             ) : null}
             {profile.phone ? (
@@ -252,8 +273,20 @@ export default async function ProfilePage({ params }: Props) {
                 <span>Zəng et</span>
               </a>
             ) : null}
+            {profile.phone2 ? (
+              <a
+                href={`tel:${profile.phone2}`}
+                className="lux-btn-call group lux-card-enter-3 transition-transform duration-200 hover:scale-[1.02]"
+              >
+                <Phone
+                  size={18}
+                  className="transition-transform duration-300 group-hover:scale-110"
+                />
+                <span>Zəng et 2</span>
+              </a>
+            ) : null}
           </div>
-        ) : null}
+        </div>
 
 
 

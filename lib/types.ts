@@ -7,7 +7,9 @@ export type Profile = {
   profession?: string | null;
   bio?: string | null;
   phone?: string | null;
+  phone2?: string | null;
   whatsapp?: string | null;
+  whatsapp2?: string | null;
   instagram?: string | null;
   tiktok?: string | null;
   website?: string | null;

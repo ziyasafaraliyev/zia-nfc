@@ -174,10 +174,16 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
           defaultValue={profile?.profession}
         />
         <Field name="phone" label="Telefon" defaultValue={profile?.phone} />
+        <Field name="phone2" label="Telefon 2" defaultValue={profile?.phone2} />
         <Field
           name="whatsapp"
           label="WhatsApp"
           defaultValue={getSocialFieldValue("whatsapp", profile?.whatsapp)}
+        />
+        <Field
+          name="whatsapp2"
+          label="WhatsApp 2"
+          defaultValue={profile?.whatsapp2}
         />
         <Field
           name="instagram"
