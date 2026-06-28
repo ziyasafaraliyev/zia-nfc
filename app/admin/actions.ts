@@ -525,6 +525,11 @@ export async function saveProfile(formData: FormData) {
     .getAll("galleryFiles")
     .filter((entry): entry is File => entry instanceof File && entry.size > 0);
 
+  const MAX_GALLERY_IMAGES = 10;
+  if (galleryFiles.length > MAX_GALLERY_IMAGES) {
+    redirectWithSaveError("too-many-gallery-images");
+  }
+
   for (const file of [avatarFile, backgroundFile, ...galleryFiles]) {
     if (!(file instanceof File) || file.size === 0) {
       continue;

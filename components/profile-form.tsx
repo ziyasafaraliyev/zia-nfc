@@ -465,66 +465,92 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
         <span className="text-xs font-bold text-slate-500 uppercase tracking-wide flex items-center gap-2">
           <ImagePlus size={14} className="text-[#29AEEE]" /> Portfolio Şəkilləri
         </span>
-        <div
-          onDragOver={(e) => {
-            e.preventDefault();
-            setIsPortfolioDragging(true);
-          }}
-          onDragEnter={(e) => {
-            e.preventDefault();
-            setIsPortfolioDragging(true);
-          }}
-          onDragLeave={(e) => {
-            e.preventDefault();
-            setIsPortfolioDragging(false);
-          }}
-          onDrop={(e) => {
-            e.preventDefault();
-            setIsPortfolioDragging(false);
-            const files = e.dataTransfer.files;
-            if (files) {
+          <div
+            onDragOver={(e) => {
+              e.preventDefault();
+              setIsPortfolioDragging(true);
+            }}
+            onDragEnter={(e) => {
+              e.preventDefault();
+              setIsPortfolioDragging(true);
+            }}
+            onDragLeave={(e) => {
+              e.preventDefault();
+              setIsPortfolioDragging(false);
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              setIsPortfolioDragging(false);
+              const files = e.dataTransfer.files;
+              if (!files) return;
+
+              const MAX_GALLERY_IMAGES = 10;
+              const remaining = Math.max(
+                0,
+                MAX_GALLERY_IMAGES - (selectedGalleryFiles?.length ?? 0),
+              );
+              if (remaining === 0) return;
+
               const newList = Array.from(files)
-                .filter(file => file.type.startsWith("image/"))
+                .filter((file) => file.type.startsWith("image/"))
+                .slice(0, remaining)
                 .map((file) => ({
                   name: file.name,
                   previewUrl: URL.createObjectURL(file),
                   file,
                 }));
-              setSelectedGalleryFiles(prev => [...prev, ...newList]);
-            }
-          }}
-          className={[
-            "block rounded-3xl border-2 transition-all duration-200 text-center cursor-pointer select-none",
-            isPortfolioDragging
-              ? "border-[#29AEEE] bg-[#29AEEE]/5 scale-[1.01]"
-              : "border-dashed border-slate-200 bg-white hover:border-[#29AEEE] hover:bg-[#29AEEE]/5 hover:shadow-sm"
-          ].join(" ")}
-          style={{ padding: "1.75rem" }}
-          onClick={() => {
-            const input = document.createElement("input");
-            input.type = "file";
-            input.accept = "image/jpeg,image/png,image/webp,image/gif";
-            input.multiple = true;
-            input.onchange = (e) => {
-              const files = (e.target as HTMLInputElement).files;
-              if (files) {
-                const newList = Array.from(files).map((file) => ({
-                  name: file.name,
-                  previewUrl: URL.createObjectURL(file),
-                  file,
-                }));
-                setSelectedGalleryFiles(prev => [...prev, ...newList]);
+
+              if (newList.length) {
+                setSelectedGalleryFiles((prev) => [...prev, ...newList]);
               }
-            };
-            input.click();
-          }}
-        >
-          <div className="flex flex-col items-center gap-2">
-            <Upload size={24} className="text-[#29AEEE]" />
-            <span className="text-xs font-semibold text-slate-600">Şəkil seçin və ya bura sürükləyin</span>
-            <span className="text-[10px] font-medium text-slate-400">Maks. 5MB · JPG, PNG, WEBP, GIF</span>
+            }}
+            className={[
+              "block rounded-3xl border-2 transition-all duration-200 text-center cursor-pointer select-none",
+              isPortfolioDragging
+                ? "border-[#29AEEE] bg-[#29AEEE]/5 scale-[1.01]"
+                : "border-dashed border-slate-200 bg-white hover:border-[#29AEEE] hover:bg-[#29AEEE]/5 hover:shadow-sm"
+            ].join(" ")}
+            style={{ padding: "1.75rem" }}
+            onClick={() => {
+              const input = document.createElement("input");
+              input.type = "file";
+              input.accept = "image/jpeg,image/png,image/webp,image/gif";
+              input.multiple = true;
+              input.onchange = (e) => {
+                const files = (e.target as HTMLInputElement).files;
+                if (!files) return;
+
+                const MAX_GALLERY_IMAGES = 10;
+                const remaining = Math.max(
+                  0,
+                  MAX_GALLERY_IMAGES - (selectedGalleryFiles?.length ?? 0),
+                );
+                if (remaining === 0) return;
+
+                const newList = Array.from(files)
+                  .filter((file) => file.type.startsWith("image/"))
+                  .slice(0, remaining)
+                  .map((file) => ({
+                    name: file.name,
+                    previewUrl: URL.createObjectURL(file),
+                    file,
+                  }));
+
+                if (newList.length) {
+                  setSelectedGalleryFiles((prev) => [...prev, ...newList]);
+                }
+              };
+
+              input.click();
+            }}
+          >
+            <div className="flex flex-col items-center gap-2">
+              <Upload size={24} className="text-[#29AEEE]" />
+              <span className="text-xs font-semibold text-slate-600">Şəkil seçin və ya bura sürükləyin</span>
+              <span className="text-[10px] font-medium text-slate-400">Maks. 5MB · Max 10 şəkil · JPG, PNG, WEBP, GIF</span>
+            </div>
           </div>
-        </div>
+        
         {/* Existing gallery images */}
         {existingGalleryUrls.length > 0 && (
           <div className="mt-3 flex flex-col gap-2">
