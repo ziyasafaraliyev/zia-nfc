@@ -79,6 +79,31 @@ async function compressImage(file: File, maxWidth = 1200, quality = 0.75): Promi
   });
 }
 
+// Helper to process items in parallel with a concurrency limit
+async function processInParallel<T, R>(
+  items: T[],
+  processor: (item: T) => Promise<R>,
+  concurrency = 3
+): Promise<R[]> {
+  const results: R[] = new Array(items.length);
+  let index = 0;
+
+  async function worker() {
+    while (index < items.length) {
+      const currentIndex = index++;
+      results[currentIndex] = await processor(items[currentIndex]);
+    }
+  }
+
+  const workers: Promise<void>[] = [];
+  for (let i = 0; i < Math.min(concurrency, items.length); i++) {
+    workers.push(worker());
+  }
+
+  await Promise.all(workers);
+  return results;
+}
+
 export default function ProfileForm({ profile, userRole = "super_admin" }: { profile?: Profile; userRole?: "super_admin" | "client" }) {
   const [submitting, setSubmitting] = useState(false);
   const [statusText, setStatusText] = useState("");
@@ -96,7 +121,7 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitting(true);
-    setStatusText("Şəkillər sıxılır...");
+    setStatusText("Şəkillər hazırlanır...");
 
     const form = event.currentTarget;
     const formData = new FormData(form);
@@ -124,12 +149,27 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
         formData.delete("cv");
       }
 
-      // Compress gallery files
+      // Compress gallery files in parallel (3 at a time)
       formData.delete("galleryFiles");
-      for (const item of selectedGalleryFiles) {
-        if (item.file) {
-          const compressed = await compressImage(item.file);
-          formData.append("galleryFiles", compressed);
+      const filesToCompress = selectedGalleryFiles.filter(item => item.file);
+      
+      if (filesToCompress.length > 0) {
+        setStatusText(`Şəkil sıxılır: 0/${filesToCompress.length}`);
+        let processed = 0;
+        
+        const compressedFiles = await processInParallel(
+          filesToCompress,
+          async (item) => {
+            const compressed = await compressImage(item.file!);
+            processed++;
+            setStatusText(`Şəkil sıxılır: ${processed}/${filesToCompress.length}`);
+            return compressed;
+          },
+          3 // concurrency limit
+        );
+
+        for (const file of compressedFiles) {
+          formData.append("galleryFiles", file);
         }
       }
 
