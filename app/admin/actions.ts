@@ -417,27 +417,43 @@ async function uploadFile(file: File | null, folder: string) {
   let contentType: string;
   let ext: string;
 
+  // 1MB threshold - 1 * 1024 * 1024 bytes
+  const ONE_MB = 1 * 1024 * 1024;
+
   if (isImage) {
-    // Convert image to WebP with dynamic quality to keep size under 20MB
-    const buffer = Buffer.from(await file.arrayBuffer());
-    let webpBuffer: Buffer;
-    let quality = 85; // Start with 85%
-    
-    // Try different qualities until we get under 20MB
-    while (true) {
-      webpBuffer = await sharp(buffer)
-        .webp({ quality })
-        .toBuffer();
+    // If image is already WebP or smaller than 1MB, keep original format
+    const isWebP = file.type === "image/webp";
+    const isSmallEnough = file.size < ONE_MB;
+
+    if (isWebP || isSmallEnough) {
+      // Keep original file
+      const rawExt = (file.name.split(".").pop() || "webp").toLowerCase();
+      const safeExtensions = new Set(["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg", "heic", "heif"]);
+      ext = safeExtensions.has(rawExt) ? rawExt : "webp";
+      fileToUpload = file;
+      contentType = file.type;
+    } else {
+      // Convert large non-WebP image (>=1MB) to WebP with dynamic quality
+      const buffer = Buffer.from(await file.arrayBuffer());
+      let webpBuffer: Buffer;
+      let quality = 85; // Start with 85%
       
-      if (webpBuffer.length <= 20 * 1024 * 1024 || quality <= 10) {
-        break; // Stop if we're under 20MB or quality is too low
+      // Try different qualities until we get under 20MB
+      while (true) {
+        webpBuffer = await sharp(buffer)
+          .webp({ quality })
+          .toBuffer();
+        
+        if (webpBuffer.length <= 20 * 1024 * 1024 || quality <= 10) {
+          break; // Stop if we're under 20MB or quality is too low
+        }
+        quality -= 10; // Reduce quality by 10% each time
       }
-      quality -= 10; // Reduce quality by 10% each time
+      
+      fileToUpload = webpBuffer!;
+      contentType = "image/webp";
+      ext = "webp";
     }
-    
-    fileToUpload = webpBuffer!;
-    contentType = "image/webp";
-    ext = "webp";
   } else {
     // For non-image files (like PDF), keep as is
     const rawExt = (file.name.split(".").pop() || "pdf").toLowerCase();
