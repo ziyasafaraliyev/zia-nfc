@@ -435,8 +435,14 @@ export default function RestaurantForm({ restaurant, userRole = "super_admin" }:
             setIsPortfolioDragging(false);
             const files = e.dataTransfer.files;
             if (files) {
+              const MAX_GALLERY_IMAGES = 30;
+              const remaining = Math.max(
+                0,
+                MAX_GALLERY_IMAGES - (selectedGalleryFiles?.length ?? 0),
+              );
               const newList = Array.from(files)
                 .filter(file => file.type.startsWith("image/"))
+                .slice(0, remaining)
                 .map((file) => ({
                   name: file.name,
                   previewUrl: URL.createObjectURL(file),
@@ -460,11 +466,19 @@ export default function RestaurantForm({ restaurant, userRole = "super_admin" }:
             input.onchange = (e) => {
               const files = (e.target as HTMLInputElement).files;
               if (files) {
-                const newList = Array.from(files).map((file) => ({
-                  name: file.name,
-                  previewUrl: URL.createObjectURL(file),
-                  file,
-                }));
+                const MAX_GALLERY_IMAGES = 30;
+                const remaining = Math.max(
+                  0,
+                  MAX_GALLERY_IMAGES - (selectedGalleryFiles?.length ?? 0),
+                );
+                const newList = Array.from(files)
+                  .filter(file => file.type.startsWith("image/"))
+                  .slice(0, remaining)
+                  .map((file) => ({
+                    name: file.name,
+                    previewUrl: URL.createObjectURL(file),
+                    file,
+                  }));
                 setSelectedGalleryFiles(prev => [...prev, ...newList]);
               }
             };
@@ -474,7 +488,7 @@ export default function RestaurantForm({ restaurant, userRole = "super_admin" }:
           <div className="flex flex-col items-center gap-2">
             <Upload size={24} className="text-[#29AEEE]" />
             <span className="text-xs font-semibold text-slate-600">Şəkil seçin və ya bura sürükləyin</span>
-            <span className="text-[10px] font-medium text-slate-400">Maks. 5MB · JPG, PNG, WEBP, GIF</span>
+            <span className="text-[10px] font-medium text-slate-400">Maks. 20MB · Max 30 şəkil · JPG, PNG, WEBP, GIF</span>
           </div>
         </div>
         {existingGalleryUrls.length > 0 && (

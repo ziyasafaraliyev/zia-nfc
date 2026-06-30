@@ -397,12 +397,24 @@ async function uploadFile(file: File | null, folder: string) {
   let ext: string;
 
   if (isImage) {
-    // Convert image to WebP
+    // Convert image to WebP with dynamic quality to keep size under 20MB
     const buffer = Buffer.from(await file.arrayBuffer());
-    const webpBuffer = await sharp(buffer)
-      .webp({ quality: 85 }) // 85% quality is a good balance
-      .toBuffer();
-    fileToUpload = webpBuffer;
+    let webpBuffer: Buffer;
+    let quality = 85; // Start with 85%
+    
+    // Try different qualities until we get under 20MB
+    while (true) {
+      webpBuffer = await sharp(buffer)
+        .webp({ quality })
+        .toBuffer();
+      
+      if (webpBuffer.length <= 20 * 1024 * 1024 || quality <= 10) {
+        break; // Stop if we're under 20MB or quality is too low
+      }
+      quality -= 10; // Reduce quality by 10% each time
+    }
+    
+    fileToUpload = webpBuffer!;
     contentType = "image/webp";
     ext = "webp";
   } else {

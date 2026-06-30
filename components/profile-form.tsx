@@ -484,7 +484,7 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
               const files = e.dataTransfer.files;
               if (!files) return;
 
-              const MAX_GALLERY_IMAGES = 10;
+              const MAX_GALLERY_IMAGES = 30;
               const remaining = Math.max(
                 0,
                 MAX_GALLERY_IMAGES - (selectedGalleryFiles?.length ?? 0),
@@ -520,7 +520,7 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
                 const files = (e.target as HTMLInputElement).files;
                 if (!files) return;
 
-                const MAX_GALLERY_IMAGES = 10;
+                const MAX_GALLERY_IMAGES = 30;
                 const remaining = Math.max(
                   0,
                   MAX_GALLERY_IMAGES - (selectedGalleryFiles?.length ?? 0),
@@ -547,7 +547,7 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
             <div className="flex flex-col items-center gap-2">
               <Upload size={24} className="text-[#29AEEE]" />
               <span className="text-xs font-semibold text-slate-600">Şəkil seçin və ya bura sürükləyin</span>
-              <span className="text-[10px] font-medium text-slate-400">Maks. 5MB · Max 10 şəkil · JPG, PNG, WEBP, GIF</span>
+              <span className="text-[10px] font-medium text-slate-400">Maks. 20MB · Max 30 şəkil · JPG, PNG, WEBP, GIF</span>
             </div>
           </div>
         
