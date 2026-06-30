@@ -19,7 +19,7 @@ function normalizeGallery(gallery: any[]) {
 }
 
 export default function PortfolioClient({ profile }: { profile: any }) {
-  const [showProjects, setShowProjects] = useState(false);
+  const [showProjects, setShowProjects] = useState(true);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxImages, setLightboxImages] = useState<string[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
