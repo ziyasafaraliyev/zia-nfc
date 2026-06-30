@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ArrowUpRight, Plus, Minus, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { Image, X, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import { useState } from "react";
 
 function normalizeGallery(gallery: any[]) {
@@ -19,7 +19,7 @@ function normalizeGallery(gallery: any[]) {
 }
 
 export default function PortfolioClient({ profile }: { profile: any }) {
-  const [expandedSection, setExpandedSection] = useState<string | null>(null);
+  const [showProjects, setShowProjects] = useState(false);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxImages, setLightboxImages] = useState<string[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -52,48 +52,50 @@ export default function PortfolioClient({ profile }: { profile: any }) {
 
         {sections.length > 0 ? (
           <section className="mt-6 space-y-4">
-            {sections.map((section: any) => {
-              const isExpanded = expandedSection === section.id;
-              const hasImages = section.images?.length > 0;
-              
-              return (
-                <div key={section.id} className="space-y-2">
-                  <button
-                    onClick={() => setExpandedSection(isExpanded ? null : section.id)}
-                    className="w-full flex items-center justify-between px-5 py-3 rounded-2xl border border-white/30 bg-white/70 backdrop-blur-sm transition-all duration-200 hover:bg-white/85 shadow-sm"
-                  >
-                    <span className="text-sm font-bold text-slate-800">{section.name || "Untitled"}</span>
-                    {isExpanded ? (
-                      <Minus size={18} className="text-slate-600" />
-                    ) : (
-                      <Plus size={18} className="text-slate-600" />
-                    )}
-                  </button>
+            {/* Portfolio Button */}
+            <button
+              onClick={() => setShowProjects(!showProjects)}
+              className="lux-save-contact group w-full flex items-center justify-between gap-3 rounded-2xl px-4 py-3.5 transition-transform duration-200 hover:scale-[1.02]"
+            >
+              <span className="flex items-center gap-3">
+                <span className="lux-save-icon grid size-9 place-items-center rounded-xl">
+                  <Image size={18} />
+                </span>
+                <span className="flex flex-col items-start leading-tight">
+                  <span className="text-sm font-bold text-gray-800">Portfolio</span>
+                  <span className="text-[10px] font-semibold text-gray-400 mt-0.5">
+                    {sections.length} layihə, {sections.reduce((acc: number, s: any) => acc + (s.images?.length || 0), 0)} şəkil
+                  </span>
+                </span>
+              </span>
+              <ExternalLink
+                size={15}
+                className="text-gray-400 transition-all duration-300 group-hover:text-[#29AEEE] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              />
+            </button>
+
+            {/* Project List */}
+            {showProjects && (
+              <div className="space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                {sections.map((section: any) => {
+                  const hasImages = section.images?.length > 0;
+                  if (!hasImages) return null;
                   
-                  {isExpanded && hasImages && (
-                    <div className="grid grid-cols-2 gap-2.5">
-                      {section.images.map((image: string, index: number) => (
-                        <button
-                          key={`${section.id}-${image}-${index}`}
-                          onClick={() => openLightbox(section.images, index)}
-                          className={`${index === 0 ? "col-span-2 aspect-[16/9]" : "aspect-square"} group relative overflow-hidden rounded-[1.5rem] lux-gallery-item`}
-                        >
-                          <img
-                            src={image}
-                            alt={`${profile.name} — ${section.name} ${index + 1}`}
-                            className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.06]"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 transition duration-300 group-hover:opacity-100" />
-                          <div className="absolute bottom-3 right-3 flex size-8 translate-y-2 items-center justify-center rounded-full lux-gallery-btn opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                            <ArrowUpRight size={14} />
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+                  return (
+                    <button
+                      key={section.id}
+                      onClick={() => openLightbox(section.images, 0)}
+                      className="w-full flex items-center justify-between px-5 py-3.5 rounded-2xl border border-white/30 bg-white/70 backdrop-blur-sm transition-all duration-200 hover:bg-white/85 hover:scale-[1.01] shadow-sm"
+                    >
+                      <span className="text-sm font-bold text-slate-800">{section.name || "Untitled"}</span>
+                      <span className="text-xs font-semibold text-slate-500">
+                        {section.images.length} şəkil
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </section>
         ) : (
           <section className="mt-10 rounded-[2.25rem] border border-white/80 bg-white/60 p-6 text-center">
