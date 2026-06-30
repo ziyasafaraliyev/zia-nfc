@@ -729,15 +729,73 @@ export async function deleteProfile(formData: FormData) {
     throw new Error("Missing Supabase or profile id or slug");
   }
 
+  // First, get the profile to extract gallery URLs and other storage URLs
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("avatar_url, background_url, cv_url, gallery")
+    .eq("id", id)
+    .single();
+
   // Clean up storage files for this profile
   const folders = [`avatars/${slug}`, `backgrounds/${slug}`, `gallery/${slug}`, `cvs/${slug}`];
+  const allPathsToDelete: string[] = [];
+
+  // Collect files from folders
   for (const folder of folders) {
     try {
       const { data: files } = await supabase.storage.from("profiles").list(folder);
       if (files && files.length > 0) {
         const paths = files.map((f) => `${folder}/${f.name}`);
-        await supabase.storage.from("profiles").remove(paths);
+        allPathsToDelete.push(...paths);
       }
+    } catch {
+      // Storage cleanup is best-effort
+    }
+  }
+
+  // Collect paths from profile URLs (avatar, background, cv, gallery)
+  const extractPathFromUrl = (url: string | null): string | null => {
+    if (!url) return null;
+    try {
+      const urlObj = new URL(url);
+      const pathParts = urlObj.pathname.split("/");
+      // Find the part after "profiles" in the path
+      const profilesIndex = pathParts.indexOf("profiles");
+      if (profilesIndex !== -1 && profilesIndex < pathParts.length - 1) {
+        return pathParts.slice(profilesIndex + 1).join("/");
+      }
+    } catch {
+      // Not a valid URL
+    }
+    return null;
+  };
+
+  if (profile) {
+    if (profile.avatar_url) {
+      const path = extractPathFromUrl(profile.avatar_url);
+      if (path) allPathsToDelete.push(path);
+    }
+    if (profile.background_url) {
+      const path = extractPathFromUrl(profile.background_url);
+      if (path) allPathsToDelete.push(path);
+    }
+    if (profile.cv_url) {
+      const path = extractPathFromUrl(profile.cv_url);
+      if (path) allPathsToDelete.push(path);
+    }
+    if (profile.gallery && Array.isArray(profile.gallery)) {
+      for (const galleryUrl of profile.gallery) {
+        const path = extractPathFromUrl(galleryUrl);
+        if (path) allPathsToDelete.push(path);
+      }
+    }
+  }
+
+  // Delete all collected files (remove duplicates first)
+  if (allPathsToDelete.length > 0) {
+    const uniquePaths = [...new Set(allPathsToDelete)];
+    try {
+      await supabase.storage.from("profiles").remove(uniquePaths);
     } catch {
       // Storage cleanup is best-effort
     }
@@ -949,14 +1007,69 @@ export async function deleteRestaurant(formData: FormData) {
     throw new Error("Missing Supabase or restaurant id or slug");
   }
 
+  // First, get the restaurant to extract gallery URLs and other storage URLs
+  const { data: restaurant } = await supabase
+    .from("restaurants")
+    .select("avatar_url, cover_url, gallery")
+    .eq("id", id)
+    .single();
+
+  // Clean up storage files for this restaurant
   const folders = [`restaurants/avatars/${slug}`, `restaurants/covers/${slug}`, `restaurants/gallery/${slug}`];
+  const allPathsToDelete: string[] = [];
+
+  // Collect files from folders
   for (const folder of folders) {
     try {
       const { data: files } = await supabase.storage.from("profiles").list(folder);
       if (files && files.length > 0) {
         const paths = files.map((f) => `${folder}/${f.name}`);
-        await supabase.storage.from("profiles").remove(paths);
+        allPathsToDelete.push(...paths);
       }
+    } catch {
+      // Storage cleanup is best-effort
+    }
+  }
+
+  // Collect paths from restaurant URLs (avatar, cover, gallery)
+  const extractPathFromUrl = (url: string | null): string | null => {
+    if (!url) return null;
+    try {
+      const urlObj = new URL(url);
+      const pathParts = urlObj.pathname.split("/");
+      // Find the part after "profiles" in the path
+      const profilesIndex = pathParts.indexOf("profiles");
+      if (profilesIndex !== -1 && profilesIndex < pathParts.length - 1) {
+        return pathParts.slice(profilesIndex + 1).join("/");
+      }
+    } catch {
+      // Not a valid URL
+    }
+    return null;
+  };
+
+  if (restaurant) {
+    if (restaurant.avatar_url) {
+      const path = extractPathFromUrl(restaurant.avatar_url);
+      if (path) allPathsToDelete.push(path);
+    }
+    if (restaurant.cover_url) {
+      const path = extractPathFromUrl(restaurant.cover_url);
+      if (path) allPathsToDelete.push(path);
+    }
+    if (restaurant.gallery && Array.isArray(restaurant.gallery)) {
+      for (const galleryUrl of restaurant.gallery) {
+        const path = extractPathFromUrl(galleryUrl);
+        if (path) allPathsToDelete.push(path);
+      }
+    }
+  }
+
+  // Delete all collected files (remove duplicates first)
+  if (allPathsToDelete.length > 0) {
+    const uniquePaths = [...new Set(allPathsToDelete)];
+    try {
+      await supabase.storage.from("profiles").remove(uniquePaths);
     } catch {
       // Storage cleanup is best-effort
     }
