@@ -6,6 +6,7 @@ import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
+import sharp from "sharp";
 
 // ──────────────────────────────────────────────
 // Constants
@@ -17,6 +18,11 @@ const ALLOWED_IMAGE_TYPES = new Set([
   "image/png",
   "image/webp",
   "image/gif",
+  "image/bmp",
+  "image/tiff",
+  "image/svg+xml",
+  "image/heic",
+  "image/heif",
 ]);
 const RESERVED_SLUGS = new Set([
   "admin",
@@ -368,14 +374,33 @@ async function uploadFile(file: File | null, folder: string) {
     return null;
   }
 
-  // Sanitize file extension — only allow known safe extensions
-  const rawExt = (file.name.split(".").pop() || "jpg").toLowerCase();
-  const safeExtensions = new Set(["jpg", "jpeg", "png", "webp", "gif", "pdf"]);
-  const ext = safeExtensions.has(rawExt) ? rawExt : "jpg";
+  // Check if it's an image file
+  const isImage = file.type.startsWith("image/") && file.type !== "application/pdf";
+  let fileToUpload: File | Buffer;
+  let contentType: string;
+  let ext: string;
+
+  if (isImage) {
+    // Convert image to WebP
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const webpBuffer = await sharp(buffer)
+      .webp({ quality: 85 }) // 85% quality is a good balance
+      .toBuffer();
+    fileToUpload = webpBuffer;
+    contentType = "image/webp";
+    ext = "webp";
+  } else {
+    // For non-image files (like PDF), keep as is
+    const rawExt = (file.name.split(".").pop() || "pdf").toLowerCase();
+    const safeExtensions = new Set(["pdf"]);
+    ext = safeExtensions.has(rawExt) ? rawExt : "pdf";
+    fileToUpload = file;
+    contentType = file.type || "application/octet-stream";
+  }
 
   const path = `${folder}/${crypto.randomUUID()}.${ext}`;
-  const { error } = await supabase.storage.from("profiles").upload(path, file, {
-    contentType: file.type || "application/octet-stream",
+  const { error } = await supabase.storage.from("profiles").upload(path, fileToUpload, {
+    contentType,
     upsert: false,
   });
 
