@@ -366,14 +366,28 @@ function extractPathFromUrl(url: string | null): string | null {
   if (!url) return null;
   try {
     const urlObj = new URL(url);
-    const pathParts = urlObj.pathname.split("/");
-    const profilesIndex = pathParts.indexOf("profiles");
-    if (profilesIndex !== -1 && profilesIndex < pathParts.length - 1) {
-      return pathParts.slice(profilesIndex + 1).join("/");
+    const pathParts = urlObj.pathname.split("/").filter(Boolean);
+    
+    // Supabase storage URL format: /storage/v1/object/public/bucket/path
+    // or sometimes just /bucket/path
+    const bucketIndex = pathParts.indexOf("profiles");
+    if (bucketIndex !== -1 && bucketIndex < pathParts.length - 1) {
+      const extractedPath = pathParts.slice(bucketIndex + 1).join("/");
+      console.log("Extracted path from URL:", url, "→", extractedPath);
+      return extractedPath;
     }
-  } catch {
-    // Not a valid URL
+    
+    // If "profiles" not found, try to find the first part after "object/public"
+    const objectPublicIndex = pathParts.indexOf("object");
+    if (objectPublicIndex !== -1 && pathParts[objectPublicIndex + 1] === "public") {
+      const extractedPath = pathParts.slice(objectPublicIndex + 3).join("/");
+      console.log("Extracted path (fallback) from URL:", url, "→", extractedPath);
+      return extractedPath;
+    }
+  } catch (error) {
+    console.error("Error extracting path from URL:", url, error);
   }
+  console.log("Could not extract path from URL:", url);
   return null;
 }
 
@@ -688,11 +702,19 @@ export async function saveProfile(formData: FormData) {
   // Delete the collected files from storage
   if (pathsToDelete.length > 0) {
     const uniquePaths = [...new Set(pathsToDelete)];
+    console.log("Files to delete from storage:", uniquePaths);
     try {
-      await supabase.storage.from("profiles").remove(uniquePaths);
-    } catch {
-      // Storage cleanup is best-effort
+      const { data, error } = await supabase.storage.from("profiles").remove(uniquePaths);
+      if (error) {
+        console.error("Error deleting files from storage:", error);
+      } else {
+        console.log("Successfully deleted files from storage:", data);
+      }
+    } catch (error) {
+      console.error("Exception when deleting files from storage:", error);
     }
+  } else {
+    console.log("No files to delete from storage");
   }
 
   let client_email = undefined;
@@ -853,11 +875,19 @@ export async function deleteProfile(formData: FormData) {
   // Delete all collected files (remove duplicates first)
   if (allPathsToDelete.length > 0) {
     const uniquePaths = [...new Set(allPathsToDelete)];
+    console.log("All files to delete (including folders):", uniquePaths);
     try {
-      await supabase.storage.from("profiles").remove(uniquePaths);
-    } catch {
-      // Storage cleanup is best-effort
+      const { data, error } = await supabase.storage.from("profiles").remove(uniquePaths);
+      if (error) {
+        console.error("Error deleting all files from storage:", error);
+      } else {
+        console.log("Successfully deleted all files from storage:", data);
+      }
+    } catch (error) {
+      console.error("Exception when deleting all files from storage:", error);
     }
+  } else {
+    console.log("No files to delete from storage (delete operation)");
   }
 
   const { error } = await supabase.from("profiles").delete().eq("id", id);
@@ -1022,11 +1052,19 @@ export async function saveRestaurant(formData: FormData) {
   // Delete the collected files from storage
   if (pathsToDelete.length > 0) {
     const uniquePaths = [...new Set(pathsToDelete)];
+    console.log("Files to delete from storage:", uniquePaths);
     try {
-      await supabase.storage.from("profiles").remove(uniquePaths);
-    } catch {
-      // Storage cleanup is best-effort
+      const { data, error } = await supabase.storage.from("profiles").remove(uniquePaths);
+      if (error) {
+        console.error("Error deleting files from storage:", error);
+      } else {
+        console.log("Successfully deleted files from storage:", data);
+      }
+    } catch (error) {
+      console.error("Exception when deleting files from storage:", error);
     }
+  } else {
+    console.log("No files to delete from storage");
   }
 
   const payload = {
@@ -1163,11 +1201,19 @@ export async function deleteRestaurant(formData: FormData) {
   // Delete all collected files (remove duplicates first)
   if (allPathsToDelete.length > 0) {
     const uniquePaths = [...new Set(allPathsToDelete)];
+    console.log("All files to delete (including folders):", uniquePaths);
     try {
-      await supabase.storage.from("profiles").remove(uniquePaths);
-    } catch {
-      // Storage cleanup is best-effort
+      const { data, error } = await supabase.storage.from("profiles").remove(uniquePaths);
+      if (error) {
+        console.error("Error deleting all files from storage:", error);
+      } else {
+        console.log("Successfully deleted all files from storage:", data);
+      }
+    } catch (error) {
+      console.error("Exception when deleting all files from storage:", error);
     }
+  } else {
+    console.log("No files to delete from storage (delete operation)");
   }
 
   const { error } = await supabase.from("restaurants").delete().eq("id", id);
