@@ -12,7 +12,7 @@ import sharp from "sharp";
 // Constants
 // ──────────────────────────────────────────────
 const ADMIN_COOKIE = "zia_admin_session";
-const MAX_UPLOAD_SIZE = 10 * 1024 * 1024; // 10 MB
+const MAX_UPLOAD_SIZE = 20 * 1024 * 1024; // 20 MB
 const ALLOWED_IMAGE_TYPES = new Set([
   "image/jpeg",
   "image/png",
@@ -361,6 +361,22 @@ function redirectWithSaveError(error: string, basePath = "/admin"): never {
   redirect(`${basePath}?error=${encodeURIComponent(error)}`);
 }
 
+// Helper to extract storage path from URL
+function extractPathFromUrl(url: string | null): string | null {
+  if (!url) return null;
+  try {
+    const urlObj = new URL(url);
+    const pathParts = urlObj.pathname.split("/");
+    const profilesIndex = pathParts.indexOf("profiles");
+    if (profilesIndex !== -1 && profilesIndex < pathParts.length - 1) {
+      return pathParts.slice(profilesIndex + 1).join("/");
+    }
+  } catch {
+    // Not a valid URL
+  }
+  return null;
+}
+
 // ──────────────────────────────────────────────
 // File Upload
 // ──────────────────────────────────────────────
@@ -505,23 +521,25 @@ export async function saveProfile(formData: FormData) {
   const rawSlug = text(formData, "slug");
   const name = text(formData, "name");
 
-  // Load existing profile if it's a Client Admin to preserve critical fields
+  // Load existing profile for everyone (super admin and client admin)
   let existingProfile: any = null;
   const isSuper = session.role === "super_admin";
 
-  if (!isSuper) {
-    if (!id || id !== session.profileId) {
-      redirectWithSaveError("unauthorized");
-    }
+  if (id) {
     const { data } = await supabase
       .from("profiles")
       .select("*")
       .eq("id", id)
       .single();
-    if (!data) {
-      redirectWithSaveError("save");
+    if (data) {
+      existingProfile = data;
     }
-    existingProfile = data;
+  }
+
+  if (!isSuper) {
+    if (!id || !existingProfile || id !== session.profileId) {
+      redirectWithSaveError("unauthorized");
+    }
   }
 
   // Client admin (müştəri) slug/lini dəyişə bilməməlidir.
@@ -538,11 +556,11 @@ export async function saveProfile(formData: FormData) {
 
   const slug = isSuper
     ? slugify(rawSlug || name || "")
-    : existingProfile.slug;
+    : existingProfile?.slug || slugify(name || "");
 
   const enabled = isSuper
     ? bool(formData, "enabled")
-    : existingProfile.enabled;
+    : existingProfile?.enabled ?? true;
 
   if (!slug || !name) {
     redirectWithSaveError("required");
@@ -562,7 +580,7 @@ export async function saveProfile(formData: FormData) {
     .getAll("galleryFiles")
     .filter((entry): entry is File => entry instanceof File && entry.size > 0);
 
-  const MAX_GALLERY_IMAGES = 20;
+  const MAX_GALLERY_IMAGES = 30;
   if (galleryFiles.length > MAX_GALLERY_IMAGES) {
     redirectWithSaveError("too-many-gallery-images");
   }
@@ -609,7 +627,7 @@ export async function saveProfile(formData: FormData) {
     ),
   );
 
-  const galleryUrls = [
+  const newGalleryUrls = [
     ...(text(formData, "gallery")
       ?.split("\n")
       .map((item) => item.trim())
@@ -620,6 +638,49 @@ export async function saveProfile(formData: FormData) {
   const removeAvatar = bool(formData, "remove_avatar");
   const removeBackground = bool(formData, "remove_background");
   const removeCv = bool(formData, "remove_cv");
+
+  // Collect files to delete from storage
+  const pathsToDelete: string[] = [];
+
+  // Delete old avatar if we're uploading a new one or removing it
+  if ((avatar || removeAvatar) && existingProfile?.avatar_url) {
+    const path = extractPathFromUrl(existingProfile.avatar_url);
+    if (path) pathsToDelete.push(path);
+  }
+
+  // Delete old background if we're uploading a new one or removing it
+  if ((background || removeBackground) && existingProfile?.background_url) {
+    const path = extractPathFromUrl(existingProfile.background_url);
+    if (path) pathsToDelete.push(path);
+  }
+
+  // Delete old cv if we're uploading a new one or removing it
+  if ((cv || removeCv) && existingProfile?.cv_url) {
+    const path = extractPathFromUrl(existingProfile.cv_url);
+    if (path) pathsToDelete.push(path);
+  }
+
+  // Delete gallery images that are no longer in the new list
+  if (existingProfile?.gallery && Array.isArray(existingProfile.gallery)) {
+    const oldGallerySet = new Set(existingProfile.gallery);
+    const newGallerySet = new Set(newGalleryUrls);
+    for (const oldUrl of oldGallerySet) {
+      if (!newGallerySet.has(oldUrl)) {
+        const path = extractPathFromUrl(oldUrl);
+        if (path) pathsToDelete.push(path);
+      }
+    }
+  }
+
+  // Delete the collected files from storage
+  if (pathsToDelete.length > 0) {
+    const uniquePaths = [...new Set(pathsToDelete)];
+    try {
+      await supabase.storage.from("profiles").remove(uniquePaths);
+    } catch {
+      // Storage cleanup is best-effort
+    }
+  }
 
   let client_email = undefined;
   let client_password = undefined;
@@ -635,7 +696,7 @@ export async function saveProfile(formData: FormData) {
   const payload = {
     slug,
     enabled,
-    reservation_enabled: isSuper ? bool(formData, "reservation_enabled") : existingProfile.reservation_enabled,
+    reservation_enabled: isSuper ? bool(formData, "reservation_enabled") : existingProfile?.reservation_enabled,
     name,
     profession: text(formData, "profession"),
     bio: text(formData, "bio"),
@@ -673,7 +734,7 @@ export async function saveProfile(formData: FormData) {
     ...(avatar ? { avatar_url: avatar } : removeAvatar ? { avatar_url: null } : {}),
     ...(background ? { background_url: background } : removeBackground ? { background_url: null } : {}),
     ...(cv ? { cv_url: cv } : removeCv ? { cv_url: null } : {}),
-    gallery: galleryUrls,
+    gallery: newGalleryUrls,
     ...(isSuper ? { client_email } : {}),
     ...(isSuper && client_password !== undefined ? { client_password } : {}),
   };
@@ -754,22 +815,6 @@ export async function deleteProfile(formData: FormData) {
   }
 
   // Collect paths from profile URLs (avatar, background, cv, gallery)
-  const extractPathFromUrl = (url: string | null): string | null => {
-    if (!url) return null;
-    try {
-      const urlObj = new URL(url);
-      const pathParts = urlObj.pathname.split("/");
-      // Find the part after "profiles" in the path
-      const profilesIndex = pathParts.indexOf("profiles");
-      if (profilesIndex !== -1 && profilesIndex < pathParts.length - 1) {
-        return pathParts.slice(profilesIndex + 1).join("/");
-      }
-    } catch {
-      // Not a valid URL
-    }
-    return null;
-  };
-
   if (profile) {
     if (profile.avatar_url) {
       const path = extractPathFromUrl(profile.avatar_url);
@@ -868,6 +913,19 @@ export async function saveRestaurant(formData: FormData) {
   const rawSlug = text(formData, "slug");
   const name = text(formData, "name");
 
+  // Load existing restaurant if we're updating
+  let existingRestaurant: any = null;
+  if (id) {
+    const { data } = await supabase
+      .from("restaurants")
+      .select("*")
+      .eq("id", id)
+      .single();
+    if (data) {
+      existingRestaurant = data;
+    }
+  }
+
   const slug = slugify(rawSlug || name || "");
 
   if (!slug || !name) {
@@ -914,10 +972,47 @@ export async function saveRestaurant(formData: FormData) {
   );
 
   const existingGalleryUrls = text(formData, "gallery")?.split("\n").map((item) => item.trim()).filter((item) => item && isValidUrl(item)) ?? [];
-  const galleryUrls = [...existingGalleryUrls, ...galleryUploads.filter((item): item is string => Boolean(item))];
+  const newGalleryUrls = [...existingGalleryUrls, ...galleryUploads.filter((item): item is string => Boolean(item))];
 
   const removeAvatar = bool(formData, "remove_avatar");
   const removeCover = bool(formData, "remove_cover");
+
+  // Collect files to delete from storage
+  const pathsToDelete: string[] = [];
+
+  // Delete old avatar if we're uploading a new one or removing it
+  if ((avatar || removeAvatar) && existingRestaurant?.avatar_url) {
+    const path = extractPathFromUrl(existingRestaurant.avatar_url);
+    if (path) pathsToDelete.push(path);
+  }
+
+  // Delete old cover if we're uploading a new one or removing it
+  if ((cover || removeCover) && existingRestaurant?.cover_url) {
+    const path = extractPathFromUrl(existingRestaurant.cover_url);
+    if (path) pathsToDelete.push(path);
+  }
+
+  // Delete gallery images that are no longer in the new list
+  if (existingRestaurant?.gallery && Array.isArray(existingRestaurant.gallery)) {
+    const oldGallerySet = new Set(existingRestaurant.gallery);
+    const newGallerySet = new Set(newGalleryUrls);
+    for (const oldUrl of oldGallerySet) {
+      if (!newGallerySet.has(oldUrl)) {
+        const path = extractPathFromUrl(oldUrl);
+        if (path) pathsToDelete.push(path);
+      }
+    }
+  }
+
+  // Delete the collected files from storage
+  if (pathsToDelete.length > 0) {
+    const uniquePaths = [...new Set(pathsToDelete)];
+    try {
+      await supabase.storage.from("profiles").remove(uniquePaths);
+    } catch {
+      // Storage cleanup is best-effort
+    }
+  }
 
   const payload = {
     slug,
@@ -951,7 +1046,7 @@ export async function saveRestaurant(formData: FormData) {
     ),
     ...(avatar ? { avatar_url: avatar } : removeAvatar ? { avatar_url: null } : {}),
     ...(cover ? { cover_url: cover } : removeCover ? { cover_url: null } : {}),
-    gallery: galleryUrls,
+    gallery: newGalleryUrls,
     revenue: parseFloat(text(formData, "revenue") || "0") || 0,
     orders_count: parseInt(text(formData, "orders_count") || "0") || 0,
     rating: parseFloat(text(formData, "rating") || "0") || 0,
@@ -1032,22 +1127,6 @@ export async function deleteRestaurant(formData: FormData) {
   }
 
   // Collect paths from restaurant URLs (avatar, cover, gallery)
-  const extractPathFromUrl = (url: string | null): string | null => {
-    if (!url) return null;
-    try {
-      const urlObj = new URL(url);
-      const pathParts = urlObj.pathname.split("/");
-      // Find the part after "profiles" in the path
-      const profilesIndex = pathParts.indexOf("profiles");
-      if (profilesIndex !== -1 && profilesIndex < pathParts.length - 1) {
-        return pathParts.slice(profilesIndex + 1).join("/");
-      }
-    } catch {
-      // Not a valid URL
-    }
-    return null;
-  };
-
   if (restaurant) {
     if (restaurant.avatar_url) {
       const path = extractPathFromUrl(restaurant.avatar_url);
