@@ -18,6 +18,7 @@ create table if not exists public.profiles (
   x text,
   linkedin text,
   youtube text,
+  behance text,
   location text,
   location_url text,
   avatar_url text,
@@ -130,6 +131,7 @@ alter table public.profiles add column if not exists client_password text;
 alter table public.profiles add column if not exists reservation_enabled boolean default false;
 alter table public.profiles add column if not exists phone2 text;
 alter table public.profiles add column if not exists whatsapp2 text;
+alter table public.profiles add column if not exists behance text;
 
 alter table public.profiles drop constraint if exists profiles_cover_style_check;
 alter table public.profiles add constraint profiles_cover_style_check

@@ -17,6 +17,7 @@ import {
   Linkedin,
   Youtube,
   Twitter,
+  PenTool,
 } from "lucide-react";
 import { notFound } from "next/navigation";
 import QrCodeModal from "@/components/qr-code-modal";
@@ -99,6 +100,7 @@ export default async function ProfilePage({ params }: Props) {
     profile.x,
     profile.linkedin,
     profile.youtube,
+    profile.behance,
     profile.whatsapp ? (profile.whatsapp.startsWith("http") ? profile.whatsapp : `https://wa.me/${profile.whatsapp.replace(/[^\d]/g, "")}`) : null,
   ].filter(Boolean) as string[];
   const jsonLd = {
@@ -121,7 +123,8 @@ export default async function ProfilePage({ params }: Props) {
     profile.facebook ||
     profile.x ||
     profile.linkedin ||
-    profile.youtube;
+    profile.youtube ||
+    profile.behance;
 
   const themeClass =
     profile.theme && profile.theme !== "light" ? `${profile.theme}-theme` : "";
@@ -349,6 +352,14 @@ export default async function ProfilePage({ params }: Props) {
                 variant="youtube"
               />
             ) : null}
+            {profile.behance ? (
+              <SocialChip
+                href={profile.behance}
+                icon={<PenTool size={18} />}
+                label="Behance"
+                variant="behance"
+              />
+            ) : null}
           </div>
         ) : null}
 
@@ -466,7 +477,8 @@ function SocialChip({
   | "x"
   | "linkedin"
   | "youtube"
-  | "whatsapp";
+  | "whatsapp"
+  | "behance";
 }) {
   const variantClass = {
     instagram: "lux-social-instagram",
@@ -477,6 +489,7 @@ function SocialChip({
     linkedin: "lux-social-linkedin",
     youtube: "lux-social-youtube",
     whatsapp: "lux-social-whatsapp",
+    behance: "lux-social-website",
   }[variant];
 
   return (

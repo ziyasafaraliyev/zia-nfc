@@ -291,6 +291,7 @@ const socialBaseUrls = {
   x: "https://x.com/",
   linkedin: "https://www.linkedin.com/in/",
   youtube: "https://www.youtube.com/@",
+  behance: "https://www.behance.net/",
 } as const;
 
 function normalizeUrlForCompare(value: string) {
@@ -348,6 +349,8 @@ function sanitizeUrl(formData: FormData, key: string): string | null {
       return `https://www.linkedin.com/in/${username}`;
     case "youtube":
       return `https://www.youtube.com/@${username}`;
+    case "behance":
+      return `https://www.behance.net/${username}`;
     default:
       const defaultPrefixed = `https://${value}`;
       return isValidUrl(defaultPrefixed) ? defaultPrefixed : null;
@@ -809,6 +812,7 @@ export async function saveProfile(formData: FormData) {
     x: sanitizeUrl(formData, "x"),
     linkedin: sanitizeUrl(formData, "linkedin"),
     youtube: sanitizeUrl(formData, "youtube"),
+    behance: sanitizeUrl(formData, "behance"),
     location: text(formData, "location"),
     location_url: sanitizeUrl(formData, "location_url"),
     cover_style: option(

@@ -18,6 +18,7 @@ const socialBaseUrls = {
   x: "https://x.com/",
   linkedin: "https://www.linkedin.com/in/",
   youtube: "https://www.youtube.com/@",
+  behance: "https://www.behance.net/",
 } as const;
 
 function getSocialFieldValue(
@@ -368,6 +369,11 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
           name="youtube"
           label="YouTube URL"
           defaultValue={getSocialFieldValue("youtube", profile?.youtube)}
+        />
+        <Field
+          name="behance"
+          label="Behance URL"
+          defaultValue={getSocialFieldValue("behance", profile?.behance)}
         />
       </div>
 
