@@ -12,7 +12,7 @@ import sharp from "sharp";
 // Constants
 // ──────────────────────────────────────────────
 const ADMIN_COOKIE = "zia_admin_session";
-const MAX_UPLOAD_SIZE = 5 * 1024 * 1024; // 5 MB
+const MAX_UPLOAD_SIZE = 10 * 1024 * 1024; // 10 MB
 const ALLOWED_IMAGE_TYPES = new Set([
   "image/jpeg",
   "image/png",
@@ -562,7 +562,7 @@ export async function saveProfile(formData: FormData) {
     .getAll("galleryFiles")
     .filter((entry): entry is File => entry instanceof File && entry.size > 0);
 
-  const MAX_GALLERY_IMAGES = 10;
+  const MAX_GALLERY_IMAGES = 20;
   if (galleryFiles.length > MAX_GALLERY_IMAGES) {
     redirectWithSaveError("too-many-gallery-images");
   }
