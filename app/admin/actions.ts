@@ -367,23 +367,30 @@ function extractPathFromUrl(url: string | null): string | null {
   try {
     const urlObj = new URL(url);
     const pathParts = urlObj.pathname.split("/").filter(Boolean);
+    console.log("Full path parts from URL:", url, "→", pathParts);
     
-    // Supabase storage URL format: /storage/v1/object/public/bucket/path
-    // or sometimes just /bucket/path
-    const bucketIndex = pathParts.indexOf("profiles");
-    if (bucketIndex !== -1 && bucketIndex < pathParts.length - 1) {
-      const extractedPath = pathParts.slice(bucketIndex + 1).join("/");
-      console.log("Extracted path from URL:", url, "→", extractedPath);
+    // Standard Supabase format: /storage/v1/object/public/<bucket>/<path>
+    const objectIndex = pathParts.indexOf("object");
+    const publicIndex = pathParts.indexOf("public");
+    
+    if (objectIndex !== -1 && publicIndex !== -1 && publicIndex === objectIndex + 1) {
+      // Path is everything after "public"
+      const extractedPath = pathParts.slice(publicIndex + 1).join("/");
+      console.log("Extracted path (standard) from URL:", url, "→", extractedPath);
       return extractedPath;
     }
     
-    // If "profiles" not found, try to find the first part after "object/public"
-    const objectPublicIndex = pathParts.indexOf("object");
-    if (objectPublicIndex !== -1 && pathParts[objectPublicIndex + 1] === "public") {
-      const extractedPath = pathParts.slice(objectPublicIndex + 3).join("/");
+    // Fallback: If URL just starts with /profiles/
+    if (pathParts[0] === "profiles" && pathParts.length > 1) {
+      const extractedPath = pathParts.slice(1).join("/");
       console.log("Extracted path (fallback) from URL:", url, "→", extractedPath);
       return extractedPath;
     }
+    
+    // Last resort: Just use the full pathname without leading slash
+    const fallbackPath = pathParts.join("/");
+    console.log("Extracted path (last resort) from URL:", url, "→", fallbackPath);
+    return fallbackPath;
   } catch (error) {
     console.error("Error extracting path from URL:", url, error);
   }
