@@ -674,7 +674,8 @@ export async function saveProfile(formData: FormData) {
 
   // Delete gallery images that are no longer in the new list
   if (existingProfile?.gallery && Array.isArray(existingProfile.gallery)) {
-    const oldGallerySet = new Set(existingProfile.gallery);
+    const oldGalleryUrls = existingProfile.gallery as string[];
+    const oldGallerySet = new Set(oldGalleryUrls);
     const newGallerySet = new Set(newGalleryUrls);
     for (const oldUrl of oldGallerySet) {
       if (!newGallerySet.has(oldUrl)) {
@@ -841,7 +842,8 @@ export async function deleteProfile(formData: FormData) {
       if (path) allPathsToDelete.push(path);
     }
     if (profile.gallery && Array.isArray(profile.gallery)) {
-      for (const galleryUrl of profile.gallery) {
+      const galleryUrls = profile.gallery as string[];
+      for (const galleryUrl of galleryUrls) {
         const path = extractPathFromUrl(galleryUrl);
         if (path) allPathsToDelete.push(path);
       }
@@ -1006,7 +1008,8 @@ export async function saveRestaurant(formData: FormData) {
 
   // Delete gallery images that are no longer in the new list
   if (existingRestaurant?.gallery && Array.isArray(existingRestaurant.gallery)) {
-    const oldGallerySet = new Set(existingRestaurant.gallery);
+    const oldGalleryUrls = existingRestaurant.gallery as string[];
+    const oldGallerySet = new Set(oldGalleryUrls);
     const newGallerySet = new Set(newGalleryUrls);
     for (const oldUrl of oldGallerySet) {
       if (!newGallerySet.has(oldUrl)) {
@@ -1149,7 +1152,8 @@ export async function deleteRestaurant(formData: FormData) {
       if (path) allPathsToDelete.push(path);
     }
     if (restaurant.gallery && Array.isArray(restaurant.gallery)) {
-      for (const galleryUrl of restaurant.gallery) {
+      const galleryUrls = restaurant.gallery as string[];
+      for (const galleryUrl of galleryUrls) {
         const path = extractPathFromUrl(galleryUrl);
         if (path) allPathsToDelete.push(path);
       }
