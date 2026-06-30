@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { ImagePlus, Upload, Save, Trash2 } from "lucide-react";
+import { ImagePlus, Upload, Save, Trash2, Plus, Minus } from "lucide-react";
 import { saveProfile } from "@/app/admin/actions";
-import type { Profile } from "@/lib/types";
+import type { Profile, PortfolioSection } from "@/lib/types";
 
 const inputClass =
   "mt-1.5 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none backdrop-blur-sm transition duration-200 placeholder:text-slate-400 focus:border-[#29AEEE] focus:bg-white focus:ring-4 focus:ring-[#29AEEE]/20" +
@@ -104,6 +104,27 @@ async function processInParallel<T, R>(
   return results;
 }
 
+// Helper to normalize old gallery data
+function normalizeGallery(gallery: string[] | PortfolioSection[] | undefined): PortfolioSection[] {
+  if (!gallery || gallery.length === 0) return [];
+  
+  // If it's already the new format
+  if (gallery.length > 0 && typeof gallery[0] === 'object' && 'id' in gallery[0]) {
+    return gallery as PortfolioSection[];
+  }
+  
+  // If it's the old format, convert to a default section
+  return [{
+    id: crypto.randomUUID(),
+    name: "Portfolio",
+    images: gallery as string[]
+  }];
+}
+
+type SectionWithFiles = PortfolioSection & {
+  newFiles: { name: string; previewUrl: string; file?: File }[];
+};
+
 export default function ProfileForm({ profile, userRole = "super_admin" }: { profile?: Profile; userRole?: "super_admin" | "client" }) {
   const [submitting, setSubmitting] = useState(false);
   const [statusText, setStatusText] = useState("");
@@ -114,9 +135,72 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
   const [removeBackground, setRemoveBackground] = useState(false);
   const [removeCv, setRemoveCv] = useState(false);
 
-  const [existingGalleryUrls, setExistingGalleryUrls] = useState<string[]>(profile?.gallery ?? []);
-  const [selectedGalleryFiles, setSelectedGalleryFiles] = useState<{ name: string; previewUrl: string; file?: File }[]>([]);
+  const [sections, setSections] = useState<SectionWithFiles[]>(() => 
+    normalizeGallery(profile?.gallery).map(section => ({
+      ...section,
+      newFiles: []
+    }))
+  );
   const [theme, setTheme] = useState(profile?.theme || "light");
+
+  // Add new section
+  const addSection = () => {
+    setSections(prev => [...prev, {
+      id: crypto.randomUUID(),
+      name: "",
+      images: [],
+      newFiles: []
+    }]);
+  };
+
+  // Delete section
+  const deleteSection = (sectionId: string) => {
+    setSections(prev => prev.filter(s => s.id !== sectionId));
+  };
+
+  // Update section name
+  const updateSectionName = (sectionId: string, name: string) => {
+    setSections(prev => prev.map(s => 
+      s.id === sectionId ? { ...s, name } : s
+    ));
+  };
+
+  // Remove image from section
+  const removeImageFromSection = (sectionId: string, imageIndex: number) => {
+    setSections(prev => prev.map(s => {
+      if (s.id !== sectionId) return s;
+      return {
+        ...s,
+        images: s.images.filter((_, i) => i !== imageIndex)
+      };
+    }));
+  };
+
+  // Add new files to section
+  const addFilesToSection = (sectionId: string, files: FileList) => {
+    const newFilesList = Array.from(files)
+      .filter(file => file.type.startsWith("image/"))
+      .map(file => ({
+        name: file.name,
+        previewUrl: URL.createObjectURL(file),
+        file
+      }));
+
+    setSections(prev => prev.map(s => 
+      s.id === sectionId ? { ...s, newFiles: [...s.newFiles, ...newFilesList] } : s
+    ));
+  };
+
+  // Remove new file from section
+  const removeNewFileFromSection = (sectionId: string, fileIndex: number) => {
+    setSections(prev => prev.map(s => {
+      if (s.id !== sectionId) return s;
+      return {
+        ...s,
+        newFiles: s.newFiles.filter((_, i) => i !== fileIndex)
+      };
+    }));
+  };
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -149,29 +233,55 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
         formData.delete("cv");
       }
 
-      // Compress gallery files in parallel (3 at a time)
-      formData.delete("galleryFiles");
-      const filesToCompress = selectedGalleryFiles.filter(item => item.file);
-      
-      if (filesToCompress.length > 0) {
-        setStatusText(`Şəkil sıxılır: 0/${filesToCompress.length}`);
+      // Compress all section files in parallel
+      const allFilesToCompress: { sectionId: string; file: File }[] = [];
+      sections.forEach(section => {
+        section.newFiles.forEach(item => {
+          if (item.file) {
+            allFilesToCompress.push({ sectionId: section.id, file: item.file });
+          }
+        });
+      });
+
+      const compressedFiles: { sectionId: string; file: File }[] = [];
+      if (allFilesToCompress.length > 0) {
+        setStatusText(`Şəkil sıxılır: 0/${allFilesToCompress.length}`);
         let processed = 0;
         
-        const compressedFiles = await processInParallel(
-          filesToCompress,
-          async (item) => {
-            const compressed = await compressImage(item.file!);
+        const results = await processInParallel(
+          allFilesToCompress,
+          async ({ sectionId, file }) => {
+            const compressed = await compressImage(file);
             processed++;
-            setStatusText(`Şəkil sıxılır: ${processed}/${filesToCompress.length}`);
-            return compressed;
+            setStatusText(`Şəkil sıxılır: ${processed}/${allFilesToCompress.length}`);
+            return { sectionId, file: compressed };
           },
-          3 // concurrency limit
+          3
         );
-
-        for (const file of compressedFiles) {
-          formData.append("galleryFiles", file);
-        }
+        
+        compressedFiles.push(...results);
       }
+
+      // Build final sections data
+      const finalSections: PortfolioSection[] = sections.map(section => {
+        const newSectionImages = compressedFiles
+          .filter(cf => cf.sectionId === section.id)
+          .map(_ => ""); // We'll fill these in the server action
+        
+        return {
+          id: section.id,
+          name: section.name || "Untitled Section",
+          images: section.images
+        };
+      });
+
+      // Add gallery data to form
+      formData.set("gallery", JSON.stringify(finalSections));
+
+      // Add all compressed files with section ID prefix
+      compressedFiles.forEach(({ sectionId, file }, index) => {
+        formData.append(`galleryFiles_${sectionId}`, file);
+      });
 
       setStatusText("Məlumatlar yadda saxlanılır...");
       await saveProfile(formData);
@@ -191,7 +301,6 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
   return (
     <form onSubmit={handleSubmit} className="grid gap-5" style={{ fontFamily: "'Outfit', sans-serif" }}>
       <input type="hidden" name="id" value={profile?.id ?? ""} />
-      <textarea name="gallery" className="hidden" readOnly value={existingGalleryUrls.join("\n")} />
       
       {/* ── ŞƏXSİ MƏLUMATLAR ── */}
       <div className="grid gap-4 md:grid-cols-2">
@@ -502,158 +611,121 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
 
       {/* ── PORTFOLIO ŞƏKİLLƏRİ ── */}
       <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-slate-50/50 p-6">
-        <span className="text-xs font-bold text-slate-500 uppercase tracking-wide flex items-center gap-2">
-          <ImagePlus size={14} className="text-[#29AEEE]" /> Portfolio Şəkilləri
-        </span>
-          <div
-            onDragOver={(e) => {
-              e.preventDefault();
-              setIsPortfolioDragging(true);
-            }}
-            onDragEnter={(e) => {
-              e.preventDefault();
-              setIsPortfolioDragging(true);
-            }}
-            onDragLeave={(e) => {
-              e.preventDefault();
-              setIsPortfolioDragging(false);
-            }}
-            onDrop={(e) => {
-              e.preventDefault();
-              setIsPortfolioDragging(false);
-              const files = e.dataTransfer.files;
-              if (!files) return;
-
-              const MAX_GALLERY_IMAGES = 30;
-              const remaining = Math.max(
-                0,
-                MAX_GALLERY_IMAGES - (selectedGalleryFiles?.length ?? 0),
-              );
-              if (remaining === 0) return;
-
-              const newList = Array.from(files)
-                .filter((file) => file.type.startsWith("image/"))
-                .slice(0, remaining)
-                .map((file) => ({
-                  name: file.name,
-                  previewUrl: URL.createObjectURL(file),
-                  file,
-                }));
-
-              if (newList.length) {
-                setSelectedGalleryFiles((prev) => [...prev, ...newList]);
-              }
-            }}
-            className={[
-              "block rounded-3xl border-2 transition-all duration-200 text-center cursor-pointer select-none",
-              isPortfolioDragging
-                ? "border-[#29AEEE] bg-[#29AEEE]/5 scale-[1.01]"
-                : "border-dashed border-slate-200 bg-white hover:border-[#29AEEE] hover:bg-[#29AEEE]/5 hover:shadow-sm"
-            ].join(" ")}
-            style={{ padding: "1.75rem" }}
-            onClick={() => {
-              const input = document.createElement("input");
-              input.type = "file";
-              input.accept = "image/jpeg,image/png,image/webp,image/gif";
-              input.multiple = true;
-              input.onchange = (e) => {
-                const files = (e.target as HTMLInputElement).files;
-                if (!files) return;
-
-                const MAX_GALLERY_IMAGES = 30;
-                const remaining = Math.max(
-                  0,
-                  MAX_GALLERY_IMAGES - (selectedGalleryFiles?.length ?? 0),
-                );
-                if (remaining === 0) return;
-
-                const newList = Array.from(files)
-                  .filter((file) => file.type.startsWith("image/"))
-                  .slice(0, remaining)
-                  .map((file) => ({
-                    name: file.name,
-                    previewUrl: URL.createObjectURL(file),
-                    file,
-                  }));
-
-                if (newList.length) {
-                  setSelectedGalleryFiles((prev) => [...prev, ...newList]);
-                }
-              };
-
-              input.click();
-            }}
+        <div className="flex justify-between items-center">
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-wide flex items-center gap-2">
+            <ImagePlus size={14} className="text-[#29AEEE]" /> Portfolio Bölmələri
+          </span>
+          <button
+            type="button"
+            onClick={addSection}
+            className="inline-flex items-center gap-1.5 rounded-full border border-[#29AEEE] bg-white px-4 py-2 text-[11px] font-bold text-[#29AEEE] shadow-sm transition-all duration-200 hover:bg-[#29AEEE]/5"
           >
-            <div className="flex flex-col items-center gap-2">
-              <Upload size={24} className="text-[#29AEEE]" />
-              <span className="text-xs font-semibold text-slate-600">Şəkil seçin və ya bura sürükləyin</span>
-              <span className="text-[10px] font-medium text-slate-400">Maks. 20MB · Max 30 şəkil · JPG, PNG, WEBP, GIF</span>
-            </div>
+            <Plus size={14} /> Yeni Bölmə
+          </button>
+        </div>
+
+        {/* Sections */}
+        {sections.length === 0 ? (
+          <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-white p-8 text-center">
+            <p className="text-sm font-bold text-slate-600">Hələ bölmə yoxdur.</p>
+            <button
+              type="button"
+              onClick={addSection}
+              className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-[#29AEEE] px-4 py-2 text-[11px] font-bold text-white shadow-sm transition-all duration-200 hover:bg-[#1a9ad4]"
+            >
+              <Plus size={14} /> İlk Bölməni Əlavə Et
+            </button>
           </div>
-        
-        {/* Existing gallery images */}
-        {existingGalleryUrls.length > 0 && (
-          <div className="mt-3 flex flex-col gap-2">
-            <div className="flex justify-between items-center">
-              <span className="text-[11px] font-bold text-green-600">Mövcud şəkillər ({existingGalleryUrls.length}):</span>
-              <button
-                type="button"
-                onClick={() => setExistingGalleryUrls([])}
-                className="text-xs text-red-500 hover:underline font-bold"
+        ) : (
+          sections.map((section) => (
+            <div key={section.id} className="rounded-2xl border border-slate-200 bg-white p-4 space-y-3">
+              <div className="flex gap-2 items-center">
+                <input
+                  type="text"
+                  value={section.name}
+                  onChange={(e) => updateSectionName(section.id, e.target.value)}
+                  placeholder="Bölmə adı (məs: Üstəri Layihələri)"
+                  className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-900 focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/10 outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => deleteSection(section.id)}
+                  className="grid size-10 place-items-center rounded-xl border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 transition-all duration-200"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+
+              {/* Upload area for section */}
+              <div
+                onClick={() => {
+                  const input = document.createElement("input");
+                  input.type = "file";
+                  input.accept = "image/jpeg,image/png,image/webp,image/gif";
+                  input.multiple = true;
+                  input.onchange = (e) => {
+                    const files = (e.target as HTMLInputElement).files;
+                    if (files) addFilesToSection(section.id, files);
+                  };
+                  input.click();
+                }}
+                className="block rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 p-4 text-center cursor-pointer hover:border-[#29AEEE] hover:bg-[#29AEEE]/5 transition-all duration-200"
               >
-                Hamısını sil
-              </button>
-            </div>
-            <div className="grid grid-cols-4 gap-2">
-              {existingGalleryUrls.map((url, idx) => (
-                <div key={url} className="relative aspect-square overflow-hidden rounded-xl border border-green-200 bg-white group">
-                  <img src={url} alt={`Portfolio ${idx + 1}`} className="h-full w-full object-cover" />
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setExistingGalleryUrls(prev => prev.filter((_, i) => i !== idx));
-                    }}
-                    className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                  >
-                    <Trash2 size={16} className="text-white" />
-                  </button>
+                <div className="flex flex-col items-center gap-1.5">
+                  <Upload size={20} className="text-[#29AEEE]" />
+                  <span className="text-xs font-semibold text-slate-600">Bu bölməyə şəkil əlavə et</span>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
-        {/* New gallery files to upload */}
-        {selectedGalleryFiles.length > 0 && (
-          <div className="mt-3 flex flex-col gap-2">
-            <div className="flex justify-between items-center">
-              <span className="text-[11px] font-bold text-slate-400">Yüklənəcək ({selectedGalleryFiles.length} yeni şəkil):</span>
-              <button
-                type="button"
-                onClick={() => setSelectedGalleryFiles([])}
-                className="text-xs text-red-500 hover:underline font-bold"
-              >
-                Hamısını sil
-              </button>
-            </div>
-            <div className="grid grid-cols-4 gap-2">
-              {selectedGalleryFiles.map((file, idx) => (
-                <div key={idx} className="relative aspect-square overflow-hidden rounded-xl border border-slate-200 bg-white group">
-                  <img src={file.previewUrl} alt={file.name} className="h-full w-full object-cover" />
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedGalleryFiles(prev => prev.filter((_, i) => i !== idx));
-                    }}
-                    className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                  >
-                    <Trash2 size={16} className="text-white" />
-                  </button>
+              </div>
+
+              {/* Existing images in section */}
+              {section.images.length > 0 && (
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-[11px] font-bold text-green-600">Mövcud şəkillər ({section.images.length}):</span>
+                  <div className="grid grid-cols-4 gap-2">
+                    {section.images.map((url, index) => (
+                      <div key={`${section.id}-${index}`} className="relative aspect-square overflow-hidden rounded-xl border border-green-200 bg-white group">
+                        <img src={url} alt={`${section.name} ${index + 1}`} className="h-full w-full object-cover" />
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeImageFromSection(section.id, index);
+                          }}
+                          className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                        >
+                          <Trash2 size={16} className="text-white" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              ))}
+              )}
+
+              {/* New files for section */}
+              {section.newFiles.length > 0 && (
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-[11px] font-bold text-slate-400">Yüklənəcək ({section.newFiles.length} yeni şəkil):</span>
+                  <div className="grid grid-cols-4 gap-2">
+                    {section.newFiles.map((file, index) => (
+                      <div key={`${section.id}-new-${index}`} className="relative aspect-square overflow-hidden rounded-xl border border-slate-200 bg-white group">
+                        <img src={file.previewUrl} alt={file.name} className="h-full w-full object-cover" />
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeNewFileFromSection(section.id, index);
+                          }}
+                          className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                        >
+                          <Trash2 size={16} className="text-white" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
+          ))
         )}
       </div>
 

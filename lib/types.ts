@@ -1,3 +1,9 @@
+export type PortfolioSection = {
+  id: string;
+  name: string;
+  images: string[];
+};
+
 export type Profile = {
   id?: string;
   slug: string;
@@ -23,7 +29,7 @@ export type Profile = {
   background_url?: string | null;
   cover_style?: "auto" | "square" | "banner" | null;
   cover_position?: "top" | "center" | "bottom" | null;
-  gallery: string[];
+  gallery: string[] | PortfolioSection[];
   cv_url?: string | null;
   theme?:
     | "light"

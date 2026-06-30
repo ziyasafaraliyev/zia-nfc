@@ -1,19 +1,34 @@
 "use client";
 
 import React, { useState } from "react";
-import { Image, X, ArrowLeftRight, ChevronLeft, ChevronRight, Eye, ExternalLink } from "lucide-react";
+import { Image, X, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 
-export default function PortfolioSection({ gallery, profileName }: { gallery: string[]; profileName: string }) {
+function normalizeGallery(gallery: any[]): string[] {
+  if (!gallery || gallery.length === 0) return [];
+  
+  if (gallery.length > 0 && typeof gallery[0] === 'object' && 'images' in gallery[0]) {
+    // New format (sections) - flatten all images
+    return (gallery as any[]).flatMap((s: any) => s.images || []);
+  }
+  
+  // Old format (flat array)
+  return gallery as string[];
+}
+
+export default function PortfolioSection({ gallery, profileName }: { gallery: any[]; profileName: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const flatGallery = normalizeGallery(gallery);
 
   function nextImage() {
-    setCurrentIndex((prev) => (prev + 1) % gallery.length);
+    setCurrentIndex((prev) => (prev + 1) % flatGallery.length);
   }
 
   function prevImage() {
-    setCurrentIndex((prev) => (prev - 1 + gallery.length) % gallery.length);
+    setCurrentIndex((prev) => (prev - 1 + flatGallery.length) % flatGallery.length);
   }
+
+  if (flatGallery.length === 0) return null;
 
   return (
     <>
@@ -31,7 +46,7 @@ export default function PortfolioSection({ gallery, profileName }: { gallery: st
           </span>
           <span className="flex flex-col items-start leading-tight">
             <span className="text-sm font-bold text-gray-800">Portfolio</span>
-            <span className="text-[10px] font-semibold text-gray-400 mt-0.5">{gallery.length} iş nümayiş olunur</span>
+            <span className="text-[10px] font-semibold text-gray-400 mt-0.5">{flatGallery.length} iş nümayiş olunur</span>
           </span>
         </span>
         <ExternalLink
@@ -49,7 +64,7 @@ export default function PortfolioSection({ gallery, profileName }: { gallery: st
           {/* Top Info Bar */}
           <div className="absolute top-4 inset-x-4 flex items-center justify-between text-white z-10">
             <span className="text-xs font-bold uppercase tracking-wider bg-black/40 px-3 py-1.5 rounded-full backdrop-blur">
-              {currentIndex + 1} / {gallery.length}
+              {currentIndex + 1} / {flatGallery.length}
             </span>
             <button
               onClick={() => setIsOpen(false)}
@@ -65,12 +80,12 @@ export default function PortfolioSection({ gallery, profileName }: { gallery: st
             onClick={(e) => e.stopPropagation()}
           >
             <img
-              src={gallery[currentIndex]}
+              src={flatGallery[currentIndex]}
               alt={`${profileName} portfolio - ${currentIndex + 1}`}
               className="max-h-full max-w-full rounded-2xl object-contain shadow-2xl"
             />
 
-            {gallery.length > 1 && (
+            {flatGallery.length > 1 && (
               <>
                 {/* Left navigation */}
                 <button
@@ -92,12 +107,12 @@ export default function PortfolioSection({ gallery, profileName }: { gallery: st
           </div>
 
           {/* Thumbnail Strip */}
-          {gallery.length > 1 && (
+          {flatGallery.length > 1 && (
             <div
               className="mt-6 flex justify-center gap-2 overflow-x-auto max-w-full p-2 z-10"
               onClick={(e) => e.stopPropagation()}
             >
-              {gallery.map((image, idx) => (
+              {flatGallery.map((image, idx) => (
                 <button
                   key={idx}
                   onClick={() => setCurrentIndex(idx)}

@@ -625,16 +625,37 @@ export async function saveProfile(formData: FormData) {
   const avatarFile = formData.get("avatar") as File | null;
   const backgroundFile = formData.get("background") as File | null;
   const cvFile = formData.get("cv") as File | null;
-  const galleryFiles = formData
-    .getAll("galleryFiles")
-    .filter((entry): entry is File => entry instanceof File && entry.size > 0);
+  const galleryJson = text(formData, "gallery");
+  let sections: any[] = [];
+  
+  try {
+    if (galleryJson) {
+      sections = JSON.parse(galleryJson);
+    }
+  } catch (e) {
+    sections = [];
+  }
+
+  // Collect all gallery files with their section ids
+  const sectionFiles: { sectionId: string; files: File[] }[] = [];
+  for (const section of sections) {
+    const sectionId = section.id;
+    const files = formData
+      .getAll(`galleryFiles_${sectionId}`)
+      .filter((entry): entry is File => entry instanceof File && entry.size > 0);
+    sectionFiles.push({ sectionId, files });
+  }
 
   const MAX_GALLERY_IMAGES = 30;
-  if (galleryFiles.length > MAX_GALLERY_IMAGES) {
+  let totalFiles = 0;
+  for (const { files } of sectionFiles) {
+    totalFiles += files.length;
+  }
+  if (totalFiles > MAX_GALLERY_IMAGES) {
     redirectWithSaveError("too-many-gallery-images");
   }
 
-  for (const file of [avatarFile, backgroundFile, ...galleryFiles]) {
+  for (const file of [avatarFile, backgroundFile, ...sectionFiles.flatMap(s => s.files)]) {
     if (!(file instanceof File) || file.size === 0) {
       continue;
     }
@@ -668,21 +689,29 @@ export async function saveProfile(formData: FormData) {
     cvFile,
     `cvs/${slug}`,
   ).catch(() => redirectWithSaveError("upload"));
-  const galleryUploads = await Promise.all(
-    galleryFiles.map((file) =>
-      uploadFile(file, `gallery/${slug}`).catch(() =>
-        redirectWithSaveError("upload"),
-      ),
-    ),
-  );
 
-  const newGalleryUrls = [
-    ...(text(formData, "gallery")
-      ?.split("\n")
-      .map((item) => item.trim())
-      .filter((item) => item && isValidUrl(item)) ?? []),
-    ...galleryUploads.filter((item): item is string => Boolean(item)),
-  ];
+  // Upload files for each section
+  const sectionUploads: { [key: string]: string[] } = {};
+  for (const { sectionId, files } of sectionFiles) {
+    const uploads = await Promise.all(
+      files.map((file) =>
+        uploadFile(file, `gallery/${slug}`).catch(() =>
+          redirectWithSaveError("upload"),
+        ),
+      ),
+    );
+    sectionUploads[sectionId] = uploads.filter((item): item is string => Boolean(item));
+  }
+
+  // Build final sections with both existing and new images
+  const newSections = sections.map(section => ({
+    id: section.id,
+    name: section.name || "Untitled",
+    images: [
+      ...(section.images || []),
+      ...(sectionUploads[section.id] || [])
+    ]
+  }));
 
   const removeAvatar = bool(formData, "remove_avatar");
   const removeBackground = bool(formData, "remove_background");
@@ -710,15 +739,26 @@ export async function saveProfile(formData: FormData) {
   }
 
   // Delete gallery images that are no longer in the new list
+  const allNewImageUrls = new Set(newSections.flatMap(s => s.images || []));
+  
+  // Collect all old image urls
+  let allOldImageUrls: string[] = [];
   if (existingProfile?.gallery && Array.isArray(existingProfile.gallery)) {
-    const oldGalleryUrls = existingProfile.gallery as string[];
-    const oldGallerySet = new Set(oldGalleryUrls);
-    const newGallerySet = new Set(newGalleryUrls);
-    for (const oldUrl of oldGallerySet) {
-      if (!newGallerySet.has(oldUrl)) {
-        const path = extractPathFromUrl(oldUrl);
-        if (path) pathsToDelete.push(path);
-      }
+    // Check if it's old format (strings) or new format (objects)
+    if (existingProfile.gallery.length > 0 && typeof existingProfile.gallery[0] === 'object' && 'images' in existingProfile.gallery[0]) {
+      // New format (sections)
+      allOldImageUrls = (existingProfile.gallery as any[]).flatMap(s => s.images || []);
+    } else {
+      // Old format (flat array)
+      allOldImageUrls = existingProfile.gallery as string[];
+    }
+  }
+  
+  // Find images to delete
+  for (const oldUrl of allOldImageUrls) {
+    if (!allNewImageUrls.has(oldUrl)) {
+      const path = extractPathFromUrl(oldUrl);
+      if (path) pathsToDelete.push(path);
     }
   }
 
@@ -792,7 +832,7 @@ export async function saveProfile(formData: FormData) {
     ...(avatar ? { avatar_url: avatar } : removeAvatar ? { avatar_url: null } : {}),
     ...(background ? { background_url: background } : removeBackground ? { background_url: null } : {}),
     ...(cv ? { cv_url: cv } : removeCv ? { cv_url: null } : {}),
-    gallery: newGalleryUrls,
+    gallery: newSections,
     ...(isSuper ? { client_email } : {}),
     ...(isSuper && client_password !== undefined ? { client_password } : {}),
   };
@@ -887,7 +927,14 @@ export async function deleteProfile(formData: FormData) {
       if (path) allPathsToDelete.push(path);
     }
     if (profile.gallery && Array.isArray(profile.gallery)) {
-      const galleryUrls = profile.gallery as string[];
+      let galleryUrls: string[] = [];
+      if (profile.gallery.length > 0 && typeof profile.gallery[0] === 'object' && 'images' in profile.gallery[0]) {
+        // New format (sections)
+        galleryUrls = (profile.gallery as any[]).flatMap(s => s.images || []);
+      } else {
+        // Old format (flat array)
+        galleryUrls = profile.gallery as string[];
+      }
       for (const galleryUrl of galleryUrls) {
         const path = extractPathFromUrl(galleryUrl);
         if (path) allPathsToDelete.push(path);
