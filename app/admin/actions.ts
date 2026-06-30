@@ -499,6 +499,18 @@ export async function saveProfile(formData: FormData) {
     existingProfile = data;
   }
 
+  // Client admin (müştəri) slug/lini dəyişə bilməməlidir.
+  // Super admin slug/lini dəyişə bilər.
+  if (!isSuper) {
+    const requestedSlug = (rawSlug ?? "").trim();
+    const currentSlug = existingProfile.slug;
+
+    // FormData manipulyasiyası edilsə belə slug dəyişimini bloklayırıq.
+    if (requestedSlug && requestedSlug !== currentSlug) {
+      redirectWithSaveError("slug-change-not-allowed");
+    }
+  }
+
   const slug = isSuper
     ? slugify(rawSlug || name || "")
     : existingProfile.slug;
