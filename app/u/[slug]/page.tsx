@@ -101,6 +101,7 @@ export default async function ProfilePage({ params }: Props) {
     profile.linkedin,
     profile.youtube,
     profile.behance,
+    profile.threads,
     profile.whatsapp ? (profile.whatsapp.startsWith("http") ? profile.whatsapp : `https://wa.me/${profile.whatsapp.replace(/[^\d]/g, "")}`) : null,
   ].filter(Boolean) as string[];
   const jsonLd = {
@@ -124,7 +125,11 @@ export default async function ProfilePage({ params }: Props) {
     profile.x ||
     profile.linkedin ||
     profile.youtube ||
-    profile.behance;
+    profile.behance ||
+    profile.threads ||
+    profile.waze;
+    
+    
 
   const themeClass =
     profile.theme && profile.theme !== "light" ? `${profile.theme}-theme` : "";
@@ -360,6 +365,22 @@ export default async function ProfilePage({ params }: Props) {
                 variant="behance"
               />
             ) : null}
+            {profile.threads ? (
+              <SocialChip
+                href={profile.threads}
+                icon={<ExternalLink size={18} />}
+                label="Threads"
+                variant="threads"
+              />
+            ) : null}
+            {profile.waze ? (
+              <SocialChip
+                href={profile.waze}
+                icon={<MapPin size={18} />}
+                label="Waze"
+                variant="waze"
+              />
+            ) : null}
           </div>
         ) : null}
 
@@ -479,6 +500,8 @@ function SocialChip({
   | "youtube"
   | "whatsapp"
   | "behance";
+  | "threads"
+  | "waze";
 }) {
   const variantClass = {
     instagram: "lux-social-instagram",
@@ -490,6 +513,8 @@ function SocialChip({
     youtube: "lux-social-youtube",
     whatsapp: "lux-social-whatsapp",
     behance: "lux-social-website",
+    threads: "lux-social-website",
+    waze: "lux-social-website",
   }[variant];
 
   return (

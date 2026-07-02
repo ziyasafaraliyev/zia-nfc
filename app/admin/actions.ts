@@ -286,7 +286,9 @@ const socialBaseUrls = {
   whatsapp: "https://wa.me/994",
   instagram: "https://www.instagram.com/",
   tiktok: "https://www.tiktok.com/@",
+  threads: "https://www.threads.net/@",
   website: "https://www.",
+  waze: "https://www.waze.com/ul?ll=",
   facebook: "https://www.facebook.com/",
   x: "https://x.com/",
   linkedin: "https://www.linkedin.com/in/",
@@ -341,6 +343,8 @@ function sanitizeUrl(formData: FormData, key: string): string | null {
       return `https://www.instagram.com/${username}`;
     case "tiktok":
       return `https://www.tiktok.com/@${username}`;
+    case "threads":
+      return `https://www.threads.net/@${username}`;
     case "facebook":
       return `https://www.facebook.com/${username}`;
     case "x":
@@ -351,6 +355,17 @@ function sanitizeUrl(formData: FormData, key: string): string | null {
       return `https://www.youtube.com/@${username}`;
     case "behance":
       return `https://www.behance.net/${username}`;
+    case "waze":
+      // If user supplied coordinates like "40.4093,49.8671" convert to waze link
+      const coordMatch = value.match(/^\s*([+-]?\d{1,3}\.\d+),\s*([+-]?\d{1,3}\.\d+)\s*$/);
+      if (coordMatch) {
+        const lat = coordMatch[1];
+        const lon = coordMatch[2];
+        return `https://www.waze.com/ul?ll=${lat},${lon}&navigate=yes`;
+      }
+      // Otherwise try prefixing with https://
+      const prefixed = `https://${value}`;
+      return isValidUrl(prefixed) ? prefixed : null;
     default:
       const defaultPrefixed = `https://${value}`;
       return isValidUrl(defaultPrefixed) ? defaultPrefixed : null;
@@ -807,7 +822,9 @@ export async function saveProfile(formData: FormData) {
     whatsapp2: text(formData, "whatsapp2"),
     instagram: sanitizeUrl(formData, "instagram"),
     tiktok: sanitizeUrl(formData, "tiktok"),
+    threads: sanitizeUrl(formData, "threads"),
     website: sanitizeUrl(formData, "website"),
+    waze: sanitizeUrl(formData, "waze"),
     facebook: sanitizeUrl(formData, "facebook"),
     x: sanitizeUrl(formData, "x"),
     linkedin: sanitizeUrl(formData, "linkedin"),

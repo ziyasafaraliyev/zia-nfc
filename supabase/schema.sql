@@ -132,6 +132,8 @@ alter table public.profiles add column if not exists reservation_enabled boolean
 alter table public.profiles add column if not exists phone2 text;
 alter table public.profiles add column if not exists whatsapp2 text;
 alter table public.profiles add column if not exists behance text;
+alter table public.profiles add column if not exists threads text;
+alter table public.profiles add column if not exists waze text;
 
 alter table public.profiles drop constraint if exists profiles_cover_style_check;
 alter table public.profiles add constraint profiles_cover_style_check

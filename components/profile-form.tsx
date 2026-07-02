@@ -13,7 +13,9 @@ const socialBaseUrls = {
   whatsapp: "https://wa.me/994",
   instagram: "https://www.instagram.com/",
   tiktok: "https://www.tiktok.com/@",
+  threads: "https://www.threads.net/@",
   website: "https://www.",
+  waze: "https://www.waze.com/ul?ll=",
   facebook: "https://www.facebook.com/",
   x: "https://x.com/",
   linkedin: "https://www.linkedin.com/in/",
@@ -361,6 +363,11 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
           defaultValue={getSocialFieldValue("x", profile?.x)}
         />
         <Field
+          name="threads"
+          label="Threads URL"
+          defaultValue={getSocialFieldValue("threads", profile?.threads)}
+        />
+        <Field
           name="linkedin"
           label="LinkedIn URL"
           defaultValue={getSocialFieldValue("linkedin", profile?.linkedin)}
@@ -374,6 +381,11 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
           name="behance"
           label="Behance URL"
           defaultValue={getSocialFieldValue("behance", profile?.behance)}
+        />
+        <Field
+          name="waze"
+          label="Waze URL"
+          defaultValue={getSocialFieldValue("waze", profile?.waze)}
         />
       </div>
 

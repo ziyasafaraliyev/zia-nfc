@@ -18,6 +18,8 @@ export type Profile = {
   whatsapp2?: string | null;
   instagram?: string | null;
   tiktok?: string | null;
+  threads?: string | null;
+  waze?: string | null;
   website?: string | null;
   facebook?: string | null;
   x?: string | null;
