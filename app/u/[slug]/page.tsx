@@ -368,7 +368,7 @@ export default async function ProfilePage({ params }: Props) {
             {profile.threads ? (
               <SocialChip
                 href={profile.threads}
-                icon={<ExternalLink size={18} />}
+                icon={<img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/threads.svg" alt="Threads" className="w-4 h-4" />}
                 label="Threads"
                 variant="threads"
               />
@@ -376,7 +376,7 @@ export default async function ProfilePage({ params }: Props) {
             {profile.waze ? (
               <SocialChip
                 href={profile.waze}
-                icon={<MapPin size={18} />}
+                icon={<img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/waze.svg" alt="Waze" className="w-4 h-4" />}
                 label="Waze"
                 variant="waze"
               />
