@@ -18,6 +18,8 @@ import {
   Youtube,
   Twitter,
   PenTool,
+  Hash,
+  Navigation,
 } from "lucide-react";
 import { notFound } from "next/navigation";
 import QrCodeModal from "@/components/qr-code-modal";
@@ -368,7 +370,7 @@ export default async function ProfilePage({ params }: Props) {
             {profile.threads ? (
               <SocialChip
                 href={profile.threads}
-                icon={<img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/threads.svg" alt="Threads" className="w-4 h-4" />}
+                icon={<Hash size={18} />}
                 label="Threads"
                 variant="threads"
               />
@@ -376,7 +378,7 @@ export default async function ProfilePage({ params }: Props) {
             {profile.waze ? (
               <SocialChip
                 href={profile.waze}
-                icon={<img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/waze.svg" alt="Waze" className="w-4 h-4" />}
+                icon={<Navigation size={18} />}
                 label="Waze"
                 variant="waze"
               />
