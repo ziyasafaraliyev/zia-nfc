@@ -499,7 +499,7 @@ function SocialChip({
   | "linkedin"
   | "youtube"
   | "whatsapp"
-  | "behance";
+  | "behance"
   | "threads"
   | "waze";
 }) {
