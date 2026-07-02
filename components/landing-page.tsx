@@ -81,13 +81,13 @@ const steps = [
 const plans = [
   {
     name: "Standart",
-    price: "39 AZN",
+    price: "59 AZN",
     note: "Fərdi peşəkarlar üçün",
     items: ["1 rəqəmsal profil", "WhatsApp və sosial linklər", "QR ehtiyat nüsxəsi", "Standart NFC kartı"]
   },
   {
     name: "Premium",
-    price: "59 AZN",
+    price: "99 AZN",
     note: "Ən çox tələb olunan",
     featured: true,
     items: ["Portfolio qalereyası", "Kontaktı yadda saxla (.vcf)", "Premium kart dizaynı", "Premium qablaşdırma"]
