@@ -101,11 +101,11 @@ export default async function AdminPage({ searchParams }: Props) {
           <header className="dashboard-surface rounded-[2.25rem] overflow-hidden">
             <div className="flex flex-col gap-5 p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between">
               <div className="min-w-0">
-                <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-600 shadow-sm">
+                <Link href="/" className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-600 shadow-sm transition hover:opacity-80 active:scale-[0.985]">
                   <img src="/logo.png" alt="Zia NFC" className="size-4 rounded-full object-cover" />
                   <span className="text-slate-800 font-extrabold">Zia NFC</span>
                   <span className="text-[#29AEEE] font-black">Müştəri</span>
-                </div>
+                </Link>
 
                 <h1 className="mt-4 text-3xl font-black tracking-[-0.03em] text-slate-900 sm:text-4xl">
                   Profil Paneli
@@ -172,11 +172,11 @@ export default async function AdminPage({ searchParams }: Props) {
         <header className="dashboard-surface rounded-[2.25rem] overflow-hidden">
           <div className="flex flex-col gap-5 p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="min-w-0">
-              <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-600 shadow-sm">
+              <Link href="/" className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-600 shadow-sm transition hover:opacity-80 active:scale-[0.985]">
                 <img src="/logo.png" alt="Zia NFC" className="size-4 rounded-full object-cover" />
                 <span className="text-slate-800 font-extrabold">Zia NFC</span>
                 <span className="text-[#29AEEE] font-black">Admin</span>
-              </div>
+              </Link>
 
               <h1
                 className="mt-4 text-3xl font-black tracking-[-0.03em] text-slate-900 sm:text-4xl"
