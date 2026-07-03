@@ -21,6 +21,7 @@ create table if not exists public.profiles (
   behance text,
   location text,
   location_url text,
+  email text,
   avatar_url text,
   background_url text,
   cover_style text not null default 'auto',
@@ -134,6 +135,7 @@ alter table public.profiles add column if not exists whatsapp2 text;
 alter table public.profiles add column if not exists behance text;
 alter table public.profiles add column if not exists threads text;
 alter table public.profiles add column if not exists waze text;
+alter table public.profiles add column if not exists email text;
 
 alter table public.profiles drop constraint if exists profiles_cover_style_check;
 alter table public.profiles add constraint profiles_cover_style_check

@@ -815,6 +815,7 @@ export async function saveProfile(formData: FormData) {
     reservation_enabled: isSuper ? bool(formData, "reservation_enabled") : existingProfile?.reservation_enabled,
     name,
     profession: text(formData, "profession"),
+    email: text(formData, "email") || null,
     bio: text(formData, "bio"),
     phone: text(formData, "phone"),
     phone2: text(formData, "phone2"),

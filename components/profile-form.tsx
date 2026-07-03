@@ -325,6 +325,13 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
           label="Peşə"
           defaultValue={profile?.profession}
         />
+        <Field
+          name="email"
+          label="E-poçt"
+          defaultValue={profile?.email}
+          placeholder="email@example.com"
+          type="email"
+        />
         <Field name="phone" label="Telefon" defaultValue={profile?.phone} />
         <Field name="phone2" label="Telefon 2" defaultValue={profile?.phone2} />
         <Field
@@ -840,6 +847,7 @@ function Field({
   required = false,
   placeholder,
   readOnly = false,
+  type = "text",
 }: {
   name: string;
   label: string;
@@ -847,11 +855,13 @@ function Field({
   required?: boolean;
   placeholder?: string;
   readOnly?: boolean;
+  type?: string;
 }) {
   return (
     <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide">
       {label}
       <input
+        type={type}
         name={name}
         defaultValue={defaultValue ?? ""}
         required={required}

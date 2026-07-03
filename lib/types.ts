@@ -28,6 +28,7 @@ export type Profile = {
   behance?: string | null;
   location?: string | null;
   location_url?: string | null;
+  email?: string | null;
   avatar_url?: string | null;
   background_url?: string | null;
   cover_style?: "auto" | "square" | "banner" | null;
