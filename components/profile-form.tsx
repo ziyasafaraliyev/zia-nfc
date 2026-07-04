@@ -329,11 +329,13 @@ export default function ProfileForm({
         }
       }
 
-      const fileMeta: { sectionId: string }[] = [];
+      const fileMeta: { sectionId: string; fileName: string; mimeType: string }[] = [];
       for (const { sectionId, file } of compressedFiles) {
         if (file.size > 0) {
-          formData.append("galleryFiles", file, file.name);
-          fileMeta.push({ sectionId });
+          const fileName = file.name || `portfolio-${Date.now()}.jpg`;
+          const mimeType = file.type || "image/jpeg";
+          formData.append("galleryFiles", file, fileName);
+          fileMeta.push({ sectionId, fileName, mimeType });
         }
       }
       formData.set("galleryFileMeta", JSON.stringify(fileMeta));

@@ -1,6 +1,16 @@
 "use server";
 
 import { createServiceSupabaseClient } from "@/lib/supabase";
+import {
+  type GalleryFileMetaEntry,
+  getUploadFileName,
+  guessMimeType,
+  isAllowedImageMime,
+  isImageMime,
+  asUploadEntry,
+  isUploadEntry,
+  safeImageExtension,
+} from "@/lib/upload-entry";
 import { revalidatePath } from "next/cache";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -243,13 +253,19 @@ type GallerySectionInput = {
   images?: string[];
 };
 
+type UploadPayload = {
+  blob: File | Blob;
+  fileName: string;
+  mimeType: string;
+};
+
 function collectGallerySectionFiles(
   formData: FormData,
   sections: GallerySectionInput[],
-): { sectionId: string; files: File[] }[] {
-  const sectionFilesMap = new Map<string, File[]>();
+): { sectionId: string; files: UploadPayload[] }[] {
+  const sectionFilesMap = new Map<string, UploadPayload[]>();
 
-  const appendFiles = (sectionId: string, files: File[]) => {
+  const appendFiles = (sectionId: string, files: UploadPayload[]) => {
     if (!sectionId || files.length === 0) {
       return;
     }
@@ -257,22 +273,34 @@ function collectGallerySectionFiles(
     sectionFilesMap.set(sectionId, [...existing, ...files]);
   };
 
-  const meta = jsonField(formData, "galleryFileMeta");
+  const metaRaw = jsonField(formData, "galleryFileMeta");
+  const meta: GalleryFileMetaEntry[] = Array.isArray(metaRaw)
+    ? metaRaw.filter(
+        (entry): entry is GalleryFileMetaEntry =>
+          typeof entry === "object" &&
+          entry !== null &&
+          "sectionId" in entry &&
+          typeof (entry as GalleryFileMetaEntry).sectionId === "string",
+      )
+    : [];
+
   const indexedFiles = formData
     .getAll("galleryFiles")
-    .filter((entry): entry is File => entry instanceof File && entry.size > 0);
+    .map(asUploadEntry)
+    .filter((entry): entry is File | Blob => entry !== null);
 
-  if (Array.isArray(meta) && indexedFiles.length > 0) {
-    indexedFiles.forEach((file, index) => {
-      const sectionId =
-        typeof meta[index] === "object" &&
-        meta[index] !== null &&
-        "sectionId" in (meta[index] as object)
-          ? String((meta[index] as { sectionId: string }).sectionId)
-          : "";
-      if (sectionId) {
-        appendFiles(sectionId, [file]);
+  if (meta.length > 0 && indexedFiles.length > 0) {
+    indexedFiles.forEach((blob, index) => {
+      const entry = meta[index];
+      const sectionId = entry?.sectionId ?? "";
+      if (!sectionId) {
+        return;
       }
+
+      const fileName = getUploadFileName(blob, entry.fileName);
+      const mimeType = guessMimeType(fileName, entry.mimeType || blob.type);
+
+      appendFiles(sectionId, [{ blob, fileName, mimeType }]);
     });
   }
 
@@ -284,10 +312,21 @@ function collectGallerySectionFiles(
 
     const legacyFiles = formData
       .getAll(`galleryFiles_${sectionId}`)
-      .filter((entry): entry is File => entry instanceof File && entry.size > 0);
+      .map(asUploadEntry)
+      .filter((entry): entry is File | Blob => entry !== null);
 
     if (legacyFiles.length > 0 && !sectionFilesMap.has(sectionId)) {
-      appendFiles(sectionId, legacyFiles);
+      appendFiles(
+        sectionId,
+        legacyFiles.map((blob, index) => {
+          const fileName = getUploadFileName(blob, `portfolio-${index + 1}.jpg`);
+          return {
+            blob,
+            fileName,
+            mimeType: guessMimeType(fileName, blob.type),
+          };
+        }),
+      );
     }
   }
 
@@ -492,7 +531,11 @@ function extractPathFromUrl(url: string | null): string | null {
 // ──────────────────────────────────────────────
 // File Upload
 // ──────────────────────────────────────────────
-async function uploadFile(file: File | null, folder: string) {
+async function uploadFile(
+  file: Blob | File | null,
+  folder: string,
+  options?: { fileName?: string; mimeType?: string },
+) {
   if (!file || file.size === 0) {
     return null;
   }
@@ -502,56 +545,46 @@ async function uploadFile(file: File | null, folder: string) {
     return null;
   }
 
-  // Check if it's an image file
-  const isImage = file.type.startsWith("image/") && file.type !== "application/pdf";
-  let fileToUpload: File | Buffer;
+  const fileName = getUploadFileName(file, options?.fileName);
+  const mimeType = guessMimeType(fileName, options?.mimeType || file.type);
+  const isImage = isImageMime(mimeType);
+  let fileToUpload: Blob | Buffer;
   let contentType: string;
   let ext: string;
 
-  // 1MB threshold - 1 * 1024 * 1024 bytes
   const ONE_MB = 1 * 1024 * 1024;
 
   if (isImage) {
-    // If image is already WebP or smaller than 1MB, keep original format
-    const isWebP = file.type === "image/webp";
+    const isWebP = mimeType === "image/webp";
     const isSmallEnough = file.size < ONE_MB;
 
     if (isWebP || isSmallEnough) {
-      // Keep original file
-      const rawExt = (file.name.split(".").pop() || "webp").toLowerCase();
-      const safeExtensions = new Set(["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg", "heic", "heif"]);
-      ext = safeExtensions.has(rawExt) ? rawExt : "webp";
+      ext = safeImageExtension(fileName, mimeType);
       fileToUpload = file;
-      contentType = file.type;
+      contentType = mimeType;
     } else {
-      // Convert large non-WebP image (>=1MB) to WebP with dynamic quality
       const buffer = Buffer.from(await file.arrayBuffer());
       let webpBuffer: Buffer;
-      let quality = 85; // Start with 85%
-      
-      // Try different qualities until we get under 20MB
+      let quality = 85;
+
       while (true) {
-        webpBuffer = await sharp(buffer)
-          .webp({ quality })
-          .toBuffer();
-        
+        webpBuffer = await sharp(buffer).webp({ quality }).toBuffer();
+
         if (webpBuffer.length <= 20 * 1024 * 1024 || quality <= 10) {
-          break; // Stop if we're under 20MB or quality is too low
+          break;
         }
-        quality -= 10; // Reduce quality by 10% each time
+        quality -= 10;
       }
-      
-      fileToUpload = webpBuffer!;
+
+      fileToUpload = webpBuffer;
       contentType = "image/webp";
       ext = "webp";
     }
   } else {
-    // For non-image files (like PDF), keep as is
-    const rawExt = (file.name.split(".").pop() || "pdf").toLowerCase();
-    const safeExtensions = new Set(["pdf"]);
-    ext = safeExtensions.has(rawExt) ? rawExt : "pdf";
+    const rawExt = (fileName.split(".").pop() || "pdf").toLowerCase();
+    ext = rawExt === "pdf" ? "pdf" : "pdf";
     fileToUpload = file;
-    contentType = file.type || "application/octet-stream";
+    contentType = mimeType || "application/octet-stream";
   }
 
   const path = `${folder}/${crypto.randomUUID()}.${ext}`;
@@ -734,6 +767,17 @@ export async function saveProfile(formData: FormData) {
 
   const sectionFiles = collectGallerySectionFiles(formData, sections);
 
+  const metaRaw = jsonField(formData, "galleryFileMeta");
+  const expectedUploadCount = Array.isArray(metaRaw) ? metaRaw.length : 0;
+  const receivedUploadCount = sectionFiles.reduce(
+    (total, entry) => total + entry.files.length,
+    0,
+  );
+
+  if (expectedUploadCount > 0 && receivedUploadCount === 0) {
+    redirectWithSaveError("gallery-files-missing");
+  }
+
   const MAX_GALLERY_IMAGES = 30;
   let totalFiles = 0;
   for (const { files } of sectionFiles) {
@@ -743,16 +787,30 @@ export async function saveProfile(formData: FormData) {
     redirectWithSaveError("too-many-gallery-images");
   }
 
-  for (const file of [avatarFile, backgroundFile, ...sectionFiles.flatMap(s => s.files)]) {
-    if (!(file instanceof File) || file.size === 0) {
+  for (const rawFile of [avatarFile, backgroundFile]) {
+    const file = asUploadEntry(rawFile);
+    if (!file) {
       continue;
     }
+
+    const fileName = getUploadFileName(file);
+    const mimeType = guessMimeType(fileName, file.type);
 
     if (file.size > MAX_UPLOAD_SIZE) {
       redirectWithSaveError("file-too-large");
     }
 
-    if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
+    if (!isAllowedImageMime(mimeType, fileName)) {
+      redirectWithSaveError("unsupported-image");
+    }
+  }
+
+  for (const upload of sectionFiles.flatMap((entry) => entry.files)) {
+    if (upload.blob.size > MAX_UPLOAD_SIZE) {
+      redirectWithSaveError("file-too-large");
+    }
+
+    if (!isAllowedImageMime(upload.mimeType, upload.fileName)) {
       redirectWithSaveError("unsupported-image");
     }
   }
@@ -766,25 +824,39 @@ export async function saveProfile(formData: FormData) {
     }
   }
 
-  const avatar = await uploadFile(avatarFile, `avatars/${slug}`).catch(() =>
-    redirectWithSaveError("upload"),
-  );
-  const background = await uploadFile(
-    backgroundFile,
-    `backgrounds/${slug}`,
-  ).catch(() => redirectWithSaveError("upload"));
-  const cv = await uploadFile(
-    cvFile,
-    `cvs/${slug}`,
-  ).catch(() => redirectWithSaveError("upload"));
+  const avatarUpload = asUploadEntry(avatarFile);
+  const backgroundUpload = asUploadEntry(backgroundFile);
+  const cvUpload = asUploadEntry(cvFile);
+
+  const avatar = avatarUpload
+    ? await uploadFile(avatarUpload, `avatars/${slug}`, {
+        fileName: getUploadFileName(avatarUpload),
+        mimeType: guessMimeType(getUploadFileName(avatarUpload), avatarUpload.type),
+      }).catch(() => redirectWithSaveError("upload"))
+    : null;
+  const background = backgroundUpload
+    ? await uploadFile(backgroundUpload, `backgrounds/${slug}`, {
+        fileName: getUploadFileName(backgroundUpload),
+        mimeType: guessMimeType(getUploadFileName(backgroundUpload), backgroundUpload.type),
+      }).catch(() => redirectWithSaveError("upload"))
+    : null;
+  const cv = cvUpload
+    ? await uploadFile(cvUpload, `cvs/${slug}`, {
+        fileName: getUploadFileName(cvUpload, "cv.pdf"),
+        mimeType: guessMimeType(getUploadFileName(cvUpload, "cv.pdf"), cvUpload.type),
+      }).catch(() => redirectWithSaveError("upload"))
+    : null;
 
   // Upload files for each section (sequential to avoid storage rate limits)
   const sectionUploads: { [key: string]: string[] } = {};
   for (const { sectionId, files } of sectionFiles) {
     const uploads: string[] = [];
-    for (const file of files) {
+    for (const upload of files) {
       try {
-        const url = await uploadFile(file, `gallery/${slug}`);
+        const url = await uploadFile(upload.blob, `gallery/${slug}`, {
+          fileName: upload.fileName,
+          mimeType: upload.mimeType,
+        });
         if (!url) {
           redirectWithSaveError("upload");
         }
@@ -794,6 +866,16 @@ export async function saveProfile(formData: FormData) {
       }
     }
     sectionUploads[sectionId] = uploads;
+  }
+
+  if (expectedUploadCount > 0 && receivedUploadCount > 0) {
+    const uploadedCount = Object.values(sectionUploads).reduce(
+      (total, urls) => total + urls.length,
+      0,
+    );
+    if (uploadedCount < receivedUploadCount) {
+      redirectWithSaveError("upload");
+    }
   }
 
   // Build final sections with both existing and new images
@@ -1166,37 +1248,45 @@ export async function saveRestaurant(formData: FormData) {
     redirectWithSaveError(slugError, "/restoran");
   }
 
-  const avatarFile = formData.get("avatar") as File | null;
-  const coverFile = formData.get("cover") as File | null;
+  const avatarUpload = asUploadEntry(formData.get("avatar"));
+  const coverUpload = asUploadEntry(formData.get("cover"));
   const galleryFiles = formData
     .getAll("galleryFiles")
-    .filter((entry): entry is File => entry instanceof File && entry.size > 0);
+    .map(asUploadEntry)
+    .filter((entry): entry is File | Blob => entry !== null);
 
-  for (const file of [avatarFile, coverFile, ...galleryFiles]) {
-    if (!(file instanceof File) || file.size === 0) {
-      continue;
-    }
+  for (const file of [avatarUpload, coverUpload, ...galleryFiles].filter(Boolean)) {
+    const upload = file!;
+    const fileName = getUploadFileName(upload);
+    const mimeType = guessMimeType(fileName, upload.type);
 
-    if (file.size > MAX_UPLOAD_SIZE) {
+    if (upload.size > MAX_UPLOAD_SIZE) {
       redirectWithSaveError("file-too-large", "/restoran");
     }
 
-    if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
+    if (!isAllowedImageMime(mimeType, fileName)) {
       redirectWithSaveError("unsupported-image", "/restoran");
     }
   }
 
-  const avatar = await uploadFile(avatarFile, `restaurants/avatars/${slug}`).catch(() =>
-    redirectWithSaveError("upload", "/restoran")
-  );
-  const cover = await uploadFile(coverFile, `restaurants/covers/${slug}`).catch(() =>
-    redirectWithSaveError("upload", "/restoran")
-  );
+  const avatar = avatarUpload
+    ? await uploadFile(avatarUpload, `restaurants/avatars/${slug}`, {
+        fileName: getUploadFileName(avatarUpload),
+        mimeType: guessMimeType(getUploadFileName(avatarUpload), avatarUpload.type),
+      }).catch(() => redirectWithSaveError("upload", "/restoran"))
+    : null;
+  const cover = coverUpload
+    ? await uploadFile(coverUpload, `restaurants/covers/${slug}`, {
+        fileName: getUploadFileName(coverUpload),
+        mimeType: guessMimeType(getUploadFileName(coverUpload), coverUpload.type),
+      }).catch(() => redirectWithSaveError("upload", "/restoran"))
+    : null;
   const galleryUploads = await Promise.all(
     galleryFiles.map((file) =>
-      uploadFile(file, `restaurants/gallery/${slug}`).catch(() =>
-        redirectWithSaveError("upload", "/restoran")
-      )
+      uploadFile(file, `restaurants/gallery/${slug}`, {
+        fileName: getUploadFileName(file),
+        mimeType: guessMimeType(getUploadFileName(file), file.type),
+      }).catch(() => redirectWithSaveError("upload", "/restoran"))
     )
   );
 

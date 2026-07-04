@@ -70,6 +70,8 @@ function adminErrorMessage(error?: string) {
       return "Bu profili redaktə etmək üçün icazəniz yoxdur.";
     case "slug-change-not-allowed":
       return "Müştəri profil linkini (slug) dəyişə bilməz.";
+    case "gallery-files-missing":
+      return "Portfolio şəkilləri serverə çatmadı. Səhifəni yeniləyib profil kartından yenidən yükləyin.";
     case "gallery-save-mismatch":
       return "Portfolio bölmələri tam yadda saxlanmadı. Profil kartından redaktə edib yenidən cəhd edin.";
     case "save":
