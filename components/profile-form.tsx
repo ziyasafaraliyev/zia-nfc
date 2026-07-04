@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ImagePlus, Upload, Save, Trash2, Plus, Minus } from "lucide-react";
 import { saveProfile } from "@/app/admin/actions";
 import { getNextRedirectUrl, isNextRedirect } from "@/lib/is-next-redirect";
@@ -129,7 +129,15 @@ type SectionWithFiles = PortfolioSection & {
   newFiles: { name: string; previewUrl: string; file?: File }[];
 };
 
-export default function ProfileForm({ profile, userRole = "super_admin" }: { profile?: Profile; userRole?: "super_admin" | "client" }) {
+export default function ProfileForm({
+  profile,
+  userRole = "super_admin",
+  mode = profile?.id ? "edit" : "create",
+}: {
+  profile?: Profile;
+  userRole?: "super_admin" | "client";
+  mode?: "create" | "edit";
+}) {
   const [submitting, setSubmitting] = useState(false);
   const [statusText, setStatusText] = useState("");
 
@@ -139,13 +147,33 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
   const [removeBackground, setRemoveBackground] = useState(false);
   const [removeCv, setRemoveCv] = useState(false);
 
-  const [sections, setSections] = useState<SectionWithFiles[]>(() => 
-    normalizeGallery(profile?.gallery).map(section => ({
+  const [sections, setSections] = useState<SectionWithFiles[]>(() =>
+    normalizeGallery(profile?.gallery).map((section) => ({
       ...section,
-      newFiles: []
-    }))
+      newFiles: [],
+    })),
   );
+  const sectionsRef = useRef(sections);
   const [theme, setTheme] = useState(profile?.theme || "light");
+
+  useEffect(() => {
+    sectionsRef.current = sections;
+  }, [sections]);
+
+  useEffect(() => {
+    setSections(
+      normalizeGallery(profile?.gallery).map((section) => ({
+        ...section,
+        newFiles: [],
+      })),
+    );
+    setAvatarPreview(profile?.avatar_url || "");
+    setBackgroundPreview(profile?.background_url || "");
+    setRemoveAvatar(false);
+    setRemoveBackground(false);
+    setRemoveCv(false);
+    setTheme(profile?.theme || "light");
+  }, [profile?.id]);
 
   // Add new section
   const addSection = () => {
@@ -212,11 +240,18 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (mode === "edit" && !profile?.id) {
+      setStatusText("Xəta: redaktə üçün profil tapılmadı.");
+      return;
+    }
+
     setSubmitting(true);
     setStatusText("Şəkillər hazırlanır...");
 
     const form = event.currentTarget;
     const formData = new FormData(form);
+    const currentSections = sectionsRef.current;
 
     try {
       // Handle avatar file compression
@@ -243,8 +278,8 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
 
       // Compress all section files in parallel
       const allFilesToCompress: { sectionId: string; file: File }[] = [];
-      sections.forEach(section => {
-        section.newFiles.forEach(item => {
+      currentSections.forEach((section) => {
+        section.newFiles.forEach((item) => {
           if (item.file) {
             allFilesToCompress.push({ sectionId: section.id, file: item.file });
           }
@@ -277,27 +312,31 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
       }
 
       // Build final sections data (keep all sections, including new empty ones with uploads)
-      const finalSections: PortfolioSection[] = sections.map((section) => ({
+      const finalSections: PortfolioSection[] = currentSections.map((section) => ({
         id: section.id,
         name: section.name.trim() || "Portfolio",
         images: section.images,
       }));
 
-      const galleryPayload = JSON.stringify(finalSections);
-      formData.set("gallery", galleryPayload);
+      formData.set("gallery", JSON.stringify(finalSections));
+      formData.set("gallerySectionCount", String(finalSections.length));
 
-      // Clear any stale gallery file entries, then attach compressed files per section
+      formData.delete("galleryFiles");
+      formData.delete("galleryFileMeta");
       for (const key of Array.from(formData.keys())) {
         if (key.startsWith("galleryFiles_")) {
           formData.delete(key);
         }
       }
 
+      const fileMeta: { sectionId: string }[] = [];
       for (const { sectionId, file } of compressedFiles) {
         if (file.size > 0) {
-          formData.append(`galleryFiles_${sectionId}`, file, file.name);
+          formData.append("galleryFiles", file, file.name);
+          fileMeta.push({ sectionId });
         }
       }
+      formData.set("galleryFileMeta", JSON.stringify(fileMeta));
 
       const totalUploadBytes = compressedFiles.reduce((sum, item) => sum + item.file.size, 0);
       if (totalUploadBytes > 45 * 1024 * 1024) {
@@ -325,6 +364,21 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
   return (
     <form onSubmit={handleSubmit} className="grid gap-5" style={{ fontFamily: "'Outfit', sans-serif" }}>
       <input type="hidden" name="id" value={profile?.id ?? ""} />
+
+      {mode === "create" ? (
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-semibold leading-relaxed text-amber-900">
+          Bu form yalnız <strong>yeni profil</strong> üçündür. Mövcud müştəri profilini redaktə etmək üçün sağdakı profil kartında &quot;Profili Redaktə Et&quot; bölməsini açın.
+        </div>
+      ) : null}
+
+      {mode === "edit" && profile?.slug ? (
+        <div className="rounded-2xl border border-[#29AEEE]/25 bg-[#29AEEE]/5 px-4 py-3 text-xs font-semibold text-slate-700">
+          Redaktə: <span className="font-black text-[#29AEEE]">/{profile.slug}</span>
+          {sections.length > 0 ? (
+            <span className="text-slate-500"> · {sections.length} portfolio bölməsi</span>
+          ) : null}
+        </div>
+      ) : null}
       
       {/* ── ŞƏXSİ MƏLUMATLAR ── */}
       <div className="grid gap-4 md:grid-cols-2">

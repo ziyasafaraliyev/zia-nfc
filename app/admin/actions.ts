@@ -224,6 +224,79 @@ function text(formData: FormData, key: string) {
   return typeof value === "string" && value.trim() ? value.trim() : null;
 }
 
+function jsonField(formData: FormData, key: string): unknown | null {
+  const value = formData.get(key);
+  if (typeof value !== "string" || !value) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
+}
+
+type GallerySectionInput = {
+  id: string;
+  name?: string;
+  images?: string[];
+};
+
+function collectGallerySectionFiles(
+  formData: FormData,
+  sections: GallerySectionInput[],
+): { sectionId: string; files: File[] }[] {
+  const sectionFilesMap = new Map<string, File[]>();
+
+  const appendFiles = (sectionId: string, files: File[]) => {
+    if (!sectionId || files.length === 0) {
+      return;
+    }
+    const existing = sectionFilesMap.get(sectionId) ?? [];
+    sectionFilesMap.set(sectionId, [...existing, ...files]);
+  };
+
+  const meta = jsonField(formData, "galleryFileMeta");
+  const indexedFiles = formData
+    .getAll("galleryFiles")
+    .filter((entry): entry is File => entry instanceof File && entry.size > 0);
+
+  if (Array.isArray(meta) && indexedFiles.length > 0) {
+    indexedFiles.forEach((file, index) => {
+      const sectionId =
+        typeof meta[index] === "object" &&
+        meta[index] !== null &&
+        "sectionId" in (meta[index] as object)
+          ? String((meta[index] as { sectionId: string }).sectionId)
+          : "";
+      if (sectionId) {
+        appendFiles(sectionId, [file]);
+      }
+    });
+  }
+
+  for (const section of sections) {
+    const sectionId = section.id;
+    if (!sectionId) {
+      continue;
+    }
+
+    const legacyFiles = formData
+      .getAll(`galleryFiles_${sectionId}`)
+      .filter((entry): entry is File => entry instanceof File && entry.size > 0);
+
+    if (legacyFiles.length > 0 && !sectionFilesMap.has(sectionId)) {
+      appendFiles(sectionId, legacyFiles);
+    }
+  }
+
+  return Array.from(sectionFilesMap.entries()).map(([sectionId, files]) => ({
+    sectionId,
+    files,
+  }));
+}
+
 function bool(formData: FormData, key: string) {
   return formData.get(key) === "on";
 }
@@ -643,26 +716,23 @@ export async function saveProfile(formData: FormData) {
   const avatarFile = formData.get("avatar") as File | null;
   const backgroundFile = formData.get("background") as File | null;
   const cvFile = formData.get("cv") as File | null;
-  const galleryJson = text(formData, "gallery");
-  let sections: any[] = [];
-  
-  try {
-    if (galleryJson) {
-      sections = JSON.parse(galleryJson);
-    }
-  } catch (e) {
-    sections = [];
-  }
+  const galleryRaw = jsonField(formData, "gallery");
+  const sections: GallerySectionInput[] = Array.isArray(galleryRaw)
+    ? galleryRaw.filter(
+        (section): section is GallerySectionInput =>
+          typeof section === "object" &&
+          section !== null &&
+          "id" in section &&
+          typeof (section as GallerySectionInput).id === "string",
+      )
+    : [];
 
-  // Collect all gallery files with their section ids
-  const sectionFiles: { sectionId: string; files: File[] }[] = [];
-  for (const section of sections) {
-    const sectionId = section.id;
-    const files = formData
-      .getAll(`galleryFiles_${sectionId}`)
-      .filter((entry): entry is File => entry instanceof File && entry.size > 0);
-    sectionFiles.push({ sectionId, files });
-  }
+  const expectedSectionCount = Number.parseInt(
+    text(formData, "gallerySectionCount") ?? String(sections.length),
+    10,
+  );
+
+  const sectionFiles = collectGallerySectionFiles(formData, sections);
 
   const MAX_GALLERY_IMAGES = 30;
   let totalFiles = 0;
@@ -865,9 +935,9 @@ export async function saveProfile(formData: FormData) {
   };
 
   const query = id
-    ? supabase.from("profiles").update(payload).eq("id", id)
-    : supabase.from("profiles").insert(payload);
-  const { error } = await query;
+    ? supabase.from("profiles").update(payload).eq("id", id).select("gallery").single()
+    : supabase.from("profiles").insert(payload).select("gallery").single();
+  const { data: savedProfile, error } = await query;
 
   if (error) {
     if (error.code === "23505") {
@@ -875,6 +945,24 @@ export async function saveProfile(formData: FormData) {
     }
 
     redirectWithSaveError("save");
+  }
+
+  const savedGallery = savedProfile?.gallery;
+  const savedSectionCount = Array.isArray(savedGallery)
+    ? savedGallery.filter(
+        (section) =>
+          typeof section === "object" &&
+          section !== null &&
+          "id" in section,
+      ).length
+    : 0;
+
+  if (
+    Number.isFinite(expectedSectionCount) &&
+    expectedSectionCount > 0 &&
+    savedSectionCount < expectedSectionCount
+  ) {
+    redirectWithSaveError("gallery-save-mismatch");
   }
 
   revalidatePath("/admin");

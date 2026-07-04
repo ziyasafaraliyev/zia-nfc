@@ -70,6 +70,8 @@ function adminErrorMessage(error?: string) {
       return "Bu profili redaktə etmək üçün icazəniz yoxdur.";
     case "slug-change-not-allowed":
       return "Müştəri profil linkini (slug) dəyişə bilməz.";
+    case "gallery-save-mismatch":
+      return "Portfolio bölmələri tam yadda saxlanmadı. Profil kartından redaktə edib yenidən cəhd edin.";
     case "save":
       return "Profil yadda saxlanmadı. Supabase ayarlarını yoxlayıb yenidən cəhd edin.";
     default:
@@ -174,7 +176,7 @@ export default async function AdminPage({ searchParams }: Props) {
               Məlumatların Redaktəsi
             </h2>
             <div className="rounded-[1.8rem] bg-slate-50 border border-slate-200 p-4 sm:p-5">
-              <ProfileForm profile={profile} userRole="client" />
+              <ProfileForm key={profile.id} profile={profile} userRole="client" mode="edit" />
             </div>
           </section>
         </div>
@@ -272,16 +274,16 @@ export default async function AdminPage({ searchParams }: Props) {
                   className="mt-3 text-xl font-black tracking-tight text-slate-900"
                   style={{ fontFamily: "'Outfit', sans-serif" }}
                 >
-                  Profil Yarat / Redaktə
+                  Yeni Profil Yarat
                 </h2>
                 <p className="mt-1 text-xs leading-relaxed text-slate-400 font-medium">
-                  Ad, kontakt, sosial linklər və portfolio məlumatları.
+                  Yalnız yeni müştəri profili üçün. Mövcud profil redaktəsi sağdakı kartdadır.
                 </p>
               </div>
             </div>
 
             <div className="rounded-[1.8rem] bg-slate-50 border border-slate-200 p-4 sm:p-5">
-              <ProfileForm />
+              <ProfileForm key="create-profile" mode="create" />
             </div>
           </aside>
 
@@ -528,7 +530,7 @@ function ProfileCard({
           />
         </summary>
         <div className="border-t border-slate-100 bg-white p-5 sm:p-6">
-          <ProfileForm profile={profile} />
+          <ProfileForm key={profile.id} profile={profile} mode="edit" />
         </div>
       </details>
 
