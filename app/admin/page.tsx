@@ -59,9 +59,17 @@ function adminErrorMessage(error?: string) {
     case "upload":
       return "Şəkil yüklənmədi. Supabase Storage bucket ayarlarını yoxlayın.";
     case "file-too-large":
-      return "Hər şəkil maksimum 5MB olmalıdır. Ümumi forma limiti 30MB-dır.";
+      return "Hər şəkil maksimum 20MB olmalıdır. Daha kiçik şəkillər yükləyin.";
+    case "too-many-gallery-images":
+      return "Bir dəfəyə maksimum 30 şəkil yükləyə bilərsiniz. Şəkilləri hissə-hissə əlavə edin.";
     case "unsupported-image":
       return "Şəkil formatı dəstəklənmir. JPG, PNG, WEBP və ya GIF yükləyin. iPhone HEIC formatını əvvəl JPG/PNG edin.";
+    case "unsupported-cv":
+      return "CV yalnız PDF formatında ola bilər.";
+    case "unauthorized":
+      return "Bu profili redaktə etmək üçün icazəniz yoxdur.";
+    case "slug-change-not-allowed":
+      return "Müştəri profil linkini (slug) dəyişə bilməz.";
     case "save":
       return "Profil yadda saxlanmadı. Supabase ayarlarını yoxlayıb yenidən cəhd edin.";
     default:

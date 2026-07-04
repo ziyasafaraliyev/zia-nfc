@@ -708,17 +708,22 @@ export async function saveProfile(formData: FormData) {
     `cvs/${slug}`,
   ).catch(() => redirectWithSaveError("upload"));
 
-  // Upload files for each section
+  // Upload files for each section (sequential to avoid storage rate limits)
   const sectionUploads: { [key: string]: string[] } = {};
   for (const { sectionId, files } of sectionFiles) {
-    const uploads = await Promise.all(
-      files.map((file) =>
-        uploadFile(file, `gallery/${slug}`).catch(() =>
-          redirectWithSaveError("upload"),
-        ),
-      ),
-    );
-    sectionUploads[sectionId] = uploads.filter((item): item is string => Boolean(item));
+    const uploads: string[] = [];
+    for (const file of files) {
+      try {
+        const url = await uploadFile(file, `gallery/${slug}`);
+        if (!url) {
+          redirectWithSaveError("upload");
+        }
+        uploads.push(url);
+      } catch {
+        redirectWithSaveError("upload");
+      }
+    }
+    sectionUploads[sectionId] = uploads;
   }
 
   // Build final sections with both existing and new images

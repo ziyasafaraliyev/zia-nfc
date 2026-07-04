@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { ImagePlus, Upload, Save, Trash2, Plus, Minus } from "lucide-react";
 import { saveProfile } from "@/app/admin/actions";
-import { isNextRedirect } from "@/lib/is-next-redirect";
+import { getNextRedirectUrl, isNextRedirect } from "@/lib/is-next-redirect";
 import type { Profile, PortfolioSection } from "@/lib/types";
 
 const inputClass =
@@ -66,12 +66,12 @@ async function compressImage(file: File, maxWidth = 1200, quality = 0.75): Promi
         const mimeType = file.type;
         canvas.toBlob(
           (blob) => {
-            if (!blob) return resolve(file);
+            if (!blob || blob.size === 0) return resolve(file);
             const compressedFile = new File([blob], file.name, {
-              type: mimeType,
+              type: mimeType || file.type || "image/jpeg",
               lastModified: Date.now(),
             });
-            resolve(compressedFile);
+            resolve(compressedFile.size > 0 ? compressedFile : file);
           },
           mimeType,
           mimeType === "image/jpeg" || mimeType === "image/webp" ? quality : undefined
@@ -259,44 +259,59 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
         const results = await processInParallel(
           allFilesToCompress,
           async ({ sectionId, file }) => {
-            const compressed = await compressImage(file);
-            processed++;
-            setStatusText(`Şəkil sıxılır: ${processed}/${allFilesToCompress.length}`);
-            return { sectionId, file: compressed };
+            try {
+              const compressed = await compressImage(file);
+              processed++;
+              setStatusText(`Şəkil sıxılır: ${processed}/${allFilesToCompress.length}`);
+              return { sectionId, file: compressed };
+            } catch {
+              processed++;
+              setStatusText(`Şəkil sıxılır: ${processed}/${allFilesToCompress.length}`);
+              return { sectionId, file };
+            }
           },
-          3
+          2
         );
         
         compressedFiles.push(...results);
       }
 
-      // Build final sections data
-      const finalSections: PortfolioSection[] = sections.map(section => {
-        const newSectionImages = compressedFiles
-          .filter(cf => cf.sectionId === section.id)
-          .map(_ => ""); // We'll fill these in the server action
-        
-        return {
-          id: section.id,
-          name: section.name || "Untitled Section",
-          images: section.images
-        };
-      });
+      // Build final sections data (keep all sections, including new empty ones with uploads)
+      const finalSections: PortfolioSection[] = sections.map((section) => ({
+        id: section.id,
+        name: section.name.trim() || "Portfolio",
+        images: section.images,
+      }));
 
-      // Add gallery data to form
-      formData.set("gallery", JSON.stringify(finalSections));
+      const galleryPayload = JSON.stringify(finalSections);
+      formData.set("gallery", galleryPayload);
 
-      // Add all compressed files with section ID prefix
-      compressedFiles.forEach(({ sectionId, file }, index) => {
-        formData.append(`galleryFiles_${sectionId}`, file);
-      });
+      // Clear any stale gallery file entries, then attach compressed files per section
+      for (const key of Array.from(formData.keys())) {
+        if (key.startsWith("galleryFiles_")) {
+          formData.delete(key);
+        }
+      }
+
+      for (const { sectionId, file } of compressedFiles) {
+        if (file.size > 0) {
+          formData.append(`galleryFiles_${sectionId}`, file, file.name);
+        }
+      }
+
+      const totalUploadBytes = compressedFiles.reduce((sum, item) => sum + item.file.size, 0);
+      if (totalUploadBytes > 45 * 1024 * 1024) {
+        throw new Error(
+          "Yüklənən şəkillər çox böyükdür (45MB+). Daha az şəkil seçin və ya kiçik fayllar yükləyin.",
+        );
+      }
 
       setStatusText("Məlumatlar yadda saxlanılır...");
       await saveProfile(formData);
       window.location.href = "/admin?saved=1";
     } catch (err: unknown) {
       if (isNextRedirect(err)) {
-        window.location.href = "/admin?saved=1";
+        window.location.href = getNextRedirectUrl(err) ?? "/admin?saved=1";
         return;
       }
       const message = err instanceof Error ? err.message : "Naməlum xəta";

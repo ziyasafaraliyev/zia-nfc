@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { ImagePlus, Upload, Save, Trash2 } from "lucide-react";
 import { saveRestaurant } from "@/app/admin/actions";
-import { isNextRedirect } from "@/lib/is-next-redirect";
+import { getNextRedirectUrl, isNextRedirect } from "@/lib/is-next-redirect";
 import type { Restaurant } from "@/lib/types";
 
 const inputClass =
@@ -123,7 +123,7 @@ export default function RestaurantForm({ restaurant, userRole = "super_admin" }:
       window.location.href = "/restoran?saved=1";
     } catch (err: unknown) {
       if (isNextRedirect(err)) {
-        window.location.href = "/restoran?saved=1";
+        window.location.href = getNextRedirectUrl(err) ?? "/restoran?saved=1";
         return;
       }
       const message = err instanceof Error ? err.message : "Naməlum xəta";
