@@ -1,131 +1,219 @@
 "use client";
 
 import React, { useState } from "react";
-import { Image, X, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+  Image,
+  X,
+} from "lucide-react";
+import type { PortfolioSection as PortfolioSectionType } from "@/lib/types";
 
-function normalizeGallery(gallery: any[]): string[] {
+type GalleryInput = string[] | PortfolioSectionType[];
+
+function normalizeSections(gallery: GalleryInput): PortfolioSectionType[] {
   if (!gallery || gallery.length === 0) return [];
-  
-  if (gallery.length > 0 && typeof gallery[0] === 'object' && 'images' in gallery[0]) {
-    // New format (sections) - flatten all images
-    return (gallery as any[]).flatMap((s: any) => s.images || []);
+
+  if (
+    gallery.length > 0 &&
+    typeof gallery[0] === "object" &&
+    gallery[0] !== null &&
+    "images" in gallery[0]
+  ) {
+    return (gallery as PortfolioSectionType[]).filter(
+      (section) => (section.images?.length ?? 0) > 0,
+    );
   }
-  
-  // Old format (flat array)
-  return gallery as string[];
+
+  const images = gallery as string[];
+  if (images.length === 0) return [];
+
+  return [
+    {
+      id: "default",
+      name: "Portfolio",
+      images,
+    },
+  ];
 }
 
-export default function PortfolioSection({ gallery, profileName }: { gallery: any[]; profileName: string }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const flatGallery = normalizeGallery(gallery);
+export default function PortfolioSection({
+  gallery,
+  profileName,
+}: {
+  gallery: GalleryInput;
+  profileName: string;
+}) {
+  const sections = normalizeSections(gallery);
+  const totalImages = sections.reduce(
+    (acc, section) => acc + (section.images?.length ?? 0),
+    0,
+  );
+
+  const [showSections, setShowSections] = useState(false);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [lightboxImages, setLightboxImages] = useState<string[]>([]);
+  const [activeSectionName, setActiveSectionName] = useState("");
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  if (totalImages === 0) return null;
+
+  function openLightbox(images: string[], sectionName: string, startIndex = 0) {
+    setLightboxImages(images);
+    setActiveSectionName(sectionName);
+    setCurrentImageIndex(startIndex);
+    setIsLightboxOpen(true);
+  }
+
+  function closeLightbox() {
+    setIsLightboxOpen(false);
+    setLightboxImages([]);
+    setActiveSectionName("");
+    setCurrentImageIndex(0);
+  }
 
   function nextImage() {
-    setCurrentIndex((prev) => (prev + 1) % flatGallery.length);
+    setCurrentImageIndex((prev) => (prev + 1) % lightboxImages.length);
   }
 
   function prevImage() {
-    setCurrentIndex((prev) => (prev - 1 + flatGallery.length) % flatGallery.length);
+    setCurrentImageIndex(
+      (prev) => (prev - 1 + lightboxImages.length) % lightboxImages.length,
+    );
   }
-
-  if (flatGallery.length === 0) return null;
 
   return (
     <>
-      {/* ── PORTFOLIO BUTTON ── */}
-      <button
-        onClick={() => {
-          setCurrentIndex(0);
-          setIsOpen(true);
-        }}
-        className="lux-save-contact group mt-2.5 flex h-14 w-full items-center justify-between gap-3 rounded-2xl px-4 lux-card-enter-4 transition-transform duration-200 hover:scale-[1.02]"
-      >
-        <span className="flex items-center gap-3">
-          <span className="lux-save-icon grid size-9 place-items-center rounded-xl">
-            <Image size={18} />
-          </span>
-          <span className="flex flex-col items-start leading-tight">
-            <span className="text-sm font-bold text-gray-800">Portfolio</span>
-            <span className="text-[10px] font-semibold text-gray-400 mt-0.5">{flatGallery.length} iş nümayiş olunur</span>
-          </span>
-        </span>
-        <ExternalLink
-          size={15}
-          className="text-gray-400 transition-all duration-300 group-hover:text-[#29AEEE] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-        />
-      </button>
-
-      {/* ── LIGHTBOX MODAL ── */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-black/90 backdrop-blur-md p-4"
-          onClick={() => setIsOpen(false)}
+      <div className="mt-2.5 space-y-3 lux-card-enter-4">
+        {/* Portfolio toggle */}
+        <button
+          type="button"
+          onClick={() => setShowSections((open) => !open)}
+          className="lux-save-contact group flex h-14 w-full items-center justify-between gap-3 rounded-2xl px-4 transition-transform duration-200 hover:scale-[1.02]"
         >
-          {/* Top Info Bar */}
-          <div className="absolute top-4 inset-x-4 flex items-center justify-between text-white z-10">
-            <span className="text-xs font-bold uppercase tracking-wider bg-black/40 px-3 py-1.5 rounded-full backdrop-blur">
-              {currentIndex + 1} / {flatGallery.length}
+          <span className="flex items-center gap-3">
+            <span className="lux-save-icon grid size-9 place-items-center rounded-xl">
+              <Image size={18} />
             </span>
+            <span className="flex flex-col items-start leading-tight">
+              <span className="text-sm font-bold text-gray-800">Portfolio</span>
+              <span className="mt-0.5 text-[10px] font-semibold text-gray-400">
+                {sections.length} bölmə · {totalImages} şəkil
+              </span>
+            </span>
+          </span>
+          {showSections ? (
+            <ChevronUp size={18} className="text-gray-400 transition-colors group-hover:text-[#29AEEE]" />
+          ) : (
+            <ChevronDown size={18} className="text-gray-400 transition-colors group-hover:text-[#29AEEE]" />
+          )}
+        </button>
+
+        {/* Section buttons */}
+        {showSections ? (
+          <div className="space-y-2.5">
+            {sections.map((section) => (
+              <button
+                key={section.id}
+                type="button"
+                onClick={() =>
+                  openLightbox(section.images, section.name || "Portfolio", 0)
+                }
+                className="lux-save-contact group flex w-full items-center justify-between gap-3 rounded-2xl px-4 py-3.5 transition-all duration-200 hover:scale-[1.01]"
+              >
+                <span className="text-sm font-bold text-gray-800">
+                  {section.name || "Portfolio"}
+                </span>
+                <span className="text-xs font-semibold text-gray-400 transition-colors group-hover:text-[#29AEEE]">
+                  {section.images.length} şəkil
+                </span>
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </div>
+
+      {/* Lightbox */}
+      {isLightboxOpen ? (
+        <div
+          className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-black/90 p-4 backdrop-blur-md"
+          onClick={closeLightbox}
+        >
+          <div className="absolute inset-x-4 top-4 z-10 flex items-center justify-between text-white">
+            <div className="flex flex-col gap-1">
+              {activeSectionName ? (
+                <span className="rounded-full bg-black/40 px-3 py-1 text-[10px] font-bold uppercase tracking-wider backdrop-blur">
+                  {activeSectionName}
+                </span>
+              ) : null}
+              <span className="rounded-full bg-black/40 px-3 py-1.5 text-xs font-bold uppercase tracking-wider backdrop-blur">
+                {currentImageIndex + 1} / {lightboxImages.length}
+              </span>
+            </div>
             <button
-              onClick={() => setIsOpen(false)}
-              className="p-2.5 rounded-full bg-black/40 hover:bg-black/60 transition text-white/90"
+              type="button"
+              onClick={closeLightbox}
+              className="rounded-full bg-black/40 p-2.5 text-white/90 transition hover:bg-black/60"
             >
               <X size={20} />
             </button>
           </div>
 
-          {/* Image Viewer Frame */}
           <div
-            className="relative max-w-3xl w-full aspect-square md:aspect-[4/3] max-h-[75vh] flex items-center justify-center"
+            className="relative flex aspect-square max-h-[75vh] w-full max-w-3xl items-center justify-center md:aspect-[4/3]"
             onClick={(e) => e.stopPropagation()}
           >
             <img
-              src={flatGallery[currentIndex]}
-              alt={`${profileName} portfolio - ${currentIndex + 1}`}
+              src={lightboxImages[currentImageIndex]}
+              alt={`${profileName} — ${activeSectionName} — ${currentImageIndex + 1}`}
               className="max-h-full max-w-full rounded-2xl object-contain shadow-2xl"
             />
 
-            {flatGallery.length > 1 && (
+            {lightboxImages.length > 1 ? (
               <>
-                {/* Left navigation */}
                 <button
+                  type="button"
                   onClick={prevImage}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/40 hover:bg-black/60 text-white transition active:scale-95"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/40 p-3 text-white transition hover:bg-black/60 active:scale-95"
                 >
                   <ChevronLeft size={24} />
                 </button>
-
-                {/* Right navigation */}
                 <button
+                  type="button"
                   onClick={nextImage}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/40 hover:bg-black/60 text-white transition active:scale-95"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/40 p-3 text-white transition hover:bg-black/60 active:scale-95"
                 >
                   <ChevronRight size={24} />
                 </button>
               </>
-            )}
+            ) : null}
           </div>
 
-          {/* Thumbnail Strip */}
-          {flatGallery.length > 1 && (
+          {lightboxImages.length > 1 ? (
             <div
-              className="mt-6 flex justify-center gap-2 overflow-x-auto max-w-full p-2 z-10"
+              className="z-10 mt-6 flex max-w-full justify-center gap-2 overflow-x-auto p-2"
               onClick={(e) => e.stopPropagation()}
             >
-              {flatGallery.map((image, idx) => (
+              {lightboxImages.map((image, idx) => (
                 <button
                   key={idx}
-                  onClick={() => setCurrentIndex(idx)}
-                  className={`relative size-12 shrink-0 rounded-lg overflow-hidden border-2 transition duration-200 ${currentIndex === idx ? "border-[#29AEEE] scale-105" : "border-transparent opacity-60 hover:opacity-100"
-                    }`}
+                  type="button"
+                  onClick={() => setCurrentImageIndex(idx)}
+                  className={`relative size-12 shrink-0 overflow-hidden rounded-lg border-2 transition duration-200 ${
+                    currentImageIndex === idx
+                      ? "scale-105 border-[#29AEEE]"
+                      : "border-transparent opacity-60 hover:opacity-100"
+                  }`}
                 >
                   <img src={image} alt="" className="h-full w-full object-cover" />
                 </button>
               ))}
             </div>
-          )}
+          ) : null}
         </div>
-      )}
+      ) : null}
     </>
   );
 }

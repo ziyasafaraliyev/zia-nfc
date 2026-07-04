@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { ImagePlus, Upload, Save, Trash2 } from "lucide-react";
 import { saveRestaurant } from "@/app/admin/actions";
+import { isNextRedirect } from "@/lib/is-next-redirect";
 import type { Restaurant } from "@/lib/types";
 
 const inputClass =
@@ -119,13 +120,14 @@ export default function RestaurantForm({ restaurant, userRole = "super_admin" }:
 
       setStatusText("Məlumatlar yadda saxlanılır...");
       await saveRestaurant(formData);
-      window.location.reload();
-    } catch (err: any) {
-      if (err.message === "NEXT_REDIRECT" || err.digest?.includes("NEXT_REDIRECT")) {
+      window.location.href = "/restoran?saved=1";
+    } catch (err: unknown) {
+      if (isNextRedirect(err)) {
         window.location.href = "/restoran?saved=1";
         return;
       }
-      setStatusText("Xəta baş verdi: " + err.message);
+      const message = err instanceof Error ? err.message : "Naməlum xəta";
+      setStatusText("Xəta baş verdi: " + message);
       setSubmitting(false);
     }
   }
@@ -681,9 +683,28 @@ function ImageDropZone({
   const inputRef = React.useRef<HTMLInputElement>(null);
   const hasImage = preview && !removed;
 
+  function assignFileToInput(file: File) {
+    if (!inputRef.current) return;
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+    inputRef.current.files = dataTransfer.files;
+  }
+
+  function clearInput() {
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+  }
+
   function handleFile(file: File) {
     if (!file.type.startsWith("image/")) return;
+    assignFileToInput(file);
     onFileChange(file);
+  }
+
+  function handleRemove() {
+    clearInput();
+    onRemove();
   }
 
   function handleDrop(e: React.DragEvent) {
@@ -777,7 +798,7 @@ function ImageDropZone({
         {(hasExisting || hasImage) && (
           <button
             type="button"
-            onClick={onRemove}
+            onClick={handleRemove}
             className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-[11px] font-bold text-rose-600 transition duration-200 hover:bg-rose-100 active:scale-95"
           >
             <Trash2 size={12} /> Sil

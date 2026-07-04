@@ -344,21 +344,23 @@ function AlertBanner({
   icon: React.ReactNode;
   children: React.ReactNode;
 }) {
-  // Palette restricted to black / white / brand-blue only.
   const styles = {
-    success:
-      "border-white/15 bg-white/5 text-white",
-    warning:
-      "border-white/15 bg-white/5 text-white",
-    error:
-      "border-white/15 bg-white/5 text-white",
+    success: "border-[#29AEEE]/25 bg-[#29AEEE]/8 text-slate-800",
+    warning: "border-amber-200 bg-amber-50 text-amber-900",
+    error: "border-red-200 bg-red-50 text-red-700",
+  }[tone];
+
+  const iconStyles = {
+    success: "text-[#29AEEE]",
+    warning: "text-amber-600",
+    error: "text-red-500",
   }[tone];
 
   return (
     <div
-      className={`flex items-start gap-3 rounded-2xl border p-4 text-sm font-semibold leading-6 shadow-sm backdrop-blur-sm ${styles}`}
+      className={`flex items-start gap-3 rounded-2xl border p-4 text-sm font-semibold leading-6 shadow-sm ${styles}`}
     >
-      <span className="grid size-6 place-items-center rounded-xl border border-white/15 bg-white/5">
+      <span className={`grid size-6 shrink-0 place-items-center rounded-xl ${iconStyles}`}>
         {icon}
       </span>
       <span>{children}</span>

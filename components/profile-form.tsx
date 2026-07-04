@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { ImagePlus, Upload, Save, Trash2, Plus, Minus } from "lucide-react";
 import { saveProfile } from "@/app/admin/actions";
+import { isNextRedirect } from "@/lib/is-next-redirect";
 import type { Profile, PortfolioSection } from "@/lib/types";
 
 const inputClass =
@@ -198,6 +199,10 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
   const removeNewFileFromSection = (sectionId: string, fileIndex: number) => {
     setSections(prev => prev.map(s => {
       if (s.id !== sectionId) return s;
+      const removed = s.newFiles[fileIndex];
+      if (removed?.previewUrl.startsWith("blob:")) {
+        URL.revokeObjectURL(removed.previewUrl);
+      }
       return {
         ...s,
         newFiles: s.newFiles.filter((_, i) => i !== fileIndex)
@@ -288,13 +293,14 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
 
       setStatusText("Məlumatlar yadda saxlanılır...");
       await saveProfile(formData);
-      window.location.reload();
-    } catch (err: any) {
-      if (err.message === "NEXT_REDIRECT" || err.digest?.includes("NEXT_REDIRECT")) {
+      window.location.href = "/admin?saved=1";
+    } catch (err: unknown) {
+      if (isNextRedirect(err)) {
         window.location.href = "/admin?saved=1";
         return;
       }
-      setStatusText("Xəta baş verdi: " + err.message);
+      const message = err instanceof Error ? err.message : "Naməlum xəta";
+      setStatusText("Xəta baş verdi: " + message);
       setSubmitting(false);
     }
   }
@@ -766,8 +772,7 @@ export default function ProfileForm({ profile, userRole = "super_admin" }: { pro
           accept="application/pdf" 
           className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#29AEEE]/10 file:text-[#29AEEE] hover:file:bg-[#29AEEE]/20 transition"
         />
-        {/* @ts-ignore - cv_url is not strictly in Profile type if we didn't update it yet */}
-        {(profile as any)?.cv_url && !removeCv && (
+        {profile?.cv_url && !removeCv && (
            <div className="text-sm font-bold text-green-600 flex items-center gap-2 mt-2">
              ✓ Cari CV mövcuddur 
              <button type="button" onClick={() => setRemoveCv(true)} className="text-red-500 underline ml-2">Sil</button>
@@ -922,9 +927,28 @@ function ImageDropZone({
   const inputRef = React.useRef<HTMLInputElement>(null);
   const hasImage = preview && !removed;
 
+  function assignFileToInput(file: File) {
+    if (!inputRef.current) return;
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+    inputRef.current.files = dataTransfer.files;
+  }
+
+  function clearInput() {
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+  }
+
   function handleFile(file: File) {
     if (!file.type.startsWith("image/")) return;
+    assignFileToInput(file);
     onFileChange(file);
+  }
+
+  function handleRemove() {
+    clearInput();
+    onRemove();
   }
 
   function handleDrop(e: React.DragEvent) {
@@ -1025,7 +1049,7 @@ function ImageDropZone({
         {(hasExisting || hasImage) && (
           <button
             type="button"
-            onClick={onRemove}
+            onClick={handleRemove}
             className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-[11px] font-bold text-rose-600 transition duration-200 hover:bg-rose-100 active:scale-95"
           >
             <Trash2 size={12} /> Sil
