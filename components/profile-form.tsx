@@ -28,7 +28,29 @@ function getSocialFieldValue(
   key: keyof typeof socialBaseUrls,
   value?: string | null,
 ) {
-  return value?.trim() ? value : socialBaseUrls[key];
+  return value?.trim() ? value : "";
+}
+
+function getSocialPlaceholder(key: keyof typeof socialBaseUrls) {
+  switch (key) {
+    case "whatsapp":
+      return "99450xxxxxxx";
+    case "instagram":
+    case "tiktok":
+    case "threads":
+    case "facebook":
+    case "x":
+    case "linkedin":
+    case "youtube":
+    case "behance":
+      return "username";
+    case "website":
+      return "example.com";
+    case "waze":
+      return "40.4093,49.8671";
+    default:
+      return "";
+  }
 }
 
 // Canvas-based client-side image compression function (preserves PNG transparency)
@@ -408,61 +430,73 @@ export default function ProfileForm({
         <Field
           name="whatsapp"
           label="WhatsApp"
+          placeholder={getSocialPlaceholder("whatsapp")}
           defaultValue={getSocialFieldValue("whatsapp", profile?.whatsapp)}
         />
         <Field
           name="whatsapp2"
           label="WhatsApp 2"
+          placeholder={getSocialPlaceholder("whatsapp")}
           defaultValue={profile?.whatsapp2}
         />
         <Field
           name="instagram"
-          label="Instagram URL"
+          label="Instagram"
+          placeholder={getSocialPlaceholder("instagram")}
           defaultValue={getSocialFieldValue("instagram", profile?.instagram)}
         />
         <Field
           name="tiktok"
-          label="TikTok URL"
+          label="TikTok"
+          placeholder={getSocialPlaceholder("tiktok")}
           defaultValue={getSocialFieldValue("tiktok", profile?.tiktok)}
         />
         <Field
           name="website"
-          label="Website URL"
+          label="Website"
+          placeholder={getSocialPlaceholder("website")}
           defaultValue={getSocialFieldValue("website", profile?.website)}
         />
         <Field
           name="facebook"
-          label="Facebook URL"
+          label="Facebook"
+          placeholder={getSocialPlaceholder("facebook")}
           defaultValue={getSocialFieldValue("facebook", profile?.facebook)}
         />
         <Field
           name="x"
-          label="X (Twitter) URL"
+          label="X (Twitter)"
+          placeholder={getSocialPlaceholder("x")}
           defaultValue={getSocialFieldValue("x", profile?.x)}
         />
         <Field
           name="threads"
-          label="Threads URL"
+          label="Threads"
+          placeholder={getSocialPlaceholder("threads")}
           defaultValue={getSocialFieldValue("threads", profile?.threads)}
         />
         <Field
           name="linkedin"
-          label="LinkedIn URL"
+          label="LinkedIn"
+          placeholder={getSocialPlaceholder("linkedin")}
           defaultValue={getSocialFieldValue("linkedin", profile?.linkedin)}
         />
         <Field
           name="youtube"
-          label="YouTube URL"
+          label="YouTube"
+          placeholder={getSocialPlaceholder("youtube")}
           defaultValue={getSocialFieldValue("youtube", profile?.youtube)}
         />
         <Field
           name="behance"
-          label="Behance URL"
+          label="Behance"
+          placeholder={getSocialPlaceholder("behance")}
           defaultValue={getSocialFieldValue("behance", profile?.behance)}
         />
         <Field
           name="waze"
-          label="Waze URL"
+          label="Waze"
+          placeholder={getSocialPlaceholder("waze")}
           defaultValue={getSocialFieldValue("waze", profile?.waze)}
         />
       </div>

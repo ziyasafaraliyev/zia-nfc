@@ -19,7 +19,20 @@ function getSocialFieldValue(
   key: keyof typeof socialBaseUrls,
   value?: string | null,
 ) {
-  return value?.trim() ? value : socialBaseUrls[key];
+  return value?.trim() ? value : "";
+}
+
+function getSocialPlaceholder(key: keyof typeof socialBaseUrls) {
+  switch (key) {
+    case "instagram":
+      return "username";
+    case "tiktok":
+      return "username";
+    case "facebook":
+      return "username";
+    default:
+      return "";
+  }
 }
 
 // Canvas-based client-side image compression function (preserves PNG transparency)
@@ -166,16 +179,19 @@ export default function RestaurantForm({ restaurant, userRole = "super_admin" }:
         <Field
           name="instagram"
           label="Instagram"
+          placeholder={getSocialPlaceholder("instagram")}
           defaultValue={getSocialFieldValue("instagram", restaurant?.instagram)}
         />
         <Field
           name="tiktok"
           label="TikTok"
+          placeholder={getSocialPlaceholder("tiktok")}
           defaultValue={getSocialFieldValue("tiktok", restaurant?.tiktok)}
         />
         <Field
           name="facebook"
           label="Facebook"
+          placeholder={getSocialPlaceholder("facebook")}
           defaultValue={getSocialFieldValue("facebook", restaurant?.facebook)}
         />
       </div>
