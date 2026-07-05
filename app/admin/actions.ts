@@ -399,7 +399,7 @@ const socialBaseUrls = {
   instagram: "https://www.instagram.com/",
   tiktok: "https://www.tiktok.com/@",
   threads: "https://www.threads.net/@",
-  website: "https://www.",
+  website: "https://",
   waze: "https://www.waze.com/ul?ll=",
   facebook: "https://www.facebook.com/",
   x: "https://x.com/",
@@ -435,6 +435,24 @@ function sanitizeUrl(formData: FormData, key: string): string | null {
   if (key === "whatsapp" && /^\+?[\d\s\-()]+$/.test(value)) {
     const digits = value.replace(/\D/g, "");
     return digits ? `https://wa.me/${digits}` : null;
+  }
+
+  if (key === "website") {
+    const trimmed = value.trim();
+    const withProtocol = trimmed.startsWith("http://") || trimmed.startsWith("https://")
+      ? trimmed
+      : `https://${trimmed}`;
+
+    try {
+      const parsed = new URL(withProtocol);
+      parsed.protocol = "https:";
+      if (parsed.hostname.startsWith("www.")) {
+        parsed.hostname = parsed.hostname.replace(/^www\./, "");
+      }
+      return parsed.toString();
+    } catch {
+      return null;
+    }
   }
 
   // If it already starts with http:// or https://, validate it

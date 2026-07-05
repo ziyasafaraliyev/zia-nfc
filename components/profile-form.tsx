@@ -454,7 +454,6 @@ export default function ProfileForm({
         <Field
           name="website"
           label="Website"
-          placeholder={getSocialPlaceholder("website")}
           defaultValue={getSocialFieldValue("website", profile?.website)}
         />
         <Field

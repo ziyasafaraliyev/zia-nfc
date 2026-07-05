@@ -298,18 +298,6 @@ export default async function ProfilePage({ params }: Props) {
                 <span>Zəng et 2</span>
               </a>
             ) : null}
-            {profile.email ? (
-              <a
-                href={`mailto:${profile.email}`}
-                className="lux-btn-call group lux-card-enter-3 transition-transform duration-200 hover:scale-[1.02]"
-              >
-                <Mail
-                  size={18}
-                  className="transition-transform duration-300 group-hover:scale-110"
-                />
-                <span>E-poçt</span>
-              </a>
-            ) : null}
           </div>
         </div>
 
@@ -339,6 +327,14 @@ export default async function ProfilePage({ params }: Props) {
                 href={profile.website}
                 icon={<Globe size={18} />}
                 label="Website"
+                variant="website"
+              />
+            ) : null}
+            {profile.email ? (
+              <SocialChip
+                href={`mailto:${profile.email}`}
+                icon={<Mail size={18} />}
+                label="E-poçt"
                 variant="website"
               />
             ) : null}
