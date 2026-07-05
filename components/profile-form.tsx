@@ -367,12 +367,6 @@ export default function ProfileForm({
     <form onSubmit={handleSubmit} className="grid gap-5" style={{ fontFamily: "'Outfit', sans-serif" }}>
       <input type="hidden" name="id" value={profile?.id ?? ""} />
 
-      {mode === "create" ? (
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-semibold leading-relaxed text-amber-900">
-          Bu form yalnız <strong>yeni profil</strong> üçündür. Mövcud müştəri profilini redaktə etmək üçün sağdakı profil kartında &quot;Profili Redaktə Et&quot; bölməsini açın.
-        </div>
-      ) : null}
-
       {mode === "edit" && profile?.slug ? (
         <div className="rounded-2xl border border-[#29AEEE]/25 bg-[#29AEEE]/5 px-4 py-3 text-xs font-semibold text-slate-700">
           Redaktə: <span className="font-black text-[#29AEEE]">/{profile.slug}</span>
