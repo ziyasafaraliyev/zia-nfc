@@ -3,7 +3,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ImagePlus, Upload, Save, Trash2, Plus, Minus } from "lucide-react";
 import { saveProfile } from "@/app/admin/actions";
-import { getNextRedirectUrl, isNextRedirect } from "@/lib/is-next-redirect";
+import DesignTemplatePicker from "@/components/design-template-picker";
+import { handleServerActionRejection } from "@/lib/server-action-client";
+import {
+  getDesignTemplate,
+  isDesignTemplateId,
+  type DesignTemplateId,
+} from "@/lib/design-templates";
 import type { Profile, PortfolioSection } from "@/lib/types";
 
 const inputClass =
@@ -177,6 +183,20 @@ export default function ProfileForm({
   );
   const sectionsRef = useRef(sections);
   const [theme, setTheme] = useState(profile?.theme || "light");
+  const [coverStyle, setCoverStyle] = useState(profile?.cover_style ?? "auto");
+  const [coverPosition, setCoverPosition] = useState(profile?.cover_position ?? "center");
+  const [designTemplate, setDesignTemplate] = useState<DesignTemplateId>(() => {
+    const saved = profile?.design_template;
+    return saved && isDesignTemplateId(saved) ? saved : "business";
+  });
+
+  function applyDesignTemplate(templateId: DesignTemplateId) {
+    const template = getDesignTemplate(templateId);
+    setDesignTemplate(templateId);
+    setTheme(template.theme);
+    setCoverStyle(template.cover_style);
+    setCoverPosition(template.cover_position);
+  }
 
   useEffect(() => {
     sectionsRef.current = sections;
@@ -195,6 +215,12 @@ export default function ProfileForm({
     setRemoveBackground(false);
     setRemoveCv(false);
     setTheme(profile?.theme || "light");
+    setCoverStyle(profile?.cover_style ?? "auto");
+    setCoverPosition(profile?.cover_position ?? "center");
+    const savedTemplate = profile?.design_template;
+    setDesignTemplate(
+      savedTemplate && isDesignTemplateId(savedTemplate) ? savedTemplate : "business",
+    );
   }, [profile?.id]);
 
   // Add new section
@@ -373,8 +399,7 @@ export default function ProfileForm({
       await saveProfile(formData);
       window.location.href = "/admin?saved=1";
     } catch (err: unknown) {
-      if (isNextRedirect(err)) {
-        window.location.href = getNextRedirectUrl(err) ?? "/admin?saved=1";
+      if (handleServerActionRejection(err)) {
         return;
       }
       const message = err instanceof Error ? err.message : "Naməlum xəta";
@@ -386,7 +411,17 @@ export default function ProfileForm({
   const [isPortfolioDragging, setIsPortfolioDragging] = useState(false);
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-5" style={{ fontFamily: "'Outfit', sans-serif" }}>
+    <form
+      onSubmit={(event) => {
+        void handleSubmit(event).catch((error) => {
+          if (!handleServerActionRejection(error)) {
+            console.error(error);
+          }
+        });
+      }}
+      className="grid gap-5"
+      style={{ fontFamily: "'Outfit', sans-serif" }}
+    >
       <input type="hidden" name="id" value={profile?.id ?? ""} />
 
       {mode === "edit" && profile?.slug ? (
@@ -397,6 +432,8 @@ export default function ProfileForm({
           ) : null}
         </div>
       ) : null}
+
+      <DesignTemplatePicker value={designTemplate} onChange={applyDesignTemplate} />
       
       {/* ── ŞƏXSİ MƏLUMATLAR ── */}
       <div className="grid gap-4 md:grid-cols-2">
@@ -570,7 +607,8 @@ export default function ProfileForm({
         <SelectField
           name="cover_style"
           label="Cover görünüşü"
-          defaultValue={profile?.cover_style ?? "auto"}
+          value={coverStyle}
+          onChange={(value) => setCoverStyle(value as typeof coverStyle)}
           options={[
             { value: "auto", label: "Auto / premium" },
             { value: "square", label: "Kvadrat / 1:1" },
@@ -580,7 +618,8 @@ export default function ProfileForm({
         <SelectField
           name="cover_position"
           label="Cover fokus yeri"
-          defaultValue={profile?.cover_position ?? "center"}
+          value={coverPosition}
+          onChange={(value) => setCoverPosition(value as typeof coverPosition)}
           options={[
             { value: "top", label: "Yuxarı" },
             { value: "center", label: "Mərkəz" },
@@ -929,6 +968,18 @@ export default function ProfileForm({
               className="size-5 rounded accent-indigo-650"
             />
           </label>
+
+          <div className="rounded-3xl border border-slate-200 bg-white p-5 space-y-4">
+            <span className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide">
+              Google Review
+            </span>
+            <Field
+              name="google_review_url"
+              label="Google Review linki"
+              defaultValue={profile?.google_review_url}
+              placeholder="https://g.page/r/..."
+            />
+          </div>
         </>
       )}
 
@@ -979,18 +1030,25 @@ function Field({
 function SelectField({
   name,
   label,
-  defaultValue,
+  value,
+  onChange,
   options,
 }: {
   name: string;
   label: string;
-  defaultValue: string;
+  value: string;
+  onChange?: (value: string) => void;
   options: { value: string; label: string }[];
 }) {
   return (
     <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide">
       {label}
-      <select name={name} defaultValue={defaultValue} className={inputClass}>
+      <select
+        name={name}
+        value={value}
+        onChange={onChange ? (event) => onChange(event.target.value) : undefined}
+        className={inputClass}
+      >
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}

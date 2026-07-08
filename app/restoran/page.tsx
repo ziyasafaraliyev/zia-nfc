@@ -1,4 +1,4 @@
-import { getAdminSession } from "@/app/admin/actions";
+import { getAdminSession, toggleRestaurant } from "@/app/admin/actions";
 import { listRestaurants } from "@/lib/restaurants";
 import { getRestaurantPath } from "@/lib/urls";
 import { redirect } from "next/navigation";
@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import RestaurantForm from "@/components/restaurant-form";
 import DeleteProfileButton from "@/components/delete-profile-button";
+import ServerActionForm from "@/components/server-action-form";
 import { cookies } from "next/headers";
 
 type Props = {
@@ -321,7 +322,7 @@ function RestaurantCard({ restaurant }: { restaurant: any }) {
             >
               <ExternalLink size={18} />
             </Link>
-            <form action={toggleRestaurant}>
+            <ServerActionForm action={toggleRestaurant}>
               <input type="hidden" name="id" value={restaurant.id} />
               <input type="hidden" name="enabled" value={String(restaurant.enabled)} />
               <button
@@ -330,7 +331,7 @@ function RestaurantCard({ restaurant }: { restaurant: any }) {
               >
                 <Power size={18} />
               </button>
-            </form>
+            </ServerActionForm>
             <DeleteProfileButton 
               id={restaurant.id} 
               slug={restaurant.slug} 
@@ -372,8 +373,4 @@ function StatusBadge({ enabled }: { enabled: boolean }) {
   );
 }
 
-async function toggleRestaurant(formData: FormData) {
-  "use server";
-  const { toggleRestaurant } = await import("@/app/admin/actions");
-  await toggleRestaurant(formData);
-}
+

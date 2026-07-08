@@ -8,6 +8,7 @@ import {
 import CopyUrlButton from "@/components/copy-url-button";
 import DeleteProfileButton from "@/components/delete-profile-button";
 import ProfileForm from "@/components/profile-form";
+import ServerActionForm from "@/components/server-action-form";
 import { listProfiles } from "@/lib/profiles";
 import { hasSupabaseEnv } from "@/lib/supabase";
 import type { Profile } from "@/lib/types";
@@ -148,11 +149,11 @@ export default async function AdminPage({ searchParams }: Props) {
                     </a>
                   ) : null;
                 })()}
-                <form action={logoutAdmin}>
+                <ServerActionForm action={logoutAdmin}>
                   <button className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 shadow-sm transition-all duration-200 hover:border-red-300 hover:text-red-500 hover:bg-red-50 active:scale-[0.98]">
                     <LogOut size={15} /> Çıxış
                   </button>
-                </form>
+                </ServerActionForm>
               </div>
             </div>
           </header>
@@ -221,11 +222,11 @@ export default async function AdminPage({ searchParams }: Props) {
                 <span>{hasSupabaseEnv() ? "Live · Supabase" : "Demo modu"}</span>
               </div>
 
-              <form action={logoutAdmin}>
+              <ServerActionForm action={logoutAdmin}>
                 <button className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 shadow-sm transition-all duration-200 hover:border-red-300 hover:text-red-500 hover:bg-red-50 active:scale-[0.98]" style={{ fontFamily: "'Outfit', sans-serif" }}>
                   <LogOut size={15} /> Çıxış
                 </button>
-              </form>
+              </ServerActionForm>
             </div>
           </div>
 
@@ -485,7 +486,7 @@ function ProfileCard({
             <CopyUrlButton url={url} />
             {profile.id ? (
               <>
-                <form action={toggleProfile}>
+                <ServerActionForm action={toggleProfile}>
                   <input type="hidden" name="id" value={profile.id} />
                   <input
                     type="hidden"
@@ -498,7 +499,7 @@ function ProfileCard({
                   >
                     <Power size={18} />
                   </button>
-                </form>
+                </ServerActionForm>
                 <DeleteProfileButton id={profile.id} slug={profile.slug} />
               </>
             ) : null}
@@ -558,7 +559,7 @@ function StatusBadge({ enabled }: { enabled: boolean }) {
 function Login({ error, redirectTo }: { error?: string, redirectTo?: string }) {
   return (
     <main className="grid min-h-screen place-items-center bg-[#f5f7fa] px-4 py-10 font-sans">
-      <form
+      <ServerActionForm
         action={loginAdmin}
         className="w-full max-w-md rounded-[2.25rem] border border-slate-200 bg-white p-7 shadow-[0_20px_60px_rgba(0,0,0,0.12)] sm:p-8 transition-all duration-300"
       >
@@ -632,7 +633,7 @@ function Login({ error, redirectTo }: { error?: string, redirectTo?: string }) {
         <button className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#29AEEE] px-5 py-3.5 text-sm font-bold text-white shadow-md shadow-[#29AEEE]/20 transition-all duration-200 active:scale-[0.96] relative overflow-hidden hover:bg-[#1a9ad4]" style={{ fontFamily: "'Outfit', sans-serif" }}>
           Daxil ol <ArrowUpRight size={17} />
         </button>
-      </form>
+      </ServerActionForm>
     </main>
   );
 }

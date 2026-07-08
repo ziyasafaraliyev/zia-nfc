@@ -1,12 +1,7 @@
+import { isRedirectError } from "next/dist/client/components/redirect-error";
+
 export function isNextRedirect(error: unknown): boolean {
-  if (typeof error !== "object" || error === null) {
-    return false;
-  }
-
-  const digest =
-    "digest" in error ? String((error as { digest?: unknown }).digest ?? "") : "";
-
-  return digest.startsWith("NEXT_REDIRECT");
+  return isRedirectError(error);
 }
 
 /** Parse target URL from Next.js redirect error digest: NEXT_REDIRECT;replace;/path;307; */

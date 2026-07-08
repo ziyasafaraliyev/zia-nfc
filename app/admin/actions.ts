@@ -1008,6 +1008,7 @@ export async function saveProfile(formData: FormData) {
     behance: sanitizeUrl(formData, "behance"),
     location: text(formData, "location"),
     location_url: sanitizeUrl(formData, "location_url"),
+    ...(isSuper ? { google_review_url: sanitizeUrl(formData, "google_review_url") || null } : {}),
     cover_style: option(
       formData,
       "cover_style",
@@ -1025,6 +1026,12 @@ export async function saveProfile(formData: FormData) {
       "theme",
       ["light", "dark", "premium", "emerald", "ruby", "violet", "sapphire", "sunset", "copper"],
       "light",
+    ),
+    design_template: option(
+      formData,
+      "design_template",
+      ["business", "realtor", "doctor", "restaurant", "lawyer", "photographer", "influencer"],
+      "business",
     ),
     ...(avatar ? { avatar_url: avatar } : removeAvatar ? { avatar_url: null } : {}),
     ...(background ? { background_url: background } : removeBackground ? { background_url: null } : {}),

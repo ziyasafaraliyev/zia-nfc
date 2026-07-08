@@ -1,3 +1,5 @@
+import type { DesignTemplateId } from "@/lib/design-templates";
+
 export type PortfolioSection = {
   id: string;
   name: string;
@@ -28,6 +30,7 @@ export type Profile = {
   behance?: string | null;
   location?: string | null;
   location_url?: string | null;
+  google_review_url?: string | null;
   email?: string | null;
   avatar_url?: string | null;
   background_url?: string | null;
@@ -46,6 +49,7 @@ export type Profile = {
     | "sunset"
     | "copper"
     | null;
+  design_template?: DesignTemplateId | null;
   client_email?: string | null;
   client_password?: string | null;
 };

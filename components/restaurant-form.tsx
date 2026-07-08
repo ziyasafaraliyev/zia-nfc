@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { ImagePlus, Upload, Save, Trash2 } from "lucide-react";
 import { saveRestaurant } from "@/app/admin/actions";
-import { getNextRedirectUrl, isNextRedirect } from "@/lib/is-next-redirect";
+import { handleServerActionRejection } from "@/lib/server-action-client";
 import type { Restaurant } from "@/lib/types";
 
 const inputClass =
@@ -135,8 +135,7 @@ export default function RestaurantForm({ restaurant, userRole = "super_admin" }:
       await saveRestaurant(formData);
       window.location.href = "/restoran?saved=1";
     } catch (err: unknown) {
-      if (isNextRedirect(err)) {
-        window.location.href = getNextRedirectUrl(err) ?? "/restoran?saved=1";
+      if (handleServerActionRejection(err)) {
         return;
       }
       const message = err instanceof Error ? err.message : "Naməlum xəta";
@@ -148,7 +147,17 @@ export default function RestaurantForm({ restaurant, userRole = "super_admin" }:
   const [isPortfolioDragging, setIsPortfolioDragging] = useState(false);
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-5" style={{ fontFamily: "'Outfit', sans-serif" }}>
+    <form
+      onSubmit={(event) => {
+        void handleSubmit(event).catch((error) => {
+          if (!handleServerActionRejection(error)) {
+            console.error(error);
+          }
+        });
+      }}
+      className="grid gap-5"
+      style={{ fontFamily: "'Outfit', sans-serif" }}
+    >
       <input type="hidden" name="id" value={restaurant?.id ?? ""} />
       <textarea name="gallery" className="hidden" readOnly value={existingGalleryUrls.join("\n")} />
       
