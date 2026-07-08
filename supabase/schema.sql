@@ -28,7 +28,6 @@ create table if not exists public.profiles (
   cover_position text not null default 'center',
   gallery jsonb not null default '[]'::jsonb,
   theme text not null default 'light',
-  design_template text not null default 'business',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   cv_url text,
@@ -137,12 +136,7 @@ alter table public.profiles add column if not exists behance text;
 alter table public.profiles add column if not exists threads text;
 alter table public.profiles add column if not exists waze text;
 alter table public.profiles add column if not exists email text;
-alter table public.profiles add column if not exists design_template text not null default 'business';
 alter table public.profiles add column if not exists google_review_url text;
-
-alter table public.profiles drop constraint if exists profiles_design_template_check;
-alter table public.profiles add constraint profiles_design_template_check
-check (design_template in ('business', 'realtor', 'doctor', 'restaurant', 'lawyer', 'photographer', 'influencer'));
 
 alter table public.profiles drop constraint if exists profiles_cover_style_check;
 alter table public.profiles add constraint profiles_cover_style_check
