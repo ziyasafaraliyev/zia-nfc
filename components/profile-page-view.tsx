@@ -1,10 +1,6 @@
 import PortfolioSection from "@/components/portfolio-section";
 import QrCodeModal from "@/components/qr-code-modal";
 import ReservationButton from "@/components/reservation-button";
-import {
-  getDesignTemplate,
-  type ProfileSectionKey,
-} from "@/lib/design-templates";
 import type { Profile } from "@/lib/types";
 import { getProfileVcardPath } from "@/lib/urls";
 import {
@@ -35,18 +31,31 @@ type Props = {
   jsonLd: Record<string, unknown>;
 };
 
+const DEFAULT_SECTION_ORDER = [
+  "identity",
+  "actions",
+  "socials",
+  "save",
+  "location",
+  "google_review",
+  "portfolio",
+  "cv",
+  "reservation",
+  "qr",
+  "footer",
+] as const;
+
 export default function ProfilePageView({
   profile,
   profileUrl,
   qrUrl,
   jsonLd,
 }: Props) {
-  const template = getDesignTemplate(profile.design_template);
   const whatsapp = profile.whatsapp?.replace(/[^\d]/g, "");
   const whatsapp2 = profile.whatsapp2?.replace(/[^\d]/g, "");
 
-  const coverStyle = profile.cover_style ?? template.cover_style;
-  const coverPosition = profile.cover_position ?? template.cover_position;
+  const coverStyle = profile.cover_style ?? "auto";
+  const coverPosition = profile.cover_position ?? "center";
   const coverH =
     coverStyle === "banner"
       ? "h-52"
@@ -75,11 +84,11 @@ export default function ProfilePageView({
   const themeClass =
     profile.theme && profile.theme !== "light" ? `${profile.theme}-theme` : "";
 
-  const sections: Record<ProfileSectionKey, React.ReactNode> = {
+  const sections: Record<typeof DEFAULT_SECTION_ORDER[number], React.ReactNode> = {
     identity: (
       <section
         key="identity"
-        className={`lux-card lux-card-enter overflow-hidden rounded-b-[2.25rem] rounded-t-none template-hero-${template.heroVariant}`}
+        className="lux-card lux-card-enter overflow-hidden rounded-b-[2.25rem] rounded-t-none template-hero-classic"
       >
         <div
           className={`${profile.background_url ? "bg-[#1e1b4b]" : "lux-hero"} relative ${coverH} overflow-hidden`}
@@ -110,11 +119,6 @@ export default function ProfilePageView({
                 Zia NFC
               </span>
             </Link>
-            {template.showTemplateBadge ? (
-              <span className="template-badge rounded-full px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.18em]">
-                {template.labelAz}
-              </span>
-            ) : null}
           </div>
         </div>
 
@@ -207,7 +211,7 @@ export default function ProfilePageView({
     socials: hasSocials ? (
       <div
         key="socials"
-        className={`mt-3 grid gap-2 lux-card-enter-5 template-social-grid template-social-cols-${template.socialGridCols}`}
+        className="mt-3 grid gap-2 lux-card-enter-5 template-social-grid template-social-cols-3"
       >
         {profile.instagram ? (
           <SocialChip
@@ -454,7 +458,7 @@ export default function ProfilePageView({
 
   return (
     <main
-      className={`lux-shell relative min-h-screen overflow-x-hidden ${themeClass} template-${template.id}`}
+      className={`lux-shell relative min-h-screen overflow-x-hidden ${themeClass} template-business`}
     >
       <script
         type="application/ld+json"
@@ -475,7 +479,7 @@ export default function ProfilePageView({
       </div>
 
       <div className="relative z-10 mx-auto max-w-[440px] px-4 py-6 pb-16">
-        {template.sectionOrder.map((key) => sections[key])}
+        {DEFAULT_SECTION_ORDER.map((key) => sections[key])}
       </div>
     </main>
   );

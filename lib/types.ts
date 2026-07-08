@@ -1,5 +1,3 @@
-import type { DesignTemplateId } from "@/lib/design-templates";
-
 export type PortfolioSection = {
   id: string;
   name: string;
@@ -49,7 +47,6 @@ export type Profile = {
     | "sunset"
     | "copper"
     | null;
-  design_template?: DesignTemplateId | null;
   client_email?: string | null;
   client_password?: string | null;
 };

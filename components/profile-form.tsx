@@ -3,13 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ImagePlus, Upload, Save, Trash2, Plus, Minus } from "lucide-react";
 import { saveProfile } from "@/app/admin/actions";
-import DesignTemplatePicker from "@/components/design-template-picker";
 import { handleServerActionRejection } from "@/lib/server-action-client";
-import {
-  getDesignTemplate,
-  isDesignTemplateId,
-  type DesignTemplateId,
-} from "@/lib/design-templates";
 import type { Profile, PortfolioSection } from "@/lib/types";
 
 const inputClass =
@@ -185,18 +179,6 @@ export default function ProfileForm({
   const [theme, setTheme] = useState(profile?.theme || "light");
   const [coverStyle, setCoverStyle] = useState(profile?.cover_style ?? "auto");
   const [coverPosition, setCoverPosition] = useState(profile?.cover_position ?? "center");
-  const [designTemplate, setDesignTemplate] = useState<DesignTemplateId>(() => {
-    const saved = profile?.design_template;
-    return saved && isDesignTemplateId(saved) ? saved : "business";
-  });
-
-  function applyDesignTemplate(templateId: DesignTemplateId) {
-    const template = getDesignTemplate(templateId);
-    setDesignTemplate(templateId);
-    setTheme(template.theme);
-    setCoverStyle(template.cover_style);
-    setCoverPosition(template.cover_position);
-  }
 
   useEffect(() => {
     sectionsRef.current = sections;
@@ -217,10 +199,6 @@ export default function ProfileForm({
     setTheme(profile?.theme || "light");
     setCoverStyle(profile?.cover_style ?? "auto");
     setCoverPosition(profile?.cover_position ?? "center");
-    const savedTemplate = profile?.design_template;
-    setDesignTemplate(
-      savedTemplate && isDesignTemplateId(savedTemplate) ? savedTemplate : "business",
-    );
   }, [profile?.id]);
 
   // Add new section
@@ -432,8 +410,6 @@ export default function ProfileForm({
           ) : null}
         </div>
       ) : null}
-
-      <DesignTemplatePicker value={designTemplate} onChange={applyDesignTemplate} />
       
       {/* ── ŞƏXSİ MƏLUMATLAR ── */}
       <div className="grid gap-4 md:grid-cols-2">

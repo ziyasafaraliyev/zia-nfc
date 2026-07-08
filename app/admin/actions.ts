@@ -1027,12 +1027,6 @@ export async function saveProfile(formData: FormData) {
       ["light", "dark", "premium", "emerald", "ruby", "violet", "sapphire", "sunset", "copper"],
       "light",
     ),
-    design_template: option(
-      formData,
-      "design_template",
-      ["business", "realtor", "doctor", "restaurant", "lawyer", "photographer", "influencer"],
-      "business",
-    ),
     ...(avatar ? { avatar_url: avatar } : removeAvatar ? { avatar_url: null } : {}),
     ...(background ? { background_url: background } : removeBackground ? { background_url: null } : {}),
     ...(cv ? { cv_url: cv } : removeCv ? { cv_url: null } : {}),
