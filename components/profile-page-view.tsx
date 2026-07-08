@@ -38,9 +38,9 @@ const DEFAULT_SECTION_ORDER = [
   "save",
   "location",
   "google_review",
-  "portfolio",
   "cv",
   "reservation",
+  "portfolio",
   "qr",
   "footer",
 ] as const;
@@ -364,8 +364,8 @@ export default function ProfilePageView({
           className="lux-save-contact group mt-2.5 flex h-14 w-full items-center justify-between gap-3 rounded-2xl px-4 lux-card-enter-4 transition-transform duration-200 hover:scale-[1.02]"
         >
           <span className="flex items-center gap-3">
-            <span className="lux-save-icon grid size-9 place-items-center rounded-xl bg-amber-50">
-              <Star size={16} className="text-amber-500 fill-amber-500" />
+            <span className="lux-save-icon grid size-9 place-items-center rounded-xl">
+              <Star size={16} className="text-[#29AEEE]" />
             </span>
             <span className="flex flex-col items-start leading-tight">
               <span className="text-sm font-bold text-gray-800">Rəy bildir</span>
