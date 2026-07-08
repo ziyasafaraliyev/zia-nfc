@@ -118,7 +118,7 @@ export default function LandingPage() {
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/70 to-transparent" />
         <nav className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 rounded-full border border-white/70 px-6 py-2.5 shadow-[0_18px_60px_rgba(15,23,42,0.12)] backdrop-blur-xl">
           <Link href="/" className="group flex shrink-0 items-center gap-2.5 text-xl font-black tracking-tight text-slate-950 transition duration-200 ease-out hover:-translate-y-0.5">
-            <img src="/logo.png" alt="Zia NFC" className="size-11 rounded-full object-cover" />
+            <img src="/logo.webp" alt="Zia NFC" className="size-11 rounded-full object-cover" />
             Zia NFC
           </Link>
           <div className="hidden shrink-0 items-center gap-2 rounded-full border border-slate-200/70 bg-slate-950/5 px-2 py-1.5 text-sm font-semibold text-slate-700 md:flex">
@@ -202,9 +202,9 @@ export default function LandingPage() {
           </p>
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              { title: "NFC Vizit Kart", desc: "Premium dizaynlı NFC smart vizit kartı ilə müştərilərinizə təsirli ilk tanışlıq yaradın.", image: "/vizit-kart.jpg" },
-              { title: "NFC Stiker", desc: "Telefon, noutbuk və ya istənilən səthə yapışdırıla bilən kompakt NFC stiker.", image: "/stiker.jpg" },
-              { title: "NFC Masa Standı", desc: "Kafe, restoran və ofislər üçün masaüstü NFC menyu və ya profil standı.", image: "/masa-standi.jpg" },
+              { title: "NFC Vizit Kart", desc: "Premium dizaynlı NFC smart vizit kartı ilə müştərilərinizə təsirli ilk tanışlıq yaradın.", image: "/vizit-kart.webp" },
+              { title: "NFC Stiker", desc: "Telefon, noutbuk və ya istənilən səthə yapışdırıla bilən kompakt NFC stiker.", image: "/stiker.webp" },
+              { title: "NFC Masa Standı", desc: "Kafe, restoran və ofislər üçün masaüstü NFC menyu və ya profil standı.", image: "/masa-standi.webp" },
             ].map((product, index) => (
               <motion.div
                 key={product.title}
@@ -391,7 +391,7 @@ export default function LandingPage() {
         <div className="mx-auto flex max-w-7xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div>
             <div className="flex items-center gap-2.5 text-base font-black uppercase tracking-[0.24em] text-sky-300">
-              <img src="/logo.png" alt="Zia NFC" className="size-9 rounded-full object-cover" />
+              <img src="/logo.webp" alt="Zia NFC" className="size-9 rounded-full object-cover" />
               Zia NFC
             </div>
             <p className="mt-4 max-w-xl text-sm leading-6 text-slate-400">
@@ -467,7 +467,7 @@ function HeroMockup() {
       >
         <div className="absolute inset-0 rounded-[1.65rem] bg-[linear-gradient(135deg,rgba(56,189,248,0.24),transparent_38%),linear-gradient(115deg,transparent_0%,rgba(255,255,255,0.08)_38%,transparent_56%)]" />
         <div className="relative flex items-start justify-between">
-          <img src="/logo.png" alt="Zia NFC Logo" className="size-12 rounded-full object-cover bg-white p-0.5 shadow-sm" />
+          <img src="/logo.webp" alt="Zia NFC Logo" className="size-12 rounded-full object-cover bg-white p-0.5 shadow-sm" />
           <Copy className="text-white/55" />
         </div>
         <div className="relative mt-20">
@@ -525,7 +525,7 @@ function PhoneProfile({ compact = false }: { compact?: boolean }) {
       <div className={`relative bg-[linear-gradient(145deg,#0f172a_0%,#0c2340_45%,#0369a1_100%)] ${compact ? "h-28" : "h-40"} overflow-visible flex flex-col items-center justify-center`}>
         <div className="absolute inset-0 bg-[linear-gradient(115deg,transparent_30%,rgba(255,255,255,0.06)_50%,transparent_70%)]" />
         <img
-          src="/logo.png"
+          src="/logo.webp"
           alt="Zia NFC"
           className={`relative z-10 rounded-full object-cover ring-2 ring-white/20 shadow-xl ${compact ? "size-12" : "size-20"}`}
         />
@@ -537,7 +537,7 @@ function PhoneProfile({ compact = false }: { compact?: boolean }) {
         {/* Identity: avatar + name */}
         <div className="flex items-center gap-3 mb-3">
           <img
-            src="/ziya.jpg"
+            src="/ziya.webp"
             alt="Ziya Safaraliyev"
             className={`object-cover shadow-lg border-2 border-slate-100 shrink-0 ${
               compact ? "size-12 rounded-xl" : "size-16 rounded-2xl"

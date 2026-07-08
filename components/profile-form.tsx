@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { ImagePlus, Upload, Save, Trash2, Plus, Minus } from "lucide-react";
+import { ImagePlus, Upload, Save, Trash2, Plus } from "lucide-react";
 import { saveProfile } from "@/app/admin/actions";
 import { handleServerActionRejection } from "@/lib/server-action-client";
 import type { Profile, PortfolioSection } from "@/lib/types";
@@ -57,7 +57,8 @@ function getSocialPlaceholder(key: keyof typeof socialBaseUrls) {
 async function compressImage(file: File, maxWidth = 1200, quality = 0.75): Promise<File> {
   return new Promise((resolve) => {
     // If not an image or is a GIF, return unmodified
-    if (!file.type.startsWith("image/") || file.type === "image/gif") {
+    // If not an image, return unmodified
+    if (!file.type.startsWith("image/")) {
       return resolve(file);
     }
 
@@ -85,18 +86,22 @@ async function compressImage(file: File, maxWidth = 1200, quality = 0.75): Promi
 
         ctx.drawImage(img, 0, 0, width, height);
 
-        const mimeType = file.type;
+        const targetMime = "image/webp";
+        // Rename original file extension to .webp
+        const baseName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+        const newFileName = `${baseName}.webp`;
+
         canvas.toBlob(
           (blob) => {
             if (!blob || blob.size === 0) return resolve(file);
-            const compressedFile = new File([blob], file.name, {
-              type: mimeType || file.type || "image/jpeg",
+            const compressedFile = new File([blob], newFileName, {
+              type: targetMime,
               lastModified: Date.now(),
             });
             resolve(compressedFile.size > 0 ? compressedFile : file);
           },
-          mimeType,
-          mimeType === "image/jpeg" || mimeType === "image/webp" ? quality : undefined
+          targetMime,
+          quality
         );
       };
       img.onerror = () => resolve(file);
@@ -385,8 +390,6 @@ export default function ProfileForm({
       setSubmitting(false);
     }
   }
-
-  const [isPortfolioDragging, setIsPortfolioDragging] = useState(false);
 
   return (
     <form

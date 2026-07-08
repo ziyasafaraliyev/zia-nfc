@@ -63,7 +63,7 @@ export default function Chatbot() {
         {/* Round Logo */}
         <div className="relative size-6 shrink-0 overflow-hidden rounded-full border border-white/20 bg-white p-0.5 transition-transform duration-300 group-hover:rotate-12">
           <img
-            src="/logo.png"
+            src="/logo.webp"
             alt="Zia NFC"
             className="h-full w-full rounded-full object-cover"
           />

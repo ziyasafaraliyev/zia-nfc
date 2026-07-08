@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/logo.png",
+        url: "/logo.webp",
         width: 1200,
         height: 630,
         alt: "Zia NFC Logo",
@@ -33,15 +33,15 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Zia NFC | Premium NFC vizit kart platforması",
     description: "Premium NFC vizit kartları, rəqəmsal profillər, portfoliolar və kontakt paylaşımı üçün mükəmməl həll.",
-    images: ["/logo.png"],
+    images: ["/logo.webp"],
   },
   icons: {
     icon: [
       { url: "/favicon.ico" },
-      { url: "/logo.png", type: "image/png" },
+      { url: "/logo.webp", type: "image/webp" },
     ],
     apple: [
-      { url: "/logo.png" },
+      { url: "/logo.webp" },
     ],
   },
 };

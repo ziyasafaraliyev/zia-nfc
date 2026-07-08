@@ -47,7 +47,6 @@ const DEFAULT_SECTION_ORDER = [
 
 export default function ProfilePageView({
   profile,
-  profileUrl,
   qrUrl,
   jsonLd,
 }: Props) {
@@ -111,7 +110,7 @@ export default function ProfilePageView({
               className="lux-badge flex items-center gap-1.5 rounded-full px-2 py-1.5 pr-3"
             >
               <img
-                src="/logo.png"
+                src="/logo.webp"
                 alt="Zia NFC"
                 className="size-[18px] rounded-full object-cover"
               />
@@ -443,7 +442,7 @@ export default function ProfilePageView({
         <div className="mt-2 flex items-center gap-1.5">
           <Link href="/" className="flex items-center gap-1.5">
             <img
-              src="/logo.png"
+              src="/logo.webp"
               alt="Zia NFC"
               className="size-4 rounded-full object-cover opacity-60"
             />

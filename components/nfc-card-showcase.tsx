@@ -136,7 +136,7 @@ function FlipCard({ card }: { card: (typeof cards)[number] }) {
             <CardShine variant={card.variant} />
             <div className="relative flex h-full flex-col justify-between">
               <div className="flex items-start justify-between">
-                <img src="/logo.png" alt="Zia NFC Logo" className="size-11 rounded-full object-cover bg-white p-0.5 shadow-sm" />
+                <img src="/logo.webp" alt="Zia NFC Logo" className="size-11 rounded-full object-cover bg-white p-0.5 shadow-sm" />
                 <Sparkles className={`${card.frontAccent} opacity-80`} size={20} />
               </div>
               <div>
@@ -156,7 +156,7 @@ function FlipCard({ card }: { card: (typeof cards)[number] }) {
           >
             <CardShine variant={card.variant} subtle />
             <div className="relative flex h-full flex-col items-center justify-between text-center">
-              <img src="/logo.png" alt="Zia NFC Logo" className="size-8 rounded-full object-cover bg-white p-0.5 shadow-sm" />
+              <img src="/logo.webp" alt="Zia NFC Logo" className="size-8 rounded-full object-cover bg-white p-0.5 shadow-sm" />
               <div className="grid place-items-center gap-3">
                 <div
                   className={`grid size-14 place-items-center rounded-2xl ${

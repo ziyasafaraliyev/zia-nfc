@@ -115,7 +115,7 @@ export default async function AdminPage({ searchParams }: Props) {
             <div className="flex flex-col gap-5 p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between">
               <div className="min-w-0">
                 <Link href="/" className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-600 shadow-sm transition hover:opacity-80 active:scale-[0.985]">
-                  <img src="/logo.png" alt="Zia NFC" className="size-4 rounded-full object-cover" />
+                  <img src="/logo.webp" alt="Zia NFC" className="size-4 rounded-full object-cover" />
                   <span className="text-slate-800 font-extrabold">Zia NFC</span>
                   <span className="text-[#29AEEE] font-black">Müştəri</span>
                 </Link>
@@ -198,7 +198,7 @@ export default async function AdminPage({ searchParams }: Props) {
           <div className="flex flex-col gap-5 p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="min-w-0">
               <Link href="/" className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-600 shadow-sm transition hover:opacity-80 active:scale-[0.985]">
-                <img src="/logo.png" alt="Zia NFC" className="size-4 rounded-full object-cover" />
+                <img src="/logo.webp" alt="Zia NFC" className="size-4 rounded-full object-cover" />
                 <span className="text-slate-800 font-extrabold">Zia NFC</span>
                 <span className="text-[#29AEEE] font-black">Admin</span>
               </Link>
@@ -568,7 +568,7 @@ function Login({ error, redirectTo }: { error?: string, redirectTo?: string }) {
         )}
         <div className="flex items-center gap-3">
           <img
-            src="/logo.png"
+            src="/logo.webp"
             alt="Zia NFC"
             className="size-12 rounded-2xl object-cover shadow-sm ring-1 ring-slate-200"
           />

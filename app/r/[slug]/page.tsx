@@ -113,7 +113,7 @@ export default async function RestaurantPage({ params }: Props) {
 
             <div className="absolute inset-x-4 top-4 flex items-center justify-between gap-2">
               <div className="lux-badge flex items-center gap-1.5 rounded-full px-2 py-1.5 pr-3">
-                <img src="/logo.png" alt="Zia NFC" className="size-[18px] rounded-full object-cover" />
+                <img src="/logo.webp" alt="Zia NFC" className="size-[18px] rounded-full object-cover" />
                 <span className="text-[9px] font-black uppercase tracking-[0.22em] text-white/90">
                   Zia NFC
                 </span>
@@ -265,7 +265,7 @@ export default async function RestaurantPage({ params }: Props) {
         <div className="mt-6 flex flex-col items-center gap-2">
           <div className="lux-footer-divider" />
           <div className="mt-2 flex items-center gap-1.5">
-            <img src="/logo.png" alt="Zia NFC" className="size-4 rounded-full object-cover opacity-60" />
+            <img src="/logo.webp" alt="Zia NFC" className="size-4 rounded-full object-cover opacity-60" />
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-gray-400">
               Powered by <span className="lux-brand-text">Zia NFC</span>
             </p>
