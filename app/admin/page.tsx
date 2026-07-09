@@ -1,3 +1,4 @@
+import AdminLayoutTabs from "@/components/admin-layout-tabs";
 import {
   getAdminSession,
   loginAdmin,
@@ -264,84 +265,86 @@ export default async function AdminPage({ searchParams }: Props) {
           ) : null}
         </div>
 
-        {/* Layout */}
-        <div className="mt-6 flex flex-col gap-6">
-          {/* Top: profile management */}
-          <section className="dashboard-surface rounded-[2.25rem] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.25)] sm:p-6">
-            <div className="flex items-start justify-between gap-4 mb-6">
-              <div className="min-w-0">
-                <div className="grid size-12 place-items-center rounded-2xl bg-[#29AEEE] text-white shadow-sm">
-                  <Plus size={23} />
-                </div>
-                <h2
-                  className="mt-3 text-xl font-black tracking-tight text-slate-900"
-                  style={{ fontFamily: "'Outfit', sans-serif" }}
-                >
-                  Yeni Profil Yarat
-                </h2>
-                <p className="mt-1 text-xs leading-relaxed text-slate-400 font-medium">
-                  Yalnız yeni müştəri profili üçün. Mövcud profil redaktəsi aşağıdakı kartdadır.
-                </p>
-              </div>
-            </div>
-
-            <div className="rounded-[1.8rem] bg-slate-50 border border-slate-200 p-4 sm:p-5">
-              <ProfileForm key="create-profile" mode="create" />
-            </div>
-          </section>
-
-          {/* Bottom: directory + analytics */}
-          <section className="space-y-4">
-            <div className="rounded-[2.25rem] dashboard-surface-soft p-5 sm:p-6">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        {/* Layout with Client Tabs */}
+        <AdminLayoutTabs
+          profilesCount={profiles.length}
+          createSection={
+            <section className="dashboard-surface rounded-[2.25rem] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.25)] sm:p-6">
+              <div className="flex items-start justify-between gap-4 mb-6">
                 <div className="min-w-0">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
-                    Profil Siyahısı
-                  </p>
+                  <div className="grid size-12 place-items-center rounded-2xl bg-[#29AEEE] text-white shadow-sm">
+                    <Plus size={23} />
+                  </div>
                   <h2
-                    className="mt-1.5 text-2xl font-black tracking-tight text-slate-900"
+                    className="mt-3 text-xl font-black tracking-tight text-slate-900"
                     style={{ fontFamily: "'Outfit', sans-serif" }}
                   >
-                    Profillər
+                    Yeni Profil Yarat
                   </h2>
+                  <p className="mt-1 text-xs leading-relaxed text-slate-400 font-medium">
+                    Yalnız yeni müştəri profili üçün. Mövcud profil redaktəsi "Profil Siyahısı" bölməsindəki müvafiq kartdadır.
+                  </p>
                 </div>
-                <p className="text-xs font-medium text-slate-400">
-                  Link formatı: <span className="font-bold text-slate-600">/{"{slug}"}</span>
-                </p>
               </div>
 
-              {/* ultra-clean “analytics” placeholders */}
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                <MiniMetric title="Aktiv" value={String(enabledCount)} />
-                <MiniMetric title="Deaktiv" value={String(disabledCount)} />
+              <div className="rounded-[1.8rem] bg-slate-50 border border-slate-200 p-4 sm:p-5">
+                <ProfileForm key="create-profile" mode="create" />
               </div>
-            </div>
-
-            {profiles.length === 0 ? (
-              <div className="rounded-[2.25rem] border-2 border-dashed border-slate-200 bg-slate-50/70 p-10 text-center">
-                <div className="mx-auto grid size-14 place-items-center rounded-2xl bg-white border border-slate-200 shadow-sm">
-                  <Users size={24} className="text-[#29AEEE]" />
+            </section>
+          }
+          listSection={
+            <section className="space-y-4">
+              <div className="rounded-[2.25rem] dashboard-surface-soft p-5 sm:p-6">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+                      Profil Siyahısı
+                    </p>
+                    <h2
+                      className="mt-1.5 text-2xl font-black tracking-tight text-slate-900"
+                      style={{ fontFamily: "'Outfit', sans-serif" }}
+                    >
+                      Profillər
+                    </h2>
+                  </div>
+                  <p className="text-xs font-medium text-slate-400">
+                    Link formatı: <span className="font-bold text-slate-600">/{"{slug}"}</span>
+                  </p>
                 </div>
-                <h3
-                  className="mt-4 text-lg font-black tracking-tight text-slate-800"
-                  style={{ fontFamily: "'Outfit', sans-serif" }}
-                >
-                  Hələ heç bir profil yoxdur
-                </h3>
-                <p className="mt-1.5 text-xs font-medium leading-relaxed text-slate-400">
-                  Yuxarıdakı formdan ilk müştəri profilini əlavə edin.
-                </p>
-              </div>
-            ) : null}
 
-            {profiles.map((profile) => {
-              const url = getProfileUrl(profile.slug);
-              return (
-                <ProfileCard key={profile.slug} profile={profile} url={url} />
-              );
-            })}
-          </section>
-        </div>
+                {/* ultra-clean “analytics” placeholders */}
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  <MiniMetric title="Aktiv" value={String(enabledCount)} />
+                  <MiniMetric title="Deaktiv" value={String(disabledCount)} />
+                </div>
+              </div>
+
+              {profiles.length === 0 ? (
+                <div className="rounded-[2.25rem] border-2 border-dashed border-slate-200 bg-slate-50/70 p-10 text-center">
+                  <div className="mx-auto grid size-14 place-items-center rounded-2xl bg-white border border-slate-200 shadow-sm">
+                    <Users size={24} className="text-[#29AEEE]" />
+                  </div>
+                  <h3
+                    className="mt-4 text-lg font-black tracking-tight text-slate-800"
+                    style={{ fontFamily: "'Outfit', sans-serif" }}
+                  >
+                    Hələ heç bir profil yoxdur
+                  </h3>
+                  <p className="mt-1.5 text-xs font-medium leading-relaxed text-slate-400">
+                    İlk müştəri profilini əlavə etmək üçün "Yeni Profil Yarat" bölməsinə keçin.
+                  </p>
+                </div>
+              ) : null}
+
+              {profiles.map((profile) => {
+                const url = getProfileUrl(profile.slug);
+                return (
+                  <ProfileCard key={profile.slug} profile={profile} url={url} />
+                );
+              })}
+            </section>
+          }
+        />
       </div>
     </main>
   );
