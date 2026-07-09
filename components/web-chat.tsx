@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { MessageSquare, X, Send, Bot, Sparkles, User, RefreshCw } from "lucide-react";
+import { X, Send, Bot, User, RefreshCw } from "lucide-react";
 
 interface Message {
   role: "user" | "assistant";
@@ -13,7 +13,7 @@ export default function WebChat() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Salam! Mən Zia NFC AI köməkçisiyəm. Sizə premium NFC vizit kartları, rəqəmsal profillər və ya platformanın imkanları haqqında necə kömək edə bilərəm?",
+      content: "Salam! Mən ZIANFC ChatBot-am. Sizə premium NFC vizit kartları, rəqəmsal profillər və ya platformanın imkanları haqqında necə kömək edə bilərəm?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -22,7 +22,7 @@ export default function WebChat() {
 
   const quickPrompts = [
     "NFC vizit kartı nədir?",
-    "Profili necə özəlləşdirə bilərəm?",
+    "Qiymətlər necədir?",
     "NFC kart sifarişi necə olur?",
   ];
 
@@ -70,7 +70,7 @@ export default function WebChat() {
 
       // Add a blank placeholder assistant message
       setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
-      setIsLoading(false); // Stop loading spinner since text stream started
+      setIsLoading(false);
 
       let buffer = "";
       while (true) {
@@ -79,7 +79,6 @@ export default function WebChat() {
 
         buffer += decoder.decode(value, { stream: true });
         const lines = buffer.split("\n");
-        // Keep the last partial line in the buffer
         buffer = lines.pop() || "";
 
         for (const line of lines) {
@@ -114,7 +113,7 @@ export default function WebChat() {
         ...prev,
         {
           role: "assistant",
-          content: "Üzr istəyirik, NVIDIA DeepSeek serveri ilə əlaqə qurarkən xəta baş verdi. Zəhmət olmasa bir az sonra yenidən yoxlayın.",
+          content: "Üzr istəyirik, server ilə əlaqə qurarkən xəta baş verdi. Zəhmət olmasa bir az sonra yenidən yoxlayın.",
         },
       ]);
     }
@@ -126,9 +125,9 @@ export default function WebChat() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2.5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-3.5 text-sm font-bold text-white shadow-[0_8px_30px_rgba(79,70,229,0.4)] transition-all duration-300 hover:scale-105 hover:shadow-[0_12px_40px_rgba(79,70,229,0.55)] active:scale-[0.97] group border border-white/10"
+          className="flex items-center gap-2.5 rounded-full bg-sky-500 px-5 py-3.5 text-sm font-black uppercase tracking-[0.08em] text-white shadow-[0_18px_45px_rgba(14,165,233,0.28)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.97] group border border-white/10"
         >
-          <div className="relative size-6 shrink-0 overflow-hidden rounded-full border border-white/20 bg-white p-0.5 transition-transform duration-300 group-hover:rotate-12">
+          <div className="relative size-7 shrink-0 overflow-hidden rounded-full border border-white/30 bg-white p-0.5 transition-transform duration-300 group-hover:rotate-12">
             <img
               src="/logo.webp"
               alt="Zia NFC"
@@ -138,30 +137,34 @@ export default function WebChat() {
               }}
             />
           </div>
-          <span className="tracking-wide">DeepSeek Köməkçi</span>
-          <span className="relative flex h-2 w-2">
+          <span>ZIANFC ChatBot</span>
+          <span className="relative flex h-2.5 w-2.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
           </span>
         </button>
       )}
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="flex h-[550px] w-[380px] max-w-[calc(100vw-2rem)] flex-col rounded-2xl border border-slate-200 bg-white shadow-[0_15px_50px_-12px_rgba(0,0,0,0.15)] overflow-hidden transition-all duration-300 animate-in slide-in-from-bottom-5">
+        <div className="flex h-[550px] w-[380px] max-w-[calc(100vw-2rem)] flex-col rounded-2xl border border-slate-200 bg-white shadow-[0_18px_60px_rgba(15,23,42,0.14)] overflow-hidden transition-all duration-300 animate-in slide-in-from-bottom-5">
           {/* Header */}
-          <div className="flex items-center justify-between bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 px-4 py-4 text-white">
-            <div className="flex items-center gap-2.5">
-              <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-400">
-                <Bot className="size-5" />
-                <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-slate-900 bg-green-500"></span>
+          <div className="flex items-center justify-between bg-slate-950 px-4 py-4 text-white">
+            <div className="flex items-center gap-3">
+              <div className="relative flex h-10 w-10 items-center justify-center rounded-full overflow-hidden border-2 border-sky-400/40 bg-white p-0.5">
+                <img
+                  src="/logo.webp"
+                  alt="Zia NFC"
+                  className="h-full w-full rounded-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+                <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-slate-950 bg-green-500"></span>
               </div>
               <div>
-                <h3 className="text-sm font-semibold tracking-wide">Zia NFC AI</h3>
-                <div className="flex items-center gap-1 text-[10px] text-indigo-300 font-medium">
-                  <Sparkles className="size-3 text-yellow-400" />
-                  <span>DeepSeek Flash Engine</span>
-                </div>
+                <h3 className="text-sm font-black uppercase tracking-[0.1em]">ZIANFC ChatBot</h3>
+                <p className="text-[10px] font-semibold text-sky-400">AI Köməkçi • Online</p>
               </div>
             </div>
             <button
@@ -180,21 +183,31 @@ export default function WebChat() {
                 className={`flex gap-2.5 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 {msg.role === "assistant" && (
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600">
-                    <Bot className="size-4" />
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sky-100 text-sky-600 overflow-hidden">
+                    <img
+                      src="/logo.webp"
+                      alt="Zia NFC"
+                      className="h-full w-full rounded-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                        if (e.currentTarget.parentElement) {
+                          e.currentTarget.parentElement.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>';
+                        }
+                      }}
+                    />
                   </div>
                 )}
                 <div
                   className={`max-w-[75%] rounded-2xl px-3.5 py-2.5 text-sm shadow-sm leading-relaxed ${
                     msg.role === "user"
-                      ? "bg-gradient-to-tr from-indigo-600 to-blue-600 text-white rounded-tr-none"
-                      : "bg-white text-slate-800 border border-slate-100 rounded-tl-none"
+                      ? "bg-sky-500 text-white rounded-tr-none"
+                      : "bg-white text-slate-800 border border-slate-200 rounded-tl-none"
                   }`}
                 >
                   <p className="whitespace-pre-wrap">{msg.content || (isLoading ? "..." : "")}</p>
                 </div>
                 {msg.role === "user" && (
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-200 text-slate-600">
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-200 text-slate-600">
                     <User className="size-4" />
                   </div>
                 )}
@@ -203,11 +216,11 @@ export default function WebChat() {
 
             {isLoading && (
               <div className="flex gap-2.5 justify-start">
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600">
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sky-100 text-sky-600">
                   <Bot className="size-4" />
                 </div>
-                <div className="max-w-[75%] rounded-2xl rounded-tl-none bg-white border border-slate-100 px-4 py-3 text-sm text-slate-500 shadow-sm flex items-center gap-2">
-                  <RefreshCw className="size-3.5 animate-spin text-indigo-500" />
+                <div className="max-w-[75%] rounded-2xl rounded-tl-none bg-white border border-slate-200 px-4 py-3 text-sm text-slate-500 shadow-sm flex items-center gap-2">
+                  <RefreshCw className="size-3.5 animate-spin text-sky-500" />
                   <span>Düşünür...</span>
                 </div>
               </div>
@@ -222,7 +235,7 @@ export default function WebChat() {
                 <button
                   key={i}
                   onClick={() => handleSendMessage(prompt)}
-                  className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600 hover:border-indigo-400 hover:text-indigo-600 hover:bg-indigo-50/20 transition-all duration-200"
+                  className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-bold text-slate-600 hover:border-sky-400 hover:text-sky-600 hover:bg-sky-50/30 transition-all duration-200"
                 >
                   {prompt}
                 </button>
@@ -236,19 +249,19 @@ export default function WebChat() {
               e.preventDefault();
               handleSendMessage();
             }}
-            className="border-t border-slate-100 p-3 bg-white flex gap-2 items-center"
+            className="border-t border-slate-200 p-3 bg-white flex gap-2 items-center"
           >
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Mesajınızı yazın..."
-              className="flex-1 rounded-xl border border-slate-200 px-3.5 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 bg-slate-50/50 transition-colors"
+              className="flex-1 rounded-full border border-slate-200 px-4 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 bg-slate-50/50 transition-colors"
             />
             <button
               type="submit"
               disabled={isLoading || !input.trim()}
-              className="flex size-9 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-md hover:bg-indigo-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none transition-all active:scale-95 shrink-0"
+              className="flex size-9 items-center justify-center rounded-full bg-sky-500 text-white shadow-md hover:bg-sky-400 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none transition-all active:scale-95 shrink-0"
             >
               <Send className="size-4" />
             </button>
