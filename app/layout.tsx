@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const inter = Inter({
@@ -49,7 +50,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="az">
-      <body className={`${inter.variable} bg-white text-slate-950 antialiased`}>{children}</body>
+      <body className={`${inter.variable} bg-white text-slate-950 antialiased`}>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
