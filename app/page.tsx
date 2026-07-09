@@ -1,11 +1,12 @@
 import LandingPage from "@/components/landing-page";
-import Chatbot from "@/components/chatbot";
+import WebChat from "@/components/web-chat";
 
 export default function Home() {
   return (
     <>
       <LandingPage />
-      <Chatbot />
+      <WebChat />
     </>
   );
 }
+
