@@ -265,9 +265,9 @@ export default async function AdminPage({ searchParams }: Props) {
         </div>
 
         {/* Layout */}
-        <section className="mt-6 grid gap-6 lg:grid-cols-[0.86fr_1.14fr]">
-          {/* Left: profile management */}
-          <aside className="dashboard-surface rounded-[2.25rem] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.25)] sm:p-6 lg:sticky lg:top-6 self-start">
+        <div className="mt-6 flex flex-col gap-6">
+          {/* Top: profile management */}
+          <section className="dashboard-surface rounded-[2.25rem] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.25)] sm:p-6">
             <div className="flex items-start justify-between gap-4 mb-6">
               <div className="min-w-0">
                 <div className="grid size-12 place-items-center rounded-2xl bg-[#29AEEE] text-white shadow-sm">
@@ -280,7 +280,7 @@ export default async function AdminPage({ searchParams }: Props) {
                   Yeni Profil Yarat
                 </h2>
                 <p className="mt-1 text-xs leading-relaxed text-slate-400 font-medium">
-                  Yalnız yeni müştəri profili üçün. Mövcud profil redaktəsi sağdakı kartdadır.
+                  Yalnız yeni müştəri profili üçün. Mövcud profil redaktəsi aşağıdakı kartdadır.
                 </p>
               </div>
             </div>
@@ -288,9 +288,9 @@ export default async function AdminPage({ searchParams }: Props) {
             <div className="rounded-[1.8rem] bg-slate-50 border border-slate-200 p-4 sm:p-5">
               <ProfileForm key="create-profile" mode="create" />
             </div>
-          </aside>
+          </section>
 
-          {/* Right: directory + analytics */}
+          {/* Bottom: directory + analytics */}
           <section className="space-y-4">
             <div className="rounded-[2.25rem] dashboard-surface-soft p-5 sm:p-6">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -329,7 +329,7 @@ export default async function AdminPage({ searchParams }: Props) {
                   Hələ heç bir profil yoxdur
                 </h3>
                 <p className="mt-1.5 text-xs font-medium leading-relaxed text-slate-400">
-                  Soldakı formdan ilk müştəri profilini əlavə edin.
+                  Yuxarıdakı formdan ilk müştəri profilini əlavə edin.
                 </p>
               </div>
             ) : null}
@@ -341,7 +341,7 @@ export default async function AdminPage({ searchParams }: Props) {
               );
             })}
           </section>
-        </section>
+        </div>
       </div>
     </main>
   );
