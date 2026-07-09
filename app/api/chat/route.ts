@@ -28,7 +28,7 @@ export async function POST(request: Request) {
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "deepseek-ai/deepseek-v4-pro",
+        model: "deepseek-ai/deepseek-v4-flash",
         messages: [
           {
             role: "system",
