@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+export const runtime = "edge";
+
 export async function POST(request: Request) {
   try {
     const { messages } = await request.json();
@@ -41,6 +43,8 @@ export async function POST(request: Request) {
       });
     }
 
+    const slicedMessages = messages.slice(-6);
+
     const response = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -61,11 +65,11 @@ Bizim qiymət planlarımız:
 
 Həmişə azərbaycan dilində cavab ver. Cavabların qısa, aydın, nəzakətli və cəlbedici olmalıdır. Qiymətlər haqqında soruşulduqda yuxarıdakı məlumatları aydın şəkildə təqdim et.`,
           },
-          ...messages,
+          ...slicedMessages,
         ],
         temperature: 0.6,
         top_p: 0.7,
-        max_tokens: 2048,
+        max_tokens: 1024,
         stream: true,
       }),
     });
