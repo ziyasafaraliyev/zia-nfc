@@ -7,17 +7,37 @@ export async function POST(request: Request) {
     const apiKey = process.env.NVIDIA_API_KEY;
 
     if (!apiKey) {
-      // Return a simulated DeepSeek response if API key is not configured
-      // so the user can test the UI immediately.
-      return NextResponse.json({
-        choices: [
-          {
-            message: {
-              role: "assistant",
-              content: "Salam! Mən NVIDIA DeepSeek AI köməkçisiyəm. Hazırda `NVIDIA_API_KEY` mühit dəyişəni (env) təyin edilməyib, ona görə də mən test rejimində işləyirəm. Zəhmət olmasa `.env.local` faylına düzgün açarı əlavə edin ki, real cavablar ala biləsiniz!",
-            },
-          },
-        ],
+      // Stream simulated response if key is missing
+      const mockText = "Salam! Mən NVIDIA DeepSeek AI köməkçisiyəm. Hazırda `NVIDIA_API_KEY` mühit dəyişəni (env) təyin edilməyib, ona görə də mən test rejimində işləyirəm. Zəhmət olmasa `.env.local` faylına düzgün açarı əlavə edin ki, real cavablar ala biləsiniz!";
+      
+      const stream = new ReadableStream({
+        async start(controller) {
+          const encoder = new TextEncoder();
+          const chunks = mockText.match(/.{1,4}/g) || [mockText];
+          for (const chunk of chunks) {
+            const payload = {
+              choices: [
+                {
+                  delta: {
+                    content: chunk,
+                  },
+                },
+              ],
+            };
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`));
+            await new Promise((resolve) => setTimeout(resolve, 30));
+          }
+          controller.enqueue(encoder.encode("data: [DONE]\n\n"));
+          controller.close();
+        },
+      });
+
+      return new Response(stream, {
+        headers: {
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+          "Connection": "keep-alive",
+        },
       });
     }
 
@@ -39,6 +59,7 @@ export async function POST(request: Request) {
         temperature: 0.6,
         top_p: 0.7,
         max_tokens: 2048,
+        stream: true,
       }),
     });
 
@@ -51,8 +72,14 @@ export async function POST(request: Request) {
       );
     }
 
-    const data = await response.json();
-    return NextResponse.json(data);
+    // Pass the response body stream directly
+    return new Response(response.body, {
+      headers: {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+      },
+    });
   } catch (error) {
     console.error("Chat API error:", error);
     return NextResponse.json(

@@ -64,12 +64,52 @@ export default function WebChat() {
         throw new Error("API response error");
       }
 
-      const data = await response.json();
-      const reply = data.choices?.[0]?.message?.content || "Bağışlayın, cavab alarkən xəta baş verdi.";
-      
-      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      if (!reader) throw new Error("No reader found");
+
+      // Add a blank placeholder assistant message
+      setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+      setIsLoading(false); // Stop loading spinner since text stream started
+
+      let buffer = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        // Keep the last partial line in the buffer
+        buffer = lines.pop() || "";
+
+        for (const line of lines) {
+          const cleaned = line.trim();
+          if (!cleaned) continue;
+          if (cleaned === "data: [DONE]") continue;
+
+          if (cleaned.startsWith("data: ")) {
+            try {
+              const data = JSON.parse(cleaned.slice(6));
+              const textChunk = data.choices?.[0]?.delta?.content || "";
+              if (textChunk) {
+                setMessages((prev) => {
+                  const copy = [...prev];
+                  const last = copy[copy.length - 1];
+                  if (last && last.role === "assistant") {
+                    last.content += textChunk;
+                  }
+                  return copy;
+                });
+              }
+            } catch (err) {
+              // Ignore parsing errors for incomplete lines
+            }
+          }
+        }
+      }
     } catch (error) {
       console.error("Chat error:", error);
+      setIsLoading(false);
       setMessages((prev) => [
         ...prev,
         {
@@ -77,8 +117,6 @@ export default function WebChat() {
           content: "Üzr istəyirik, NVIDIA DeepSeek serveri ilə əlaqə qurarkən xəta baş verdi. Zəhmət olmasa bir az sonra yenidən yoxlayın.",
         },
       ]);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -96,7 +134,6 @@ export default function WebChat() {
               alt="Zia NFC"
               className="h-full w-full rounded-full object-cover"
               onError={(e) => {
-                // fallback if image not found
                 e.currentTarget.style.display = "none";
               }}
             />
@@ -123,7 +160,7 @@ export default function WebChat() {
                 <h3 className="text-sm font-semibold tracking-wide">Zia NFC AI</h3>
                 <div className="flex items-center gap-1 text-[10px] text-indigo-300 font-medium">
                   <Sparkles className="size-3 text-yellow-400" />
-                  <span>DeepSeek R1 Engine</span>
+                  <span>DeepSeek Flash Engine</span>
                 </div>
               </div>
             </div>
@@ -154,7 +191,7 @@ export default function WebChat() {
                       : "bg-white text-slate-800 border border-slate-100 rounded-tl-none"
                   }`}
                 >
-                  <p className="whitespace-pre-wrap">{msg.content}</p>
+                  <p className="whitespace-pre-wrap">{msg.content || (isLoading ? "..." : "")}</p>
                 </div>
                 {msg.role === "user" && (
                   <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-200 text-slate-600">
