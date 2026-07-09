@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   experimental: {
+    optimizePackageImports: ["lucide-react", "framer-motion"],
     serverActions: {
       bodySizeLimit: "50mb",
     },
