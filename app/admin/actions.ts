@@ -15,8 +15,9 @@ import { revalidatePath } from "next/cache";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import crypto from "crypto";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import sharp from "sharp";
+
 
 // ──────────────────────────────────────────────
 // Constants
