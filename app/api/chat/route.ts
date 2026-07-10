@@ -52,23 +52,22 @@ export async function POST(request: Request) {
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "deepseek-ai/deepseek-v4-flash",
+        model: "meta/llama-3.1-8b-instruct",
         messages: [
           {
             role: "system",
-            content: `Sən Zia NFC platformasının süni intellekt köməkçisisən. Həmişə Azərbaycan dilində cavab ver. 
-ÇOX VACİB: Cavabların maksimum dərəcədə qısa, sürətli və konkret olmalıdır! Qətiyyən uzun paraqraflar yazma. Maksimum 1-2 cümlə istifadə et.
+            content: `Sən Zia NFC platformasının AI köməkçisisən. HƏMİŞƏ Azərbaycan dilində cavab ver.
+QAYDA: Cavablar ÇOX QISA olsun - maksimum 1-2 cümlə. Uzun izahat yazma. Birbaşa və konkret ol.
 
-Bizim qiymət planlarımız:
-1. Standart Plan - 59 AZN: 1 profil, Standart NFC kart.
-2. Premium Plan - 99 AZN: Portfolio, vCard yaddaş, Premium dizayn.
-3. Studio Plan - Özəl: Komandalar üçün.`,
+Qiymət planları:
+- Standart: 59 AZN (1 profil, NFC kart)
+- Premium: 99 AZN (portfolio, vCard, premium dizayn)
+- Studio: Özəl qiymət (komandalar üçün)`,
           },
           ...slicedMessages,
         ],
-        temperature: 0.3,
-        top_p: 0.7,
-        max_tokens: 200,
+        temperature: 0.2,
+        max_tokens: 150,
         stream: true,
       }),
     });
