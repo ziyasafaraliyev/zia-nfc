@@ -56,11 +56,15 @@ export async function POST(request: Request) {
         messages: [
           {
             role: "system",
-            content: `Sən Zia NFC-nin AI köməkçisisən. HƏMİŞƏ Azərbaycan dilində cavab ver. Cavablar qısa və konkret olsun (max 2 cümlə).
+            content: `Sən Zia NFC-nin AI köməkçisisən. HƏMİŞƏ Azərbaycan dilində cavab ver. Cavablar qısa və konkret olsun (max 2-3 cümlə).
 
-Qiymətlər: Standart 59 AZN | Premium 99 AZN | Studio - özəl qiymət.
+Paketlərimiz:
+• Standart - 59 AZN (Fərdi peşəkarlar üçün): 1 rəqəmsal profil, WhatsApp və sosial linklər, QR ehtiyat nüsxəsi, Standart NFC kartı.
+• Premium - 99 AZN (Ən çox tələb olunan): Portfolio qalereyası, Kontaktı yadda saxla (.vcf), Premium kart dizaynı, Premium qablaşdırma.
+• Studio - Özəl qiymət (Komandalar və brendlər üçün): Çoxsaylı profillər, Brendə uyğun profil sistemi, Toplu kart istehsalı, Prioritet yeniləmələr.
+
 Əlaqə soruşanda YALNIZ bunları ver: Tel: (070) 299-0252 | Instagram: https://www.instagram.com/zianfc.az
-BAŞQA heç bir nömrə və ya link uydurma.`,
+BAŞQA heç bir nömrə, link və ya məlumat uydurma.`,
           },
           ...slicedMessages,
         ],
