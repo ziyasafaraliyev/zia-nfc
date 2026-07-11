@@ -416,7 +416,7 @@ export default function ProfilePageView({
             </svg>
           </span>
           <span className="flex flex-col items-start leading-tight">
-            <span className="text-sm font-bold text-gray-800">CV (Resüme)</span>
+            <span className="text-sm font-bold text-gray-800">CV</span>
             <span className="text-[10px] font-semibold text-gray-400 mt-0.5">
               PDF formatında endir / bax
             </span>

@@ -880,7 +880,7 @@ export default function ProfileForm({
       {/* ── CV YÜKLƏMƏ (PDF) ── */}
       <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-slate-50/50 p-6">
         <span className="text-xs font-bold text-slate-500 uppercase tracking-wide flex items-center gap-2">
-          CV / Resüme <span className="text-[10px] text-slate-400 font-medium normal-case tracking-normal">(yalnız PDF)</span>
+          CV <span className="text-[10px] text-slate-400 font-medium normal-case tracking-normal">(yalnız PDF)</span>
         </span>
         <input 
           type="file" 

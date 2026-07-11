@@ -46,7 +46,8 @@ const inputClass =
   " font-[Outfit]"; 
 const quietButtonClass =
   "grid size-11 place-items-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition duration-200 hover:border-[#29AEEE] hover:text-[#29AEEE] hover:bg-[#29AEEE]/5 active:scale-[0.96]";
-
+const viewProfileButtonClass =
+  "inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-[#29AEEE]/20 bg-[#29AEEE] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_10px_25px_rgba(41,174,238,0.25)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#1f8fc8] hover:shadow-[0_12px_30px_rgba(41,174,238,0.3)] focus:outline-none focus:ring-4 focus:ring-[#29AEEE]/20 active:scale-[0.98]";
 
 function adminErrorMessage(error?: string) {
   switch (error) {
@@ -476,15 +477,16 @@ function ProfileCard({
             </div>
           </div>
 
-          <div className="flex shrink-0 gap-2">
+          <div className="flex flex-wrap items-center justify-end gap-2">
             <a
               href={url}
               target="_blank"
               rel="noreferrer"
-              title="Open profile"
-              className={quietButtonClass}
+              title="Profili aç"
+              className={viewProfileButtonClass}
             >
-              <ArrowUpRight size={18} />
+              <ArrowUpRight size={16} />
+              <span>Profili bax</span>
             </a>
             <CopyUrlButton url={url} />
             {profile.id ? (
