@@ -66,7 +66,7 @@ create table if not exists public.restaurant_reviews (
   id uuid primary key default gen_random_uuid(),
   restaurant_id uuid not null references public.restaurants(id) on delete cascade,
   rating numeric not null check (rating between 1 and 5),
-  comment text,
+  comment text check (comment is null or char_length(comment) <= 500),
   created_at timestamptz not null default now()
 );
 

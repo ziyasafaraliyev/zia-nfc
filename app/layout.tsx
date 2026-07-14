@@ -38,11 +38,10 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.ico" },
-      { url: "/logo.webp", type: "image/webp" },
+      { url: "/favicon.webp", type: "image/webp" },
     ],
     apple: [
-      { url: "/logo.webp" },
+      { url: "/favicon.webp", type: "image/webp" },
     ],
   },
 };

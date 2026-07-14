@@ -11,6 +11,15 @@ import {
   isUploadEntry,
   safeImageExtension,
 } from "@/lib/upload-entry";
+import {
+  clearRateAttempts,
+  isRateLimited as isRateLimitedKey,
+  recordRateAttempt,
+  safeInternalPath,
+  timingSafeEqualString,
+  isSafeHttpUrl,
+  clientIpFromHeaders,
+} from "@/lib/security";
 import { revalidatePath } from "next/cache";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -23,7 +32,7 @@ import sharp from "sharp";
 // Constants
 // ──────────────────────────────────────────────
 const ADMIN_COOKIE = "zia_admin_session";
-const MAX_UPLOAD_SIZE = 20 * 1024 * 1024; // 20 MB
+const MAX_UPLOAD_SIZE = 20 * 1024 * 1024; // 20 MB (portfolio / profil yükləmələri)
 const ALLOWED_IMAGE_TYPES = new Set([
   "image/jpeg",
   "image/png",
@@ -31,7 +40,7 @@ const ALLOWED_IMAGE_TYPES = new Set([
   "image/gif",
   "image/bmp",
   "image/tiff",
-  "image/svg+xml",
+  // SVG intentionally blocked — XSS risk when served publicly
   "image/heic",
   "image/heif",
 ]);
@@ -47,8 +56,15 @@ const RESERVED_SLUGS = new Set([
   "static",
   "_next",
   "favicon.ico",
+  "favicon.webp",
   "robots.txt",
   "sitemap.xml",
+  "pay",
+  "demo",
+  "restoran",
+  "r",
+  "about",
+  "privacy-policy",
 ]);
 const SLUG_MIN_LENGTH = 2;
 const SLUG_MAX_LENGTH = 50;
@@ -107,45 +123,26 @@ function verifySessionToken(token: string): string | null {
 }
 
 // ──────────────────────────────────────────────
-// Rate Limiting (in-memory, per-process)
+// Rate Limiting (login — stricter)
 // ──────────────────────────────────────────────
-const loginAttempts = new Map<string, { count: number; resetAt: number }>();
-const MAX_LOGIN_ATTEMPTS = 10;
-const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minute
+const MAX_LOGIN_ATTEMPTS = 5;
+const RATE_LIMIT_WINDOW_MS = 15 * 60_000; // 15 minutes
 
 function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const record = loginAttempts.get(ip);
-
-  if (!record || now > record.resetAt) {
-    return false;
-  }
-
-  return record.count >= MAX_LOGIN_ATTEMPTS;
+  return isRateLimitedKey(`login:${ip}`, MAX_LOGIN_ATTEMPTS, RATE_LIMIT_WINDOW_MS);
 }
 
 function recordLoginAttempt(ip: string): void {
-  const now = Date.now();
-  const record = loginAttempts.get(ip);
-
-  if (!record || now > record.resetAt) {
-    loginAttempts.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-  } else {
-    record.count += 1;
-  }
+  recordRateAttempt(`login:${ip}`, RATE_LIMIT_WINDOW_MS);
 }
 
 function clearLoginAttempts(ip: string): void {
-  loginAttempts.delete(ip);
+  clearRateAttempts(`login:${ip}`);
 }
 
 async function getClientIp(): Promise<string> {
   const hdrs = await headers();
-  return (
-    hdrs.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    hdrs.get("x-real-ip") ||
-    "unknown"
-  );
+  return clientIpFromHeaders(hdrs);
 }
 
 // ──────────────────────────────────────────────
@@ -387,12 +384,7 @@ function validateSlug(slug: string): string | null {
 // URL Validation
 // ──────────────────────────────────────────────
 function isValidUrl(url: string): boolean {
-  try {
-    const parsed = new URL(url);
-    return parsed.protocol === "https:" || parsed.protocol === "http:";
-  } catch {
-    return false;
-  }
+  return isSafeHttpUrl(url);
 }
 
 const socialBaseUrls = {
@@ -559,6 +551,20 @@ async function uploadFile(
     return null;
   }
 
+  if (file.size > MAX_UPLOAD_SIZE) {
+    throw new Error("File too large");
+  }
+
+  // Sanitize folder — only allow path segments without traversal
+  const safeFolder = folder
+    .split("/")
+    .map((s) => s.replace(/[^a-zA-Z0-9._-]/g, ""))
+    .filter(Boolean)
+    .join("/");
+  if (!safeFolder || safeFolder.includes("..")) {
+    throw new Error("Invalid upload path");
+  }
+
   const supabase = createServiceSupabaseClient();
   if (!supabase) {
     return null;
@@ -566,47 +572,66 @@ async function uploadFile(
 
   const fileName = getUploadFileName(file, options?.fileName);
   const mimeType = guessMimeType(fileName, options?.mimeType || file.type);
-  const isImage = isImageMime(mimeType);
+
+  // Block SVG and other scriptable types
+  if (
+    mimeType === "image/svg+xml" ||
+    fileName.toLowerCase().endsWith(".svg") ||
+    mimeType === "text/html" ||
+    mimeType === "application/javascript"
+  ) {
+    throw new Error("File type not allowed");
+  }
+
+  const isImage = isImageMime(mimeType) && mimeType !== "image/svg+xml";
   let fileToUpload: Blob | Buffer;
   let contentType: string;
   let ext: string;
 
-  const ONE_MB = 1 * 1024 * 1024;
-
   if (isImage) {
-    const isWebP = mimeType === "image/webp";
-    const isSmallEnough = file.size < ONE_MB;
-
-    if (isWebP || isSmallEnough) {
-      ext = safeImageExtension(fileName, mimeType);
-      fileToUpload = file;
-      contentType = mimeType;
-    } else {
-      const buffer = Buffer.from(await file.arrayBuffer());
-      let webpBuffer: Buffer;
+    // Always re-encode raster images with sharp to strip EXIF / polyglot payloads
+    const buffer = Buffer.from(await file.arrayBuffer());
+    try {
       let quality = 85;
+      let webpBuffer = await sharp(buffer, { failOn: "none" })
+        .rotate() // respect orientation, strip metadata by default
+        .webp({ quality })
+        .toBuffer();
 
-      while (true) {
-        webpBuffer = await sharp(buffer).webp({ quality }).toBuffer();
+      while (webpBuffer.length > MAX_UPLOAD_SIZE && quality > 20) {
+        quality -= 15;
+        webpBuffer = await sharp(buffer, { failOn: "none" })
+          .rotate()
+          .webp({ quality })
+          .toBuffer();
+      }
 
-        if (webpBuffer.length <= 20 * 1024 * 1024 || quality <= 10) {
-          break;
-        }
-        quality -= 10;
+      if (webpBuffer.length > MAX_UPLOAD_SIZE) {
+        throw new Error("File too large after compression");
       }
 
       fileToUpload = webpBuffer;
       contentType = "image/webp";
       ext = "webp";
+    } catch (err) {
+      if (err instanceof Error && err.message.includes("too large")) throw err;
+      throw new Error("Invalid image file");
     }
+  } else if (mimeType === "application/pdf" || fileName.toLowerCase().endsWith(".pdf")) {
+    // PDF only for CV — magic-byte check
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const header = buffer.subarray(0, 5).toString("utf8");
+    if (!header.startsWith("%PDF")) {
+      throw new Error("Invalid PDF file");
+    }
+    fileToUpload = buffer;
+    contentType = "application/pdf";
+    ext = "pdf";
   } else {
-    const rawExt = (fileName.split(".").pop() || "pdf").toLowerCase();
-    ext = rawExt === "pdf" ? "pdf" : "pdf";
-    fileToUpload = file;
-    contentType = mimeType || "application/octet-stream";
+    throw new Error("File type not allowed");
   }
 
-  const path = `${folder}/${crypto.randomUUID()}.${ext}`;
+  const path = `${safeFolder}/${crypto.randomUUID()}.${ext}`;
   const { error } = await supabase.storage.from("profiles").upload(path, fileToUpload, {
     contentType,
     upsert: false,
@@ -624,82 +649,94 @@ async function uploadFile(
 // Server Actions
 // ══════════════════════════════════════════════
 
-export async function loginAdmin(formData: FormData) {
-  const ip = await getClientIp();
-  const redirectTo = text(formData, "redirectTo");
-
-  // Rate limit check
-  if (isRateLimited(ip)) {
-    redirect(`/admin?error=rate-limited${redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""}`);
-  }
-
-  const email = text(formData, "email");
-  const password = text(formData, "password");
-  const allowedEmail = process.env.ADMIN_EMAIL;
-  const allowedPassword = process.env.ADMIN_PASSWORD;
-
-  if (!email || !password) {
-    redirect(`/admin?error=login${redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""}`);
-  }
-
-  // 1. Try Super Admin login
-  if (
-    allowedEmail &&
-    allowedPassword &&
-    email.toLowerCase() === allowedEmail.toLowerCase() &&
-    password === allowedPassword
-  ) {
-    clearLoginAttempts(ip);
-
-    const token = createSessionToken(email);
-    const store = await cookies();
+function setAdminSessionCookie(token: string) {
+  // Fire-and-forget pattern via returned promise from cookies()
+  return cookies().then((store) => {
     store.set(ADMIN_COOKIE, token, {
       httpOnly: true,
-      sameSite: "lax",
+      sameSite: "strict",
       secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 60 * 8,
       path: "/",
+      // Prefer __Host- style constraints when possible (path=/ + secure + no domain)
     });
+  });
+}
 
-    redirect(redirectTo || "/admin");
+export async function loginAdmin(formData: FormData) {
+  const ip = await getClientIp();
+  const redirectTo = safeInternalPath(text(formData, "redirectTo"), "/admin");
+  const failRedirect = `/admin?error=login&redirectTo=${encodeURIComponent(redirectTo)}`;
+
+  // Rate limit check
+  if (isRateLimited(ip)) {
+    redirect(
+      `/admin?error=rate-limited&redirectTo=${encodeURIComponent(redirectTo)}`,
+    );
   }
 
-  // 2. Try Client Admin login
+  const email = text(formData, "email")?.toLowerCase() ?? null;
+  const password = text(formData, "password");
+  const allowedEmail = process.env.ADMIN_EMAIL?.toLowerCase();
+  const allowedPassword = process.env.ADMIN_PASSWORD;
+
+  if (!email || !password || password.length > 200 || email.length > 254) {
+    recordLoginAttempt(ip);
+    redirect(failRedirect);
+  }
+
+  // 1. Try Super Admin login (timing-safe compares)
+  if (
+    allowedEmail &&
+    allowedPassword &&
+    timingSafeEqualString(email, allowedEmail) &&
+    timingSafeEqualString(password, allowedPassword)
+  ) {
+    clearLoginAttempts(ip);
+    const token = createSessionToken(email);
+    await setAdminSessionCookie(token);
+    redirect(redirectTo);
+  }
+
+  // 2. Try Client Admin login (bcrypt)
   const supabase = createServiceSupabaseClient();
   if (supabase) {
     const { data: profile } = await supabase
       .from("profiles")
       .select("client_email, client_password")
-      .eq("client_email", email.toLowerCase())
+      .eq("client_email", email)
       .single();
 
-    if (profile && profile.client_password) {
+    if (profile?.client_password) {
       if (await verifyPassword(password, profile.client_password)) {
         clearLoginAttempts(ip);
-
         const token = createSessionToken(email);
-        const store = await cookies();
-        store.set(ADMIN_COOKIE, token, {
-          httpOnly: true,
-          sameSite: "lax",
-          secure: process.env.NODE_ENV === "production",
-          maxAge: 60 * 60 * 8,
-          path: "/",
-        });
-
-        redirect(redirectTo || "/admin");
+        await setAdminSessionCookie(token);
+        redirect(redirectTo);
       }
+    } else {
+      // Dummy bcrypt (valid hash of unrelated secret) to reduce user-enumeration timing
+      await bcrypt.compare(
+        password,
+        "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
+      );
     }
   }
 
   // Failed login
   recordLoginAttempt(ip);
-  redirect(`/admin?error=login${redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""}`);
+  redirect(failRedirect);
 }
 
 export async function logoutAdmin() {
   const store = await cookies();
-  store.delete(ADMIN_COOKIE);
+  store.set(ADMIN_COOKIE, "", {
+    httpOnly: true,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 0,
+    path: "/",
+  });
   redirect("/admin");
 }
 export async function saveProfile(formData: FormData) {
@@ -1522,12 +1559,31 @@ export async function deleteRestaurant(formData: FormData) {
 }
 
 export async function submitRestaurantReview(formData: FormData) {
+  const ip = await getClientIp();
+  if (isRateLimitedKey(`review:${ip}`, 10, 60_000)) {
+    throw new Error("Too many reviews");
+  }
+  recordRateAttempt(`review:${ip}`, 60_000);
+
   const supabase = createServiceSupabaseClient();
   const restaurantId = text(formData, "restaurant_id");
   const rating = parseInt(text(formData, "rating") || "0", 10);
-  const comment = text(formData, "comment");
+  const commentRaw = text(formData, "comment");
+  const comment = commentRaw
+    ? commentRaw.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, "").slice(0, 500)
+    : null;
 
-  if (!supabase || !restaurantId || !rating || rating < 1 || rating > 5) {
+  // UUID v4-ish
+  if (
+    !supabase ||
+    !restaurantId ||
+    !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      restaurantId,
+    ) ||
+    !rating ||
+    rating < 1 ||
+    rating > 5
+  ) {
     throw new Error("Invalid input");
   }
 

@@ -15,7 +15,8 @@ const config: Config = {
         fern: "#10b981",
         clay: "#f97316",
         mist: "#f1f5f9",
-        night: "#020617"
+        night: "#020617",
+        brand: "#29aeee",
       },
       boxShadow: {
         premium: "0 34px 110px rgba(15, 23, 42, 0.22)",

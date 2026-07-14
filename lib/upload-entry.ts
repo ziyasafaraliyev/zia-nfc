@@ -11,7 +11,6 @@ const IMAGE_EXTENSIONS = new Set([
   "gif",
   "bmp",
   "webp",
-  "svg",
   "heic",
   "heif",
 ]);
@@ -23,7 +22,6 @@ const MIME_BY_EXTENSION: Record<string, string> = {
   gif: "image/gif",
   bmp: "image/bmp",
   webp: "image/webp",
-  svg: "image/svg+xml",
   heic: "image/heic",
   heif: "image/heif",
   pdf: "application/pdf",
@@ -92,6 +90,5 @@ export function safeImageExtension(fileName: string, mime: string): string {
   if (mime === "image/png") return "png";
   if (mime === "image/webp") return "webp";
   if (mime === "image/gif") return "gif";
-  if (mime === "image/svg+xml") return "svg";
   return "jpg";
 }
