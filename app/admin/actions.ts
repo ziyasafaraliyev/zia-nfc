@@ -20,6 +20,7 @@ import {
   isSafeHttpUrl,
   clientIpFromHeaders,
 } from "@/lib/security";
+import { parseRestaurantMenu } from "@/lib/menu";
 import { revalidatePath } from "next/cache";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -1409,6 +1410,7 @@ export async function saveRestaurant(formData: FormData) {
     tiktok: sanitizeRestaurantUrl(formData, "tiktok"),
     facebook: sanitizeRestaurantUrl(formData, "facebook"),
     menu_url: sanitizeRestaurantUrl(formData, "menu_url"),
+    menu: parseRestaurantMenu(text(formData, "menu_json") || "[]"),
     location_name: text(formData, "location_name"),
     location_url: sanitizeRestaurantUrl(formData, "location_url"),
     cover_style: option(
@@ -1432,9 +1434,6 @@ export async function saveRestaurant(formData: FormData) {
     ...(avatar ? { avatar_url: avatar } : removeAvatar ? { avatar_url: null } : {}),
     ...(cover ? { cover_url: cover } : removeCover ? { cover_url: null } : {}),
     gallery: newGalleryUrls,
-    revenue: parseFloat(text(formData, "revenue") || "0") || 0,
-    orders_count: parseInt(text(formData, "orders_count") || "0") || 0,
-    rating: parseFloat(text(formData, "rating") || "0") || 0,
   };
 
   const query = id
@@ -1451,6 +1450,10 @@ export async function saveRestaurant(formData: FormData) {
 
   revalidatePath("/admin");
   revalidatePath("/restoran");
+  revalidatePath(`/${slug}`);
+  revalidatePath(`/${slug}/menyu`);
+  revalidatePath(`/r/${slug}`);
+  revalidatePath(`/r/${slug}/menyu`);
   redirect("/restoran?saved=1");
 }
 

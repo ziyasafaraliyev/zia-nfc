@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { ImagePlus, Upload, Save, Trash2 } from "lucide-react";
 import { saveRestaurant } from "@/app/admin/actions";
 import { handleServerActionRejection } from "@/lib/server-action-client";
+import RestaurantMenuEditor from "@/components/restaurant-menu-editor";
 import type { Restaurant } from "@/lib/types";
 
 const inputClass =
@@ -182,8 +183,9 @@ export default function RestaurantForm({ restaurant, userRole = "super_admin" }:
         />
         <Field
           name="menu_url"
-          label="Menyu Linki"
+          label="Xarici Menyu Linki (istəyə bağlı)"
           defaultValue={restaurant?.menu_url}
+          placeholder="https://... (PDF və ya digər link)"
         />
         <Field
           name="instagram"
@@ -230,6 +232,8 @@ export default function RestaurantForm({ restaurant, userRole = "super_admin" }:
           className={inputClass}
         />
       </label>
+
+      <RestaurantMenuEditor initialMenu={restaurant?.menu} />
 
       <div className="grid grid-cols-2 gap-4">
         <ImageDropZone
@@ -583,40 +587,15 @@ export default function RestaurantForm({ restaurant, userRole = "super_admin" }:
       </div>
 
       {userRole === "super_admin" && (
-        <>
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 space-y-4">
-            <span className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide">
-              Statistika
-            </span>
-            <div className="grid grid-cols-3 gap-4">
-              <Field
-                name="revenue"
-                label="Gəlir"
-                defaultValue={restaurant?.revenue?.toString() || "0"}
-              />
-              <Field
-                name="orders_count"
-                label="Sifariş Sayı"
-                defaultValue={restaurant?.orders_count?.toString() || "0"}
-              />
-              <Field
-                name="rating"
-                label="Reytinq"
-                defaultValue={restaurant?.rating?.toString() || "0"}
-              />
-            </div>
-          </div>
-
-          <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition">
-            <span>Restoran aktivdir</span>
-            <input
-              type="checkbox"
-              name="enabled"
-              defaultChecked={restaurant?.enabled ?? true}
-              className="size-5 rounded accent-indigo-650"
-            />
-          </label>
-        </>
+        <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition">
+          <span>Restoran aktivdir</span>
+          <input
+            type="checkbox"
+            name="enabled"
+            defaultChecked={restaurant?.enabled ?? true}
+            className="size-5 rounded accent-indigo-650"
+          />
+        </label>
       )}
 
       <button

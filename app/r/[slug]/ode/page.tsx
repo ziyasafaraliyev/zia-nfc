@@ -1,0 +1,18 @@
+import {
+  generateOrderMetadata,
+  renderOrderStep,
+} from "@/lib/restaurant-order-page";
+
+export const dynamic = "force-dynamic";
+
+type Props = { params: Promise<{ slug: string }> };
+
+export async function generateMetadata({ params }: Props) {
+  const { slug } = await params;
+  return generateOrderMetadata(slug, "ode");
+}
+
+export default async function RestaurantPayPage({ params }: Props) {
+  const { slug } = await params;
+  return renderOrderStep(slug, "ode");
+}

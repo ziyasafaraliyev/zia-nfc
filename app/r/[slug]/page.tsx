@@ -1,4 +1,6 @@
 import { getRestaurantBySlug, getReviewsForRestaurant } from "@/lib/restaurants";
+import { hasBuiltInMenu } from "@/lib/menu";
+import { getRestaurantMenuPath } from "@/lib/urls";
 import type { Metadata } from "next";
 import {
   Instagram,
@@ -9,6 +11,7 @@ import {
   Facebook,
   Menu,
 } from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import RestaurantRating from "@/components/restaurant-rating";
 
@@ -165,7 +168,18 @@ export default async function RestaurantPage({ params }: Props) {
             </a>
           ) : null}
 
-          {restaurant.menu_url ? (
+          {hasBuiltInMenu(restaurant.menu) ? (
+            <Link
+              href={getRestaurantMenuPath(restaurant.slug)}
+              className="group lux-card-enter-2 flex h-14 items-center justify-center gap-2.5 rounded-2xl bg-white text-[#29AEEE] font-bold text-sm shadow-[0_20px_40px_rgba(41,174,238,0.18)] transition-all duration-200 hover:scale-[1.02] hover:bg-[#f3fcff]"
+            >
+              <Menu
+                size={18}
+                className="transition-transform duration-300 group-hover:scale-110"
+              />
+              <span>Menyu</span>
+            </Link>
+          ) : restaurant.menu_url ? (
             <a
               href={restaurant.menu_url}
               target="_blank"

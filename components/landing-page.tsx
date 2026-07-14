@@ -202,7 +202,7 @@ export default function LandingPage() {
               portfolionu bir araya gətirən zərif rəqəmsal profilə çevirir. QR
               ehtiyat nüsxəsi ilə hər zaman əlçatan olur.
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <a
                 href="#pricing"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-6 py-4 font-extrabold text-white shadow-[0_18px_45px_rgba(14,165,233,0.28)] transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98]"
@@ -214,6 +214,12 @@ export default function LandingPage() {
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-6 py-4 font-extrabold text-white shadow-[0_18px_45px_rgba(14,165,233,0.28)] transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98]"
               >
                 Zia Pay <ArrowRight size={18} />
+              </Link>
+              <Link
+                href="/restoran"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-6 py-4 font-extrabold text-white shadow-[0_18px_45px_rgba(14,165,233,0.28)] transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98]"
+              >
+                Zia Menyu <ArrowRight size={18} />
               </Link>
             </div>
             <div className="mt-10 grid max-w-2xl grid-cols-3 gap-3">

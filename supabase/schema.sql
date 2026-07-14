@@ -47,6 +47,8 @@ create table if not exists public.restaurants (
   tiktok text,
   facebook text,
   menu_url text,
+  -- Built-in digital menu: [{ id, name, items: [{ id, name, description, price, image_url, available }] }]
+  menu jsonb not null default '[]'::jsonb,
   location_name text,
   location_url text,
   avatar_url text,
@@ -55,12 +57,16 @@ create table if not exists public.restaurants (
   cover_position text not null default 'center',
   gallery jsonb not null default '[]'::jsonb,
   theme text not null default 'light',
-  revenue numeric default 0,
-  orders_count integer default 0,
   rating numeric default 0,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.restaurants add column if not exists menu jsonb not null default '[]'::jsonb;
+
+-- Remove legacy admin statistics columns (if present)
+alter table public.restaurants drop column if exists revenue;
+alter table public.restaurants drop column if exists orders_count;
 
 create table if not exists public.restaurant_reviews (
   id uuid primary key default gen_random_uuid(),

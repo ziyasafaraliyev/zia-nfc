@@ -14,9 +14,6 @@ export default function EditRestaurantModal({ isOpen, onClose, restaurant, onSav
   const [name, setName] = useState(restaurant.name);
   const [location, setLocation] = useState(restaurant.location);
   const [status, setStatus] = useState<"active" | "inactive">(restaurant.status);
-  const [revenue, setRevenue] = useState(restaurant.revenue.toString());
-  const [orders, setOrders] = useState(restaurant.orders.toString());
-  const [rating, setRating] = useState(restaurant.rating.toString());
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,9 +24,6 @@ export default function EditRestaurantModal({ isOpen, onClose, restaurant, onSav
       name: name.trim(),
       location: location.trim() || "Yer göstərilməyib",
       status,
-      revenue: parseFloat(revenue) || 0,
-      orders: parseInt(orders) || 0,
-      rating: parseFloat(rating) || 0,
     });
     
     onClose();
@@ -76,48 +70,6 @@ export default function EditRestaurantModal({ isOpen, onClose, restaurant, onSav
               placeholder="Məsələn: Bakı, Azərbaycan"
               className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none transition duration-200 placeholder:text-slate-400 focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/20"
             />
-          </div>
-
-          <div className="grid grid-cols-3 gap-3">
-            <div>
-              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2">
-                Gəlir ($)
-              </label>
-              <input
-                type="number"
-                value={revenue}
-                onChange={(e) => setRevenue(e.target.value)}
-                placeholder="0"
-                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none transition duration-200 placeholder:text-slate-400 focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/20"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2">
-                Sifariş
-              </label>
-              <input
-                type="number"
-                value={orders}
-                onChange={(e) => setOrders(e.target.value)}
-                placeholder="0"
-                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none transition duration-200 placeholder:text-slate-400 focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/20"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2">
-                Reytinq
-              </label>
-              <input
-                type="number"
-                value={rating}
-                onChange={(e) => setRating(e.target.value)}
-                min="0"
-                max="5"
-                step="0.1"
-                placeholder="0"
-                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none transition duration-200 placeholder:text-slate-400 focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/20"
-              />
-            </div>
           </div>
 
           <div>

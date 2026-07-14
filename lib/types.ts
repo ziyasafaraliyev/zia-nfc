@@ -51,6 +51,21 @@ export type Profile = {
   client_password?: string | null;
 };
 
+export type RestaurantMenuItem = {
+  id: string;
+  name: string;
+  description?: string | null;
+  price: number;
+  image_url?: string | null;
+  available?: boolean;
+};
+
+export type RestaurantMenuCategory = {
+  id: string;
+  name: string;
+  items: RestaurantMenuItem[];
+};
+
 export type Restaurant = {
   id?: string;
   slug: string;
@@ -62,6 +77,8 @@ export type Restaurant = {
   tiktok?: string | null;
   facebook?: string | null;
   menu_url?: string | null;
+  /** Built-in digital menu: categories → items */
+  menu?: RestaurantMenuCategory[];
   location_name?: string | null;
   location_url?: string | null;
   avatar_url?: string | null;
@@ -80,8 +97,7 @@ export type Restaurant = {
     | "sunset"
     | "copper"
     | null;
-  revenue?: number;
-  orders_count?: number;
+  /** Ortalama reytinq — rəylərdən avtomatik hesablanır */
   rating?: number;
 };
 

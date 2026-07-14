@@ -39,3 +39,23 @@ export function getRestaurantPath(slug: string) {
 export function getRestaurantUrl(slug: string) {
   return `${getSiteUrl()}${getRestaurantPath(slug)}`;
 }
+
+export function getRestaurantMenuPath(slug: string) {
+  return `/${slug}/menyu`;
+}
+
+export function getRestaurantMenuUrl(slug: string) {
+  return `${getSiteUrl()}${getRestaurantMenuPath(slug)}`;
+}
+
+export function getRestaurantCartPath(slug: string) {
+  return `/${slug}/sebet`;
+}
+
+export function getRestaurantPayPath(slug: string) {
+  return `/${slug}/ode`;
+}
+
+export function getRestaurantDonePath(slug: string) {
+  return `/${slug}/hazir`;
+}

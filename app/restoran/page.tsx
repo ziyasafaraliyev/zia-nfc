@@ -6,22 +6,21 @@ import Link from "next/link";
 import {
   LayoutDashboard,
   Users,
-  DollarSign,
-  Star,
-  ShoppingBag,
   Plus,
   Edit,
-  Trash2,
   ArrowLeft,
   Power,
   BadgeCheck,
   AlertCircle,
   ExternalLink,
+  UtensilsCrossed,
 } from "lucide-react";
 import RestaurantForm from "@/components/restaurant-form";
 import DeleteProfileButton from "@/components/delete-profile-button";
 import ServerActionForm from "@/components/server-action-form";
-import { cookies } from "next/headers";
+import { countMenuItems, hasBuiltInMenu } from "@/lib/menu";
+import { getRestaurantMenuPath } from "@/lib/urls";
+import type { Restaurant } from "@/lib/types";
 
 type Props = {
   searchParams: Promise<{ error?: string; saved?: string }>;
@@ -62,12 +61,7 @@ export default async function DashboardPage({ searchParams }: Props) {
   }
 
   const restaurants = await listRestaurants();
-  const totalRevenue = restaurants.reduce((sum, r) => sum + (r.revenue || 0), 0);
-  const totalOrders = restaurants.reduce((sum, r) => sum + (r.orders_count || 0), 0);
-  const activeRestaurants = restaurants.filter(r => r.enabled).length;
-  const avgRating = activeRestaurants > 0 
-    ? restaurants.filter(r => r.enabled && r.rating).reduce((sum, r) => sum + (r.rating || 0), 0) / activeRestaurants 
-    : 0;
+  const activeRestaurants = restaurants.filter((r) => r.enabled).length;
 
   const errorMessage = adminErrorMessage(params.error);
 
@@ -90,35 +84,11 @@ export default async function DashboardPage({ searchParams }: Props) {
                   Restoran İdarə Paneli
                 </h1>
                 <p className="mt-2 text-sm leading-relaxed text-slate-400 font-medium">
-                  Bütün restoranları və statistikaları bir yerdən idarə edin.
+                  Bütün restoranları bir yerdən idarə edin · {restaurants.length} restoran
+                  {activeRestaurants > 0 ? ` · ${activeRestaurants} aktiv` : ""}
                 </p>
               </div>
             </div>
-          </div>
-
-          <div className="dashboard-divider" />
-          <div className="grid sm:grid-cols-4">
-            <Stat
-              icon={<Users size={18} />}
-              value={String(restaurants.length)}
-              label="Ümumi Restoran"
-              subValue={`${activeRestaurants} aktiv`}
-            />
-            <Stat
-              icon={<DollarSign size={18} />}
-              value={`$${totalRevenue.toLocaleString()}`}
-              label="Ümumi Gəlir"
-            />
-            <Stat
-              icon={<ShoppingBag size={18} />}
-              value={String(totalOrders)}
-              label="Sifariş Sayı"
-            />
-            <Stat
-              icon={<Star size={18} />}
-              value={avgRating.toFixed(1)}
-              label="Ortalama Reytinq"
-            />
           </div>
         </header>
 
@@ -222,42 +192,10 @@ function AlertBanner({
   );
 }
 
-function Stat({
-  icon,
-  value,
-  label,
-  subValue,
-}: {
-  icon: React.ReactNode;
-  value: string;
-  label: string;
-  subValue?: string;
-}) {
-  return (
-    <div className="border-t border-slate-100 px-6 py-5 first:border-t-0 sm:border-l sm:border-t-0 sm:first:border-l-0 hover:bg-slate-50/70 transition-colors duration-200" style={{ fontFamily: "'Outfit', sans-serif" }}>
-      <div className="flex items-center gap-3">
-        <div className="grid size-10 place-items-center rounded-xl bg-[#29AEEE]/10 border border-[#29AEEE]/15 text-[#29AEEE]">
-          {icon}
-        </div>
-        <div>
-          <p className="text-2xl font-black tracking-tight text-slate-900">
-            {value}
-          </p>
-          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-            {label}
-            {subValue && (
-              <span className="block text-[9px] text-slate-400 mt-0.5">
-                {subValue}
-              </span>
-            )}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
+function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
+  const menuItemCount = countMenuItems(restaurant.menu ?? []);
+  const hasMenu = hasBuiltInMenu(restaurant.menu);
 
-function RestaurantCard({ restaurant }: { restaurant: any }) {
   return (
     <article className="overflow-hidden rounded-[2.25rem] border border-slate-100 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
       <div className="p-5 sm:p-6">
@@ -290,22 +228,15 @@ function RestaurantCard({ restaurant }: { restaurant: any }) {
                 </p>
               )}
               <div className="mt-2 flex flex-wrap gap-3 text-[10px] font-semibold text-slate-400">
-                {restaurant.revenue && (
-                  <span className="flex items-center gap-1">
-                    <DollarSign size={10} />
-                    ${restaurant.revenue.toLocaleString()}
+                {hasMenu ? (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-[#29AEEE]/10 px-2 py-0.5 text-[#29AEEE]">
+                    <UtensilsCrossed size={10} />
+                    {menuItemCount} menyu məhsulu
                   </span>
-                )}
-                {restaurant.orders_count && (
-                  <span className="flex items-center gap-1">
-                    <ShoppingBag size={10} />
-                    {restaurant.orders_count} sifariş
-                  </span>
-                )}
-                {restaurant.rating && (
-                  <span className="flex items-center gap-1 text-orange-500">
-                    <Star size={10} fill="currentColor" />
-                    {restaurant.rating.toFixed(1)}
+                ) : (
+                  <span className="inline-flex items-center gap-1 text-slate-400">
+                    <UtensilsCrossed size={10} />
+                    Menyu yoxdur
                   </span>
                 )}
               </div>
@@ -313,6 +244,17 @@ function RestaurantCard({ restaurant }: { restaurant: any }) {
           </div>
 
           <div className="flex shrink-0 gap-2">
+            {hasMenu ? (
+              <Link
+                href={getRestaurantMenuPath(restaurant.slug)}
+                target="_blank"
+                rel="noreferrer"
+                className={quietButtonClass}
+                title="Menyuya bax"
+              >
+                <UtensilsCrossed size={18} />
+              </Link>
+            ) : null}
             <Link
               href={getRestaurantPath(restaurant.slug)}
               target="_blank"
@@ -322,21 +264,25 @@ function RestaurantCard({ restaurant }: { restaurant: any }) {
             >
               <ExternalLink size={18} />
             </Link>
-            <ServerActionForm action={toggleRestaurant}>
-              <input type="hidden" name="id" value={restaurant.id} />
-              <input type="hidden" name="enabled" value={String(restaurant.enabled)} />
-              <button
-                className={quietButtonClass}
-                title="Aktiv/Deaktiv Et"
-              >
-                <Power size={18} />
-              </button>
-            </ServerActionForm>
-            <DeleteProfileButton 
-              id={restaurant.id} 
-              slug={restaurant.slug} 
-              actionName="deleteRestaurant"
-            />
+            {restaurant.id ? (
+              <>
+                <ServerActionForm action={toggleRestaurant}>
+                  <input type="hidden" name="id" value={restaurant.id} />
+                  <input type="hidden" name="enabled" value={String(restaurant.enabled)} />
+                  <button
+                    className={quietButtonClass}
+                    title="Aktiv/Deaktiv Et"
+                  >
+                    <Power size={18} />
+                  </button>
+                </ServerActionForm>
+                <DeleteProfileButton
+                  id={restaurant.id}
+                  slug={restaurant.slug}
+                  actionName="deleteRestaurant"
+                />
+              </>
+            ) : null}
           </div>
         </div>
       </div>

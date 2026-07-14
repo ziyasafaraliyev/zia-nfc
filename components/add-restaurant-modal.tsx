@@ -23,9 +23,6 @@ export default function AddRestaurantModal({ isOpen, onClose, onAdd }: AddRestau
       name: name.trim(),
       location: location.trim() || "Yer göstərilməyib",
       status,
-      revenue: 0,
-      orders: 0,
-      rating: 0,
       avatar_url: null,
     });
     
