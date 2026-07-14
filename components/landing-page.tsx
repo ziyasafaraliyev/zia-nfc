@@ -17,16 +17,8 @@ import {
 import Link from "next/link";
 import NfcCardShowcase from "@/components/nfc-card-showcase";
 import LandingHeroMockup from "@/components/landing-hero-mockup";
+import LandingNavbar from "@/components/landing-navbar";
 import { ProfileShowcase } from "@/components/landing-phone-profile";
-
-const navItems = [
-  ["Kartlar", "#cards"],
-  ["Məhsullar", "#nfc-products"],
-  ["İş Prinsipi", "#how-it-works"],
-  ["Qiymətlər", "#pricing"],
-  ["Özəlliklər", "#features"],
-  ["FAQ", "#faq"],
-];
 
 const features = [
   {
@@ -149,45 +141,7 @@ export default function LandingPage() {
     <main className="min-h-screen overflow-hidden bg-white text-slate-950">
       <section className="relative min-h-screen border-b border-slate-200/70 bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_56%,#eef6ff_100%)] px-4 pb-16 pt-4 sm:px-6 lg:px-8">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/70 to-transparent" />
-        <nav className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 rounded-full border border-white/70 px-6 py-2.5 shadow-[0_18px_60px_rgba(15,23,42,0.12)] backdrop-blur-xl">
-          <Link
-            href="/"
-            className="group flex shrink-0 items-center gap-2.5 text-xl font-black tracking-tight text-slate-950 transition duration-200 ease-out hover:-translate-y-0.5"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/logo.webp"
-              alt="Zia NFC"
-              className="size-11 rounded-full object-cover"
-            />
-            Zia NFC
-          </Link>
-          <div className="hidden shrink-0 items-center gap-2 rounded-full border border-slate-200/70 bg-slate-950/5 px-2 py-1.5 text-sm font-semibold text-slate-700 md:flex">
-            {navItems.map(([label, href]) => (
-              <a
-                key={label}
-                href={href}
-                className="whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-bold uppercase tracking-[0.1em] text-slate-900 transition duration-200 ease-out hover:bg-white hover:text-slate-950 lg:px-4 lg:text-base lg:tracking-[0.12em]"
-              >
-                {label}
-              </a>
-            ))}
-          </div>
-          <div className="flex items-center gap-2">
-            <Link
-              href="/restoran"
-              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-sky-500 px-4 py-2 text-xs font-black uppercase tracking-[0.1em] text-white shadow-md transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98] sm:px-5 sm:py-2.5 sm:text-sm"
-            >
-              Restoran
-            </Link>
-            <Link
-              href="/admin"
-              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-sky-500 px-4 py-2 text-xs font-black uppercase tracking-[0.1em] text-white shadow-md transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98] sm:px-5 sm:py-2.5 sm:text-sm"
-            >
-              Admin
-            </Link>
-          </div>
-        </nav>
+        <LandingNavbar />
 
         <div className="mx-auto grid max-w-7xl items-center gap-12 pb-8 pt-14 lg:min-h-[calc(100vh-104px)] lg:grid-cols-[1.02fr_0.98fr] lg:pt-10">
           <div>
