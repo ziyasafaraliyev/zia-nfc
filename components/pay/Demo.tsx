@@ -28,7 +28,7 @@ export default function Demo() {
           </h2>
           <p className="mt-5 text-lg leading-8 text-slate-600">
             Hər addım ayrı səhifədir. «Növbəti» basanda real demo səhifəsi açılır —
-            skan, menyü, səbət, ödəniş və nəticə.
+            skan, menyu, səbət, ödəniş və nəticə.
           </p>
         </div>
 
@@ -67,7 +67,7 @@ export default function Demo() {
                       {restaurant.table} · {restaurant.name}
                     </p>
                     <p className="mb-2.5 text-center text-[14px] font-black text-slate-950">
-                      Zia-Pay Menyü
+                      Zia-Pay Menyu
                     </p>
                     <div className="min-h-0 flex-1 space-y-1.5 overflow-hidden">
                       {previewItems.map((item) => (
@@ -160,7 +160,7 @@ export default function Demo() {
               </Link>
 
               <div className="flex flex-wrap gap-2 text-xs font-bold text-slate-500">
-                {["Skan", "Menyü", "Səbət", "Ödə", "Hazır"].map((l) => (
+                {["Skan", "Menyu", "Səbət", "Ödə", "Hazır"].map((l) => (
                   <span
                     key={l}
                     className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1"

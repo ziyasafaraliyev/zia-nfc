@@ -18,7 +18,7 @@ export default function AboutPage() {
           <div className="mx-auto max-w-7xl">
             <p className="section-label mb-4">Zia-Pay haqqında</p>
             <h1 className="mb-6 max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-              Menyü, səbət və ödəniş —{" "}
+              Menyu, səbət və ödəniş —{" "}
               <span className="text-sky-500">bir axında.</span>
             </h1>
             <p className="max-w-2xl text-lg leading-8 text-slate-600">

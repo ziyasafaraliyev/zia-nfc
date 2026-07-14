@@ -35,7 +35,7 @@ export default function MobileShowcase() {
         </div>
 
         <div>
-          <p className="section-label">Mobil öncəlikli</p>
+          <p className="section-label">Interaktiv demo</p>
           <h2 className="mt-4 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl md:text-5xl">
             Telefonlarda sürətli açılan menyu və ödəniş axını.
           </h2>

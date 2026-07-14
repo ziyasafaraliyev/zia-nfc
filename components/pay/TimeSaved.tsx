@@ -48,7 +48,7 @@ export default function TimeSaved() {
               1 axın
             </div>
             <p className="mb-6 text-sm text-slate-400">
-              Menyü → səbət → ödəniş
+              Menyu → səbət → ödəniş
             </p>
             <ul className="space-y-3 text-sm text-slate-300">
               {[

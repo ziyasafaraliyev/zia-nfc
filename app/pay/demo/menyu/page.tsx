@@ -12,7 +12,7 @@ export default function DemoMenyuPage() {
     <div className="flex flex-col gap-4">
       <div>
         <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-sky-600">
-          Addım 2 · Menyü
+          Addım 2 · Menyu
         </p>
         <h1 className="mt-1 text-2xl font-black tracking-tight text-slate-950">
           {restaurant.name}

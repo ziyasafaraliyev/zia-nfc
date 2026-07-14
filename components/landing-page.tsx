@@ -211,9 +211,9 @@ export default function LandingPage() {
               </a>
               <Link
                 href="/pay"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-4 font-extrabold text-slate-900 shadow-sm transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-slate-50 active:scale-[0.98]"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-6 py-4 font-extrabold text-white shadow-[0_18px_45px_rgba(14,165,233,0.28)] transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98]"
               >
-                Zia Pay
+                Zia Pay <ArrowRight size={18} />
               </Link>
             </div>
             <div className="mt-10 grid max-w-2xl grid-cols-3 gap-3">

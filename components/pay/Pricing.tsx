@@ -2,14 +2,15 @@ import { BadgeCheck } from "lucide-react";
 
 const plans = [
   {
-    name: "Başlanğıc",
-    price: "0 ₼",
-    note: "Ağır abunə yox · sürətli start",
+    name: "Yeni Başlayanlar üçün",
+    price: "1200 AZN / il",
+    note: "Kiçik obyektlər üçün ideal seçim",
+    period: "Aylıq — 120 AZN",
     items: [
       "NFC / QR masa quraşdırması",
       "Rəqəmsal menyu",
-      "Səbət və təsdiq",
-      "Apple Pay / Google Pay",
+      "Səbət və sifariş təsdiqi",
+      "Apple Pay / Google Pay dəstəyi",
     ],
   },
   {
@@ -103,6 +104,15 @@ export default function Pricing() {
                 >
                   {plan.price}
                 </p>
+                {"period" in plan && plan.period ? (
+                  <p
+                    className={`mt-1.5 text-xs font-semibold ${
+                      plan.featured ? "text-slate-400" : "text-slate-500"
+                    }`}
+                  >
+                    {plan.period}
+                  </p>
+                ) : null}
                 <div className="mt-7 space-y-3">
                   {plan.items.map((item) => (
                     <div

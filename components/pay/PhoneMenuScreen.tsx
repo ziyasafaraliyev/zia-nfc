@@ -24,7 +24,7 @@ export default function PhoneMenuScreen() {
           {restaurant.table} · {restaurant.name}
         </p>
         <p className="mb-2.5 text-center text-[14px] font-black text-slate-950">
-          Zia-Pay Menyü
+          Zia-Pay Menyu
         </p>
 
         <div className="min-h-0 flex-1 space-y-1.5 overflow-hidden">

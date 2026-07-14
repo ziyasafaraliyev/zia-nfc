@@ -7,7 +7,7 @@ import PhoneMenuScreen from "@/components/pay/PhoneMenuScreen";
 const metrics = [
   { value: "1 toxunuş", label: "menyu açılır" },
   { value: "0 app", label: "yükləmə yox" },
-  { value: "Split", label: "yediklərinlə ödə" },
+  { value: "Split", label: "bölərək ödə" },
 ];
 
 export default function Hero() {
@@ -33,12 +33,14 @@ export default function Hero() {
         <div className="animate-fade-up">
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-sky-200/70 bg-sky-50 px-3.5 py-2 text-sm font-bold text-sky-800">
             <Sparkles size={16} className="text-sky-500" />
-            Premium NFC · QR · Menyü · Ödəniş
+            Premium NFC · QR · Menyu · Ödəniş
           </div>
 
-          <h1 className="max-w-4xl text-balance text-4xl font-black leading-[0.98] tracking-tight text-slate-950 sm:text-5xl md:text-6xl lg:text-7xl">
-            Toxun. Seç.{" "}
-            <span className="text-sky-500">Ödə & Get.</span>
+          <h1 className="max-w-4xl text-balance text-3xl font-black leading-[1.05] tracking-tight text-slate-950 sm:text-4xl md:text-5xl lg:text-6xl">
+            Bir toxunuşla rəqəmsal{" "}
+            <span className="text-sky-500">
+              menyu, sürətli sifariş və yerində ödəniş.
+            </span>
           </h1>
 
           <p className="mt-6 max-w-xl text-pretty text-base leading-8 text-slate-600 sm:text-lg md:text-xl">
@@ -65,12 +67,6 @@ export default function Hero() {
             >
               Necə işlədiyini gör
               <ArrowRight size={18} />
-            </a>
-            <a
-              href="/pay/demo/skan"
-              className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-6 py-4 font-extrabold text-slate-900 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-slate-50"
-            >
-              Canlı demo
             </a>
           </div>
 

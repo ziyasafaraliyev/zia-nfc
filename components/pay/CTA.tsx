@@ -15,7 +15,7 @@ export default function CTA() {
         <div className="relative">
           <p className="section-label-light mb-4">Hazırsınız?</p>
           <h2 className="mx-auto max-w-3xl text-3xl font-black tracking-tight text-white sm:text-4xl md:text-5xl">
-            Menyü, səbət və ödəniş —{" "}
+            Menyu, səbət və ödəniş —{" "}
             <span className="text-sky-400">bir NFC/QR toxunuşunda.</span>
           </h2>
           <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-slate-400 md:text-lg">

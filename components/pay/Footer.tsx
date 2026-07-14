@@ -53,7 +53,7 @@ export default function Footer() {
             </a>
           </div>
           <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
-            NFC · QR · Menyü · Səbət · Ödə
+            NFC · QR · Menyu · Səbət · Ödə
           </p>
         </div>
       </div>

@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Zia Pay — NFC & QR ilə menyu, səbət və ödəniş",
     description:
-      "Menyü, səbət və ödəniş — bir NFC/QR toxunuşunda. Apple Pay & Google Pay.",
+      "Menyu, səbət və ödəniş — bir NFC/QR toxunuşunda. Apple Pay & Google Pay.",
     siteName: "Zia Pay",
   },
 };

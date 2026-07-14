@@ -8,7 +8,7 @@ export const demoSteps = [
   },
   {
     id: "menyu",
-    label: "Menyü",
+    label: "Menyu",
     href: "/pay/demo/menyu",
     title: "Rəqəmsal menyu",
     text: "Restoranın menyusu brauzerdə açılır. İstədiyini səbətə əlavə et.",
