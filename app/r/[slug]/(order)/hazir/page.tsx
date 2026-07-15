@@ -3,7 +3,7 @@ import {
   renderOrderStep,
 } from "@/lib/restaurant-order-page";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 120;
 
 type Props = { params: Promise<{ slug: string }> };
 

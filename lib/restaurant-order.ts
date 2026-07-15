@@ -1,4 +1,5 @@
 import { menuForPublic } from "@/lib/menu";
+import { profileAvatarSrc, storageImageUrl } from "@/lib/media";
 import type { Restaurant, RestaurantMenuCategory, RestaurantMenuItem } from "@/lib/types";
 import {
   getRestaurantCartPath,
@@ -159,12 +160,27 @@ export type OrderRestaurantPayload = {
 export function toOrderRestaurantPayload(
   restaurant: Restaurant,
 ): OrderRestaurantPayload {
+  const menu = publicCategories(restaurant).map((cat) => ({
+    ...cat,
+    items: cat.items.map((item) => ({
+      ...item,
+      // CDN thumbs for list — full URL still available if transform fails
+      image_url:
+        storageImageUrl(item.image_url, {
+          width: 112,
+          height: 112,
+          quality: 70,
+          resize: "cover",
+        }) ?? item.image_url,
+    })),
+  }));
+
   return {
     slug: restaurant.slug,
     name: restaurant.name,
-    avatar_url: restaurant.avatar_url,
+    avatar_url: profileAvatarSrc(restaurant.avatar_url) ?? restaurant.avatar_url,
     theme: restaurant.theme,
-    menu: publicCategories(restaurant),
+    menu,
   };
 }
 

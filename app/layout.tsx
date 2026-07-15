@@ -1,12 +1,21 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Outfit, Plus_Jakarta_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
-const inter = Inter({
+/** Self-hosted via next/font — avoids render-blocking Google Fonts CSS @import */
+const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
-  display: "swap"
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800"],
+});
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  variable: "--font-outfit",
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -48,8 +57,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="az">
-      <body className={`${inter.variable} bg-white text-slate-950 antialiased`}>
+    <html lang="az" className={`${plusJakarta.variable} ${outfit.variable}`}>
+      <body className="bg-white text-slate-950 antialiased">
         {children}
         <Analytics />
       </body>

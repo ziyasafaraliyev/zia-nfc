@@ -97,7 +97,7 @@ export default function Navbar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 px-4 pt-4 sm:px-6 lg:px-8">
-      <nav className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 rounded-full border border-white/70 bg-white/80 px-6 py-2.5 shadow-[0_18px_60px_rgba(15,23,42,0.12)] backdrop-blur-xl">
+      <nav className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 rounded-full border border-white/70 bg-white/95 px-6 py-2.5 shadow-md md:bg-white/80 md:shadow-[0_18px_60px_rgba(15,23,42,0.12)] md:backdrop-blur-xl">
         <Link
           href="/"
           className="group flex shrink-0 items-center gap-2.5 text-xl font-black tracking-tight text-slate-950 transition duration-200 ease-out hover:-translate-y-0.5"
@@ -160,7 +160,7 @@ export default function Navbar() {
       </nav>
 
       {open && (
-        <div className="mx-auto mt-2 max-w-7xl rounded-3xl border border-slate-200/70 bg-white/95 p-4 shadow-xl backdrop-blur-xl md:hidden">
+        <div className="mx-auto mt-2 max-w-7xl rounded-3xl border border-slate-200/70 bg-white p-4 shadow-lg md:hidden">
           <div className="flex flex-col gap-1">
             {links.map((l) =>
               "id" in l && l.id ? (

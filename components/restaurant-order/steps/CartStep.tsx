@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Minus, Plus, ShoppingCart } from "lucide-react";
 import { useRestaurantCart } from "@/components/restaurant-order/RestaurantCartContext";
 import OrderFeeReceipt from "@/components/restaurant-order/OrderFeeReceipt";
@@ -10,6 +12,7 @@ import {
 } from "@/lib/urls";
 
 export default function CartStep() {
+  const router = useRouter();
   const {
     restaurant,
     cartLines,
@@ -22,10 +25,17 @@ export default function CartStep() {
     hydrated,
   } = useRestaurantCart();
 
+  useEffect(() => {
+    router.prefetch(getRestaurantPayPath(restaurant.slug));
+    router.prefetch(getRestaurantMenuPath(restaurant.slug));
+  }, [router, restaurant.slug]);
+
+  // Soft-nav from menu: cart is already in memory (hydrated).
+  // Hard refresh / deep-link: brief empty until sessionStorage read (1 frame).
   if (!hydrated) {
     return (
-      <div className="rounded-[1.75rem] border border-slate-200 bg-white p-10 text-center text-sm font-semibold text-slate-400 shadow-sm">
-        Səbət yüklənir…
+      <div className="rounded-[1.75rem] border border-slate-200 bg-white p-8 text-center text-sm font-semibold text-slate-400 shadow-sm">
+        …
       </div>
     );
   }
@@ -38,6 +48,8 @@ export default function CartStep() {
         <p className="text-sm text-slate-500">Menyudan məhsul əlavə et.</p>
         <Link
           href={getRestaurantMenuPath(restaurant.slug)}
+          prefetch
+          scroll={false}
           className="rounded-full bg-sky-500 px-6 py-3 text-sm font-black text-white"
         >
           Menyuya qayıt
@@ -107,6 +119,8 @@ export default function CartStep() {
 
       <Link
         href={getRestaurantPayPath(restaurant.slug)}
+        prefetch
+        scroll={false}
         className="flex w-full items-center justify-center rounded-full bg-sky-500 py-4 text-sm font-black text-white shadow-[0_14px_35px_rgba(14,165,233,0.3)] transition hover:bg-sky-400"
       >
         Səbəti təsdiqlə · {formatPrice(payGrandTotal)} →

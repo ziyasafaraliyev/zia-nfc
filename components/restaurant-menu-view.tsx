@@ -1,8 +1,10 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft, UtensilsCrossed } from "lucide-react";
 import { formatMenuPrice, menuForPublic } from "@/lib/menu";
 import type { Restaurant, RestaurantMenuCategory } from "@/lib/types";
 import { getRestaurantPath } from "@/lib/urls";
+import SmartImage from "@/components/smart-image";
 
 type Props = {
   restaurant: Restaurant;
@@ -36,7 +38,7 @@ export default function RestaurantMenuView({
         {showBack ? (
           <Link
             href={getRestaurantPath(restaurant.slug)}
-            className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/80 px-3.5 py-2 text-xs font-bold text-slate-700 shadow-sm backdrop-blur transition hover:bg-white"
+            className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/60 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-white"
           >
             <ArrowLeft size={14} />
             {restaurant.name}
@@ -46,9 +48,13 @@ export default function RestaurantMenuView({
         <section className="lux-card overflow-hidden rounded-[1.75rem] p-5">
           <div className="flex items-start gap-3">
             {restaurant.avatar_url ? (
-              <img
+              <SmartImage
                 src={restaurant.avatar_url}
                 alt={restaurant.name}
+                width={56}
+                height={56}
+                priority
+                sizes="56px"
                 className="size-14 shrink-0 rounded-2xl object-cover ring-2 ring-white shadow-md"
               />
             ) : (
@@ -105,9 +111,11 @@ export default function RestaurantMenuView({
         <div className="mt-8 flex flex-col items-center gap-2">
           <div className="lux-footer-divider" />
           <div className="mt-2 flex items-center gap-1.5">
-            <img
+            <Image
               src="/logo.webp"
               alt="Zia NFC"
+              width={16}
+              height={16}
               className="size-4 rounded-full object-cover opacity-60"
             />
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-gray-400">
@@ -136,9 +144,12 @@ function MenuCategoryBlock({ category }: { category: RestaurantMenuCategory }) {
             className="lux-card flex gap-3 rounded-2xl p-3.5"
           >
             {item.image_url ? (
-              <img
+              <SmartImage
                 src={item.image_url}
                 alt={item.name}
+                width={64}
+                height={64}
+                sizes="64px"
                 className="size-16 shrink-0 rounded-xl object-cover"
               />
             ) : null}

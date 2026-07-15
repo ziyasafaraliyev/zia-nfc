@@ -4,7 +4,8 @@ import { getProfileBySlug } from "@/lib/profiles";
 import { getProfileUrl } from "@/lib/urls";
 import type { Profile } from "@/lib/types";
 
-export const dynamic = "force-dynamic";
+/** Cache QR PNG at CDN — profile URL rarely changes without admin save */
+export const revalidate = 300;
 
 const qrThemeColors: Record<NonNullable<Profile["theme"]>, string> = {
   light: "#1a1a2e",
@@ -51,8 +52,8 @@ export async function GET(
     const png = await QRCode.toBuffer(profileUrl, {
       type: "png",
       margin: 2,
-      width: 512,
-      errorCorrectionLevel: "H",
+      width: 384,
+      errorCorrectionLevel: "M",
       color: {
         dark: qrColor,
         light: "#ffffff",
@@ -64,7 +65,7 @@ export async function GET(
       headers: {
         "Content-Type": "image/png",
         "Content-Disposition": `inline; filename="${profile.slug}-qr.png"`,
-        "Cache-Control": "no-store, max-age=0",
+        "Cache-Control": "public, max-age=300, s-maxage=300, stale-while-revalidate=86400",
       },
     });
   } catch {

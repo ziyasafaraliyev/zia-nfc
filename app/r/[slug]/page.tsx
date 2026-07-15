@@ -11,11 +11,13 @@ import {
   Facebook,
   Menu,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import RestaurantRating from "@/components/restaurant-rating";
+import SmartImage from "@/components/smart-image";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -102,11 +104,14 @@ export default async function RestaurantPage({ params }: Props) {
           >
             {restaurant.cover_url ? (
               <>
-                <img
+                <SmartImage
                   src={restaurant.cover_url}
                   alt=""
                   role="presentation"
-                  className={`absolute inset-0 h-full w-full object-cover ${objPos} opacity-70`}
+                  fill
+                  priority
+                  sizes="(max-width: 440px) 100vw, 440px"
+                  className={`object-cover ${objPos} opacity-70`}
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/60" />
               </>
@@ -115,12 +120,15 @@ export default async function RestaurantPage({ params }: Props) {
             <div className="lux-cover-shimmer absolute inset-0" />
 
             <div className="absolute inset-x-4 top-4 flex items-center justify-between gap-2">
-              <div className="lux-badge flex items-center gap-1.5 rounded-full px-2 py-1.5 pr-3">
-                <img src="/logo.webp" alt="Zia NFC" className="size-[18px] rounded-full object-cover" />
+              <Link
+                href="/"
+                className="lux-badge flex items-center gap-1.5 rounded-full px-2 py-1.5 pr-3 transition hover:opacity-90 active:scale-[0.98]"
+              >
+                <Image src="/logo.webp" alt="Zia NFC" width={18} height={18} className="size-[18px] rounded-full object-cover" />
                 <span className="text-[9px] font-black uppercase tracking-[0.22em] text-white/90">
                   Zia NFC
                 </span>
-              </div>
+              </Link>
             </div>
           </div>
 
@@ -129,9 +137,13 @@ export default async function RestaurantPage({ params }: Props) {
               {restaurant.avatar_url ? (
                 <div className="-mt-16 shrink-0 relative z-10">
                   <div className="lux-avatar-ring p-[3px] rounded-[1.7rem]">
-                    <img
+                    <SmartImage
                       src={restaurant.avatar_url}
                       alt={restaurant.name}
+                      width={112}
+                      height={112}
+                      priority
+                      sizes="112px"
                       className="size-[7rem] rounded-[1.55rem] object-cover"
                     />
                   </div>
@@ -259,9 +271,15 @@ export default async function RestaurantPage({ params }: Props) {
                   href={url}
                   target="_blank"
                   rel="noreferrer"
-                  className="aspect-square overflow-hidden rounded-xl border border-slate-200 bg-white transition-transform duration-200 hover:scale-[1.02]"
+                  className="relative aspect-square overflow-hidden rounded-xl border border-slate-200 bg-white transition-transform duration-200 hover:scale-[1.02]"
                 >
-                  <img src={url} alt={`${restaurant.name} qalereya ${idx + 1}`} className="h-full w-full object-cover" />
+                  <SmartImage
+                    src={url}
+                    alt={`${restaurant.name} qalereya ${idx + 1}`}
+                    fill
+                    sizes="140px"
+                    className="object-cover"
+                  />
                 </a>
               ))}
             </div>
@@ -279,7 +297,7 @@ export default async function RestaurantPage({ params }: Props) {
         <div className="mt-6 flex flex-col items-center gap-2">
           <div className="lux-footer-divider" />
           <div className="mt-2 flex items-center gap-1.5">
-            <img src="/logo.webp" alt="Zia NFC" className="size-4 rounded-full object-cover opacity-60" />
+            <Image src="/logo.webp" alt="Zia NFC" width={16} height={16} className="size-4 rounded-full object-cover opacity-60" />
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-gray-400">
               Powered by <span className="lux-brand-text">Zia NFC</span>
             </p>

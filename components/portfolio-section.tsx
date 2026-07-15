@@ -6,7 +6,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronUp,
-  Image,
+  Image as ImageIcon,
   X,
 } from "lucide-react";
 import type { PortfolioSection as PortfolioSectionType } from "@/lib/types";
@@ -95,7 +95,7 @@ export default function PortfolioSection({
         >
           <span className="flex items-center gap-3">
             <span className="lux-save-icon grid size-9 place-items-center rounded-xl">
-              <Image size={18} />
+              <ImageIcon size={18} />
             </span>
             <span className="flex flex-col items-start leading-tight">
               <span className="text-sm font-bold text-gray-800">Portfolio</span>
@@ -138,17 +138,17 @@ export default function PortfolioSection({
       {/* Lightbox */}
       {isLightboxOpen ? (
         <div
-          className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-black/90 p-4 backdrop-blur-md"
+          className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-black/90 p-4"
           onClick={closeLightbox}
         >
           <div className="absolute inset-x-4 top-4 z-10 flex items-center justify-between text-white">
             <div className="flex flex-col gap-1">
               {activeSectionName ? (
-                <span className="rounded-full bg-black/40 px-3 py-1 text-[10px] font-bold uppercase tracking-wider backdrop-blur">
+                <span className="rounded-full bg-black/40 px-3 py-1 text-[10px] font-bold uppercase tracking-wider">
                   {activeSectionName}
                 </span>
               ) : null}
-              <span className="rounded-full bg-black/40 px-3 py-1.5 text-xs font-bold uppercase tracking-wider backdrop-blur">
+              <span className="rounded-full bg-black/40 px-3 py-1.5 text-xs font-bold uppercase tracking-wider">
                 {currentImageIndex + 1} / {lightboxImages.length}
               </span>
             </div>
@@ -165,10 +165,12 @@ export default function PortfolioSection({
             className="relative flex aspect-square max-h-[75vh] w-full max-w-3xl items-center justify-center md:aspect-[4/3]"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={lightboxImages[currentImageIndex]}
               alt={`${profileName} — ${activeSectionName} — ${currentImageIndex + 1}`}
               className="max-h-full max-w-full rounded-2xl object-contain shadow-2xl"
+              decoding="async"
             />
 
             {lightboxImages.length > 1 ? (
@@ -176,14 +178,14 @@ export default function PortfolioSection({
                 <button
                   type="button"
                   onClick={prevImage}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/40 p-3 text-white transition hover:bg-black/60 active:scale-95"
+                  className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/40 p-3 text-white transition hover:bg-black/60 active:scale-95"
                 >
                   <ChevronLeft size={24} />
                 </button>
                 <button
                   type="button"
                   onClick={nextImage}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/40 p-3 text-white transition hover:bg-black/60 active:scale-95"
+                  className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/40 p-3 text-white transition hover:bg-black/60 active:scale-95"
                 >
                   <ChevronRight size={24} />
                 </button>
@@ -207,7 +209,14 @@ export default function PortfolioSection({
                       : "border-transparent opacity-60 hover:opacity-100"
                   }`}
                 >
-                  <img src={image} alt="" className="h-full w-full object-cover" />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={image}
+                    alt=""
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                    decoding="async"
+                  />
                 </button>
               ))}
             </div>

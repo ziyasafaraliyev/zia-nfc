@@ -21,7 +21,9 @@ import {
   clientIpFromHeaders,
 } from "@/lib/security";
 import { parseRestaurantMenu } from "@/lib/menu";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { profileCacheTag } from "@/lib/profiles";
+import { restaurantCacheTag } from "@/lib/restaurants";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import crypto from "crypto";
@@ -541,12 +543,94 @@ function extractPathFromUrl(url: string | null): string | null {
 }
 
 // ──────────────────────────────────────────────
-// File Upload
+// File Upload — raster images ALWAYS stored as .webp
 // ──────────────────────────────────────────────
+
+const IMAGE_EXTS = new Set([
+  "jpg",
+  "jpeg",
+  "png",
+  "gif",
+  "bmp",
+  "webp",
+  "heic",
+  "heif",
+  "tif",
+  "tiff",
+  "avif",
+]);
+
+type UploadKind = "avatar" | "cover" | "gallery" | "other";
+
+function maxEdgeForKind(kind: UploadKind | undefined): number {
+  switch (kind) {
+    case "avatar":
+      return 800; // profil şəkli
+    case "cover":
+      return 1600; // cover / background
+    case "gallery":
+      return 1400;
+    default:
+      return 1600;
+  }
+}
+
+/**
+ * Decode any raster input → strip EXIF → optional resize → WebP only.
+ * Output filename extension is always `.webp`.
+ */
+async function encodeRasterToWebp(
+  input: Buffer,
+  opts?: { maxEdge?: number; quality?: number },
+): Promise<Buffer> {
+  const maxEdge = opts?.maxEdge ?? 1600;
+  let quality = opts?.quality ?? 82;
+
+  const base = sharp(input, { failOn: "none", animated: false }).rotate();
+  const meta = await base.metadata();
+
+  const build = (q: number) => {
+    let pipeline = sharp(input, { failOn: "none", animated: false }).rotate();
+    if (
+      maxEdge > 0 &&
+      meta.width &&
+      meta.height &&
+      (meta.width > maxEdge || meta.height > maxEdge)
+    ) {
+      pipeline = pipeline.resize(maxEdge, maxEdge, {
+        fit: "inside",
+        withoutEnlargement: true,
+      });
+    }
+    return pipeline
+      .webp({
+        quality: q,
+        effort: 4,
+        smartSubsample: true,
+      })
+      .toBuffer();
+  };
+
+  let webpBuffer = await build(quality);
+  while (webpBuffer.length > MAX_UPLOAD_SIZE && quality > 40) {
+    quality -= 12;
+    webpBuffer = await build(quality);
+  }
+  if (webpBuffer.length > MAX_UPLOAD_SIZE) {
+    throw new Error("File too large after compression");
+  }
+  return webpBuffer;
+}
+
 async function uploadFile(
   file: Blob | File | null,
   folder: string,
-  options?: { fileName?: string; mimeType?: string },
+  options?: {
+    fileName?: string;
+    mimeType?: string;
+    /** avatar | cover | gallery — sets max edge before WebP encode */
+    kind?: UploadKind;
+  },
 ) {
   if (!file || file.size === 0) {
     return null;
@@ -573,6 +657,7 @@ async function uploadFile(
 
   const fileName = getUploadFileName(file, options?.fileName);
   const mimeType = guessMimeType(fileName, options?.mimeType || file.type);
+  const extFromName = (fileName.split(".").pop() || "").toLowerCase();
 
   // Block SVG and other scriptable types
   if (
@@ -584,33 +669,22 @@ async function uploadFile(
     throw new Error("File type not allowed");
   }
 
-  const isImage = isImageMime(mimeType) && mimeType !== "image/svg+xml";
+  const looksLikeImage =
+    (isImageMime(mimeType) && mimeType !== "image/svg+xml") ||
+    IMAGE_EXTS.has(extFromName);
+
   let fileToUpload: Blob | Buffer;
   let contentType: string;
   let ext: string;
 
-  if (isImage) {
-    // Always re-encode raster images with sharp to strip EXIF / polyglot payloads
+  if (looksLikeImage) {
+    // ALWAYS re-encode to WebP (jpg/png/heic/… → .webp)
     const buffer = Buffer.from(await file.arrayBuffer());
     try {
-      let quality = 85;
-      let webpBuffer = await sharp(buffer, { failOn: "none" })
-        .rotate() // respect orientation, strip metadata by default
-        .webp({ quality })
-        .toBuffer();
-
-      while (webpBuffer.length > MAX_UPLOAD_SIZE && quality > 20) {
-        quality -= 15;
-        webpBuffer = await sharp(buffer, { failOn: "none" })
-          .rotate()
-          .webp({ quality })
-          .toBuffer();
-      }
-
-      if (webpBuffer.length > MAX_UPLOAD_SIZE) {
-        throw new Error("File too large after compression");
-      }
-
+      const webpBuffer = await encodeRasterToWebp(buffer, {
+        maxEdge: maxEdgeForKind(options?.kind),
+        quality: options?.kind === "avatar" ? 84 : 80,
+      });
       fileToUpload = webpBuffer;
       contentType = "image/webp";
       ext = "webp";
@@ -632,9 +706,11 @@ async function uploadFile(
     throw new Error("File type not allowed");
   }
 
+  // Path always ends with .webp for images
   const path = `${safeFolder}/${crypto.randomUUID()}.${ext}`;
   const { error } = await supabase.storage.from("profiles").upload(path, fileToUpload, {
     contentType,
+    cacheControl: "31536000",
     upsert: false,
   });
 
@@ -889,12 +965,14 @@ export async function saveProfile(formData: FormData) {
     ? await uploadFile(avatarUpload, `avatars/${slug}`, {
         fileName: getUploadFileName(avatarUpload),
         mimeType: guessMimeType(getUploadFileName(avatarUpload), avatarUpload.type),
+        kind: "avatar",
       }).catch(() => redirectWithSaveError("upload"))
     : null;
   const background = backgroundUpload
     ? await uploadFile(backgroundUpload, `backgrounds/${slug}`, {
         fileName: getUploadFileName(backgroundUpload),
         mimeType: guessMimeType(getUploadFileName(backgroundUpload), backgroundUpload.type),
+        kind: "cover",
       }).catch(() => redirectWithSaveError("upload"))
     : null;
   const cv = cvUpload
@@ -913,6 +991,7 @@ export async function saveProfile(formData: FormData) {
         const url = await uploadFile(upload.blob, `gallery/${slug}`, {
           fileName: upload.fileName,
           mimeType: upload.mimeType,
+          kind: "gallery",
         });
         if (!url) {
           redirectWithSaveError("upload");
@@ -1108,6 +1187,8 @@ export async function saveProfile(formData: FormData) {
   revalidatePath("/admin");
   revalidatePath(`/${slug}`);
   revalidatePath(`/u/${slug}`);
+  revalidateTag(profileCacheTag(slug));
+  revalidateTag("profiles");
   redirect("/admin?saved=1");
 }
 
@@ -1223,6 +1304,8 @@ export async function deleteProfile(formData: FormData) {
   revalidatePath("/admin");
   revalidatePath(`/${slug}`);
   revalidatePath(`/u/${slug}`);
+  revalidateTag(profileCacheTag(slug));
+  revalidateTag("profiles");
   redirect("/admin");
 }
 
@@ -1331,12 +1414,14 @@ export async function saveRestaurant(formData: FormData) {
     ? await uploadFile(avatarUpload, `restaurants/avatars/${slug}`, {
         fileName: getUploadFileName(avatarUpload),
         mimeType: guessMimeType(getUploadFileName(avatarUpload), avatarUpload.type),
+        kind: "avatar",
       }).catch(() => redirectWithSaveError("upload", "/restoran"))
     : null;
   const cover = coverUpload
     ? await uploadFile(coverUpload, `restaurants/covers/${slug}`, {
         fileName: getUploadFileName(coverUpload),
         mimeType: guessMimeType(getUploadFileName(coverUpload), coverUpload.type),
+        kind: "cover",
       }).catch(() => redirectWithSaveError("upload", "/restoran"))
     : null;
   const galleryUploads = await Promise.all(
@@ -1344,6 +1429,7 @@ export async function saveRestaurant(formData: FormData) {
       uploadFile(file, `restaurants/gallery/${slug}`, {
         fileName: getUploadFileName(file),
         mimeType: guessMimeType(getUploadFileName(file), file.type),
+        kind: "gallery",
       }).catch(() => redirectWithSaveError("upload", "/restoran"))
     )
   );
@@ -1452,8 +1538,13 @@ export async function saveRestaurant(formData: FormData) {
   revalidatePath("/restoran");
   revalidatePath(`/${slug}`);
   revalidatePath(`/${slug}/menyu`);
+  revalidatePath(`/${slug}/sebet`);
+  revalidatePath(`/${slug}/ode`);
+  revalidatePath(`/${slug}/hazir`);
   revalidatePath(`/r/${slug}`);
   revalidatePath(`/r/${slug}/menyu`);
+  revalidateTag(restaurantCacheTag(slug));
+  revalidateTag("restaurants");
   redirect("/restoran?saved=1");
 }
 

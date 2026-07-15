@@ -10,6 +10,7 @@ import {
   UserPlus,
   Youtube,
 } from "lucide-react";
+import Image from "next/image";
 
 /** Static phone profile mock — Server Component friendly (no client hooks). */
 export function LandingPhoneProfile({ compact = false }: { compact?: boolean }) {
@@ -21,10 +22,11 @@ export function LandingPhoneProfile({ compact = false }: { compact?: boolean }) 
         className={`relative flex flex-col items-center justify-center overflow-visible bg-[linear-gradient(145deg,#0f172a_0%,#0c2340_45%,#0369a1_100%)] ${compact ? "h-28" : "h-40"}`}
       >
         <div className="absolute inset-0 bg-[linear-gradient(115deg,transparent_30%,rgba(255,255,255,0.06)_50%,transparent_70%)]" />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src="/logo.webp"
           alt="Zia NFC"
+          width={compact ? 48 : 80}
+          height={compact ? 48 : 80}
           className={`relative z-10 rounded-full object-cover ring-2 ring-white/20 shadow-xl ${compact ? "size-12" : "size-20"}`}
         />
         <p
@@ -36,10 +38,11 @@ export function LandingPhoneProfile({ compact = false }: { compact?: boolean }) 
 
       <div className={`${compact ? "p-4" : "p-5"} bg-white`}>
         <div className="mb-3 flex items-center gap-3">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src="/ziya.webp"
             alt="Ziya Safaraliyev"
+            width={compact ? 48 : 64}
+            height={compact ? 48 : 64}
             className={`shrink-0 border-2 border-slate-100 object-cover shadow-lg ${
               compact ? "size-12 rounded-xl" : "size-16 rounded-2xl"
             }`}

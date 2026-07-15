@@ -1,12 +1,15 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Minus, Plus, ShoppingBag, UtensilsCrossed } from "lucide-react";
 import { useRestaurantCart } from "@/components/restaurant-order/RestaurantCartContext";
 import { getRestaurantCartPath } from "@/lib/urls";
+import { storageImageUrl } from "@/lib/media";
 
 export default function MenuStep() {
+  const router = useRouter();
   const {
     restaurant,
     qty,
@@ -21,6 +24,11 @@ export default function MenuStep() {
   const [activeCategoryId, setActiveCategoryId] = useState(
     () => categories[0]?.id ?? "",
   );
+
+  // Prefetch cart route while user is browsing — next click feels instant
+  useEffect(() => {
+    router.prefetch(getRestaurantCartPath(restaurant.slug));
+  }, [router, restaurant.slug]);
 
   const activeCategory = useMemo(() => {
     return (
@@ -58,7 +66,7 @@ export default function MenuStep() {
 
       {/* Horizontal category tabs */}
       <nav
-        className="sticky top-[7.25rem] z-10 -mx-1 flex gap-2 overflow-x-auto bg-slate-100/95 px-1 py-2 backdrop-blur-sm [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="sticky top-[7.25rem] z-10 -mx-1 flex gap-2 overflow-x-auto bg-slate-100 px-1 py-2 md:bg-slate-100/95 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         aria-label="Menyu kateqoriyaları"
       >
         {categories.map((cat) => {
@@ -110,8 +118,19 @@ export default function MenuStep() {
                 {item.image_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={item.image_url}
+                    src={
+                      storageImageUrl(item.image_url, {
+                        width: 112,
+                        height: 112,
+                        quality: 70,
+                        resize: "cover",
+                      }) ?? item.image_url
+                    }
                     alt={item.name}
+                    loading="lazy"
+                    decoding="async"
+                    width={56}
+                    height={56}
                     className="size-14 shrink-0 rounded-xl object-cover"
                   />
                 ) : null}
@@ -179,6 +198,8 @@ export default function MenuStep() {
         {cartCount > 0 ? (
           <Link
             href={getRestaurantCartPath(restaurant.slug)}
+            prefetch
+            scroll={false}
             className="flex w-full items-center justify-center rounded-full bg-sky-500 py-3.5 text-sm font-black text-white transition hover:bg-sky-400 active:scale-[0.98]"
           >
             Səbətə bax →

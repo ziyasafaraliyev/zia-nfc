@@ -1,6 +1,3 @@
-import PortfolioSection from "@/components/portfolio-section";
-import QrCodeModal from "@/components/qr-code-modal";
-import ReservationButton from "@/components/reservation-button";
 import type { Profile } from "@/lib/types";
 import { getProfileVcardPath } from "@/lib/urls";
 import {
@@ -22,7 +19,23 @@ import {
   Youtube,
   Star,
 } from "lucide-react";
+import dynamic from "next/dynamic";
+import Image from "next/image";
 import Link from "next/link";
+import SmartImage from "@/components/smart-image";
+
+/** Interactive islands — separate chunks, not on critical first paint path */
+const PortfolioSection = dynamic(
+  () => import("@/components/portfolio-section"),
+  { loading: () => null },
+);
+const QrCodeModal = dynamic(() => import("@/components/qr-code-modal"), {
+  loading: () => null,
+});
+const ReservationButton = dynamic(
+  () => import("@/components/reservation-button"),
+  { loading: () => null },
+);
 
 type Props = {
   profile: Profile;
@@ -55,12 +68,13 @@ export default function ProfilePageView({
 
   const coverStyle = profile.cover_style ?? "auto";
   const coverPosition = profile.cover_position ?? "center";
+  /** Slightly shorter covers on small phones → less paint + smaller LCP surface */
   const coverH =
     coverStyle === "banner"
-      ? "h-52"
+      ? "h-44 sm:h-52"
       : coverStyle === "square"
-        ? "h-[30rem]"
-        : "h-[24rem]";
+        ? "h-[22rem] sm:h-[30rem]"
+        : "h-[18rem] sm:h-[24rem]";
   const objPos =
     coverPosition === "top"
       ? "object-top"
@@ -94,11 +108,14 @@ export default function ProfilePageView({
         >
           {profile.background_url ? (
             <>
-              <img
+              <SmartImage
                 src={profile.background_url}
                 alt=""
                 role="presentation"
-                className={`absolute inset-0 h-full w-full object-cover ${objPos} opacity-70`}
+                fill
+                priority
+                sizes="(max-width: 440px) 100vw, 440px"
+                className={`object-cover ${objPos} opacity-70`}
               />
               <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/60" />
             </>
@@ -109,9 +126,11 @@ export default function ProfilePageView({
               href="/"
               className="lux-badge flex items-center gap-1.5 rounded-full px-2 py-1.5 pr-3"
             >
-              <img
+              <Image
                 src="/logo.webp"
                 alt="Zia NFC"
+                width={18}
+                height={18}
                 className="size-[18px] rounded-full object-cover"
               />
               <span className="text-[9px] font-black uppercase tracking-[0.22em] text-white/90">
@@ -126,9 +145,13 @@ export default function ProfilePageView({
             {profile.avatar_url ? (
               <div className="-mt-16 shrink-0 relative z-10">
                 <div className="lux-avatar-ring p-[3px] rounded-[1.7rem]">
-                  <img
+                  <SmartImage
                     src={profile.avatar_url}
                     alt={profile.name}
+                    width={112}
+                    height={112}
+                    priority
+                    sizes="112px"
                     className="size-[7rem] rounded-[1.55rem] object-cover"
                   />
                 </div>
@@ -441,9 +464,11 @@ export default function ProfilePageView({
         <div className="lux-footer-divider" />
         <div className="mt-2 flex items-center gap-1.5">
           <Link href="/" className="flex items-center gap-1.5">
-            <img
+            <Image
               src="/logo.webp"
               alt="Zia NFC"
+              width={16}
+              height={16}
               className="size-4 rounded-full object-cover opacity-60"
             />
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-gray-400">
@@ -469,12 +494,13 @@ export default function ProfilePageView({
         }}
       />
 
-      <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="lux-orb-1 absolute -top-32 left-1/2 -translate-x-1/2 h-[40rem] w-[40rem] rounded-full" />
+      {/* Ambient decor only on md+ — mobile paint path stays light for NFC opens */}
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 z-0 hidden overflow-hidden md:block"
+      >
+        <div className="lux-orb-1 absolute -top-32 left-1/2 h-[40rem] w-[40rem] -translate-x-1/2 rounded-full" />
         <div className="lux-orb-2 absolute right-[-15%] top-[20%] h-[28rem] w-[28rem] rounded-full" />
-        <div className="lux-orb-3 absolute bottom-[-8%] left-[-12%] h-[32rem] w-[32rem] rounded-full" />
-        <div className="lux-grid absolute inset-0" />
-        <div className="lux-noise absolute inset-0 opacity-[0.03]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-[440px] px-4 py-6 pb-16">

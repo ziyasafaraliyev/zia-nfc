@@ -14,10 +14,11 @@ import {
   Sparkles,
   UserPlus,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
-import NfcCardShowcase from "@/components/nfc-card-showcase";
 import LandingHeroMockup from "@/components/landing-hero-mockup";
 import LandingNavbar from "@/components/landing-navbar";
+import NfcCardShowcase from "@/components/nfc-card-showcase";
 import { ProfileShowcase } from "@/components/landing-phone-profile";
 
 const features = [
@@ -180,7 +181,7 @@ export default function LandingPage() {
               {metrics.map(([value, label]) => (
                 <div
                   key={label}
-                  className="rounded-2xl border border-slate-200 bg-white/70 p-4 shadow-sm backdrop-blur"
+                  className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:bg-white/70"
                 >
                   <p className="text-2xl font-black tracking-tight text-slate-950">
                     {value}
@@ -197,7 +198,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
+      <section className="perf-cv bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[0.94fr_1.06fr]">
           <ProfileShowcase />
           <div>
@@ -234,7 +235,7 @@ export default function LandingPage() {
 
       <NfcCardShowcase />
 
-      <section id="nfc-products" className="bg-white px-4 py-20 sm:px-6 lg:px-8">
+      <section id="nfc-products" className="perf-cv bg-white px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-700">
             Məhsullar
@@ -254,11 +255,12 @@ export default function LandingPage() {
               >
                 <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
                   {product.image ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
+                    <Image
                       src={product.image}
                       alt={product.title}
-                      className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover transition duration-300 group-hover:scale-105"
                     />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center text-slate-300">
@@ -488,10 +490,11 @@ export default function LandingPage() {
         <div className="mx-auto flex max-w-7xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div>
             <div className="flex items-center gap-2.5 text-base font-black uppercase tracking-[0.24em] text-sky-300">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src="/logo.webp"
                 alt="Zia NFC"
+                width={36}
+                height={36}
                 className="size-9 rounded-full object-cover"
               />
               Zia NFC

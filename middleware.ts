@@ -28,6 +28,24 @@ export function middleware(request: NextRequest) {
     return new NextResponse("Method Not Allowed", { status: 405 });
   }
 
+  /**
+   * Public NFC profile routes: skip redundant header work.
+   * Security headers already come from next.config — this saves edge latency
+   * on the hottest path (customer opens profile after card tap).
+   */
+  const isPublicProfile =
+    pathname.startsWith("/u/") ||
+    pathname.startsWith("/r/") ||
+    // short slug path e.g. /zaur (single segment, not reserved)
+    (/^\/[a-z0-9-]+\/?$/i.test(pathname) &&
+      !["/admin", "/pay", "/restoran", "/api"].some((p) =>
+        pathname.startsWith(p),
+      ));
+
+  if (isPublicProfile && (method === "GET" || method === "HEAD")) {
+    return NextResponse.next();
+  }
+
   const response = NextResponse.next();
 
   // Defense-in-depth headers (also set in next.config; middleware covers edge cases)

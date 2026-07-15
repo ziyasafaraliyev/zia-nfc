@@ -3,16 +3,16 @@ import {
   renderOrderStep,
 } from "@/lib/restaurant-order-page";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 120;
 
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
-  return generateOrderMetadata(slug, "sebet");
+  return generateOrderMetadata(slug, "menyu");
 }
 
-export default async function RestaurantCartPage({ params }: Props) {
+export default async function RestaurantMenuPage({ params }: Props) {
   const { slug } = await params;
-  return renderOrderStep(slug, "sebet");
+  return renderOrderStep(slug, "menyu");
 }

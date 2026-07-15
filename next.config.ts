@@ -48,6 +48,23 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  images: {
+    formats: ["image/avif", "image/webp"],
+    deviceSizes: [640, 750, 828, 1080, 1200],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.supabase.co",
+        pathname: "/storage/v1/object/public/**",
+      },
+      {
+        protocol: "https",
+        hostname: "ilwloubhfkcewjfkbgbs.supabase.co",
+        pathname: "/storage/v1/object/public/**",
+      },
+    ],
+  },
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion"],
     serverActions: {
@@ -80,6 +97,17 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        // Public static brand assets — long cache
+        source: "/:file(logo|favicon|logo-pay|favicon-pay|ziya|vizit-kart|stiker|masa-standi).webp",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      // NOTE: do not set Cache-Control on /u or /r HTML — breaks App Router RSC/navigation
     ];
   },
 };

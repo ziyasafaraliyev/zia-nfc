@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Check, Minus, Plus, ShoppingCart } from "lucide-react";
 import { useRestaurantCart } from "@/components/restaurant-order/RestaurantCartContext";
 import OrderFeeReceipt from "@/components/restaurant-order/OrderFeeReceipt";
@@ -10,6 +12,7 @@ import {
 } from "@/lib/urls";
 
 export default function PayStep() {
+  const router = useRouter();
   const {
     restaurant,
     cartLines,
@@ -28,10 +31,14 @@ export default function PayStep() {
     hydrated,
   } = useRestaurantCart();
 
+  useEffect(() => {
+    router.prefetch(getRestaurantDonePath(restaurant.slug));
+  }, [router, restaurant.slug]);
+
   if (!hydrated) {
     return (
-      <div className="rounded-[1.75rem] border border-slate-200 bg-white p-10 text-center text-sm font-semibold text-slate-400 shadow-sm">
-        Ödəniş yüklənir…
+      <div className="rounded-[1.75rem] border border-slate-200 bg-white p-8 text-center text-sm font-semibold text-slate-400 shadow-sm">
+        …
       </div>
     );
   }
@@ -46,6 +53,8 @@ export default function PayStep() {
         </p>
         <Link
           href={getRestaurantMenuPath(restaurant.slug)}
+          prefetch
+          scroll={false}
           className="rounded-full bg-sky-500 px-6 py-3 text-sm font-black text-white"
         >
           Menyuya qayıt
@@ -242,6 +251,8 @@ export default function PayStep() {
       {canPay ? (
         <Link
           href={getRestaurantDonePath(restaurant.slug)}
+          prefetch
+          scroll={false}
           className="flex w-full items-center justify-center rounded-full bg-sky-500 py-4 text-sm font-black text-white shadow-[0_14px_35px_rgba(14,165,233,0.3)] transition hover:bg-sky-400 active:scale-[0.98]"
         >
           {formatPrice(payGrandTotal)} ödə →

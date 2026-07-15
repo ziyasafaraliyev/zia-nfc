@@ -15,14 +15,14 @@ export default function Hero() {
     <section className="hero-gradient relative overflow-x-clip border-b border-slate-200/70 px-4 pb-16 pt-28 sm:px-6 md:pt-32 lg:px-8 lg:pb-20">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/70 to-transparent" />
       <div
-        className="pointer-events-none absolute -right-32 -top-32 h-[420px] w-[420px] rounded-full opacity-40 blur-3xl"
+        className="pointer-events-none absolute -right-32 -top-32 hidden h-[420px] w-[420px] rounded-full opacity-40 blur-3xl md:block"
         style={{
           background:
             "radial-gradient(circle, rgba(14,165,233,0.35) 0%, transparent 70%)",
         }}
       />
       <div
-        className="pointer-events-none absolute -left-24 bottom-0 h-[320px] w-[320px] rounded-full opacity-30 blur-3xl"
+        className="pointer-events-none absolute -left-24 bottom-0 hidden h-[320px] w-[320px] rounded-full opacity-30 blur-3xl md:block"
         style={{
           background:
             "radial-gradient(circle, rgba(41,174,238,0.25) 0%, transparent 70%)",
@@ -30,7 +30,7 @@ export default function Hero() {
       />
 
       <div className="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10 xl:gap-16">
-        <div className="animate-fade-up">
+        <div className="md:animate-fade-up">
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-sky-200/70 bg-sky-50 px-3.5 py-2 text-sm font-bold text-sky-800">
             <Sparkles size={16} className="text-sky-500" />
             Premium NFC · QR · Menyu · Ödəniş
@@ -74,7 +74,7 @@ export default function Hero() {
             {metrics.map((s) => (
               <div
                 key={s.label}
-                className="rounded-2xl border border-slate-200 bg-white/70 p-3 shadow-sm backdrop-blur sm:p-4"
+                className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-4 md:bg-white/70"
               >
                 <p className="text-base font-black tracking-tight text-slate-950 sm:text-xl md:text-2xl">
                   {s.value}
@@ -88,15 +88,15 @@ export default function Hero() {
         </div>
 
         {/* Phone mockup — zia-nfc stilində sabit ölçülü frame */}
-        <div className="animate-fade-up delay-200 relative mx-auto w-full max-w-[340px] sm:max-w-[380px] lg:mx-0 lg:ml-auto lg:max-w-[420px]">
+        <div className="relative mx-auto w-full max-w-[340px] md:animate-fade-up md:delay-200 sm:max-w-[380px] lg:mx-0 lg:ml-auto lg:max-w-[420px]">
           {/* Floating badge — top left */}
-          <div className="absolute left-0 top-6 z-20 hidden items-center rounded-full border border-slate-200 bg-white/90 px-3.5 py-2 text-sm font-bold text-slate-600 shadow-sm backdrop-blur sm:flex">
+          <div className="absolute left-0 top-6 z-20 hidden items-center rounded-full border border-slate-200 bg-white/90 px-3.5 py-2 text-sm font-bold text-slate-600 shadow-sm sm:flex">
             <Zap className="mr-2 shrink-0 text-sky-500" size={15} />
             NFC / QR oxundu
           </div>
 
-          {/* Phone */}
-          <div className="float-anim relative z-10 flex justify-center pt-4 sm:justify-end sm:pt-8 sm:pr-2">
+          {/* Phone — float only from md up */}
+          <div className="relative z-10 flex justify-center pt-4 md:float-anim sm:justify-end sm:pt-8 sm:pr-2">
             <PhoneFrame>
               <PhoneMenuScreen />
             </PhoneFrame>

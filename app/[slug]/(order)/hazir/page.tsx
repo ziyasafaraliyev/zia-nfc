@@ -6,27 +6,23 @@ import {
   renderOrderStep,
 } from "@/lib/restaurant-order-page";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 120;
 
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
   const restaurant = await getRestaurantBySlug(slug);
-  if (restaurant) return generateOrderMetadata(slug, "sebet");
+  if (restaurant) return generateOrderMetadata(slug, "hazir");
   return {
-    title: "Səbət | Zia NFC",
+    title: "Hazır | Zia NFC",
     robots: { index: false, follow: false },
   };
 }
 
-export default async function CombinedCartPage({ params }: Props) {
+export default async function CombinedDonePage({ params }: Props) {
   const { slug } = await params;
   const profile = await getProfileBySlug(slug);
   if (profile?.enabled) notFound();
-
-  const restaurant = await getRestaurantBySlug(slug);
-  if (restaurant?.enabled) return renderOrderStep(slug, "sebet");
-
-  return notFound();
+  return renderOrderStep(slug, "hazir");
 }

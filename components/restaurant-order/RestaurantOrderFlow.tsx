@@ -1,9 +1,10 @@
 "use client";
 
-import {
-  RestaurantCartProvider,
-} from "@/components/restaurant-order/RestaurantCartContext";
-import RestaurantOrderChrome from "@/components/restaurant-order/RestaurantOrderChrome";
+/**
+ * @deprecated Order steps use RestaurantOrderShell in (order)/layout.
+ * Kept as thin re-export for any residual imports.
+ */
+import RestaurantOrderShell from "@/components/restaurant-order/RestaurantOrderShell";
 import MenuStep from "@/components/restaurant-order/steps/MenuStep";
 import CartStep from "@/components/restaurant-order/steps/CartStep";
 import PayStep from "@/components/restaurant-order/steps/PayStep";
@@ -20,13 +21,11 @@ type Props = {
 
 export default function RestaurantOrderFlow({ restaurant, step }: Props) {
   return (
-    <RestaurantCartProvider restaurant={restaurant}>
-      <RestaurantOrderChrome restaurant={restaurant} step={step}>
-        {step === "menyu" ? <MenuStep /> : null}
-        {step === "sebet" ? <CartStep /> : null}
-        {step === "ode" ? <PayStep /> : null}
-        {step === "hazir" ? <DoneStep /> : null}
-      </RestaurantOrderChrome>
-    </RestaurantCartProvider>
+    <RestaurantOrderShell restaurant={restaurant}>
+      {step === "menyu" ? <MenuStep /> : null}
+      {step === "sebet" ? <CartStep /> : null}
+      {step === "ode" ? <PayStep /> : null}
+      {step === "hazir" ? <DoneStep /> : null}
+    </RestaurantOrderShell>
   );
 }

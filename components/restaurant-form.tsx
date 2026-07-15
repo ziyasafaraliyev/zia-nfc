@@ -36,8 +36,8 @@ function getSocialPlaceholder(key: keyof typeof socialBaseUrls) {
   }
 }
 
-// Canvas-based client-side image compression function (preserves PNG transparency)
-async function compressImage(file: File, maxWidth = 1200, quality = 0.75): Promise<File> {
+/** Client pre-compress → always WebP (server also stores as .webp). */
+async function compressImage(file: File, maxWidth = 1200, quality = 0.82): Promise<File> {
   return new Promise((resolve) => {
     if (!file.type.startsWith("image/") || file.type === "image/gif") {
       return resolve(file);
@@ -66,18 +66,21 @@ async function compressImage(file: File, maxWidth = 1200, quality = 0.75): Promi
 
         ctx.drawImage(img, 0, 0, width, height);
 
-        const mimeType = file.type;
+        const mimeType = "image/webp";
+        const baseName =
+          file.name.substring(0, file.name.lastIndexOf(".")) || file.name || "image";
+        const newFileName = `${baseName}.webp`;
         canvas.toBlob(
           (blob) => {
             if (!blob) return resolve(file);
-            const compressedFile = new File([blob], file.name, {
+            const compressedFile = new File([blob], newFileName, {
               type: mimeType,
               lastModified: Date.now(),
             });
             resolve(compressedFile);
           },
           mimeType,
-          mimeType === "image/jpeg" || mimeType === "image/webp" ? quality : undefined
+          quality,
         );
       };
       img.onerror = () => resolve(file);
@@ -110,7 +113,7 @@ export default function RestaurantForm({ restaurant, userRole = "super_admin" }:
     try {
       const avatarFile = formData.get("avatar") as File | null;
       if (avatarFile && avatarFile.size > 0 && !removeAvatar) {
-        const compressed = await compressImage(avatarFile);
+        const compressed = await compressImage(avatarFile, 800, 0.84);
         formData.set("avatar", compressed);
       } else if (removeAvatar) {
         formData.delete("avatar");
@@ -118,7 +121,7 @@ export default function RestaurantForm({ restaurant, userRole = "super_admin" }:
 
       const coverFile = formData.get("cover") as File | null;
       if (coverFile && coverFile.size > 0 && !removeCover) {
-        const compressed = await compressImage(coverFile);
+        const compressed = await compressImage(coverFile, 1600, 0.8);
         formData.set("cover", compressed);
       } else if (removeCover) {
         formData.delete("cover");
@@ -127,7 +130,7 @@ export default function RestaurantForm({ restaurant, userRole = "super_admin" }:
       formData.delete("galleryFiles");
       for (const item of selectedGalleryFiles) {
         if (item.file) {
-          const compressed = await compressImage(item.file);
+          const compressed = await compressImage(item.file, 1400, 0.8);
           formData.append("galleryFiles", compressed);
         }
       }

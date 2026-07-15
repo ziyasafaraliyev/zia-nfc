@@ -1,10 +1,15 @@
 import ProfilePageView from "@/components/profile-page-view";
+import { profileAvatarSrc, profileCoverSrc } from "@/lib/media";
 import { getProfileBySlug } from "@/lib/profiles";
 import { getProfileUrl } from "@/lib/urls";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-export const dynamic = "force-dynamic";
+/**
+ * Long ISR window — admin save uses revalidatePath + revalidateTag.
+ * Cold NFC taps hit CDN/edge cache when available.
+ */
+export const revalidate = 300;
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -21,7 +26,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = `${profile.name}${profile.profession ? ` — ${profile.profession}` : ""}`;
   const description =
     profile.bio || `${profile.name} rəqəmsal profil, portfolio və əlaqə.`;
-  const image = profile.avatar_url || profile.background_url || undefined;
+  const ogImage =
+    profileAvatarSrc(profile.avatar_url) ||
+    profileCoverSrc(profile.background_url) ||
+    undefined;
+
   return {
     title,
     description,
@@ -32,24 +41,34 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: profileUrl,
       siteName: "Zia NFC",
       type: "profile",
-      images: image ? [{ url: image, alt: profile.name }] : undefined,
+      images: ogImage ? [{ url: ogImage, alt: profile.name }] : undefined,
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: image ? [image] : undefined,
+      images: ogImage ? [ogImage] : undefined,
     },
   };
 }
 
 export default async function ProfilePage({ params }: Props) {
   const { slug } = await params;
+  // Same request as generateMetadata — React cache() dedupes Supabase call
   const profile = await getProfileBySlug(slug);
   if (!profile || !profile.enabled) notFound();
 
   const profileUrl = getProfileUrl(profile.slug);
   const qrUrl = `/u/${profile.slug}/qr`;
+
+  // CDN-resized media for fast LCP on mobile NFC open
+  const avatarSrc = profileAvatarSrc(profile.avatar_url);
+  const coverSrc = profileCoverSrc(profile.background_url);
+  const fastProfile = {
+    ...profile,
+    avatar_url: avatarSrc ?? profile.avatar_url,
+    background_url: coverSrc ?? profile.background_url,
+  };
 
   const sameAs = [
     profile.instagram,
@@ -75,18 +94,36 @@ export default async function ProfilePage({ params }: Props) {
     jobTitle: profile.profession ?? undefined,
     description: profile.bio ?? undefined,
     url: profileUrl,
-    image: profile.avatar_url ?? undefined,
+    image: avatarSrc ?? profile.avatar_url ?? undefined,
     telephone: profile.phone ?? profile.whatsapp ?? undefined,
     address: profile.location ?? undefined,
     sameAs,
   };
 
+  const lcpPreload = avatarSrc || coverSrc;
+
   return (
-    <ProfilePageView
-      profile={profile}
-      profileUrl={profileUrl}
-      qrUrl={qrUrl}
-      jsonLd={jsonLd}
-    />
+    <>
+      {/* Early connection + LCP image hint for phone browsers */}
+      {process.env.NEXT_PUBLIC_SUPABASE_URL ? (
+        <>
+          <link
+            rel="preconnect"
+            href={process.env.NEXT_PUBLIC_SUPABASE_URL}
+            crossOrigin="anonymous"
+          />
+          <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_SUPABASE_URL} />
+        </>
+      ) : null}
+      {lcpPreload ? (
+        <link rel="preload" as="image" href={lcpPreload} fetchPriority="high" />
+      ) : null}
+      <ProfilePageView
+        profile={fastProfile}
+        profileUrl={profileUrl}
+        qrUrl={qrUrl}
+        jsonLd={jsonLd}
+      />
+    </>
   );
 }

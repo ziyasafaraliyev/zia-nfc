@@ -26,10 +26,11 @@ export default function RestaurantOrderChrome({
 
   return (
     <div className="min-h-screen bg-slate-100">
-      <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white md:bg-white/90 md:backdrop-blur-xl">
         <div className="mx-auto flex max-w-lg items-center justify-between gap-3 px-4 py-3">
           <Link
             href={getRestaurantPath(restaurant.slug)}
+            prefetch
             className="group inline-flex min-w-0 shrink items-center gap-2 transition hover:-translate-y-0.5"
           >
             {restaurant.avatar_url ? (
@@ -37,6 +38,9 @@ export default function RestaurantOrderChrome({
               <img
                 src={restaurant.avatar_url}
                 alt={restaurant.name}
+                width={36}
+                height={36}
+                decoding="async"
                 className="size-9 rounded-full object-cover shadow-md ring-2 ring-sky-400/40"
               />
             ) : (
@@ -44,6 +48,8 @@ export default function RestaurantOrderChrome({
               <img
                 src="/logo.webp"
                 alt="Zia"
+                width={36}
+                height={36}
                 className="size-9 rounded-full object-cover shadow-md ring-2 ring-sky-400/40"
               />
             )}
@@ -69,6 +75,8 @@ export default function RestaurantOrderChrome({
               <Link
                 key={s.id}
                 href={s.href}
+                prefetch
+                scroll={false}
                 className={`flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-black transition ${
                   isActive
                     ? "bg-slate-950 text-white shadow-md"
@@ -96,7 +104,7 @@ export default function RestaurantOrderChrome({
 
         <div className="h-1 bg-slate-100">
           <div
-            className="h-full bg-sky-500 transition-all duration-500"
+            className="h-full bg-sky-500 transition-all duration-300"
             style={{
               width: `${Math.max(0, (index / (steps.length - 1)) * 100)}%`,
             }}

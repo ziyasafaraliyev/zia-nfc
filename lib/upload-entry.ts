@@ -53,7 +53,7 @@ export function getUploadFileName(file: Blob, fallbackName?: string): string {
   if (file instanceof File && file.name) {
     return file.name;
   }
-  return fallbackName || `upload-${Date.now()}.jpg`;
+  return fallbackName || `upload-${Date.now()}.webp`;
 }
 
 export function getExtension(fileName: string): string {
@@ -81,14 +81,7 @@ export function isImageMime(mime: string): boolean {
   return mime.startsWith("image/") && mime !== "application/pdf";
 }
 
-export function safeImageExtension(fileName: string, mime: string): string {
-  const ext = getExtension(fileName);
-  if (IMAGE_EXTENSIONS.has(ext)) {
-    return ext === "jpeg" ? "jpg" : ext;
-  }
-
-  if (mime === "image/png") return "png";
-  if (mime === "image/webp") return "webp";
-  if (mime === "image/gif") return "gif";
-  return "jpg";
+/** Stored raster images are always WebP — keep helper for callers that need a safe ext. */
+export function safeImageExtension(_fileName: string, _mime: string): string {
+  return "webp";
 }

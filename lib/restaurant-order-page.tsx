@@ -1,8 +1,11 @@
 import { getRestaurantBySlug } from "@/lib/restaurants";
-import { toOrderRestaurantPayload, type OrderStepId } from "@/lib/restaurant-order";
+import type { OrderStepId } from "@/lib/restaurant-order";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import RestaurantOrderFlow from "@/components/restaurant-order/RestaurantOrderFlow";
+import CartStep from "@/components/restaurant-order/steps/CartStep";
+import DoneStep from "@/components/restaurant-order/steps/DoneStep";
+import MenuStep from "@/components/restaurant-order/steps/MenuStep";
+import PayStep from "@/components/restaurant-order/steps/PayStep";
 
 const stepMeta: Record<
   OrderStepId,
@@ -51,14 +54,21 @@ export async function generateOrderMetadata(
   };
 }
 
+/** Thin step body — shell/layout owns cart + chrome */
 export async function renderOrderStep(slug: string, step: OrderStepId) {
   const restaurant = await getRestaurantBySlug(slug);
   if (!restaurant || !restaurant.enabled) notFound();
 
-  return (
-    <RestaurantOrderFlow
-      restaurant={toOrderRestaurantPayload(restaurant)}
-      step={step}
-    />
-  );
+  switch (step) {
+    case "menyu":
+      return <MenuStep />;
+    case "sebet":
+      return <CartStep />;
+    case "ode":
+      return <PayStep />;
+    case "hazir":
+      return <DoneStep />;
+    default:
+      notFound();
+  }
 }

@@ -53,12 +53,10 @@ function getSocialPlaceholder(key: keyof typeof socialBaseUrls) {
   }
 }
 
-// Canvas-based client-side image compression function (preserves PNG transparency)
-async function compressImage(file: File, maxWidth = 1200, quality = 0.75): Promise<File> {
+/** Client pre-compress → always WebP (server also re-encodes to WebP). */
+async function compressImage(file: File, maxWidth = 1200, quality = 0.82): Promise<File> {
   return new Promise((resolve) => {
-    // If not an image or is a GIF, return unmodified
-    // If not an image, return unmodified
-    if (!file.type.startsWith("image/")) {
+    if (!file.type.startsWith("image/") || file.type === "image/gif") {
       return resolve(file);
     }
 
@@ -72,7 +70,6 @@ async function compressImage(file: File, maxWidth = 1200, quality = 0.75): Promi
         let width = img.width;
         let height = img.height;
 
-        // Resize dynamically
         if (width > maxWidth) {
           height = Math.round((height * maxWidth) / width);
           width = maxWidth;
@@ -87,21 +84,22 @@ async function compressImage(file: File, maxWidth = 1200, quality = 0.75): Promi
         ctx.drawImage(img, 0, 0, width, height);
 
         const targetMime = "image/webp";
-        // Rename original file extension to .webp
-        const baseName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+        const baseName =
+          file.name.substring(0, file.name.lastIndexOf(".")) || file.name || "image";
         const newFileName = `${baseName}.webp`;
 
         canvas.toBlob(
           (blob) => {
             if (!blob || blob.size === 0) return resolve(file);
-            const compressedFile = new File([blob], newFileName, {
-              type: targetMime,
-              lastModified: Date.now(),
-            });
-            resolve(compressedFile.size > 0 ? compressedFile : file);
+            resolve(
+              new File([blob], newFileName, {
+                type: targetMime,
+                lastModified: Date.now(),
+              }),
+            );
           },
           targetMime,
-          quality
+          quality,
         );
       };
       img.onerror = () => resolve(file);
@@ -285,19 +283,18 @@ export default function ProfileForm({
     const currentSections = sectionsRef.current;
 
     try {
-      // Handle avatar file compression
+      // Avatar / cover → WebP (client), then server re-encodes to .webp storage path
       const avatarFile = formData.get("avatar") as File | null;
       if (avatarFile && avatarFile.size > 0 && !removeAvatar) {
-        const compressed = await compressImage(avatarFile);
+        const compressed = await compressImage(avatarFile, 800, 0.84);
         formData.set("avatar", compressed);
       } else if (removeAvatar) {
         formData.delete("avatar");
       }
 
-      // Handle background file compression
       const backgroundFile = formData.get("background") as File | null;
       if (backgroundFile && backgroundFile.size > 0 && !removeBackground) {
-        const compressed = await compressImage(backgroundFile);
+        const compressed = await compressImage(backgroundFile, 1600, 0.8);
         formData.set("background", compressed);
       } else if (removeBackground) {
         formData.delete("background");

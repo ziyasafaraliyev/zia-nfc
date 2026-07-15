@@ -6,27 +6,23 @@ import {
   renderOrderStep,
 } from "@/lib/restaurant-order-page";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 120;
 
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
   const restaurant = await getRestaurantBySlug(slug);
-  if (restaurant) return generateOrderMetadata(slug, "menyu");
+  if (restaurant) return generateOrderMetadata(slug, "ode");
   return {
-    title: "Menyu tapılmadı | Zia NFC",
+    title: "Ödəniş | Zia NFC",
     robots: { index: false, follow: false },
   };
 }
 
-export default async function CombinedMenuPage({ params }: Props) {
+export default async function CombinedPayPage({ params }: Props) {
   const { slug } = await params;
   const profile = await getProfileBySlug(slug);
   if (profile?.enabled) notFound();
-
-  const restaurant = await getRestaurantBySlug(slug);
-  if (restaurant?.enabled) return renderOrderStep(slug, "menyu");
-
-  return notFound();
+  return renderOrderStep(slug, "ode");
 }
