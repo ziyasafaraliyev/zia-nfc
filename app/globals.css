@@ -503,9 +503,10 @@ a.dashboard-primary:hover {
 
 /* Typography — dark text for light background */
 .lux-overline {
-    font-family: Arial, Helvetica, sans-serif;
+    /* Profession: always Arial Bold across all themes */
+    font-family: Arial, Helvetica, sans-serif !important;
     font-size: 10px;
-    font-weight: 800;
+    font-weight: 700 !important;
     letter-spacing: 0.24em;
     text-transform: uppercase;
     color: #29AEEE;

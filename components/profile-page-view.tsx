@@ -177,7 +177,15 @@ export default function ProfilePageView({
             ) : null}
             <div className="pb-1 min-w-0">
               {profile.profession ? (
-                <p className="lux-overline truncate">{profile.profession}</p>
+                <p
+                  className="lux-overline truncate"
+                  style={{
+                    fontFamily: "Arial, Helvetica, sans-serif",
+                    fontWeight: 700,
+                  }}
+                >
+                  {profile.profession}
+                </p>
               ) : null}
               <h1 className="lux-name mt-1 leading-[1.1]">{profile.name}</h1>
             </div>
