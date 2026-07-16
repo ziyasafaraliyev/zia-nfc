@@ -88,11 +88,11 @@ const DEFAULT_SECTION_ORDER = [
   "actions",
   "socials",
   "save",
+  "referral", // after "Kontaktı yadda saxla" + e-poçt
   "location",
   "google_review",
   "cv",
   "reservation",
-  "referral",
   "portfolio",
   "catalog",
   "qr",
