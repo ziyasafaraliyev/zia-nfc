@@ -124,23 +124,21 @@ export default function ProfilePageView({
         className="lux-card lux-card-enter overflow-hidden rounded-b-[2.25rem] rounded-t-none template-hero-classic"
       >
         <div
-          className={`${profile.background_url ? "bg-[#1e1b4b]" : "lux-hero"} relative ${coverH} overflow-hidden`}
+          className={`${profile.background_url ? "bg-zinc-100" : "lux-hero"} relative ${coverH} overflow-hidden`}
         >
           {profile.background_url ? (
-            <>
-              <SmartImage
-                src={profile.background_url}
-                alt=""
-                role="presentation"
-                fill
-                priority
-                sizes="(max-width: 440px) 100vw, 440px"
-                className={`object-cover ${objPos} opacity-70`}
-              />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/60" />
-            </>
-          ) : null}
-          <div className="lux-cover-shimmer absolute inset-0" />
+            <SmartImage
+              src={profile.background_url}
+              alt=""
+              role="presentation"
+              fill
+              priority
+              sizes="(max-width: 440px) 100vw, 440px"
+              className={`object-cover ${objPos}`}
+            />
+          ) : (
+            <div className="lux-cover-shimmer absolute inset-0" />
+          )}
           <div className="absolute inset-x-4 top-4 flex items-center justify-between gap-2">
             <Link
               href="/"
