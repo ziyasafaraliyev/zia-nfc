@@ -8,7 +8,7 @@ import RestaurantMenuEditor from "@/components/restaurant-menu-editor";
 import type { Restaurant } from "@/lib/types";
 
 const inputClass =
-  "mt-1.5 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none backdrop-blur-sm transition duration-200 placeholder:text-slate-400 focus:border-[#29AEEE] focus:bg-white focus:ring-4 focus:ring-[#29AEEE]/20 font-[Outfit]";
+  "mt-1.5 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none backdrop-blur-sm transition duration-200 placeholder:text-slate-400 focus:border-[#29AEEE] focus:bg-white focus:ring-4 focus:ring-[#29AEEE]/20 font-sans";
 
 const socialBaseUrls = {
   instagram: "https://www.instagram.com/",
@@ -160,7 +160,7 @@ export default function RestaurantForm({ restaurant, userRole = "super_admin" }:
         });
       }}
       className="grid gap-5"
-      style={{ fontFamily: "'Outfit', sans-serif" }}
+      style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
     >
       <input type="hidden" name="id" value={restaurant?.id ?? ""} />
       <textarea name="gallery" className="hidden" readOnly value={existingGalleryUrls.join("\n")} />
@@ -604,7 +604,7 @@ export default function RestaurantForm({ restaurant, userRole = "super_admin" }:
       <button
         disabled={submitting}
         className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#29AEEE] px-5 py-3.5 text-sm font-bold text-white shadow-md shadow-[#29AEEE]/20 transition-all duration-200 hover:bg-[#1a9ad4] hover:shadow-lg hover:shadow-[#29AEEE]/25 active:scale-[0.96] disabled:bg-slate-300 disabled:shadow-none"
-        style={{ fontFamily: "'Outfit', sans-serif" }}
+        style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
       >
         <Save size={16} /> {submitting ? statusText : "Yadda Saxla"}
       </button>

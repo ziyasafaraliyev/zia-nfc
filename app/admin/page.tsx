@@ -43,7 +43,7 @@ type Props = {
 
 const inputClass =
   "mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none transition duration-200 placeholder:text-slate-400 focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/20" +
-  " font-[Outfit]"; 
+  " font-sans"; 
 const quietButtonClass =
   "grid size-11 place-items-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition duration-200 hover:border-[#29AEEE] hover:text-[#29AEEE] hover:bg-[#29AEEE]/5 active:scale-[0.96]";
 const viewProfileButtonClass =
@@ -110,7 +110,7 @@ export default async function AdminPage({ searchParams }: Props) {
     }
 
     return (
-      <main className="min-h-screen dashboard-bg px-4 py-6 text-slate-900 sm:px-6 lg:px-8" style={{ fontFamily: "'Outfit', sans-serif" }}>
+      <main className="min-h-screen dashboard-bg px-4 py-6 text-slate-900 sm:px-6 lg:px-8" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
         <div className="mx-auto max-w-3xl">
           {/* Top bar */}
           <header className="dashboard-surface rounded-[2.25rem] overflow-hidden">
@@ -193,7 +193,7 @@ export default async function AdminPage({ searchParams }: Props) {
   const disabledCount = profiles.length - enabledCount;
 
   return (
-    <main className="min-h-screen dashboard-bg px-4 py-6 text-slate-900 sm:px-6 lg:px-8" style={{ fontFamily: "'Outfit', sans-serif" }}>
+    <main className="min-h-screen dashboard-bg px-4 py-6 text-slate-900 sm:px-6 lg:px-8" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
       <div className="mx-auto max-w-7xl">
         {/* Top bar */}
         <header className="dashboard-surface rounded-[2.25rem] overflow-hidden">
@@ -207,7 +207,7 @@ export default async function AdminPage({ searchParams }: Props) {
 
               <h1
                 className="mt-4 text-3xl font-black tracking-[-0.03em] text-slate-900 sm:text-4xl"
-                style={{ fontFamily: "'Outfit', sans-serif", letterSpacing: "-0.03em" }}
+                style={{ fontFamily: "Arial, Helvetica, sans-serif", letterSpacing: "-0.03em" }}
               >
                 Super Admin
               </h1>
@@ -217,7 +217,7 @@ export default async function AdminPage({ searchParams }: Props) {
             </div>
 
             <div className="flex items-stretch gap-3 sm:flex-row sm:items-center">
-              <div className="hidden sm:flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-500" style={{ fontFamily: "'Outfit', sans-serif" }}>
+              <div className="hidden sm:flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-500" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
                 <span className="size-2 rounded-full"
                   style={{ background: hasSupabaseEnv() ? '#22c55e' : '#f59e0b' }}
                 />
@@ -225,7 +225,7 @@ export default async function AdminPage({ searchParams }: Props) {
               </div>
 
               <ServerActionForm action={logoutAdmin}>
-                <button className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 shadow-sm transition-all duration-200 hover:border-red-300 hover:text-red-500 hover:bg-red-50 active:scale-[0.98]" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                <button className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 shadow-sm transition-all duration-200 hover:border-red-300 hover:text-red-500 hover:bg-red-50 active:scale-[0.98]" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
                   <LogOut size={15} /> Çıxış
                 </button>
               </ServerActionForm>
@@ -278,7 +278,7 @@ export default async function AdminPage({ searchParams }: Props) {
                   </div>
                   <h2
                     className="mt-3 text-xl font-black tracking-tight text-slate-900"
-                    style={{ fontFamily: "'Outfit', sans-serif" }}
+                    style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
                   >
                     Yeni Profil Yarat
                   </h2>
@@ -303,7 +303,7 @@ export default async function AdminPage({ searchParams }: Props) {
                     </p>
                     <h2
                       className="mt-1.5 text-2xl font-black tracking-tight text-slate-900"
-                      style={{ fontFamily: "'Outfit', sans-serif" }}
+                      style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
                     >
                       Profillər
                     </h2>
@@ -327,7 +327,7 @@ export default async function AdminPage({ searchParams }: Props) {
                   </div>
                   <h3
                     className="mt-4 text-lg font-black tracking-tight text-slate-800"
-                    style={{ fontFamily: "'Outfit', sans-serif" }}
+                    style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
                   >
                     Hələ heç bir profil yoxdur
                   </h3>
@@ -388,7 +388,7 @@ function AlertBanner({
 
 function MiniMetric({ title, value }: { title: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-slate-100 bg-white px-4 py-3.5 shadow-sm" style={{ fontFamily: "'Outfit', sans-serif" }}>
+    <div className="rounded-2xl border border-slate-100 bg-white px-4 py-3.5 shadow-sm" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
       <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
         {title}
       </p>
@@ -411,7 +411,7 @@ function Stat({
   label: string;
 }) {
   return (
-    <div className="border-t border-slate-100 px-6 py-5 first:border-t-0 sm:border-l sm:border-t-0 sm:first:border-l-0 hover:bg-slate-50/70 transition-colors duration-200" style={{ fontFamily: "'Outfit', sans-serif" }}>
+    <div className="border-t border-slate-100 px-6 py-5 first:border-t-0 sm:border-l sm:border-t-0 sm:first:border-l-0 hover:bg-slate-50/70 transition-colors duration-200" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
       <div className="flex items-center gap-3">
         <div className="grid size-10 place-items-center rounded-xl bg-[#29AEEE]/10 border border-[#29AEEE]/15 text-[#29AEEE]">
           {icon}
@@ -460,17 +460,17 @@ function ProfileCard({
             )}
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <h3 className="truncate text-xl font-black tracking-tight text-slate-900" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                <h3 className="truncate text-xl font-black tracking-tight text-slate-900" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
                   {profile.name}
                 </h3>
                 <StatusBadge enabled={profile.enabled} />
               </div>
-              <p className="mt-1 truncate text-xs font-semibold text-slate-400" style={{ fontFamily: "'Outfit', sans-serif" }}>
+              <p className="mt-1 truncate text-xs font-semibold text-slate-400" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
                 /{profile.slug}
               </p>
 
               {profile.profession ? (
-                <p className="mt-1 text-xs font-semibold text-slate-500" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                <p className="mt-1 text-xs font-semibold text-slate-500" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
                   {profile.profession}
                 </p>
               ) : null}
@@ -528,7 +528,7 @@ function ProfileCard({
       </div>
 
       <details className="group border-t border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-colors duration-200">
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 text-xs font-bold text-slate-600 transition sm:px-6" style={{ fontFamily: "'Outfit', sans-serif" }}>
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 text-xs font-bold text-slate-600 transition sm:px-6" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
           <span className="inline-flex items-center gap-2">
             <WandSparkles size={15} className="text-[#29AEEE]" /> Profili Redaktə Et
           </span>
@@ -581,16 +581,16 @@ function Login({ error, redirectTo }: { error?: string, redirectTo?: string }) {
             <LockKeyhole size={20} />
           </div>
         </div>
-        <p className="mt-5 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400" style={{ fontFamily: "'Outfit', sans-serif" }}>
+        <p className="mt-5 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
           Admin Girişi
         </p>
         <h1
           className="mt-2 text-2xl font-black tracking-tight text-slate-900"
-          style={{ fontFamily: "'Outfit', sans-serif" }}
+          style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
         >
           Zia NFC Panel
         </h1>
-        <p className="mt-1.5 text-xs leading-relaxed text-slate-400 font-medium" style={{ fontFamily: "'Outfit', sans-serif" }}>
+        <p className="mt-1.5 text-xs leading-relaxed text-slate-400 font-medium" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
           {redirectTo === "/restoran" 
             ? "Restoranları idarə etmək üçün daxil olun."
             : "Müştəri profillərini idarə etmək üçün daxil olun."}
@@ -603,7 +603,7 @@ function Login({ error, redirectTo }: { error?: string, redirectTo?: string }) {
               : "Email və ya şifrə yanlışdır."}
           </div>
         ) : null}
-        <label className="mt-6 block text-xs font-bold text-slate-600 uppercase tracking-wide" style={{ fontFamily: "'Outfit', sans-serif" }}>
+        <label className="mt-6 block text-xs font-bold text-slate-600 uppercase tracking-wide" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
           E-poçt
           <div className="relative">
             <Mail
@@ -619,7 +619,7 @@ function Login({ error, redirectTo }: { error?: string, redirectTo?: string }) {
             />
           </div>
         </label>
-        <label className="mt-4 block text-xs font-bold text-slate-600 uppercase tracking-wide" style={{ fontFamily: "'Outfit', sans-serif" }}>
+        <label className="mt-4 block text-xs font-bold text-slate-600 uppercase tracking-wide" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
           Şifrə
           <div className="relative">
             <LockKeyhole
@@ -635,7 +635,7 @@ function Login({ error, redirectTo }: { error?: string, redirectTo?: string }) {
             />
           </div>
         </label>
-        <button className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#29AEEE] px-5 py-3.5 text-sm font-bold text-white shadow-md shadow-[#29AEEE]/20 transition-all duration-200 active:scale-[0.96] relative overflow-hidden hover:bg-[#1a9ad4]" style={{ fontFamily: "'Outfit', sans-serif" }}>
+        <button className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#29AEEE] px-5 py-3.5 text-sm font-bold text-white shadow-md shadow-[#29AEEE]/20 transition-all duration-200 active:scale-[0.96] relative overflow-hidden hover:bg-[#1a9ad4]" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
           Daxil ol <ArrowUpRight size={17} />
         </button>
       </ServerActionForm>

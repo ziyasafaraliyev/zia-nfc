@@ -25,7 +25,7 @@ export default function RestaurantOrderChrome({
   const index = getOrderStepIndex(step);
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="min-h-screen bg-slate-100 font-sans">
       <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white md:bg-white/90 md:backdrop-blur-xl">
         <div className="mx-auto flex max-w-lg items-center justify-between gap-3 px-4 py-3">
           <Link

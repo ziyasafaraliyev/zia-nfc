@@ -23,8 +23,8 @@ const config: Config = {
         lift: "0 20px 60px rgba(15, 23, 42, 0.1)"
       },
       fontFamily: {
-        sans: ["var(--font-sans)", "Arial", "sans-serif"],
-        outfit: ["var(--font-outfit)", "system-ui", "sans-serif"],
+        sans: ["Arial", "Helvetica", "sans-serif"],
+        outfit: ["Arial", "Helvetica", "sans-serif"],
       }
     }
   },

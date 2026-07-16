@@ -102,7 +102,7 @@ export default function RestaurantMenuEditor({ initialMenu }: Props) {
   return (
     <div
       className="rounded-3xl border border-slate-200 bg-white p-5 space-y-4"
-      style={{ fontFamily: "'Outfit', sans-serif" }}
+      style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
     >
       <input type="hidden" name="menu_json" value={menuJson} readOnly />
 

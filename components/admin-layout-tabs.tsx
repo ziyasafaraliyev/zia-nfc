@@ -23,7 +23,7 @@ export default function AdminLayoutTabs({ createSection, listSection, profilesCo
               ? "border-[#29AEEE] text-[#29AEEE]"
               : "border-transparent text-slate-400 hover:text-slate-600"
           }`}
-          style={{ fontFamily: "'Outfit', sans-serif" }}
+          style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
         >
           <Plus size={16} />
           Yeni Profil Yarat
@@ -35,7 +35,7 @@ export default function AdminLayoutTabs({ createSection, listSection, profilesCo
               ? "border-[#29AEEE] text-[#29AEEE]"
               : "border-transparent text-slate-400 hover:text-slate-600"
           }`}
-          style={{ fontFamily: "'Outfit', sans-serif" }}
+          style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
         >
           <Users size={16} />
           Profil Siyahısı ({profilesCount})

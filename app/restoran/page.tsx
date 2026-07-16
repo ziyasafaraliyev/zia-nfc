@@ -66,7 +66,7 @@ export default async function DashboardPage({ searchParams }: Props) {
   const errorMessage = adminErrorMessage(params.error);
 
   return (
-    <main className="min-h-screen bg-[#f5f7fa] px-4 py-6 text-slate-900 sm:px-6 lg:px-8" style={{ fontFamily: "'Outfit', sans-serif" }}>
+    <main className="dashboard-bg min-h-screen px-4 py-6 text-slate-900 sm:px-6 lg:px-8" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
       <div className="mx-auto max-w-7xl">
         <header className="dashboard-surface rounded-[2.25rem] overflow-hidden">
           <div className="flex flex-col gap-5 p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between">
@@ -214,16 +214,16 @@ function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
             )}
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <h3 className="truncate text-xl font-black tracking-tight text-slate-900" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                <h3 className="truncate text-xl font-black tracking-tight text-slate-900" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
                   {restaurant.name}
                 </h3>
                 <StatusBadge enabled={restaurant.enabled} />
               </div>
-              <p className="mt-1 truncate text-xs font-semibold text-slate-400" style={{ fontFamily: "'Outfit', sans-serif" }}>
+              <p className="mt-1 truncate text-xs font-semibold text-slate-400" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
                 /{restaurant.slug}
               </p>
               {restaurant.location_name && (
-                <p className="mt-1 text-xs font-semibold text-slate-500" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                <p className="mt-1 text-xs font-semibold text-slate-500" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
                   {restaurant.location_name}
                 </p>
               )}
@@ -288,7 +288,7 @@ function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
       </div>
 
       <details className="group border-t border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-colors duration-200">
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 text-xs font-bold text-slate-600 transition sm:px-6" style={{ fontFamily: "'Outfit', sans-serif" }}>
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 text-xs font-bold text-slate-600 transition sm:px-6" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
           <span className="inline-flex items-center gap-2">
             <Edit size={15} className="text-[#29AEEE]" /> Restoranı Redaktə Et
           </span>
