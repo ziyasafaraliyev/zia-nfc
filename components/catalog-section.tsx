@@ -67,7 +67,7 @@ export default function CatalogSection({
       </button>
 
       {open ? (
-        <div className="max-h-64 space-y-1.5 overflow-y-auto">
+        <div className="space-y-1.5">
           {items.map((item) => (
             <a
               key={item.id}

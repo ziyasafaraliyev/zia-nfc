@@ -1040,7 +1040,7 @@ export default function ProfileForm({
             </button>
           </div>
         ) : (
-          <div className="max-h-[22rem] space-y-2 overflow-y-auto pr-0.5">
+          <div className="space-y-2">
             {catalogItems.map((item) => {
               const isExpanded = expandedCatalogId === item.id;
               const title = item.name.trim() || "Başlıqsız link";
