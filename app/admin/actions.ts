@@ -571,11 +571,11 @@ type UploadKind = "avatar" | "cover" | "gallery" | "other";
 function maxEdgeForKind(kind: UploadKind | undefined): number {
   switch (kind) {
     case "avatar":
-      return 800; // profil şəkli
+      return 1200; // profil şəkli — full frame, fit inside (no crop)
     case "cover":
-      return 1600; // cover / background
+      return 2000; // cover / background
     case "gallery":
-      return 1400;
+      return 1600;
     default:
       return 1600;
   }
@@ -592,18 +592,19 @@ async function encodeRasterToWebp(
   const maxEdge = opts?.maxEdge ?? 1600;
   let quality = opts?.quality ?? 82;
 
-  const base = sharp(input, { failOn: "none", animated: false }).rotate();
-  const meta = await base.metadata();
+  const meta = await sharp(input, { failOn: "none", animated: false })
+    .rotate()
+    .metadata();
+  const longestSide = Math.max(meta.width || 0, meta.height || 0);
 
   const build = (q: number) => {
+    // rotate() applies EXIF orientation first so phone photos are not skewed/cropped
     let pipeline = sharp(input, { failOn: "none", animated: false }).rotate();
-    if (
-      maxEdge > 0 &&
-      meta.width &&
-      meta.height &&
-      (meta.width > maxEdge || meta.height > maxEdge)
-    ) {
-      pipeline = pipeline.resize(maxEdge, maxEdge, {
+    if (maxEdge > 0 && longestSide > maxEdge) {
+      // "inside" = scale to fit maxEdge, keep aspect ratio, NEVER crop/zoom
+      pipeline = pipeline.resize({
+        width: maxEdge,
+        height: maxEdge,
         fit: "inside",
         withoutEnlargement: true,
       });
@@ -689,7 +690,12 @@ async function uploadFile(
     try {
       const webpBuffer = await encodeRasterToWebp(buffer, {
         maxEdge: maxEdgeForKind(options?.kind),
-        quality: options?.kind === "avatar" ? 84 : 80,
+        quality:
+          options?.kind === "avatar"
+            ? 88
+            : options?.kind === "cover"
+              ? 86
+              : 82,
       });
       fileToUpload = webpBuffer;
       contentType = "image/webp";

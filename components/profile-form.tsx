@@ -61,59 +61,104 @@ function getSocialPlaceholder(key: keyof typeof socialBaseUrls) {
   }
 }
 
-/** Client pre-compress → always WebP (server also re-encodes to WebP). */
-async function compressImage(file: File, maxWidth = 1200, quality = 0.82): Promise<File> {
-  return new Promise((resolve) => {
-    if (!file.type.startsWith("image/") || file.type === "image/gif") {
-      return resolve(file);
+/**
+ * Client pre-compress → WebP (server also re-encodes with sharp + EXIF rotate).
+ * Uses max EDGE (not only width) so tall/portrait photos are not left huge,
+ * and createImageBitmap imageOrientation so phone EXIF is applied (avoids
+ * "zoomed/cropped" wrong orientation after WebP convert).
+ */
+async function compressImage(
+  file: File,
+  maxEdge = 1600,
+  quality = 0.85,
+): Promise<File> {
+  if (!file.type.startsWith("image/") || file.type === "image/gif") {
+    return file;
+  }
+
+  try {
+    let sourceWidth = 0;
+    let sourceHeight = 0;
+    let drawSource: CanvasImageSource | null = null;
+    let bitmap: ImageBitmap | null = null;
+
+    if (typeof createImageBitmap === "function") {
+      try {
+        bitmap = await createImageBitmap(file, {
+          // Respect EXIF orientation from phone cameras
+          imageOrientation: "from-image",
+        } as ImageBitmapOptions);
+        sourceWidth = bitmap.width;
+        sourceHeight = bitmap.height;
+        drawSource = bitmap;
+      } catch {
+        bitmap = null;
+      }
     }
 
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = (event) => {
-      const img = new Image();
-      img.src = event.target?.result as string;
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        let width = img.width;
-        let height = img.height;
+    if (!drawSource) {
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ""));
+        reader.onerror = () => reject(new Error("read failed"));
+        reader.readAsDataURL(file);
+      });
+      const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+        const el = new Image();
+        el.onload = () => resolve(el);
+        el.onerror = () => reject(new Error("decode failed"));
+        el.src = dataUrl;
+      });
+      sourceWidth = img.naturalWidth || img.width;
+      sourceHeight = img.naturalHeight || img.height;
+      drawSource = img;
+    }
 
-        if (width > maxWidth) {
-          height = Math.round((height * maxWidth) / width);
-          width = maxWidth;
-        }
+    if (!sourceWidth || !sourceHeight || !drawSource) {
+      bitmap?.close();
+      return file;
+    }
 
-        canvas.width = width;
-        canvas.height = height;
+    // Scale by longest side — keeps full frame, no center crop
+    const longest = Math.max(sourceWidth, sourceHeight);
+    const scale = longest > maxEdge ? maxEdge / longest : 1;
+    const width = Math.max(1, Math.round(sourceWidth * scale));
+    const height = Math.max(1, Math.round(sourceHeight * scale));
 
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return resolve(file);
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      bitmap?.close();
+      return file;
+    }
 
-        ctx.drawImage(img, 0, 0, width, height);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(drawSource, 0, 0, width, height);
+    bitmap?.close();
 
-        const targetMime = "image/webp";
-        const baseName =
-          file.name.substring(0, file.name.lastIndexOf(".")) || file.name || "image";
-        const newFileName = `${baseName}.webp`;
+    const targetMime = "image/webp";
+    const baseName =
+      file.name.substring(0, file.name.lastIndexOf(".")) ||
+      file.name ||
+      "image";
+    const newFileName = `${baseName}.webp`;
 
-        canvas.toBlob(
-          (blob) => {
-            if (!blob || blob.size === 0) return resolve(file);
-            resolve(
-              new File([blob], newFileName, {
-                type: targetMime,
-                lastModified: Date.now(),
-              }),
-            );
-          },
-          targetMime,
-          quality,
-        );
-      };
-      img.onerror = () => resolve(file);
-    };
-    reader.onerror = () => resolve(file);
-  });
+    const blob = await new Promise<Blob | null>((resolve) => {
+      canvas.toBlob((b) => resolve(b), targetMime, quality);
+    });
+
+    if (!blob || blob.size === 0) return file;
+
+    return new File([blob], newFileName, {
+      type: targetMime,
+      lastModified: Date.now(),
+    });
+  } catch {
+    return file;
+  }
 }
 
 // Helper to process items in parallel with a concurrency limit
@@ -374,10 +419,10 @@ export default function ProfileForm({
     const currentSections = sectionsRef.current;
 
     try {
-      // Avatar / cover → WebP (client), then server re-encodes to .webp storage path
+      // Avatar / cover → client scale (full frame, EXIF-aware) then server sharp → WebP
       const avatarFile = formData.get("avatar") as File | null;
       if (avatarFile && avatarFile.size > 0 && !removeAvatar) {
-        const compressed = await compressImage(avatarFile, 800, 0.84);
+        const compressed = await compressImage(avatarFile, 1200, 0.88);
         formData.set("avatar", compressed);
       } else if (removeAvatar) {
         formData.delete("avatar");
@@ -385,7 +430,7 @@ export default function ProfileForm({
 
       const backgroundFile = formData.get("background") as File | null;
       if (backgroundFile && backgroundFile.size > 0 && !removeBackground) {
-        const compressed = await compressImage(backgroundFile, 1600, 0.8);
+        const compressed = await compressImage(backgroundFile, 2000, 0.86);
         formData.set("background", compressed);
       } else if (removeBackground) {
         formData.delete("background");

@@ -2,6 +2,9 @@
  * Supabase Storage image transforms (CDN-side resize).
  * object/public/... → render/image/public/...?width=&quality=
  * Falls back to original URL if not a public storage object URL.
+ *
+ * Prefer resize "contain" for profile media so high-res uploads are not
+ * center-cropped (which looks like a zoom) before CSS object-fit runs.
  */
 export function storageImageUrl(
   url: string | null | undefined,
@@ -22,20 +25,34 @@ export function storageImageUrl(
     u.search = "";
     u.searchParams.set("width", String(opts.width));
     if (opts.height != null) u.searchParams.set("height", String(opts.height));
-    u.searchParams.set("resize", opts.resize ?? "cover");
-    u.searchParams.set("quality", String(opts.quality ?? 72));
+    u.searchParams.set("resize", opts.resize ?? "contain");
+    u.searchParams.set("quality", String(opts.quality ?? 80));
     return u.toString();
   } catch {
     return url;
   }
 }
 
-/** Avatar on profile card (~7rem) — 2× for retina */
+/**
+ * Avatar on profile card (~7rem) — 2× retina.
+ * contain + width only: full photo scaled down; CSS object-cover frames the square.
+ * (resize=cover on CDN was center-cropping high-res photos and looked zoomed.)
+ */
 export function profileAvatarSrc(url: string | null | undefined) {
-  return storageImageUrl(url, { width: 224, height: 224, quality: 72, resize: "cover" });
+  return storageImageUrl(url, {
+    width: 400,
+    quality: 82,
+    resize: "contain",
+  });
 }
 
-/** Cover / hero background — phone-width class */
+/**
+ * Cover / hero background — phone-width class, no crop on CDN.
+ */
 export function profileCoverSrc(url: string | null | undefined) {
-  return storageImageUrl(url, { width: 720, quality: 70, resize: "cover" });
+  return storageImageUrl(url, {
+    width: 1200,
+    quality: 82,
+    resize: "contain",
+  });
 }
