@@ -184,7 +184,9 @@ export default function ProfilePageView({
               <h1 className="lux-name mt-1 leading-[1.1]">{profile.name}</h1>
             </div>
           </div>
-          {profile.bio ? <p className="lux-bio mt-4">{profile.bio}</p> : null}
+          {profile.bio ? (
+            <p className="lux-bio mt-4 whitespace-pre-wrap">{profile.bio}</p>
+          ) : null}
         </div>
       </section>
     ),

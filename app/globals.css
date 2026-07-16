@@ -524,6 +524,8 @@ a.dashboard-primary:hover {
     font-weight: 450;
     line-height: 1.78;
     color: #6b7280;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 .lux-section-title {
