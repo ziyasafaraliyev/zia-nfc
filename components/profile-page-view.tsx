@@ -160,22 +160,22 @@ export default function ProfilePageView({
 
         <div
           className={`lux-identity px-5 pb-6 ${
-            profile.avatar_url ? "pt-0" : "pt-5"
+            profile.avatar_url ? "pt-1" : "pt-5"
           }`}
         >
           {/*
-            Avatar is absolutely pinned to the cover/white boundary so long bio
-            only grows the white area downward — profile block never shifts up.
+            Avatar pinned to cover edge, slight overlap only (-translate-y-9)
+            so cover stays visible; long bio only expands white area down.
           */}
           <div
             className={
               profile.avatar_url
-                ? "relative min-h-[3.5rem]"
+                ? "relative min-h-[5rem]"
                 : undefined
             }
           >
             {profile.avatar_url ? (
-              <div className="absolute left-0 top-0 z-10 -translate-y-16">
+              <div className="absolute left-0 top-0 z-10 -translate-y-9">
                 <div className="lux-avatar-ring p-[3px] rounded-[1.7rem]">
                   <SmartImage
                     src={profile.avatar_url}
@@ -193,7 +193,7 @@ export default function ProfilePageView({
             <div
               className={
                 profile.avatar_url
-                  ? "flex min-h-[3.5rem] min-w-0 flex-col justify-end pb-1 pl-[8rem]"
+                  ? "flex min-h-[5rem] min-w-0 flex-col justify-end pb-1 pl-[8rem]"
                   : "min-w-0 pb-1"
               }
             >
