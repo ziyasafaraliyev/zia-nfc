@@ -1044,7 +1044,7 @@ export async function saveProfile(formData: FormData) {
           typeof item === "object" && item !== null,
       )
     : [];
-  const newCatalog = catalogItems
+  const parsedCatalog = catalogItems
     .map((item) => {
       const rawUrl = typeof item.url === "string" ? item.url.trim() : "";
       if (!rawUrl) return null;
@@ -1067,6 +1067,22 @@ export async function saveProfile(formData: FormData) {
     .filter((item): item is { id: string; name: string; url: string } =>
       Boolean(item),
     );
+
+  // Don't wipe existing catalog when form posts empty by accident
+  // (stale admin tab / save without reloading). Explicit clear still works
+  // when admin sends catalog_clear=on.
+  const existingCatalog = Array.isArray(existingProfile?.catalog)
+    ? (existingProfile.catalog as { id: string; name: string; url: string }[])
+    : [];
+  const clearCatalog = bool(formData, "catalog_clear");
+  const newCatalog =
+    parsedCatalog.length > 0
+      ? parsedCatalog
+      : clearCatalog
+        ? []
+        : existingCatalog.length > 0
+          ? existingCatalog
+          : [];
 
   const removeAvatar = bool(formData, "remove_avatar");
   const removeBackground = bool(formData, "remove_background");

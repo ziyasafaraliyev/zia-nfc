@@ -528,6 +528,10 @@ export default function ProfileForm({
       formData.set("gallery", JSON.stringify(finalSections));
       formData.set("gallerySectionCount", String(finalSections.length));
       formData.set("catalog", JSON.stringify(finalCatalog));
+      // Allow intentional clear of all catalog links (server preserves otherwise)
+      if (finalCatalog.length === 0) {
+        formData.set("catalog_clear", "on");
+      }
 
       formData.delete("galleryFiles");
       formData.delete("galleryFileMeta");
