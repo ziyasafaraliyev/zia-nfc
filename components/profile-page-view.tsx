@@ -194,7 +194,7 @@ export default function ProfilePageView({
         className="mt-3 grid gap-2.5"
         style={{
           gridTemplateColumns:
-            [whatsapp, whatsapp2, profile.phone, profile.phone2, profile.email].filter(Boolean)
+            [whatsapp, whatsapp2, profile.phone, profile.phone2].filter(Boolean)
               .length > 1
               ? "1fr 1fr"
               : "1fr",
@@ -279,14 +279,6 @@ export default function ProfilePageView({
             variant="website"
           />
         ) : null}
-        {profile.email ? (
-          <SocialChip
-            href={`mailto:${profile.email}`}
-            icon={<Mail size={18} />}
-            label="E-poçt"
-            variant="website"
-          />
-        ) : null}
         {profile.facebook ? (
           <SocialChip
             href={profile.facebook}
@@ -346,22 +338,47 @@ export default function ProfilePageView({
       </div>
     ) : null,
     save: (
-      <a
-        key="save"
-        href={getProfileVcardPath(profile.slug)}
-        className="lux-save-contact group mt-2.5 flex h-14 w-full items-center justify-between gap-3 rounded-2xl px-4 lux-card-enter-4 transition-transform duration-200 hover:scale-[1.02]"
-      >
-        <span className="flex items-center gap-3">
-          <span className="lux-save-icon grid size-9 place-items-center rounded-xl">
-            <UserPlus size={16} />
+      <div key="save" className="mt-2.5 space-y-2.5">
+        <a
+          href={getProfileVcardPath(profile.slug)}
+          className="lux-save-contact group flex h-14 w-full items-center justify-between gap-3 rounded-2xl px-4 lux-card-enter-4 transition-transform duration-200 hover:scale-[1.02]"
+        >
+          <span className="flex items-center gap-3">
+            <span className="lux-save-icon grid size-9 place-items-center rounded-xl">
+              <UserPlus size={16} />
+            </span>
+            <span className="text-sm font-bold text-gray-800">
+              Kontaktı yadda saxla
+            </span>
           </span>
-          <span className="text-sm font-bold text-gray-800">Kontaktı yadda saxla</span>
-        </span>
-        <ExternalLink
-          size={15}
-          className="text-gray-400 transition-all duration-300 group-hover:text-[#29AEEE] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-        />
-      </a>
+          <ExternalLink
+            size={15}
+            className="text-gray-400 transition-all duration-300 group-hover:text-[#29AEEE] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+          />
+        </a>
+        {profile.email ? (
+          <a
+            href={`mailto:${profile.email}`}
+            className="lux-save-contact group flex h-14 w-full items-center justify-between gap-3 rounded-2xl px-4 lux-card-enter-4 transition-transform duration-200 hover:scale-[1.02]"
+          >
+            <span className="flex min-w-0 items-center gap-3">
+              <span className="lux-save-icon grid size-9 place-items-center rounded-xl">
+                <Mail size={16} />
+              </span>
+              <span className="flex min-w-0 flex-col items-start leading-tight">
+                <span className="text-sm font-bold text-gray-800">E-poçt</span>
+                <span className="mt-0.5 max-w-full truncate text-[10px] font-semibold text-gray-400">
+                  {profile.email}
+                </span>
+              </span>
+            </span>
+            <ExternalLink
+              size={15}
+              className="shrink-0 text-gray-400 transition-all duration-300 group-hover:text-[#29AEEE] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            />
+          </a>
+        ) : null}
+      </div>
     ),
     reservation:
       profile.reservation_enabled && profile.whatsapp ? (
