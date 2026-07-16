@@ -252,6 +252,7 @@ type GallerySectionInput = {
   id: string;
   name?: string;
   images?: string[];
+  url?: string | null;
 };
 
 type UploadPayload = {
@@ -1014,15 +1015,28 @@ export async function saveProfile(formData: FormData) {
     }
   }
 
-  // Build final sections with both existing and new images
-  const newSections = sections.map(section => ({
-    id: section.id,
-    name: section.name || "Untitled",
-    images: [
-      ...(section.images || []),
-      ...(sectionUploads[section.id] || [])
-    ]
-  }));
+  // Build final sections with existing/new images and optional catalog links
+  const newSections = sections.map((section) => {
+    const rawUrl =
+      typeof section.url === "string" ? section.url.trim() : "";
+    let sectionUrl: string | null = null;
+    if (rawUrl) {
+      const withProtocol = /^https?:\/\//i.test(rawUrl)
+        ? rawUrl
+        : `https://${rawUrl}`;
+      sectionUrl = isValidUrl(withProtocol) ? withProtocol : null;
+    }
+
+    return {
+      id: section.id,
+      name: section.name || "Untitled",
+      images: [
+        ...(section.images || []),
+        ...(sectionUploads[section.id] || []),
+      ],
+      ...(sectionUrl ? { url: sectionUrl } : {}),
+    };
+  });
 
   const removeAvatar = bool(formData, "remove_avatar");
   const removeBackground = bool(formData, "remove_background");

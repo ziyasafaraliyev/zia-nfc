@@ -210,6 +210,7 @@ export default function ProfileForm({
       id: crypto.randomUUID(),
       name: "",
       images: [],
+      url: "",
       newFiles: []
     }]);
   };
@@ -224,6 +225,13 @@ export default function ProfileForm({
     setSections(prev => prev.map(s => 
       s.id === sectionId ? { ...s, name } : s
     ));
+  };
+
+  // Update section catalog link
+  const updateSectionUrl = (sectionId: string, url: string) => {
+    setSections((prev) =>
+      prev.map((s) => (s.id === sectionId ? { ...s, url } : s)),
+    );
   };
 
   // Remove image from section
@@ -339,12 +347,16 @@ export default function ProfileForm({
         compressedFiles.push(...results);
       }
 
-      // Build final sections data (keep all sections, including new empty ones with uploads)
-      const finalSections: PortfolioSection[] = currentSections.map((section) => ({
-        id: section.id,
-        name: section.name.trim() || "Portfolio",
-        images: section.images,
-      }));
+      // Build final sections data (images + optional catalog link)
+      const finalSections: PortfolioSection[] = currentSections.map((section) => {
+        const rawUrl = (section.url || "").trim();
+        return {
+          id: section.id,
+          name: section.name.trim() || "Portfolio",
+          images: section.images,
+          ...(rawUrl ? { url: rawUrl } : {}),
+        };
+      });
 
       formData.set("gallery", JSON.stringify(finalSections));
       formData.set("gallerySectionCount", String(finalSections.length));
@@ -800,6 +812,22 @@ export default function ProfileForm({
                 </button>
               </div>
 
+              <div className="space-y-1.5">
+                <label className="block text-[11px] font-bold uppercase tracking-wide text-slate-500">
+                  Kataloq linki{" "}
+                  <span className="font-medium normal-case tracking-normal text-slate-400">
+                    (istəyə bağlı — basanda bu səhifə açılsın)
+                  </span>
+                </label>
+                <input
+                  type="url"
+                  value={section.url || ""}
+                  onChange={(e) => updateSectionUrl(section.id, e.target.value)}
+                  placeholder="https://example.com/mehsul ve ya katalog sehifesi"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/10"
+                />
+              </div>
+
               {/* Upload area for section */}
               <div
                 onClick={() => {
@@ -818,6 +846,7 @@ export default function ProfileForm({
                 <div className="flex flex-col items-center gap-1.5">
                   <Upload size={20} className="text-[#29AEEE]" />
                   <span className="text-xs font-semibold text-slate-600">Bu bölməyə şəkil əlavə et</span>
+                  <span className="text-[10px] text-slate-400">Link və ya şəkil — hər ikisi də ola bilər</span>
                 </div>
               </div>
 

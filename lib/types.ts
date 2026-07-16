@@ -2,6 +2,8 @@ export type PortfolioSection = {
   id: string;
   name: string;
   images: string[];
+  /** Optional catalog link — title click opens this URL */
+  url?: string | null;
 };
 
 export type Profile = {
