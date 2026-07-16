@@ -609,15 +609,25 @@ export default function ProfileForm({
           placeholder="email@example.com"
           type="email"
         />
-        <Field name="phone" label="Telefon" defaultValue={profile?.phone} />
-        <Field name="phone2" label="Telefon 2" defaultValue={profile?.phone2} />
-        <Field
+        <PhoneField
+          name="phone"
+          label="Telefon"
+          defaultValue={profile?.phone}
+          placeholder="+994 50 123 45 67"
+        />
+        <PhoneField
+          name="phone2"
+          label="Telefon 2"
+          defaultValue={profile?.phone2}
+          placeholder="+994 50 123 45 67"
+        />
+        <PhoneField
           name="whatsapp"
           label="WhatsApp"
           placeholder={getSocialPlaceholder("whatsapp")}
           defaultValue={getSocialFieldValue("whatsapp", profile?.whatsapp)}
         />
-        <Field
+        <PhoneField
           name="whatsapp2"
           label="WhatsApp 2"
           placeholder={getSocialPlaceholder("whatsapp")}
@@ -1377,6 +1387,66 @@ function Field({
         placeholder={placeholder}
         readOnly={readOnly}
         className={`${inputClass} ${readOnly ? "bg-slate-100 cursor-not-allowed opacity-80" : ""}`}
+      />
+    </label>
+  );
+}
+
+/** Phone / WhatsApp — paste always works (spaces, +, dashes, copied text). */
+function normalizePhonePaste(raw: string): string {
+  const text = raw.replace(/\u00a0/g, " ").trim();
+  if (!text) return "";
+  // Keep digits and common phone punctuation; drop letters / invisible junk
+  const cleaned = text.replace(/[^\d+()\s.-]/g, "").replace(/\s+/g, " ").trim();
+  return cleaned || text;
+}
+
+function PhoneField({
+  name,
+  label,
+  defaultValue,
+  placeholder,
+}: {
+  name: string;
+  label: string;
+  defaultValue?: string | null;
+  placeholder?: string;
+}) {
+  const [value, setValue] = useState(defaultValue ?? "");
+
+  useEffect(() => {
+    setValue(defaultValue ?? "");
+  }, [defaultValue]);
+
+  return (
+    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide">
+      {label}
+      <input
+        type="text"
+        name={name}
+        value={value}
+        inputMode="tel"
+        autoComplete="tel"
+        autoCorrect="off"
+        autoCapitalize="off"
+        spellCheck={false}
+        placeholder={placeholder}
+        onChange={(e) => setValue(e.target.value)}
+        onPaste={(e) => {
+          // Force clipboard text into the field (fixes blocked / partial paste)
+          e.preventDefault();
+          const pasted =
+            e.clipboardData?.getData("text/plain") ||
+            e.clipboardData?.getData("text") ||
+            "";
+          const next = normalizePhonePaste(pasted);
+          const input = e.currentTarget;
+          const start = input.selectionStart ?? value.length;
+          const end = input.selectionEnd ?? value.length;
+          const merged = value.slice(0, start) + next + value.slice(end);
+          setValue(merged);
+        }}
+        className={inputClass}
       />
     </label>
   );
