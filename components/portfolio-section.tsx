@@ -34,16 +34,24 @@ function isVisibleSection(section: PortfolioSectionType): boolean {
   return hasImages(section) || hasLink(section);
 }
 
+function isSectionObject(value: unknown): value is PortfolioSectionType {
+  if (typeof value !== "object" || value === null) return false;
+  const obj = value as Record<string, unknown>;
+  return "id" in obj || "images" in obj || "url" in obj || "name" in obj;
+}
+
 function normalizeSections(gallery: GalleryInput): PortfolioSectionType[] {
   if (!gallery || gallery.length === 0) return [];
 
-  if (
-    gallery.length > 0 &&
-    typeof gallery[0] === "object" &&
-    gallery[0] !== null &&
-    "images" in gallery[0]
-  ) {
-    return (gallery as PortfolioSectionType[]).filter(isVisibleSection);
+  if (isSectionObject(gallery[0])) {
+    return (gallery as PortfolioSectionType[])
+      .map((section) => ({
+        id: section.id || crypto.randomUUID?.() || String(Math.random()),
+        name: section.name || "Portfolio",
+        images: Array.isArray(section.images) ? section.images : [],
+        url: typeof section.url === "string" ? section.url : null,
+      }))
+      .filter(isVisibleSection);
   }
 
   const images = gallery as string[];
@@ -117,26 +125,6 @@ export default function PortfolioSection({
     );
   }
 
-  function handleSectionClick(section: PortfolioSectionType) {
-    const url = sectionUrl(section);
-    // Images first when present; pure link sections open the catalog URL
-    if (hasImages(section)) {
-      openLightbox(section.images, section.name || "Portfolio", 0);
-      return;
-    }
-    if (url) {
-      window.open(url, "_blank", "noopener,noreferrer");
-    }
-  }
-
-  function openSectionLink(e: React.MouseEvent, section: PortfolioSectionType) {
-    e.stopPropagation();
-    const url = sectionUrl(section);
-    if (url) {
-      window.open(url, "_blank", "noopener,noreferrer");
-    }
-  }
-
   const summaryParts: string[] = [`${sections.length} bölmə`];
   if (totalImages > 0) summaryParts.push(`${totalImages} şəkil`);
   if (totalLinks > 0) summaryParts.push(`${totalLinks} link`);
@@ -168,12 +156,50 @@ export default function PortfolioSection({
           )}
         </button>
 
-        {/* Section buttons */}
+        {/* Section list */}
         {showSections ? (
           <div className="space-y-2.5">
             {sections.map((section) => {
-              const link = hasLink(section);
+              const url = sectionUrl(section);
               const images = hasImages(section);
+              const linkOnly = Boolean(url) && !images;
+
+              const content = (
+                <>
+                  <span className="flex min-w-0 items-center gap-2.5">
+                    {url ? (
+                      <Link2
+                        size={16}
+                        className="shrink-0 text-[#29AEEE] transition-colors group-hover:text-[#1a9ad4]"
+                      />
+                    ) : null}
+                    <span className="truncate text-sm font-bold text-gray-800">
+                      {section.name || "Portfolio"}
+                    </span>
+                  </span>
+                  <span className="flex shrink-0 items-center gap-1.5 text-xs font-semibold text-gray-400 transition-colors group-hover:text-[#29AEEE]">
+                    {sectionMetaLabel(section)}
+                    {url ? <ExternalLink size={14} /> : null}
+                  </span>
+                </>
+              );
+
+              // Pure link sections: real anchor — works on mobile (no popup block)
+              if (linkOnly && url) {
+                return (
+                  <a
+                    key={section.id}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="lux-save-contact group flex w-full items-center justify-between gap-3 rounded-2xl px-4 py-3.5 transition-all duration-200 hover:scale-[1.01]"
+                  >
+                    {content}
+                  </a>
+                );
+              }
+
+              // Image sections (optional extra link button)
               return (
                 <div
                   key={section.id}
@@ -181,33 +207,27 @@ export default function PortfolioSection({
                 >
                   <button
                     type="button"
-                    onClick={() => handleSectionClick(section)}
+                    onClick={() =>
+                      openLightbox(
+                        section.images,
+                        section.name || "Portfolio",
+                        0,
+                      )
+                    }
                     className="flex min-w-0 flex-1 items-center justify-between gap-3 rounded-xl px-1 py-1 text-left"
                   >
-                    <span className="flex min-w-0 items-center gap-2.5">
-                      {link && !images ? (
-                        <Link2
-                          size={16}
-                          className="shrink-0 text-[#29AEEE] transition-colors group-hover:text-[#1a9ad4]"
-                        />
-                      ) : null}
-                      <span className="truncate text-sm font-bold text-gray-800">
-                        {section.name || "Portfolio"}
-                      </span>
-                    </span>
-                    <span className="shrink-0 text-xs font-semibold text-gray-400 transition-colors group-hover:text-[#29AEEE]">
-                      {sectionMetaLabel(section)}
-                    </span>
+                    {content}
                   </button>
-                  {link ? (
-                    <button
-                      type="button"
-                      onClick={(e) => openSectionLink(e, section)}
+                  {url ? (
+                    <a
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       title="Linki aç"
                       className="grid size-10 shrink-0 place-items-center rounded-xl text-[#29AEEE] transition hover:bg-[#29AEEE]/10"
                     >
                       <ExternalLink size={16} />
-                    </button>
+                    </a>
                   ) : null}
                 </div>
               );

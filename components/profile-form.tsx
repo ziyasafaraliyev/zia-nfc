@@ -820,7 +820,9 @@ export default function ProfileForm({
                   </span>
                 </label>
                 <input
-                  type="url"
+                  type="text"
+                  inputMode="url"
+                  autoComplete="url"
                   value={section.url || ""}
                   onChange={(e) => updateSectionUrl(section.id, e.target.value)}
                   placeholder="https://example.com/mehsul ve ya katalog sehifesi"
