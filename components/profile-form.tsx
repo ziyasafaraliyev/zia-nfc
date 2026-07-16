@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { ImagePlus, Upload, Save, Trash2, Plus } from "lucide-react";
 import { saveProfile } from "@/app/admin/actions";
 import { handleServerActionRejection } from "@/lib/server-action-client";
-import type { Profile, PortfolioSection } from "@/lib/types";
+import type { CatalogItem, Profile, PortfolioSection } from "@/lib/types";
 
 const inputClass =
   "mt-1.5 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none backdrop-blur-sm transition duration-200 placeholder:text-slate-400 focus:border-[#29AEEE] focus:bg-white focus:ring-4 focus:ring-[#29AEEE]/20" +
@@ -133,21 +133,64 @@ async function processInParallel<T, R>(
   return results;
 }
 
-// Helper to normalize old gallery data
+// Helper to normalize old gallery data (images only)
 function normalizeGallery(gallery: string[] | PortfolioSection[] | undefined): PortfolioSection[] {
   if (!gallery || gallery.length === 0) return [];
-  
-  // If it's already the new format
-  if (gallery.length > 0 && typeof gallery[0] === 'object' && 'id' in gallery[0]) {
-    return gallery as PortfolioSection[];
+
+  if (gallery.length > 0 && typeof gallery[0] === "object" && "id" in gallery[0]) {
+    return (gallery as PortfolioSection[]).map((section) => ({
+      id: section.id,
+      name: section.name || "Portfolio",
+      images: Array.isArray(section.images) ? section.images : [],
+    }));
   }
-  
-  // If it's the old format, convert to a default section
-  return [{
-    id: crypto.randomUUID(),
-    name: "Portfolio",
-    images: gallery as string[]
-  }];
+
+  return [
+    {
+      id: crypto.randomUUID(),
+      name: "Portfolio",
+      images: gallery as string[],
+    },
+  ];
+}
+
+function normalizeCatalog(
+  catalog: CatalogItem[] | null | undefined,
+  gallery?: string[] | PortfolioSection[],
+): CatalogItem[] {
+  const fromCatalog: CatalogItem[] = Array.isArray(catalog)
+    ? catalog
+        .filter((item) => item && typeof item.url === "string" && item.url.trim())
+        .map((item) => ({
+          id: item.id || crypto.randomUUID(),
+          name: (item.name || "").trim() || "Kataloq",
+          url: item.url.trim(),
+        }))
+    : [];
+
+  // One-time migrate legacy link-only portfolio sections into catalog
+  const legacy: CatalogItem[] = [];
+  if (
+    Array.isArray(gallery) &&
+    gallery.length > 0 &&
+    typeof gallery[0] === "object" &&
+    gallery[0] !== null
+  ) {
+    for (const section of gallery as Array<PortfolioSection & { url?: string }>) {
+      const url = typeof section.url === "string" ? section.url.trim() : "";
+      const images = Array.isArray(section.images) ? section.images : [];
+      if (url && images.length === 0) {
+        legacy.push({
+          id: section.id || crypto.randomUUID(),
+          name: (section.name || "").trim() || "Kataloq",
+          url,
+        });
+      }
+    }
+  }
+
+  if (fromCatalog.length > 0) return fromCatalog;
+  return legacy;
 }
 
 type SectionWithFiles = PortfolioSection & {
@@ -179,6 +222,10 @@ export default function ProfileForm({
     })),
   );
   const sectionsRef = useRef(sections);
+  const [catalogItems, setCatalogItems] = useState<CatalogItem[]>(() =>
+    normalizeCatalog(profile?.catalog, profile?.gallery),
+  );
+  const catalogRef = useRef(catalogItems);
   const [theme, setTheme] = useState(profile?.theme || "light");
   const [coverStyle, setCoverStyle] = useState(profile?.cover_style ?? "auto");
   const [coverPosition, setCoverPosition] = useState(profile?.cover_position ?? "center");
@@ -188,12 +235,17 @@ export default function ProfileForm({
   }, [sections]);
 
   useEffect(() => {
+    catalogRef.current = catalogItems;
+  }, [catalogItems]);
+
+  useEffect(() => {
     setSections(
       normalizeGallery(profile?.gallery).map((section) => ({
         ...section,
         newFiles: [],
       })),
     );
+    setCatalogItems(normalizeCatalog(profile?.catalog, profile?.gallery));
     setAvatarPreview(profile?.avatar_url || "");
     setBackgroundPreview(profile?.background_url || "");
     setRemoveAvatar(false);
@@ -206,13 +258,15 @@ export default function ProfileForm({
 
   // Add new section
   const addSection = () => {
-    setSections(prev => [...prev, {
-      id: crypto.randomUUID(),
-      name: "",
-      images: [],
-      url: "",
-      newFiles: []
-    }]);
+    setSections((prev) => [
+      ...prev,
+      {
+        id: crypto.randomUUID(),
+        name: "",
+        images: [],
+        newFiles: [],
+      },
+    ]);
   };
 
   // Delete section
@@ -227,11 +281,25 @@ export default function ProfileForm({
     ));
   };
 
-  // Update section catalog link
-  const updateSectionUrl = (sectionId: string, url: string) => {
-    setSections((prev) =>
-      prev.map((s) => (s.id === sectionId ? { ...s, url } : s)),
+  const addCatalogItem = () => {
+    setCatalogItems((prev) => [
+      ...prev,
+      { id: crypto.randomUUID(), name: "", url: "" },
+    ]);
+  };
+
+  const updateCatalogItem = (
+    id: string,
+    field: "name" | "url",
+    value: string,
+  ) => {
+    setCatalogItems((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item)),
     );
+  };
+
+  const deleteCatalogItem = (id: string) => {
+    setCatalogItems((prev) => prev.filter((item) => item.id !== id));
   };
 
   // Remove image from section
@@ -347,19 +415,25 @@ export default function ProfileForm({
         compressedFiles.push(...results);
       }
 
-      // Build final sections data (images + optional catalog link)
-      const finalSections: PortfolioSection[] = currentSections.map((section) => {
-        const rawUrl = (section.url || "").trim();
-        return {
-          id: section.id,
-          name: section.name.trim() || "Portfolio",
-          images: section.images,
-          ...(rawUrl ? { url: rawUrl } : {}),
-        };
-      });
+      // Portfolio: images only
+      const finalSections: PortfolioSection[] = currentSections.map((section) => ({
+        id: section.id,
+        name: section.name.trim() || "Portfolio",
+        images: section.images,
+      }));
+
+      // Catalog: separate title + URL list
+      const finalCatalog: CatalogItem[] = catalogRef.current
+        .map((item) => ({
+          id: item.id,
+          name: item.name.trim() || "Kataloq",
+          url: item.url.trim(),
+        }))
+        .filter((item) => item.url.length > 0);
 
       formData.set("gallery", JSON.stringify(finalSections));
       formData.set("gallerySectionCount", String(finalSections.length));
+      formData.set("catalog", JSON.stringify(finalCatalog));
 
       formData.delete("galleryFiles");
       formData.delete("galleryFileMeta");
@@ -812,24 +886,6 @@ export default function ProfileForm({
                 </button>
               </div>
 
-              <div className="space-y-1.5">
-                <label className="block text-[11px] font-bold uppercase tracking-wide text-slate-500">
-                  Kataloq linki{" "}
-                  <span className="font-medium normal-case tracking-normal text-slate-400">
-                    (istəyə bağlı — basanda bu səhifə açılsın)
-                  </span>
-                </label>
-                <input
-                  type="text"
-                  inputMode="url"
-                  autoComplete="url"
-                  value={section.url || ""}
-                  onChange={(e) => updateSectionUrl(section.id, e.target.value)}
-                  placeholder="https://example.com/mehsul ve ya katalog sehifesi"
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/10"
-                />
-              </div>
-
               {/* Upload area for section */}
               <div
                 onClick={() => {
@@ -848,7 +904,6 @@ export default function ProfileForm({
                 <div className="flex flex-col items-center gap-1.5">
                   <Upload size={20} className="text-[#29AEEE]" />
                   <span className="text-xs font-semibold text-slate-600">Bu bölməyə şəkil əlavə et</span>
-                  <span className="text-[10px] text-slate-400">Link və ya şəkil — hər ikisi də ola bilər</span>
                 </div>
               </div>
 
@@ -904,6 +959,76 @@ export default function ProfileForm({
         )}
       </div>
 
+      {/* ── KATALOQ LİNKLƏRİ ── */}
+      <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-slate-50/50 p-6">
+        <div className="flex justify-between items-center">
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-wide flex items-center gap-2">
+            Kataloq linkləri
+            <span className="font-medium normal-case tracking-normal text-slate-400">
+              (başlıq + link — profildə ayrıca düymə)
+            </span>
+          </span>
+          <button
+            type="button"
+            onClick={addCatalogItem}
+            className="inline-flex items-center gap-1.5 rounded-full border border-[#29AEEE] bg-white px-4 py-2 text-[11px] font-bold text-[#29AEEE] shadow-sm transition-all duration-200 hover:bg-[#29AEEE]/5"
+          >
+            <Plus size={14} /> Yeni link
+          </button>
+        </div>
+
+        {catalogItems.length === 0 ? (
+          <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-white p-8 text-center">
+            <p className="text-sm font-bold text-slate-600">Hələ kataloq linki yoxdur.</p>
+            <button
+              type="button"
+              onClick={addCatalogItem}
+              className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-[#29AEEE] px-4 py-2 text-[11px] font-bold text-white shadow-sm transition-all duration-200 hover:bg-[#1a9ad4]"
+            >
+              <Plus size={14} /> İlk linki əlavə et
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {catalogItems.map((item) => (
+              <div
+                key={item.id}
+                className="rounded-2xl border border-slate-200 bg-white p-4 space-y-3"
+              >
+                <div className="flex gap-2 items-center">
+                  <input
+                    type="text"
+                    value={item.name}
+                    onChange={(e) =>
+                      updateCatalogItem(item.id, "name", e.target.value)
+                    }
+                    placeholder="Başlıq (məs: Məhsul kataloqu)"
+                    className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => deleteCatalogItem(item.id)}
+                    className="grid size-10 place-items-center rounded-xl border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 transition-all duration-200"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  inputMode="url"
+                  autoComplete="url"
+                  value={item.url}
+                  onChange={(e) =>
+                    updateCatalogItem(item.id, "url", e.target.value)
+                  }
+                  placeholder="https://example.com/kataloq"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/10"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* ── CV YÜKLƏMƏ (PDF) ── */}
       <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-slate-50/50 p-6">
@@ -972,6 +1097,16 @@ export default function ProfileForm({
               type="checkbox"
               name="reservation_enabled"
               defaultChecked={profile?.reservation_enabled ?? false}
+              className="size-5 rounded accent-indigo-650"
+            />
+          </label>
+
+          <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition">
+            <span>Portfolio düyməsi aktivdir</span>
+            <input
+              type="checkbox"
+              name="portfolio_enabled"
+              defaultChecked={profile?.portfolio_enabled ?? true}
               className="size-5 rounded accent-indigo-650"
             />
           </label>

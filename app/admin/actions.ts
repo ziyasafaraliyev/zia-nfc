@@ -252,7 +252,12 @@ type GallerySectionInput = {
   id: string;
   name?: string;
   images?: string[];
-  url?: string | null;
+};
+
+type CatalogItemInput = {
+  id?: string;
+  name?: string;
+  url?: string;
 };
 
 type UploadPayload = {
@@ -1015,28 +1020,47 @@ export async function saveProfile(formData: FormData) {
     }
   }
 
-  // Build final sections with existing/new images and optional catalog links
-  const newSections = sections.map((section) => {
-    const rawUrl =
-      typeof section.url === "string" ? section.url.trim() : "";
-    let sectionUrl: string | null = null;
-    if (rawUrl) {
+  // Portfolio sections: images only
+  const newSections = sections.map((section) => ({
+    id: section.id,
+    name: section.name || "Untitled",
+    images: [
+      ...(section.images || []),
+      ...(sectionUploads[section.id] || []),
+    ],
+  }));
+
+  // Separate catalog: title + URL links
+  const catalogRaw = jsonField(formData, "catalog");
+  const catalogItems: CatalogItemInput[] = Array.isArray(catalogRaw)
+    ? catalogRaw.filter(
+        (item): item is CatalogItemInput =>
+          typeof item === "object" && item !== null,
+      )
+    : [];
+  const newCatalog = catalogItems
+    .map((item) => {
+      const rawUrl = typeof item.url === "string" ? item.url.trim() : "";
+      if (!rawUrl) return null;
       const withProtocol = /^https?:\/\//i.test(rawUrl)
         ? rawUrl
         : `https://${rawUrl}`;
-      sectionUrl = isValidUrl(withProtocol) ? withProtocol : null;
-    }
-
-    return {
-      id: section.id,
-      name: section.name || "Untitled",
-      images: [
-        ...(section.images || []),
-        ...(sectionUploads[section.id] || []),
-      ],
-      ...(sectionUrl ? { url: sectionUrl } : {}),
-    };
-  });
+      if (!isValidUrl(withProtocol)) return null;
+      return {
+        id:
+          typeof item.id === "string" && item.id
+            ? item.id
+            : crypto.randomUUID(),
+        name:
+          typeof item.name === "string" && item.name.trim()
+            ? item.name.trim()
+            : "Kataloq",
+        url: withProtocol,
+      };
+    })
+    .filter((item): item is { id: string; name: string; url: string } =>
+      Boolean(item),
+    );
 
   const removeAvatar = bool(formData, "remove_avatar");
   const removeBackground = bool(formData, "remove_background");
@@ -1120,6 +1144,9 @@ export async function saveProfile(formData: FormData) {
     slug,
     enabled,
     reservation_enabled: isSuper ? bool(formData, "reservation_enabled") : existingProfile?.reservation_enabled,
+    portfolio_enabled: isSuper
+      ? bool(formData, "portfolio_enabled")
+      : (existingProfile?.portfolio_enabled ?? true),
     name,
     profession: text(formData, "profession"),
     email: text(formData, "email") || null,
@@ -1163,6 +1190,7 @@ export async function saveProfile(formData: FormData) {
     ...(background ? { background_url: background } : removeBackground ? { background_url: null } : {}),
     ...(cv ? { cv_url: cv } : removeCv ? { cv_url: null } : {}),
     gallery: newSections,
+    catalog: newCatalog,
     ...(isSuper ? { client_email } : {}),
     ...(isSuper && client_password !== undefined ? { client_password } : {}),
   };

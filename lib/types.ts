@@ -2,8 +2,13 @@ export type PortfolioSection = {
   id: string;
   name: string;
   images: string[];
-  /** Optional catalog link — title click opens this URL */
-  url?: string | null;
+};
+
+/** Catalog link item — title opens URL on public profile */
+export type CatalogItem = {
+  id: string;
+  name: string;
+  url: string;
 };
 
 export type Profile = {
@@ -11,6 +16,8 @@ export type Profile = {
   slug: string;
   enabled: boolean;
   reservation_enabled?: boolean;
+  /** When false, portfolio button is hidden on public profile (super admin) */
+  portfolio_enabled?: boolean;
   name: string;
   profession?: string | null;
   bio?: string | null;
@@ -37,6 +44,8 @@ export type Profile = {
   cover_style?: "auto" | "square" | "banner" | null;
   cover_position?: "top" | "center" | "bottom" | null;
   gallery: string[] | PortfolioSection[];
+  /** Separate link catalog (title + URL) */
+  catalog?: CatalogItem[] | null;
   cv_url?: string | null;
   theme?:
     | "light"

@@ -44,6 +44,10 @@ const PortfolioSection = dynamic(
   () => import("@/components/portfolio-section"),
   { loading: () => null },
 );
+const CatalogSection = dynamic(
+  () => import("@/components/catalog-section"),
+  { loading: () => null },
+);
 const QrCodeModal = dynamic(() => import("@/components/qr-code-modal"), {
   loading: () => null,
 });
@@ -69,6 +73,7 @@ const DEFAULT_SECTION_ORDER = [
   "cv",
   "reservation",
   "portfolio",
+  "catalog",
   "qr",
   "footer",
 ] as const;
@@ -419,12 +424,16 @@ export default function ProfilePageView({
         </a>
       ) : null,
     portfolio:
-      profile.gallery.length > 0 ? (
+      (profile.portfolio_enabled ?? true) && profile.gallery.length > 0 ? (
         <PortfolioSection
           key="portfolio"
           gallery={profile.gallery}
           profileName={profile.name}
         />
+      ) : null,
+    catalog:
+      Array.isArray(profile.catalog) && profile.catalog.length > 0 ? (
+        <CatalogSection key="catalog" catalog={profile.catalog} />
       ) : null,
     cv: profile.cv_url ? (
       <a

@@ -35,6 +35,8 @@ const PUBLIC_PROFILE_SELECT = [
   "cover_style",
   "cover_position",
   "gallery",
+  "catalog",
+  "portfolio_enabled",
   "cv_url",
   "theme",
 ].join(",");

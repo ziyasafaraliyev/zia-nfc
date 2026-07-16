@@ -27,13 +27,15 @@ create table if not exists public.profiles (
   cover_style text not null default 'auto',
   cover_position text not null default 'center',
   gallery jsonb not null default '[]'::jsonb,
+  catalog jsonb not null default '[]'::jsonb,
   theme text not null default 'light',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   cv_url text,
   client_email text,
   client_password text,
-  reservation_enabled boolean default false
+  reservation_enabled boolean default false,
+  portfolio_enabled boolean not null default true
 );
 
 create table if not exists public.restaurants (
@@ -143,6 +145,8 @@ alter table public.profiles add column if not exists threads text;
 alter table public.profiles add column if not exists waze text;
 alter table public.profiles add column if not exists email text;
 alter table public.profiles add column if not exists google_review_url text;
+alter table public.profiles add column if not exists portfolio_enabled boolean not null default true;
+alter table public.profiles add column if not exists catalog jsonb not null default '[]'::jsonb;
 
 alter table public.profiles drop constraint if exists profiles_cover_style_check;
 alter table public.profiles add constraint profiles_cover_style_check
