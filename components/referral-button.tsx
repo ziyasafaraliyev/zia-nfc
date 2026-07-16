@@ -17,7 +17,7 @@ export default function ReferralButton({
       target="_blank"
       rel="noreferrer"
       aria-label={`${profileName} — referral linki. Özün qeydiyyatdan keç, linki kopyala və paylaş`}
-      className="lux-save-contact group mt-2.5 flex h-14 w-full items-center justify-between gap-3 rounded-2xl px-4 lux-card-enter-4 transition-transform duration-200 hover:scale-[1.02]"
+      className="lux-save-contact group flex h-14 w-full items-center justify-between gap-3 rounded-2xl px-4 lux-card-enter-4 transition-transform duration-200 hover:scale-[1.02]"
     >
       <span className="flex min-w-0 items-center gap-3">
         <span className="lux-save-icon grid size-9 shrink-0 place-items-center rounded-xl">

@@ -87,8 +87,7 @@ const DEFAULT_SECTION_ORDER = [
   "identity",
   "actions",
   "socials",
-  "save",
-  "referral", // after "Kontaktı yadda saxla" + e-poçt
+  "save", // 1) Kontaktı yadda saxla  2) Referral  3) E-poçt
   "location",
   "google_review",
   "cv",
@@ -400,6 +399,7 @@ export default function ProfilePageView({
     ) : null,
     save: (
       <div key="save" className="mt-2.5 space-y-2.5">
+        {/* 1 — Kontaktı yadda saxla */}
         <a
           href={getProfileVcardPath(profile.slug)}
           className="lux-save-contact group flex h-14 w-full items-center justify-between gap-3 rounded-2xl px-4 lux-card-enter-4 transition-transform duration-200 hover:scale-[1.02]"
@@ -417,6 +417,14 @@ export default function ProfilePageView({
             className="text-gray-400 transition-all duration-300 group-hover:text-[#29AEEE] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
           />
         </a>
+        {/* 2 — Referral linki (kontakt-dan dərhal sonra) */}
+        {profile.referral_enabled ? (
+          <ReferralButton
+            profileName={profile.name}
+            referralUrl={profile.referral_url?.trim() || profileUrl}
+          />
+        ) : null}
+        {/* 3 — E-poçt */}
         {profile.email ? (
           <a
             href={`mailto:${profile.email}`}
@@ -447,16 +455,6 @@ export default function ProfilePageView({
           key="reservation"
           profileName={profile.name}
           whatsappNumber={profile.whatsapp}
-        />
-      ) : null,
-    referral:
-      profile.referral_enabled ? (
-        <ReferralButton
-          key="referral"
-          profileName={profile.name}
-          referralUrl={
-            profile.referral_url?.trim() || profileUrl
-          }
         />
       ) : null,
     location:
