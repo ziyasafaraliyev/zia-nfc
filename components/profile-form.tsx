@@ -528,8 +528,12 @@ export default function ProfileForm({
       formData.set("gallery", JSON.stringify(finalSections));
       formData.set("gallerySectionCount", String(finalSections.length));
       formData.set("catalog", JSON.stringify(finalCatalog));
-      // Allow intentional clear of all catalog links (server preserves otherwise)
-      if (finalCatalog.length === 0) {
+      // Only when user actually had links and removed them all in this session
+      if (
+        finalCatalog.length === 0 &&
+        Array.isArray(profile?.catalog) &&
+        profile.catalog.length > 0
+      ) {
         formData.set("catalog_clear", "on");
       }
 
