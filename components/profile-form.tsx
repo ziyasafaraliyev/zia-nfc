@@ -283,10 +283,26 @@ export default function ProfileForm({
   const [expandedSectionId, setExpandedSectionId] = useState<string | null>(null);
   const [catalogPanelOpen, setCatalogPanelOpen] = useState(false);
   const [portfolioPanelOpen, setPortfolioPanelOpen] = useState(false);
+  const [themePanelOpen, setThemePanelOpen] = useState(false);
   const catalogRef = useRef(catalogItems);
   const [theme, setTheme] = useState(profile?.theme || "light");
   const [coverStyle, setCoverStyle] = useState(profile?.cover_style ?? "auto");
   const [coverPosition, setCoverPosition] = useState(profile?.cover_position ?? "center");
+
+  const themeLabel =
+    (
+      {
+        light: "Ağ (Light)",
+        dark: "Qara (Dark)",
+        premium: "Premium Gold",
+        emerald: "Zümrüd",
+        ruby: "Yaqut",
+        violet: "Bənövşəyi",
+        sapphire: "Mavi",
+        sunset: "Günbatımı",
+        copper: "Digital",
+      } as Record<string, string>
+    )[theme] || "Ağ (Light)";
 
   useEffect(() => {
     sectionsRef.current = sections;
@@ -308,6 +324,7 @@ export default function ProfileForm({
     setExpandedSectionId(null);
     setCatalogPanelOpen(false);
     setPortfolioPanelOpen(false);
+    setThemePanelOpen(false);
     setAvatarPreview(profile?.avatar_url || "");
     setBackgroundPreview(profile?.background_url || "");
     setRemoveAvatar(false);
@@ -693,9 +710,8 @@ export default function ProfileForm({
         />
       </label>
 
-      {/* ── ŞƏKİL YÜKLƏMƏ ── */}
-      <div className="grid grid-cols-2 gap-4">
-        {/* Avatar */}
+      {/* ── ŞƏKİL YÜKLƏMƏ (kiçik) ── */}
+      <div className="grid grid-cols-2 gap-3 max-w-sm">
         <ImageDropZone
           label="Profil şəkli"
           inputName="avatar"
@@ -703,6 +719,7 @@ export default function ProfileForm({
           hasExisting={!!profile?.avatar_url}
           removed={removeAvatar}
           aspect="square"
+          compact
           onFileChange={(file) => {
             setAvatarPreview(URL.createObjectURL(file));
             setRemoveAvatar(false);
@@ -712,7 +729,6 @@ export default function ProfileForm({
             setAvatarPreview("");
           }}
         />
-        {/* Background */}
         <ImageDropZone
           label="Cover şəkli"
           inputName="background"
@@ -720,6 +736,7 @@ export default function ProfileForm({
           hasExisting={!!profile?.background_url}
           removed={removeBackground}
           aspect="square"
+          compact
           onFileChange={(file) => {
             setBackgroundPreview(URL.createObjectURL(file));
             setRemoveBackground(false);
@@ -758,153 +775,176 @@ export default function ProfileForm({
         />
       </div>
 
-      <div className="rounded-3xl border border-slate-200 bg-white p-5">
-        <span className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-2.5">
-          Profil Teması
-        </span>
-        <div className="grid gap-3 sm:grid-cols-3">
-          <label className={`flex items-center justify-center gap-2 rounded-2xl border p-3 text-xs font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
-            theme === "light"
-              ? "border-[#29AEEE] bg-[#29AEEE]/5 text-[#29AEEE] shadow-sm"
-              : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-          }`}>
-            <input
-              type="radio"
-              name="theme"
-              value="light"
-              checked={theme === "light"}
-              onChange={() => setTheme("light")}
-              className="sr-only"
-            />
-            <span>Ağ (Light)</span>
-          </label>
-          <label className={`flex items-center justify-center gap-2 rounded-2xl border p-3 text-xs font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
-            theme === "dark"
-              ? "border-slate-800 bg-slate-900 text-white shadow-md shadow-slate-900/20"
-              : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-          }`}>
-            <input
-              type="radio"
-              name="theme"
-              value="dark"
-              checked={theme === "dark"}
-              onChange={() => setTheme("dark")}
-              className="sr-only"
-            />
-            <span>Qara (Dark)</span>
-          </label>
-          <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-3 text-xs font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
-            theme === "premium"
-              ? "border-[#d4af37] bg-[linear-gradient(135deg,#120f08_0%,#23180a_45%,#3a2a10_100%)] text-[#f5deb3] shadow-[0_12px_30px_rgba(212,175,55,0.22)]"
-              : "border-slate-200 bg-[linear-gradient(135deg,#fffaf0_0%,#ffffff_100%)] text-slate-700 hover:border-[#d4af37]/50 hover:bg-[#fffaf0]"
-          }`}>
-            <span
-              aria-hidden
-              className={`absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(245,222,179,0.9),transparent)] transition-opacity duration-200 ${
-                theme === "premium" ? "opacity-100" : "opacity-0"
-              }`}
-            />
-            <input
-              type="radio"
-              name="theme"
-              value="premium"
-              checked={theme === "premium"}
-              onChange={() => setTheme("premium")}
-              className="sr-only"
-            />
-            <span>Premium Gold</span>
-          </label>
-          <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-3 text-xs font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
-            theme === "emerald"
-              ? "border-[#10b981] bg-[linear-gradient(135deg,#062c22_0%,#0d4334_45%,#116b53_100%)] text-[#d1fae5] shadow-[0_12px_30px_rgba(16,185,129,0.22)]"
-              : "border-slate-200 bg-[linear-gradient(135deg,#ecfdf5_0%,#ffffff_100%)] text-slate-700 hover:border-[#10b981]/50 hover:bg-[#ecfdf5]"
-          }`}>
-            <input
-              type="radio"
-              name="theme"
-              value="emerald"
-              checked={theme === "emerald"}
-              onChange={() => setTheme("emerald")}
-              className="sr-only"
-            />
-            <span>Zümrüd</span>
-          </label>
-          <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-3 text-xs font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
-            theme === "ruby"
-              ? "border-[#e11d48] bg-[linear-gradient(135deg,#310814_0%,#5e1028_45%,#881337_100%)] text-[#ffe4e6] shadow-[0_12px_30px_rgba(225,29,72,0.22)]"
-              : "border-slate-200 bg-[linear-gradient(135deg,#fff1f2_0%,#ffffff_100%)] text-slate-700 hover:border-[#e11d48]/50 hover:bg-[#fff1f2]"
-          }`}>
-            <input
-              type="radio"
-              name="theme"
-              value="ruby"
-              checked={theme === "ruby"}
-              onChange={() => setTheme("ruby")}
-              className="sr-only"
-            />
-            <span>Yaqut</span>
-          </label>
-          <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-3 text-xs font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
-            theme === "violet"
-              ? "border-[#8b5cf6] bg-[linear-gradient(135deg,#1e1038_0%,#35205f_45%,#5b21b6_100%)] text-[#ede9fe] shadow-[0_12px_30px_rgba(139,92,246,0.22)]"
-              : "border-slate-200 bg-[linear-gradient(135deg,#f5f3ff_0%,#ffffff_100%)] text-slate-700 hover:border-[#8b5cf6]/50 hover:bg-[#f5f3ff]"
-          }`}>
-            <input
-              type="radio"
-              name="theme"
-              value="violet"
-              checked={theme === "violet"}
-              onChange={() => setTheme("violet")}
-              className="sr-only"
-            />
-            <span>Bənövşəyi</span>
-          </label>
-          <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-3 text-xs font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
-            theme === "sapphire"
-              ? "border-[#29AEEE] bg-[linear-gradient(135deg,#071821_0%,#0c2d40_45%,#155978_100%)] text-[#e6f8ff] shadow-[0_12px_30px_rgba(41,174,238,0.24)]"
-              : "border-slate-200 bg-[linear-gradient(135deg,#eefaff_0%,#ffffff_100%)] text-slate-700 hover:border-[#29AEEE]/50 hover:bg-[#eefaff]"
-          }`}>
-            <input
-              type="radio"
-              name="theme"
-              value="sapphire"
-              checked={theme === "sapphire"}
-              onChange={() => setTheme("sapphire")}
-              className="sr-only"
-            />
-            <span>Mavi</span>
-          </label>
-          <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-3 text-xs font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
-            theme === "sunset"
-              ? "border-[#fb7185] bg-[linear-gradient(135deg,#2f1118_0%,#5b2434_45%,#9f4058_100%)] text-[#fff1f2] shadow-[0_12px_30px_rgba(251,113,133,0.22)]"
-              : "border-slate-200 bg-[linear-gradient(135deg,#fff1f2_0%,#ffffff_100%)] text-slate-700 hover:border-[#fb7185]/50 hover:bg-[#fff1f2]"
-          }`}>
-            <input
-              type="radio"
-              name="theme"
-              value="sunset"
-              checked={theme === "sunset"}
-              onChange={() => setTheme("sunset")}
-              className="sr-only"
-            />
-            <span>Günbatımı</span>
-          </label>
-          <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-3 text-xs font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
-            theme === "copper"
-              ? "border-[#1da2f1] bg-[linear-gradient(135deg,#0a1824_0%,#10314a_45%,#1d4f73_100%)] text-[#eef8ff] shadow-[0_12px_30px_rgba(29,162,241,0.2)]"
-              : "border-slate-200 bg-[linear-gradient(135deg,#eff8ff_0%,#ffffff_100%)] text-slate-700 hover:border-[#1da2f1]/40 hover:bg-[#eff8ff]"
-          }`}>
-            <input
-              type="radio"
-              name="theme"
-              value="copper"
-              checked={theme === "copper"}
-              onChange={() => setTheme("copper")}
-              className="sr-only"
-            />
-            <span>Digital</span>
-          </label>
-        </div>
+      {/* ── PROFİL TEMASI — toxun-aç ── */}
+      <div className="rounded-3xl border border-slate-200 bg-white overflow-hidden">
+        <button
+          type="button"
+          onClick={() => setThemePanelOpen((v) => !v)}
+          className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left transition hover:bg-slate-50"
+        >
+          <span className="min-w-0">
+            <span className="block text-sm font-bold text-slate-800">
+              Profil Teması
+            </span>
+            <span className="mt-0.5 block text-[11px] font-medium text-slate-400">
+              {themeLabel} · basıb aç
+            </span>
+          </span>
+          {themePanelOpen ? (
+            <ChevronUp size={18} className="shrink-0 text-slate-400" />
+          ) : (
+            <ChevronDown size={18} className="shrink-0 text-slate-400" />
+          )}
+        </button>
+
+        {themePanelOpen ? (
+          <div className="grid gap-2 border-t border-slate-100 p-3 sm:grid-cols-3">
+            <label className={`flex items-center justify-center gap-2 rounded-2xl border p-2.5 text-[11px] font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
+              theme === "light"
+                ? "border-[#29AEEE] bg-[#29AEEE]/5 text-[#29AEEE] shadow-sm"
+                : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+            }`}>
+              <input
+                type="radio"
+                name="theme"
+                value="light"
+                checked={theme === "light"}
+                onChange={() => setTheme("light")}
+                className="sr-only"
+              />
+              <span>Ağ (Light)</span>
+            </label>
+            <label className={`flex items-center justify-center gap-2 rounded-2xl border p-2.5 text-[11px] font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
+              theme === "dark"
+                ? "border-slate-800 bg-slate-900 text-white shadow-md shadow-slate-900/20"
+                : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+            }`}>
+              <input
+                type="radio"
+                name="theme"
+                value="dark"
+                checked={theme === "dark"}
+                onChange={() => setTheme("dark")}
+                className="sr-only"
+              />
+              <span>Qara (Dark)</span>
+            </label>
+            <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-2.5 text-[11px] font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
+              theme === "premium"
+                ? "border-[#d4af37] bg-[linear-gradient(135deg,#120f08_0%,#23180a_45%,#3a2a10_100%)] text-[#f5deb3] shadow-[0_12px_30px_rgba(212,175,55,0.22)]"
+                : "border-slate-200 bg-[linear-gradient(135deg,#fffaf0_0%,#ffffff_100%)] text-slate-700 hover:border-[#d4af37]/50 hover:bg-[#fffaf0]"
+            }`}>
+              <span
+                aria-hidden
+                className={`absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(245,222,179,0.9),transparent)] transition-opacity duration-200 ${
+                  theme === "premium" ? "opacity-100" : "opacity-0"
+                }`}
+              />
+              <input
+                type="radio"
+                name="theme"
+                value="premium"
+                checked={theme === "premium"}
+                onChange={() => setTheme("premium")}
+                className="sr-only"
+              />
+              <span>Premium Gold</span>
+            </label>
+            <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-2.5 text-[11px] font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
+              theme === "emerald"
+                ? "border-[#10b981] bg-[linear-gradient(135deg,#062c22_0%,#0d4334_45%,#116b53_100%)] text-[#d1fae5] shadow-[0_12px_30px_rgba(16,185,129,0.22)]"
+                : "border-slate-200 bg-[linear-gradient(135deg,#ecfdf5_0%,#ffffff_100%)] text-slate-700 hover:border-[#10b981]/50 hover:bg-[#ecfdf5]"
+            }`}>
+              <input
+                type="radio"
+                name="theme"
+                value="emerald"
+                checked={theme === "emerald"}
+                onChange={() => setTheme("emerald")}
+                className="sr-only"
+              />
+              <span>Zümrüd</span>
+            </label>
+            <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-2.5 text-[11px] font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
+              theme === "ruby"
+                ? "border-[#e11d48] bg-[linear-gradient(135deg,#310814_0%,#5e1028_45%,#881337_100%)] text-[#ffe4e6] shadow-[0_12px_30px_rgba(225,29,72,0.22)]"
+                : "border-slate-200 bg-[linear-gradient(135deg,#fff1f2_0%,#ffffff_100%)] text-slate-700 hover:border-[#e11d48]/50 hover:bg-[#fff1f2]"
+            }`}>
+              <input
+                type="radio"
+                name="theme"
+                value="ruby"
+                checked={theme === "ruby"}
+                onChange={() => setTheme("ruby")}
+                className="sr-only"
+              />
+              <span>Yaqut</span>
+            </label>
+            <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-2.5 text-[11px] font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
+              theme === "violet"
+                ? "border-[#8b5cf6] bg-[linear-gradient(135deg,#1e1038_0%,#35205f_45%,#5b21b6_100%)] text-[#ede9fe] shadow-[0_12px_30px_rgba(139,92,246,0.22)]"
+                : "border-slate-200 bg-[linear-gradient(135deg,#f5f3ff_0%,#ffffff_100%)] text-slate-700 hover:border-[#8b5cf6]/50 hover:bg-[#f5f3ff]"
+            }`}>
+              <input
+                type="radio"
+                name="theme"
+                value="violet"
+                checked={theme === "violet"}
+                onChange={() => setTheme("violet")}
+                className="sr-only"
+              />
+              <span>Bənövşəyi</span>
+            </label>
+            <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-2.5 text-[11px] font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
+              theme === "sapphire"
+                ? "border-[#29AEEE] bg-[linear-gradient(135deg,#071821_0%,#0c2d40_45%,#155978_100%)] text-[#e6f8ff] shadow-[0_12px_30px_rgba(41,174,238,0.24)]"
+                : "border-slate-200 bg-[linear-gradient(135deg,#eefaff_0%,#ffffff_100%)] text-slate-700 hover:border-[#29AEEE]/50 hover:bg-[#eefaff]"
+            }`}>
+              <input
+                type="radio"
+                name="theme"
+                value="sapphire"
+                checked={theme === "sapphire"}
+                onChange={() => setTheme("sapphire")}
+                className="sr-only"
+              />
+              <span>Mavi</span>
+            </label>
+            <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-2.5 text-[11px] font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
+              theme === "sunset"
+                ? "border-[#fb7185] bg-[linear-gradient(135deg,#2f1118_0%,#5b2434_45%,#9f4058_100%)] text-[#fff1f2] shadow-[0_12px_30px_rgba(251,113,133,0.22)]"
+                : "border-slate-200 bg-[linear-gradient(135deg,#fff1f2_0%,#ffffff_100%)] text-slate-700 hover:border-[#fb7185]/50 hover:bg-[#fff1f2]"
+            }`}>
+              <input
+                type="radio"
+                name="theme"
+                value="sunset"
+                checked={theme === "sunset"}
+                onChange={() => setTheme("sunset")}
+                className="sr-only"
+              />
+              <span>Günbatımı</span>
+            </label>
+            <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-2.5 text-[11px] font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
+              theme === "copper"
+                ? "border-[#1da2f1] bg-[linear-gradient(135deg,#0a1824_0%,#10314a_45%,#1d4f73_100%)] text-[#eef8ff] shadow-[0_12px_30px_rgba(29,162,241,0.2)]"
+                : "border-slate-200 bg-[linear-gradient(135deg,#eff8ff_0%,#ffffff_100%)] text-slate-700 hover:border-[#1da2f1]/40 hover:bg-[#eff8ff]"
+            }`}>
+              <input
+                type="radio"
+                name="theme"
+                value="copper"
+                checked={theme === "copper"}
+                onChange={() => setTheme("copper")}
+                className="sr-only"
+              />
+              <span>Digital</span>
+            </label>
+          </div>
+        ) : (
+          /* Keep selected theme in form when panel is closed */
+          <input type="hidden" name="theme" value={theme} />
+        )}
       </div>
 
       {/* ── PORTFOLIO — yığcam düymə, basanda açılır ── */}
@@ -1382,6 +1422,7 @@ function ImageDropZone({
   hasExisting,
   removed,
   aspect,
+  compact = false,
   onFileChange,
   onRemove,
 }: {
@@ -1391,6 +1432,7 @@ function ImageDropZone({
   hasExisting: boolean;
   removed: boolean;
   aspect: "square" | "wide";
+  compact?: boolean;
   onFileChange: (file: File) => void;
   onRemove: () => void;
 }) {
@@ -1430,13 +1472,17 @@ function ImageDropZone({
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className={`flex flex-col ${compact ? "gap-1.5" : "gap-2"}`}>
       {/* Label */}
-      <span className="text-xs font-bold text-slate-600 uppercase tracking-wide flex items-center gap-1.5">
+      <span
+        className={`font-bold text-slate-600 uppercase tracking-wide flex items-center gap-1.5 ${
+          compact ? "text-[10px]" : "text-xs"
+        }`}
+      >
         {inputName === "avatar" ? (
-          <Upload size={13} className="text-[#29AEEE]" />
+          <Upload size={compact ? 11 : 13} className="text-[#29AEEE]" />
         ) : (
-          <ImagePlus size={13} className="text-[#29AEEE]" />
+          <ImagePlus size={compact ? 11 : 13} className="text-[#29AEEE]" />
         )}
         {label}
       </span>
@@ -1449,8 +1495,15 @@ function ImageDropZone({
         onDrop={handleDrop}
         onClick={() => !hasImage && inputRef.current?.click()}
         className={[
-          "relative overflow-hidden rounded-2xl border-2 transition-all duration-200 cursor-pointer select-none",
-          aspect === "square" ? "aspect-square w-full" : "aspect-video w-full",
+          "relative overflow-hidden border-2 transition-all duration-200 cursor-pointer select-none",
+          compact ? "rounded-xl" : "rounded-2xl",
+          compact
+            ? aspect === "square"
+              ? "aspect-square w-full max-w-[7.5rem]"
+              : "aspect-video w-full max-w-[10rem]"
+            : aspect === "square"
+              ? "aspect-square w-full"
+              : "aspect-video w-full",
           hasImage
             ? "border-slate-200 cursor-default"
             : isDragging
@@ -1467,30 +1520,40 @@ function ImageDropZone({
           />
         ) : (
           /* Empty state */
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 p-3">
+          <div
+            className={`absolute inset-0 flex flex-col items-center justify-center ${
+              compact ? "gap-1 p-1.5" : "gap-2 p-3"
+            }`}
+          >
             <div className={[
-              "grid size-10 place-items-center rounded-xl transition-colors duration-200",
+              "grid place-items-center rounded-lg transition-colors duration-200",
+              compact ? "size-7" : "size-10 rounded-xl",
               isDragging ? "bg-[#29AEEE]/15 text-[#29AEEE]" : "bg-slate-100 text-slate-400",
             ].join(" ")}>
-              <Upload size={18} />
+              <Upload size={compact ? 13 : 18} />
             </div>
             <div className="text-center">
               <p className={[
-                "text-[11px] font-bold transition-colors",
+                "font-bold transition-colors",
+                compact ? "text-[9px] leading-tight" : "text-[11px]",
                 isDragging ? "text-[#29AEEE]" : "text-slate-500",
               ].join(" ")}>
-                {isDragging ? "Buraxın!" : "Sürükleyin və ya basın"}
+                {isDragging ? "Buraxın!" : compact ? "Basın" : "Sürükleyin və ya basın"}
               </p>
-              <p className="text-[10px] text-slate-400 mt-0.5">JPG, PNG, WEBP</p>
+              {!compact ? (
+                <p className="text-[10px] text-slate-400 mt-0.5">JPG, PNG, WEBP</p>
+              ) : null}
             </div>
           </div>
         )}
 
         {/* Drag overlay on preview */}
         {hasImage && isDragging && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-[#29AEEE]/70 backdrop-blur-sm">
-            <Upload size={24} className="text-white" />
-            <p className="text-xs font-bold text-white">Buraxın!</p>
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-[#29AEEE]/70 backdrop-blur-sm">
+            <Upload size={compact ? 16 : 24} className="text-white" />
+            <p className={`font-bold text-white ${compact ? "text-[10px]" : "text-xs"}`}>
+              Buraxın!
+            </p>
           </div>
         )}
 
@@ -1509,19 +1572,25 @@ function ImageDropZone({
       </div>
 
       {/* Action buttons */}
-      <div className="flex gap-2">
+      <div className={`flex gap-1.5 ${compact ? "max-w-[7.5rem]" : ""}`}>
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
-          className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#29AEEE] px-3 py-2 text-[11px] font-bold text-white shadow-sm transition duration-200 hover:bg-[#1a9ad4] active:scale-95"
+          className={`flex-1 inline-flex items-center justify-center gap-1 rounded-lg bg-[#29AEEE] font-bold text-white shadow-sm transition duration-200 hover:bg-[#1a9ad4] active:scale-95 ${
+            compact ? "px-2 py-1.5 text-[10px]" : "rounded-xl px-3 py-2 text-[11px] gap-1.5"
+          }`}
         >
-          <Upload size={12} /> Şəkil seç
+          <Upload size={compact ? 10 : 12} /> {compact ? "Seç" : "Şəkil seç"}
         </button>
         {(hasExisting || hasImage) && (
           <button
             type="button"
             onClick={handleRemove}
-            className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-[11px] font-bold text-rose-600 transition duration-200 hover:bg-rose-100 active:scale-95"
+            className={`inline-flex items-center justify-center gap-1 border border-rose-200 bg-rose-50 font-bold text-rose-600 transition duration-200 hover:bg-rose-100 active:scale-95 ${
+              compact
+                ? "rounded-lg px-2 py-1.5 text-[10px]"
+                : "rounded-xl px-3 py-2 text-[11px] gap-1.5"
+            }`}
           >
             <Trash2 size={12} /> Sil
           </button>
