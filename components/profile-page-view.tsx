@@ -158,10 +158,24 @@ export default function ProfilePageView({
           </div>
         </div>
 
-        <div className={`lux-identity px-5 pb-6 ${profile.avatar_url ? "pt-0" : "pt-5"}`}>
-          <div className="flex items-end gap-4">
+        <div
+          className={`lux-identity px-5 pb-6 ${
+            profile.avatar_url ? "pt-0" : "pt-5"
+          }`}
+        >
+          {/*
+            Avatar is absolutely pinned to the cover/white boundary so long bio
+            only grows the white area downward — profile block never shifts up.
+          */}
+          <div
+            className={
+              profile.avatar_url
+                ? "relative min-h-[3.5rem]"
+                : undefined
+            }
+          >
             {profile.avatar_url ? (
-              <div className="-mt-16 shrink-0 relative z-10">
+              <div className="absolute left-0 top-0 z-10 -translate-y-16">
                 <div className="lux-avatar-ring p-[3px] rounded-[1.7rem]">
                   <SmartImage
                     src={profile.avatar_url}
@@ -175,7 +189,14 @@ export default function ProfilePageView({
                 </div>
               </div>
             ) : null}
-            <div className="pb-1 min-w-0">
+
+            <div
+              className={
+                profile.avatar_url
+                  ? "flex min-h-[3.5rem] min-w-0 flex-col justify-end pb-1 pl-[8rem]"
+                  : "min-w-0 pb-1"
+              }
+            >
               {profile.profession ? (
                 <p
                   className="lux-overline truncate"
@@ -190,6 +211,7 @@ export default function ProfilePageView({
               <h1 className="lux-name mt-1 leading-[1.1]">{profile.name}</h1>
             </div>
           </div>
+
           {profile.bio ? (
             <p className="lux-bio mt-4 whitespace-pre-wrap">{profile.bio}</p>
           ) : null}
