@@ -1,7 +1,15 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { ImagePlus, Upload, Save, Trash2, Plus } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  ImagePlus,
+  Upload,
+  Save,
+  Trash2,
+  Plus,
+} from "lucide-react";
 import { saveProfile } from "@/app/admin/actions";
 import { handleServerActionRejection } from "@/lib/server-action-client";
 import type { CatalogItem, Profile, PortfolioSection } from "@/lib/types";
@@ -225,6 +233,8 @@ export default function ProfileForm({
   const [catalogItems, setCatalogItems] = useState<CatalogItem[]>(() =>
     normalizeCatalog(profile?.catalog, profile?.gallery),
   );
+  /** Only one catalog row expanded at a time; saved items stay collapsed */
+  const [expandedCatalogId, setExpandedCatalogId] = useState<string | null>(null);
   const catalogRef = useRef(catalogItems);
   const [theme, setTheme] = useState(profile?.theme || "light");
   const [coverStyle, setCoverStyle] = useState(profile?.cover_style ?? "auto");
@@ -246,6 +256,7 @@ export default function ProfileForm({
       })),
     );
     setCatalogItems(normalizeCatalog(profile?.catalog, profile?.gallery));
+    setExpandedCatalogId(null);
     setAvatarPreview(profile?.avatar_url || "");
     setBackgroundPreview(profile?.background_url || "");
     setRemoveAvatar(false);
@@ -282,10 +293,9 @@ export default function ProfileForm({
   };
 
   const addCatalogItem = () => {
-    setCatalogItems((prev) => [
-      ...prev,
-      { id: crypto.randomUUID(), name: "", url: "" },
-    ]);
+    const id = crypto.randomUUID();
+    setCatalogItems((prev) => [...prev, { id, name: "", url: "" }]);
+    setExpandedCatalogId(id);
   };
 
   const updateCatalogItem = (
@@ -300,6 +310,11 @@ export default function ProfileForm({
 
   const deleteCatalogItem = (id: string) => {
     setCatalogItems((prev) => prev.filter((item) => item.id !== id));
+    setExpandedCatalogId((current) => (current === id ? null : current));
+  };
+
+  const toggleCatalogExpanded = (id: string) => {
+    setExpandedCatalogId((current) => (current === id ? null : id));
   };
 
   // Remove image from section
@@ -488,15 +503,6 @@ export default function ProfileForm({
     >
       <input type="hidden" name="id" value={profile?.id ?? ""} />
 
-      {mode === "edit" && profile?.slug ? (
-        <div className="rounded-2xl border border-[#29AEEE]/25 bg-[#29AEEE]/5 px-4 py-3 text-xs font-semibold text-slate-700">
-          Redaktə: <span className="font-black text-[#29AEEE]">/{profile.slug}</span>
-          {sections.length > 0 ? (
-            <span className="text-slate-500"> · {sections.length} portfolio bölməsi</span>
-          ) : null}
-        </div>
-      ) : null}
-      
       {/* ── ŞƏXSİ MƏLUMATLAR ── */}
       <div className="grid gap-4 md:grid-cols-2">
         <Field
@@ -989,43 +995,77 @@ export default function ProfileForm({
             </button>
           </div>
         ) : (
-          <div className="space-y-3">
-            {catalogItems.map((item) => (
-              <div
-                key={item.id}
-                className="rounded-2xl border border-slate-200 bg-white p-4 space-y-3"
-              >
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="text"
-                    value={item.name}
-                    onChange={(e) =>
-                      updateCatalogItem(item.id, "name", e.target.value)
-                    }
-                    placeholder="Başlıq (məs: Məhsul kataloqu)"
-                    className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/10"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => deleteCatalogItem(item.id)}
-                    className="grid size-10 place-items-center rounded-xl border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 transition-all duration-200"
-                  >
-                    <Trash2 size={16} />
-                  </button>
+          <div className="max-h-[22rem] space-y-2 overflow-y-auto pr-0.5">
+            {catalogItems.map((item) => {
+              const isExpanded = expandedCatalogId === item.id;
+              const title = item.name.trim() || "Başlıqsız link";
+              const hasUrl = Boolean(item.url.trim());
+
+              return (
+                <div
+                  key={item.id}
+                  className="rounded-2xl border border-slate-200 bg-white"
+                >
+                  {/* Compact row — collapsed by default after save */}
+                  <div className="flex items-center gap-1.5 px-2.5 py-2">
+                    <button
+                      type="button"
+                      onClick={() => toggleCatalogExpanded(item.id)}
+                      className="flex min-w-0 flex-1 items-center gap-2 rounded-xl px-2 py-1.5 text-left transition hover:bg-slate-50"
+                    >
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm font-semibold text-slate-800">
+                          {title}
+                        </span>
+                        {!isExpanded && hasUrl ? (
+                          <span className="mt-0.5 block truncate text-[11px] text-slate-400">
+                            {item.url}
+                          </span>
+                        ) : null}
+                      </span>
+                      {isExpanded ? (
+                        <ChevronUp size={16} className="shrink-0 text-slate-400" />
+                      ) : (
+                        <ChevronDown size={16} className="shrink-0 text-slate-400" />
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => deleteCatalogItem(item.id)}
+                      className="grid size-9 shrink-0 place-items-center rounded-xl border border-red-200 bg-red-50 text-red-600 transition hover:bg-red-100"
+                      title="Sil"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+
+                  {isExpanded ? (
+                    <div className="space-y-2 border-t border-slate-100 px-3 pb-3 pt-2">
+                      <input
+                        type="text"
+                        value={item.name}
+                        onChange={(e) =>
+                          updateCatalogItem(item.id, "name", e.target.value)
+                        }
+                        placeholder="Başlıq (məs: Məhsul kataloqu)"
+                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-900 outline-none focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/10"
+                      />
+                      <input
+                        type="text"
+                        inputMode="url"
+                        autoComplete="url"
+                        value={item.url}
+                        onChange={(e) =>
+                          updateCatalogItem(item.id, "url", e.target.value)
+                        }
+                        placeholder="https://example.com/kataloq"
+                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-900 outline-none focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/10"
+                      />
+                    </div>
+                  ) : null}
                 </div>
-                <input
-                  type="text"
-                  inputMode="url"
-                  autoComplete="url"
-                  value={item.url}
-                  onChange={(e) =>
-                    updateCatalogItem(item.id, "url", e.target.value)
-                  }
-                  placeholder="https://example.com/kataloq"
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/10"
-                />
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

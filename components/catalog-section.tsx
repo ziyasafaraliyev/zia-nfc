@@ -67,18 +67,18 @@ export default function CatalogSection({
       </button>
 
       {open ? (
-        <div className="space-y-2.5">
+        <div className="max-h-64 space-y-1.5 overflow-y-auto">
           {items.map((item) => (
             <a
               key={item.id}
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="lux-save-contact group flex w-full items-center justify-between gap-3 rounded-2xl px-4 py-3.5 transition-all duration-200 hover:scale-[1.01]"
+              className="lux-save-contact group flex w-full items-center justify-between gap-3 rounded-2xl px-4 py-2.5 transition-all duration-200 hover:scale-[1.01]"
             >
               <span className="flex min-w-0 items-center gap-2.5">
                 <Link2
-                  size={16}
+                  size={15}
                   className="shrink-0 text-[#29AEEE] transition-colors group-hover:text-[#1a9ad4]"
                 />
                 <span className="truncate text-sm font-bold text-gray-800">
@@ -86,7 +86,7 @@ export default function CatalogSection({
                 </span>
               </span>
               <ExternalLink
-                size={15}
+                size={14}
                 className="shrink-0 text-gray-400 transition-colors group-hover:text-[#29AEEE]"
               />
             </a>
