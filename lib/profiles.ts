@@ -9,6 +9,8 @@ const PUBLIC_PROFILE_SELECT = [
   "slug",
   "enabled",
   "reservation_enabled",
+  "referral_enabled",
+  "referral_url",
   "name",
   "profession",
   "bio",
@@ -18,6 +20,7 @@ const PUBLIC_PROFILE_SELECT = [
   "whatsapp2",
   "instagram",
   "tiktok",
+  "telegram",
   "threads",
   "waze",
   "website",
@@ -66,7 +69,7 @@ export const getProfileBySlug = cache(async (slug: string): Promise<Profile | nu
 
   return unstable_cache(
     () => fetchPublicProfileBySlug(slug),
-    ["profile-by-slug-v3", slug],
+    ["profile-by-slug-v5", slug],
     {
       revalidate: 60,
       tags: [`profile:${slug}`, "profiles"],

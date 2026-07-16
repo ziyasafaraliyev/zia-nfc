@@ -39,6 +39,22 @@ function ThreadsIcon({ size = 18 }: { size?: number }) {
   );
 }
 
+/** Official Telegram paper-plane mark */
+function TelegramIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+    </svg>
+  );
+}
+
 /** Interactive islands — separate chunks, not on critical first paint path */
 const PortfolioSection = dynamic(
   () => import("@/components/portfolio-section"),
@@ -53,6 +69,10 @@ const QrCodeModal = dynamic(() => import("@/components/qr-code-modal"), {
 });
 const ReservationButton = dynamic(
   () => import("@/components/reservation-button"),
+  { loading: () => null },
+);
+const ReferralButton = dynamic(
+  () => import("@/components/referral-button"),
   { loading: () => null },
 );
 
@@ -72,6 +92,7 @@ const DEFAULT_SECTION_ORDER = [
   "google_review",
   "cv",
   "reservation",
+  "referral",
   "portfolio",
   "catalog",
   "qr",
@@ -80,6 +101,7 @@ const DEFAULT_SECTION_ORDER = [
 
 export default function ProfilePageView({
   profile,
+  profileUrl,
   qrUrl,
   jsonLd,
 }: Props) {
@@ -105,6 +127,7 @@ export default function ProfilePageView({
   const hasSocials =
     profile.instagram ||
     profile.tiktok ||
+    profile.telegram ||
     profile.website ||
     profile.facebook ||
     profile.x ||
@@ -301,6 +324,14 @@ export default function ProfilePageView({
             variant="tiktok"
           />
         ) : null}
+        {profile.telegram ? (
+          <SocialChip
+            href={profile.telegram}
+            icon={<TelegramIcon size={18} />}
+            label="Telegram"
+            variant="telegram"
+          />
+        ) : null}
         {profile.website ? (
           <SocialChip
             href={profile.website}
@@ -416,6 +447,16 @@ export default function ProfilePageView({
           key="reservation"
           profileName={profile.name}
           whatsappNumber={profile.whatsapp}
+        />
+      ) : null,
+    referral:
+      profile.referral_enabled ? (
+        <ReferralButton
+          key="referral"
+          profileName={profile.name}
+          referralUrl={
+            profile.referral_url?.trim() || profileUrl
+          }
         />
       ) : null,
     location:
@@ -593,6 +634,7 @@ function SocialChip({
   variant:
     | "instagram"
     | "tiktok"
+    | "telegram"
     | "website"
     | "facebook"
     | "x"
@@ -606,6 +648,7 @@ function SocialChip({
   const variantClass = {
     instagram: "lux-social-instagram",
     tiktok: "lux-social-tiktok",
+    telegram: "lux-social-telegram",
     website: "lux-social-website",
     facebook: "lux-social-facebook",
     x: "lux-social-x",

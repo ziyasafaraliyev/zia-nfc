@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ImagePlus, Upload, Save, Trash2 } from "lucide-react";
 import { saveRestaurant } from "@/app/admin/actions";
 import { handleServerActionRejection } from "@/lib/server-action-client";
 import RestaurantMenuEditor from "@/components/restaurant-menu-editor";
+import ImageCropModal from "@/components/image-crop-modal";
 import type { Restaurant } from "@/lib/types";
 
 const inputClass =
@@ -246,6 +247,8 @@ export default function RestaurantForm({ restaurant, userRole = "super_admin" }:
           hasExisting={!!restaurant?.avatar_url}
           removed={removeAvatar}
           aspect="square"
+          enableCrop
+          cropTitle="Restoran şəklini kəsin"
           onFileChange={(file) => {
             setAvatarPreview(URL.createObjectURL(file));
             setRemoveAvatar(false);
@@ -674,6 +677,8 @@ function ImageDropZone({
   hasExisting,
   removed,
   aspect,
+  enableCrop = false,
+  cropTitle = "Şəkli kəsin",
   onFileChange,
   onRemove,
 }: {
@@ -683,11 +688,15 @@ function ImageDropZone({
   hasExisting: boolean;
   removed: boolean;
   aspect: "square" | "wide";
+  enableCrop?: boolean;
+  cropTitle?: string;
   onFileChange: (file: File) => void;
   onRemove: () => void;
 }) {
   const [isDragging, setIsDragging] = useState(false);
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const cropObjectUrlRef = React.useRef<string | null>(null);
   const hasImage = preview && !removed;
 
   function assignFileToInput(file: File) {
@@ -703,8 +712,39 @@ function ImageDropZone({
     }
   }
 
+  function revokeCropUrl() {
+    if (cropObjectUrlRef.current) {
+      URL.revokeObjectURL(cropObjectUrlRef.current);
+      cropObjectUrlRef.current = null;
+    }
+  }
+
+  function openCrop(file: File) {
+    revokeCropUrl();
+    const url = URL.createObjectURL(file);
+    cropObjectUrlRef.current = url;
+    setCropSrc(url);
+  }
+
+  function applyCropped(file: File) {
+    revokeCropUrl();
+    setCropSrc(null);
+    assignFileToInput(file);
+    onFileChange(file);
+  }
+
+  function cancelCrop() {
+    revokeCropUrl();
+    setCropSrc(null);
+    clearInput();
+  }
+
   function handleFile(file: File) {
     if (!file.type.startsWith("image/")) return;
+    if (enableCrop && file.type !== "image/gif") {
+      openCrop(file);
+      return;
+    }
     assignFileToInput(file);
     onFileChange(file);
   }
@@ -720,6 +760,10 @@ function ImageDropZone({
     const file = e.dataTransfer.files?.[0];
     if (file) handleFile(file);
   }
+
+  useEffect(() => {
+    return () => revokeCropUrl();
+  }, []);
 
   return (
     <div className="flex flex-col gap-2">
@@ -749,6 +793,7 @@ function ImageDropZone({
         ].join(" ")}
       >
         {hasImage ? (
+          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={preview}
             alt={label}
@@ -784,12 +829,18 @@ function ImageDropZone({
         <input
           ref={inputRef}
           type="file"
-          name={inputName}
+          name={cropSrc ? undefined : inputName}
           accept="image/jpeg,image/png,image/webp,image/gif"
           className="hidden"
           onChange={(e) => {
             const file = e.target.files?.[0];
-            if (file) handleFile(file);
+            if (!file) return;
+            if (enableCrop && file.type !== "image/gif") {
+              handleFile(file);
+              e.target.value = "";
+              return;
+            }
+            handleFile(file);
           }}
         />
       </div>
@@ -818,6 +869,19 @@ function ImageDropZone({
           Şəkil silinəcək
         </span>
       )}
+
+      {enableCrop && cropSrc ? (
+        <ImageCropModal
+          open
+          src={cropSrc}
+          title={cropTitle}
+          aspect={aspect === "wide" ? 16 / 9 : 1}
+          outputSize={1080}
+          fileName={`${inputName || "avatar"}.webp`}
+          onCancel={cancelCrop}
+          onComplete={applyCropped}
+        />
+      ) : null}
     </div>
   );
 }

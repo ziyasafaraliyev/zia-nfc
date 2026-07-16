@@ -800,6 +800,17 @@ a.dashboard-primary:hover {
     color: #000000;
 }
 
+.lux-social-telegram:hover {
+    border-color: rgba(41, 174, 238, 0.35);
+    background: rgba(41, 174, 238, 0.08);
+    box-shadow: 0 8px 20px rgba(41, 174, 238, 0.15);
+    transform: scale(1.02);
+}
+
+.lux-social-telegram .lux-social-icon {
+    color: #29AEEE;
+}
+
 
 /* "N iş" badge */
 .lux-count-badge {
@@ -1255,6 +1266,16 @@ a.dashboard-primary:hover {
 
 .lux-shell.dark-theme .lux-social-threads .lux-social-icon {
     color: #ffffff;
+}
+
+.lux-shell.dark-theme .lux-social-telegram:hover {
+    background: rgba(41, 174, 238, 0.12);
+    border-color: rgba(41, 174, 238, 0.45);
+    box-shadow: 0 8px 24px rgba(41, 174, 238, 0.25);
+}
+
+.lux-shell.dark-theme .lux-social-telegram .lux-social-icon {
+    color: #29AEEE;
 }
 
 .lux-shell.dark-theme .lux-social-linkedin:hover {

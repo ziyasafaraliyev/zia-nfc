@@ -73,6 +73,7 @@ export default async function ProfilePage({ params }: Props) {
   const sameAs = [
     profile.instagram,
     profile.tiktok,
+    profile.telegram,
     profile.website,
     profile.facebook,
     profile.x,

@@ -400,6 +400,7 @@ const socialBaseUrls = {
   whatsapp: "https://wa.me/994",
   instagram: "https://www.instagram.com/",
   tiktok: "https://www.tiktok.com/@",
+  telegram: "https://t.me/",
   threads: "https://www.threads.net/@",
   website: "https://",
   waze: "https://www.waze.com/ul?ll=",
@@ -475,6 +476,8 @@ function sanitizeUrl(formData: FormData, key: string): string | null {
       return `https://www.instagram.com/${username}`;
     case "tiktok":
       return `https://www.tiktok.com/@${username}`;
+    case "telegram":
+      return `https://t.me/${username}`;
     case "threads":
       return `https://www.threads.net/@${username}`;
     case "facebook":
@@ -1169,6 +1172,12 @@ export async function saveProfile(formData: FormData) {
     portfolio_enabled: isSuper
       ? bool(formData, "portfolio_enabled")
       : (existingProfile?.portfolio_enabled ?? true),
+    referral_enabled: isSuper
+      ? bool(formData, "referral_enabled")
+      : (existingProfile?.referral_enabled ?? false),
+    ...(isSuper
+      ? { referral_url: sanitizeUrl(formData, "referral_url") || null }
+      : {}),
     name,
     profession: text(formData, "profession"),
     email: text(formData, "email") || null,
@@ -1179,6 +1188,7 @@ export async function saveProfile(formData: FormData) {
     whatsapp2: text(formData, "whatsapp2"),
     instagram: sanitizeUrl(formData, "instagram"),
     tiktok: sanitizeUrl(formData, "tiktok"),
+    telegram: sanitizeUrl(formData, "telegram"),
     threads: sanitizeUrl(formData, "threads"),
     website: sanitizeUrl(formData, "website"),
     waze: sanitizeUrl(formData, "waze"),

@@ -13,6 +13,7 @@ import {
 import { saveProfile } from "@/app/admin/actions";
 import { handleServerActionRejection } from "@/lib/server-action-client";
 import type { CatalogItem, Profile, PortfolioSection } from "@/lib/types";
+import ImageCropModal from "@/components/image-crop-modal";
 
 const inputClass =
   "mt-1.5 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none backdrop-blur-sm transition duration-200 placeholder:text-slate-400 focus:border-[#29AEEE] focus:bg-white focus:ring-4 focus:ring-[#29AEEE]/20" +
@@ -22,6 +23,7 @@ const socialBaseUrls = {
   whatsapp: "https://wa.me/994",
   instagram: "https://www.instagram.com/",
   tiktok: "https://www.tiktok.com/@",
+  telegram: "https://t.me/",
   threads: "https://www.threads.net/@",
   website: "https://www.",
   waze: "https://www.waze.com/ul?ll=",
@@ -45,6 +47,7 @@ function getSocialPlaceholder(key: keyof typeof socialBaseUrls) {
       return "99450xxxxxxx";
     case "instagram":
     case "tiktok":
+    case "telegram":
     case "threads":
     case "facebook":
     case "x":
@@ -641,65 +644,85 @@ export default function ProfileForm({
           placeholder={getSocialPlaceholder("whatsapp")}
           defaultValue={profile?.whatsapp2}
         />
-        <Field
-          name="instagram"
-          label="Instagram"
-          placeholder={getSocialPlaceholder("instagram")}
-          defaultValue={getSocialFieldValue("instagram", profile?.instagram)}
-        />
-        <Field
-          name="tiktok"
-          label="TikTok"
-          placeholder={getSocialPlaceholder("tiktok")}
-          defaultValue={getSocialFieldValue("tiktok", profile?.tiktok)}
-        />
-        <Field
-          name="website"
-          label="Website"
-          defaultValue={getSocialFieldValue("website", profile?.website)}
-        />
-        <Field
-          name="facebook"
-          label="Facebook"
-          placeholder={getSocialPlaceholder("facebook")}
-          defaultValue={getSocialFieldValue("facebook", profile?.facebook)}
-        />
-        <Field
-          name="x"
-          label="X (Twitter)"
-          placeholder={getSocialPlaceholder("x")}
-          defaultValue={getSocialFieldValue("x", profile?.x)}
-        />
-        <Field
-          name="threads"
-          label="Threads"
-          placeholder={getSocialPlaceholder("threads")}
-          defaultValue={getSocialFieldValue("threads", profile?.threads)}
-        />
-        <Field
-          name="linkedin"
-          label="LinkedIn"
-          placeholder={getSocialPlaceholder("linkedin")}
-          defaultValue={getSocialFieldValue("linkedin", profile?.linkedin)}
-        />
-        <Field
-          name="youtube"
-          label="YouTube"
-          placeholder={getSocialPlaceholder("youtube")}
-          defaultValue={getSocialFieldValue("youtube", profile?.youtube)}
-        />
-        <Field
-          name="behance"
-          label="Behance"
-          placeholder={getSocialPlaceholder("behance")}
-          defaultValue={getSocialFieldValue("behance", profile?.behance)}
-        />
-        <Field
-          name="waze"
-          label="Waze"
-          placeholder={getSocialPlaceholder("waze")}
-          defaultValue={getSocialFieldValue("waze", profile?.waze)}
-        />
+      </div>
+
+      {/* Sosial şəbəkələr — aydın başlıq ki, admin paneldə asan tapılsın */}
+      <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-5 space-y-4">
+        <div>
+          <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+            Sosial şəbəkələr
+          </p>
+          <p className="mt-1 text-xs font-medium text-slate-400">
+            Username və ya tam link yazın (məs: username və ya https://t.me/username)
+          </p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <Field
+            name="telegram"
+            label="Telegram"
+            placeholder="username və ya t.me/username"
+            defaultValue={getSocialFieldValue("telegram", profile?.telegram)}
+          />
+          <Field
+            name="instagram"
+            label="Instagram"
+            placeholder={getSocialPlaceholder("instagram")}
+            defaultValue={getSocialFieldValue("instagram", profile?.instagram)}
+          />
+          <Field
+            name="tiktok"
+            label="TikTok"
+            placeholder={getSocialPlaceholder("tiktok")}
+            defaultValue={getSocialFieldValue("tiktok", profile?.tiktok)}
+          />
+          <Field
+            name="website"
+            label="Website"
+            defaultValue={getSocialFieldValue("website", profile?.website)}
+          />
+          <Field
+            name="facebook"
+            label="Facebook"
+            placeholder={getSocialPlaceholder("facebook")}
+            defaultValue={getSocialFieldValue("facebook", profile?.facebook)}
+          />
+          <Field
+            name="x"
+            label="X (Twitter)"
+            placeholder={getSocialPlaceholder("x")}
+            defaultValue={getSocialFieldValue("x", profile?.x)}
+          />
+          <Field
+            name="threads"
+            label="Threads"
+            placeholder={getSocialPlaceholder("threads")}
+            defaultValue={getSocialFieldValue("threads", profile?.threads)}
+          />
+          <Field
+            name="linkedin"
+            label="LinkedIn"
+            placeholder={getSocialPlaceholder("linkedin")}
+            defaultValue={getSocialFieldValue("linkedin", profile?.linkedin)}
+          />
+          <Field
+            name="youtube"
+            label="YouTube"
+            placeholder={getSocialPlaceholder("youtube")}
+            defaultValue={getSocialFieldValue("youtube", profile?.youtube)}
+          />
+          <Field
+            name="behance"
+            label="Behance"
+            placeholder={getSocialPlaceholder("behance")}
+            defaultValue={getSocialFieldValue("behance", profile?.behance)}
+          />
+          <Field
+            name="waze"
+            label="Waze"
+            placeholder={getSocialPlaceholder("waze")}
+            defaultValue={getSocialFieldValue("waze", profile?.waze)}
+          />
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
@@ -738,6 +761,8 @@ export default function ProfileForm({
           removed={removeAvatar}
           aspect="square"
           compact
+          enableCrop
+          cropTitle="Profil şəklini kəsin"
           onFileChange={(file) => {
             setAvatarPreview(URL.createObjectURL(file));
             setRemoveAvatar(false);
@@ -1333,6 +1358,28 @@ export default function ProfileForm({
           </label>
 
           <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition">
+            <span>Referral link düyməsi aktivdir</span>
+            <input
+              type="checkbox"
+              name="referral_enabled"
+              defaultChecked={profile?.referral_enabled ?? false}
+              className="size-5 rounded accent-indigo-650"
+            />
+          </label>
+
+          <div className="rounded-3xl border border-slate-200 bg-white p-5 space-y-4">
+            <span className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide">
+              Referral link
+            </span>
+            <Field
+              name="referral_url"
+              label="Xüsusi referral URL (boş buraxsa profil linki istifadə olunur)"
+              defaultValue={profile?.referral_url ?? undefined}
+              placeholder="https://..."
+            />
+          </div>
+
+          <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition">
             <span>Portfolio düyməsi aktivdir</span>
             <input
               type="checkbox"
@@ -1501,6 +1548,8 @@ function ImageDropZone({
   removed,
   aspect,
   compact = false,
+  enableCrop = false,
+  cropTitle = "Şəkli kəsin",
   onFileChange,
   onRemove,
 }: {
@@ -1511,11 +1560,16 @@ function ImageDropZone({
   removed: boolean;
   aspect: "square" | "wide";
   compact?: boolean;
+  /** Instagram-style pan/zoom crop before applying (avatars) */
+  enableCrop?: boolean;
+  cropTitle?: string;
   onFileChange: (file: File) => void;
   onRemove: () => void;
 }) {
   const [isDragging, setIsDragging] = useState(false);
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const cropObjectUrlRef = React.useRef<string | null>(null);
   const hasImage = preview && !removed;
 
   function assignFileToInput(file: File) {
@@ -1531,8 +1585,41 @@ function ImageDropZone({
     }
   }
 
+  function revokeCropUrl() {
+    if (cropObjectUrlRef.current) {
+      URL.revokeObjectURL(cropObjectUrlRef.current);
+      cropObjectUrlRef.current = null;
+    }
+  }
+
+  function openCrop(file: File) {
+    revokeCropUrl();
+    const url = URL.createObjectURL(file);
+    cropObjectUrlRef.current = url;
+    setCropSrc(url);
+  }
+
+  function applyCropped(file: File) {
+    revokeCropUrl();
+    setCropSrc(null);
+    assignFileToInput(file);
+    onFileChange(file);
+  }
+
+  function cancelCrop() {
+    revokeCropUrl();
+    setCropSrc(null);
+    // Allow re-picking the same file
+    clearInput();
+  }
+
   function handleFile(file: File) {
     if (!file.type.startsWith("image/")) return;
+    // GIF animations break with canvas crop — skip modal
+    if (enableCrop && file.type !== "image/gif") {
+      openCrop(file);
+      return;
+    }
     assignFileToInput(file);
     onFileChange(file);
   }
@@ -1548,6 +1635,10 @@ function ImageDropZone({
     const file = e.dataTransfer.files?.[0];
     if (file) handleFile(file);
   }
+
+  useEffect(() => {
+    return () => revokeCropUrl();
+  }, []);
 
   return (
     <div className={`flex flex-col ${compact ? "gap-1.5" : "gap-2"}`}>
@@ -1591,6 +1682,7 @@ function ImageDropZone({
       >
         {hasImage ? (
           /* Preview */
+          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={preview}
             alt={label}
@@ -1635,16 +1727,24 @@ function ImageDropZone({
           </div>
         )}
 
-        {/* Hidden input */}
+        {/* Hidden input — no name while cropping so form doesn't submit raw pick */}
         <input
           ref={inputRef}
           type="file"
-          name={inputName}
+          name={cropSrc ? undefined : inputName}
           accept="image/jpeg,image/png,image/webp,image/gif"
           className="hidden"
           onChange={(e) => {
             const file = e.target.files?.[0];
-            if (file) handleFile(file);
+            if (!file) return;
+            // Crop path: clear value so the same file can be re-picked after cancel.
+            // Non-crop: keep files on the input for form submit.
+            if (enableCrop && file.type !== "image/gif") {
+              handleFile(file);
+              e.target.value = "";
+              return;
+            }
+            handleFile(file);
           }}
         />
       </div>
@@ -1680,6 +1780,19 @@ function ImageDropZone({
           Şəkil silinəcək
         </span>
       )}
+
+      {enableCrop && cropSrc ? (
+        <ImageCropModal
+          open
+          src={cropSrc}
+          title={cropTitle}
+          aspect={aspect === "wide" ? 16 / 9 : 1}
+          outputSize={1080}
+          fileName={`${inputName || "avatar"}.webp`}
+          onCancel={cancelCrop}
+          onComplete={applyCropped}
+        />
+      ) : null}
     </div>
   );
 }

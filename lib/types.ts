@@ -18,6 +18,10 @@ export type Profile = {
   reservation_enabled?: boolean;
   /** When false, portfolio button is hidden on public profile (super admin) */
   portfolio_enabled?: boolean;
+  /** When true, referral link button is shown on public profile (super admin) */
+  referral_enabled?: boolean;
+  /** Optional custom referral URL; falls back to profile public URL when empty */
+  referral_url?: string | null;
   name: string;
   profession?: string | null;
   bio?: string | null;
@@ -27,6 +31,7 @@ export type Profile = {
   whatsapp2?: string | null;
   instagram?: string | null;
   tiktok?: string | null;
+  telegram?: string | null;
   threads?: string | null;
   waze?: string | null;
   website?: string | null;

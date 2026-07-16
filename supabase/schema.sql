@@ -13,6 +13,7 @@ create table if not exists public.profiles (
   whatsapp2 text,
   instagram text,
   tiktok text,
+  telegram text,
   website text,
   facebook text,
   x text,
@@ -35,7 +36,9 @@ create table if not exists public.profiles (
   client_email text,
   client_password text,
   reservation_enabled boolean default false,
-  portfolio_enabled boolean not null default true
+  portfolio_enabled boolean not null default true,
+  referral_enabled boolean not null default false,
+  referral_url text
 );
 
 create table if not exists public.restaurants (
@@ -142,11 +145,14 @@ alter table public.profiles add column if not exists phone2 text;
 alter table public.profiles add column if not exists whatsapp2 text;
 alter table public.profiles add column if not exists behance text;
 alter table public.profiles add column if not exists threads text;
+alter table public.profiles add column if not exists telegram text;
 alter table public.profiles add column if not exists waze text;
 alter table public.profiles add column if not exists email text;
 alter table public.profiles add column if not exists google_review_url text;
 alter table public.profiles add column if not exists portfolio_enabled boolean not null default true;
 alter table public.profiles add column if not exists catalog jsonb not null default '[]'::jsonb;
+alter table public.profiles add column if not exists referral_enabled boolean not null default false;
+alter table public.profiles add column if not exists referral_url text;
 
 alter table public.profiles drop constraint if exists profiles_cover_style_check;
 alter table public.profiles add constraint profiles_cover_style_check
