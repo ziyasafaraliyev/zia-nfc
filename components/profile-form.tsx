@@ -278,8 +278,11 @@ export default function ProfileForm({
   const [catalogItems, setCatalogItems] = useState<CatalogItem[]>(() =>
     normalizeCatalog(profile?.catalog, profile?.gallery),
   );
-  /** Only one catalog row expanded at a time; saved items stay collapsed */
+  /** Admin lists stay collapsed; only one open editor at a time */
   const [expandedCatalogId, setExpandedCatalogId] = useState<string | null>(null);
+  const [expandedSectionId, setExpandedSectionId] = useState<string | null>(null);
+  const [catalogPanelOpen, setCatalogPanelOpen] = useState(false);
+  const [portfolioPanelOpen, setPortfolioPanelOpen] = useState(false);
   const catalogRef = useRef(catalogItems);
   const [theme, setTheme] = useState(profile?.theme || "light");
   const [coverStyle, setCoverStyle] = useState(profile?.cover_style ?? "auto");
@@ -302,6 +305,9 @@ export default function ProfileForm({
     );
     setCatalogItems(normalizeCatalog(profile?.catalog, profile?.gallery));
     setExpandedCatalogId(null);
+    setExpandedSectionId(null);
+    setCatalogPanelOpen(false);
+    setPortfolioPanelOpen(false);
     setAvatarPreview(profile?.avatar_url || "");
     setBackgroundPreview(profile?.background_url || "");
     setRemoveAvatar(false);
@@ -314,20 +320,26 @@ export default function ProfileForm({
 
   // Add new section
   const addSection = () => {
+    const id = crypto.randomUUID();
     setSections((prev) => [
       ...prev,
       {
-        id: crypto.randomUUID(),
+        id,
         name: "",
         images: [],
         newFiles: [],
       },
     ]);
+    setPortfolioPanelOpen(true);
+    setExpandedSectionId(id);
   };
 
   // Delete section
   const deleteSection = (sectionId: string) => {
-    setSections(prev => prev.filter(s => s.id !== sectionId));
+    setSections((prev) => prev.filter((s) => s.id !== sectionId));
+    setExpandedSectionId((current) =>
+      current === sectionId ? null : current,
+    );
   };
 
   // Update section name
@@ -340,6 +352,7 @@ export default function ProfileForm({
   const addCatalogItem = () => {
     const id = crypto.randomUUID();
     setCatalogItems((prev) => [...prev, { id, name: "", url: "" }]);
+    setCatalogPanelOpen(true);
     setExpandedCatalogId(id);
   };
 
@@ -360,6 +373,10 @@ export default function ProfileForm({
 
   const toggleCatalogExpanded = (id: string) => {
     setExpandedCatalogId((current) => (current === id ? null : id));
+  };
+
+  const toggleSectionExpanded = (id: string) => {
+    setExpandedSectionId((current) => (current === id ? null : id));
   };
 
   // Remove image from section
@@ -890,229 +907,300 @@ export default function ProfileForm({
         </div>
       </div>
 
-      {/* ── PORTFOLIO ŞƏKİLLƏRİ ── */}
-      <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-slate-50/50 p-6">
-        <div className="flex justify-between items-center">
-          <span className="text-xs font-bold text-slate-500 uppercase tracking-wide flex items-center gap-2">
-            <ImagePlus size={14} className="text-[#29AEEE]" /> Portfolio Bölmələri
-          </span>
+      {/* ── PORTFOLIO — yığcam düymə, basanda açılır ── */}
+      <div className="rounded-3xl border border-slate-200 bg-white overflow-hidden">
+        <div className="flex items-center gap-2 p-2">
+          <button
+            type="button"
+            onClick={() => setPortfolioPanelOpen((v) => !v)}
+            className="flex min-w-0 flex-1 items-center justify-between gap-3 rounded-2xl px-4 py-3.5 text-left transition hover:bg-slate-50"
+          >
+            <span className="flex min-w-0 items-center gap-2.5">
+              <ImagePlus size={16} className="shrink-0 text-[#29AEEE]" />
+              <span className="min-w-0">
+                <span className="block text-sm font-bold text-slate-800">
+                  Portfolio
+                </span>
+                <span className="mt-0.5 block text-[11px] font-medium text-slate-400">
+                  {sections.length === 0
+                    ? "Bölmə yoxdur"
+                    : `${sections.length} bölmə · basıb aç`}
+                </span>
+              </span>
+            </span>
+            {portfolioPanelOpen ? (
+              <ChevronUp size={18} className="shrink-0 text-slate-400" />
+            ) : (
+              <ChevronDown size={18} className="shrink-0 text-slate-400" />
+            )}
+          </button>
           <button
             type="button"
             onClick={addSection}
-            className="inline-flex items-center gap-1.5 rounded-full border border-[#29AEEE] bg-white px-4 py-2 text-[11px] font-bold text-[#29AEEE] shadow-sm transition-all duration-200 hover:bg-[#29AEEE]/5"
+            className="mr-1 inline-flex shrink-0 items-center gap-1 rounded-xl border border-[#29AEEE] bg-[#29AEEE]/5 px-3 py-2 text-[11px] font-bold text-[#29AEEE] transition hover:bg-[#29AEEE]/10"
           >
-            <Plus size={14} /> Yeni Bölmə
+            <Plus size={14} /> Əlavə et
           </button>
         </div>
 
-        {/* Sections */}
-        {sections.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-white p-8 text-center">
-            <p className="text-sm font-bold text-slate-600">Hələ bölmə yoxdur.</p>
-            <button
-              type="button"
-              onClick={addSection}
-              className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-[#29AEEE] px-4 py-2 text-[11px] font-bold text-white shadow-sm transition-all duration-200 hover:bg-[#1a9ad4]"
-            >
-              <Plus size={14} /> İlk Bölməni Əlavə Et
-            </button>
+        {portfolioPanelOpen ? (
+          <div className="space-y-2 border-t border-slate-100 px-3 pb-3 pt-2">
+            {sections.length === 0 ? (
+              <p className="px-2 py-4 text-center text-sm font-medium text-slate-500">
+                Hələ bölmə yoxdur. &quot;Əlavə et&quot; ilə yaradın.
+              </p>
+            ) : (
+              sections.map((section) => {
+                const isOpen = expandedSectionId === section.id;
+                const title = section.name.trim() || "Adsız bölmə";
+                const imgCount =
+                  section.images.length + section.newFiles.length;
+
+                return (
+                  <div
+                    key={section.id}
+                    className="rounded-2xl border border-slate-200 bg-slate-50/80"
+                  >
+                    <div className="flex items-center gap-1 p-1.5">
+                      <button
+                        type="button"
+                        onClick={() => toggleSectionExpanded(section.id)}
+                        className="flex min-w-0 flex-1 items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-left transition hover:bg-white"
+                      >
+                        <span className="truncate text-sm font-semibold text-slate-800">
+                          {title}
+                        </span>
+                        <span className="flex shrink-0 items-center gap-2 text-[11px] font-semibold text-slate-400">
+                          {imgCount} şəkil
+                          {isOpen ? (
+                            <ChevronUp size={15} />
+                          ) : (
+                            <ChevronDown size={15} />
+                          )}
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => deleteSection(section.id)}
+                        className="grid size-9 shrink-0 place-items-center rounded-xl border border-red-200 bg-red-50 text-red-600 transition hover:bg-red-100"
+                        title="Sil"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+
+                    {isOpen ? (
+                      <div className="space-y-3 border-t border-slate-200/80 px-3 pb-3 pt-3">
+                        <input
+                          type="text"
+                          value={section.name}
+                          onChange={(e) =>
+                            updateSectionName(section.id, e.target.value)
+                          }
+                          placeholder="Bölmə adı (məs: Üstəri Layihələri)"
+                          className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/10"
+                        />
+
+                        <div
+                          onClick={() => {
+                            const input = document.createElement("input");
+                            input.type = "file";
+                            input.accept =
+                              "image/jpeg,image/png,image/webp,image/gif";
+                            input.multiple = true;
+                            input.onchange = (e) => {
+                              const files = (e.target as HTMLInputElement)
+                                .files;
+                              if (files) addFilesToSection(section.id, files);
+                            };
+                            input.click();
+                          }}
+                          className="block cursor-pointer rounded-xl border-2 border-dashed border-slate-200 bg-white p-3 text-center transition hover:border-[#29AEEE] hover:bg-[#29AEEE]/5"
+                        >
+                          <div className="flex flex-col items-center gap-1">
+                            <Upload size={18} className="text-[#29AEEE]" />
+                            <span className="text-xs font-semibold text-slate-600">
+                              Şəkil əlavə et
+                            </span>
+                          </div>
+                        </div>
+
+                        {section.images.length > 0 ? (
+                          <div className="grid grid-cols-4 gap-2">
+                            {section.images.map((url, index) => (
+                              <div
+                                key={`${section.id}-${index}`}
+                                className="group relative aspect-square overflow-hidden rounded-xl border border-green-200 bg-white"
+                              >
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={url}
+                                  alt=""
+                                  className="h-full w-full object-cover"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    removeImageFromSection(section.id, index)
+                                  }
+                                  className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition group-hover:opacity-100"
+                                >
+                                  <Trash2 size={14} className="text-white" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        ) : null}
+
+                        {section.newFiles.length > 0 ? (
+                          <div className="grid grid-cols-4 gap-2">
+                            {section.newFiles.map((file, index) => (
+                              <div
+                                key={`${section.id}-new-${index}`}
+                                className="group relative aspect-square overflow-hidden rounded-xl border border-slate-200 bg-white"
+                              >
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={file.previewUrl}
+                                  alt=""
+                                  className="h-full w-full object-cover"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    removeNewFileFromSection(
+                                      section.id,
+                                      index,
+                                    )
+                                  }
+                                  className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition group-hover:opacity-100"
+                                >
+                                  <Trash2 size={14} className="text-white" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        ) : null}
+                      </div>
+                    ) : null}
+                  </div>
+                );
+              })
+            )}
           </div>
-        ) : (
-          sections.map((section) => (
-            <div key={section.id} className="rounded-2xl border border-slate-200 bg-white p-4 space-y-3">
-              <div className="flex gap-2 items-center">
-                <input
-                  type="text"
-                  value={section.name}
-                  onChange={(e) => updateSectionName(section.id, e.target.value)}
-                  placeholder="Bölmə adı (məs: Üstəri Layihələri)"
-                  className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-900 focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/10 outline-none"
-                />
-                <button
-                  type="button"
-                  onClick={() => deleteSection(section.id)}
-                  className="grid size-10 place-items-center rounded-xl border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 transition-all duration-200"
-                >
-                  <Trash2 size={16} />
-                </button>
-              </div>
-
-              {/* Upload area for section */}
-              <div
-                onClick={() => {
-                  const input = document.createElement("input");
-                  input.type = "file";
-                  input.accept = "image/jpeg,image/png,image/webp,image/gif";
-                  input.multiple = true;
-                  input.onchange = (e) => {
-                    const files = (e.target as HTMLInputElement).files;
-                    if (files) addFilesToSection(section.id, files);
-                  };
-                  input.click();
-                }}
-                className="block rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 p-4 text-center cursor-pointer hover:border-[#29AEEE] hover:bg-[#29AEEE]/5 transition-all duration-200"
-              >
-                <div className="flex flex-col items-center gap-1.5">
-                  <Upload size={20} className="text-[#29AEEE]" />
-                  <span className="text-xs font-semibold text-slate-600">Bu bölməyə şəkil əlavə et</span>
-                </div>
-              </div>
-
-              {/* Existing images in section */}
-              {section.images.length > 0 && (
-                <div className="flex flex-col gap-1.5">
-                  <span className="text-[11px] font-bold text-green-600">Mövcud şəkillər ({section.images.length}):</span>
-                  <div className="grid grid-cols-4 gap-2">
-                    {section.images.map((url, index) => (
-                      <div key={`${section.id}-${index}`} className="relative aspect-square overflow-hidden rounded-xl border border-green-200 bg-white group">
-                        <img src={url} alt={`${section.name} ${index + 1}`} className="h-full w-full object-cover" />
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            removeImageFromSection(section.id, index);
-                          }}
-                          className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                        >
-                          <Trash2 size={16} className="text-white" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* New files for section */}
-              {section.newFiles.length > 0 && (
-                <div className="flex flex-col gap-1.5">
-                  <span className="text-[11px] font-bold text-slate-400">Yüklənəcək ({section.newFiles.length} yeni şəkil):</span>
-                  <div className="grid grid-cols-4 gap-2">
-                    {section.newFiles.map((file, index) => (
-                      <div key={`${section.id}-new-${index}`} className="relative aspect-square overflow-hidden rounded-xl border border-slate-200 bg-white group">
-                        <img src={file.previewUrl} alt={file.name} className="h-full w-full object-cover" />
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            removeNewFileFromSection(section.id, index);
-                          }}
-                          className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                        >
-                          <Trash2 size={16} className="text-white" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          ))
-        )}
+        ) : null}
       </div>
 
-      {/* ── KATALOQ LİNKLƏRİ ── */}
-      <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-slate-50/50 p-6">
-        <div className="flex justify-between items-center">
-          <span className="text-xs font-bold text-slate-500 uppercase tracking-wide flex items-center gap-2">
-            Kataloq linkləri
-            <span className="font-medium normal-case tracking-normal text-slate-400">
-              (başlıq + link — profildə ayrıca düymə)
+      {/* ── KATALOQ — yığcam düymə, basanda açılır ── */}
+      <div className="rounded-3xl border border-slate-200 bg-white overflow-hidden">
+        <div className="flex items-center gap-2 p-2">
+          <button
+            type="button"
+            onClick={() => setCatalogPanelOpen((v) => !v)}
+            className="flex min-w-0 flex-1 items-center justify-between gap-3 rounded-2xl px-4 py-3.5 text-left transition hover:bg-slate-50"
+          >
+            <span className="min-w-0">
+              <span className="block text-sm font-bold text-slate-800">
+                Kataloq
+              </span>
+              <span className="mt-0.5 block text-[11px] font-medium text-slate-400">
+                {catalogItems.length === 0
+                  ? "Link yoxdur"
+                  : `${catalogItems.length} link · basıb aç`}
+              </span>
             </span>
-          </span>
+            {catalogPanelOpen ? (
+              <ChevronUp size={18} className="shrink-0 text-slate-400" />
+            ) : (
+              <ChevronDown size={18} className="shrink-0 text-slate-400" />
+            )}
+          </button>
           <button
             type="button"
             onClick={addCatalogItem}
-            className="inline-flex items-center gap-1.5 rounded-full border border-[#29AEEE] bg-white px-4 py-2 text-[11px] font-bold text-[#29AEEE] shadow-sm transition-all duration-200 hover:bg-[#29AEEE]/5"
+            className="mr-1 inline-flex shrink-0 items-center gap-1 rounded-xl border border-[#29AEEE] bg-[#29AEEE]/5 px-3 py-2 text-[11px] font-bold text-[#29AEEE] transition hover:bg-[#29AEEE]/10"
           >
-            <Plus size={14} /> Yeni link
+            <Plus size={14} /> Əlavə et
           </button>
         </div>
 
-        {catalogItems.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-white p-8 text-center">
-            <p className="text-sm font-bold text-slate-600">Hələ kataloq linki yoxdur.</p>
-            <button
-              type="button"
-              onClick={addCatalogItem}
-              className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-[#29AEEE] px-4 py-2 text-[11px] font-bold text-white shadow-sm transition-all duration-200 hover:bg-[#1a9ad4]"
-            >
-              <Plus size={14} /> İlk linki əlavə et
-            </button>
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {catalogItems.map((item) => {
-              const isExpanded = expandedCatalogId === item.id;
-              const title = item.name.trim() || "Başlıqsız link";
-              const hasUrl = Boolean(item.url.trim());
+        {catalogPanelOpen ? (
+          <div className="space-y-2 border-t border-slate-100 px-3 pb-3 pt-2">
+            {catalogItems.length === 0 ? (
+              <p className="px-2 py-4 text-center text-sm font-medium text-slate-500">
+                Hələ link yoxdur. &quot;Əlavə et&quot; ilə yaradın.
+              </p>
+            ) : (
+              catalogItems.map((item) => {
+                const isExpanded = expandedCatalogId === item.id;
+                const title = item.name.trim() || "Başlıqsız link";
 
-              return (
-                <div
-                  key={item.id}
-                  className="rounded-2xl border border-slate-200 bg-white"
-                >
-                  {/* Compact row — collapsed by default after save */}
-                  <div className="flex items-center gap-1.5 px-2.5 py-2">
-                    <button
-                      type="button"
-                      onClick={() => toggleCatalogExpanded(item.id)}
-                      className="flex min-w-0 flex-1 items-center gap-2 rounded-xl px-2 py-1.5 text-left transition hover:bg-slate-50"
-                    >
-                      <span className="min-w-0 flex-1">
-                        <span className="block truncate text-sm font-semibold text-slate-800">
+                return (
+                  <div
+                    key={item.id}
+                    className="rounded-2xl border border-slate-200 bg-slate-50/80"
+                  >
+                    <div className="flex items-center gap-1 p-1.5">
+                      <button
+                        type="button"
+                        onClick={() => toggleCatalogExpanded(item.id)}
+                        className="flex min-w-0 flex-1 items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-left transition hover:bg-white"
+                      >
+                        <span className="truncate text-sm font-semibold text-slate-800">
                           {title}
                         </span>
-                        {!isExpanded && hasUrl ? (
-                          <span className="mt-0.5 block truncate text-[11px] text-slate-400">
-                            {item.url}
-                          </span>
-                        ) : null}
-                      </span>
-                      {isExpanded ? (
-                        <ChevronUp size={16} className="shrink-0 text-slate-400" />
-                      ) : (
-                        <ChevronDown size={16} className="shrink-0 text-slate-400" />
-                      )}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => deleteCatalogItem(item.id)}
-                      className="grid size-9 shrink-0 place-items-center rounded-xl border border-red-200 bg-red-50 text-red-600 transition hover:bg-red-100"
-                      title="Sil"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-
-                  {isExpanded ? (
-                    <div className="space-y-2 border-t border-slate-100 px-3 pb-3 pt-2">
-                      <input
-                        type="text"
-                        value={item.name}
-                        onChange={(e) =>
-                          updateCatalogItem(item.id, "name", e.target.value)
-                        }
-                        placeholder="Başlıq (məs: Məhsul kataloqu)"
-                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-900 outline-none focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/10"
-                      />
-                      <input
-                        type="text"
-                        inputMode="url"
-                        autoComplete="url"
-                        value={item.url}
-                        onChange={(e) =>
-                          updateCatalogItem(item.id, "url", e.target.value)
-                        }
-                        placeholder="https://example.com/kataloq"
-                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-900 outline-none focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/10"
-                      />
+                        {isExpanded ? (
+                          <ChevronUp
+                            size={15}
+                            className="shrink-0 text-slate-400"
+                          />
+                        ) : (
+                          <ChevronDown
+                            size={15}
+                            className="shrink-0 text-slate-400"
+                          />
+                        )}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => deleteCatalogItem(item.id)}
+                        className="grid size-9 shrink-0 place-items-center rounded-xl border border-red-200 bg-red-50 text-red-600 transition hover:bg-red-100"
+                        title="Sil"
+                      >
+                        <Trash2 size={14} />
+                      </button>
                     </div>
-                  ) : null}
-                </div>
-              );
-            })}
+
+                    {isExpanded ? (
+                      <div className="space-y-2 border-t border-slate-200/80 px-3 pb-3 pt-2">
+                        <input
+                          type="text"
+                          value={item.name}
+                          onChange={(e) =>
+                            updateCatalogItem(item.id, "name", e.target.value)
+                          }
+                          placeholder="Başlıq (məs: Məhsul kataloqu)"
+                          className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 outline-none focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/10"
+                        />
+                        <input
+                          type="text"
+                          inputMode="url"
+                          autoComplete="url"
+                          value={item.url}
+                          onChange={(e) =>
+                            updateCatalogItem(item.id, "url", e.target.value)
+                          }
+                          placeholder="https://example.com/kataloq"
+                          className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 outline-none focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/10"
+                        />
+                      </div>
+                    ) : null}
+                  </div>
+                );
+              })
+            )}
           </div>
-        )}
+        ) : null}
       </div>
 
       {/* ── CV YÜKLƏMƏ (PDF) ── */}
