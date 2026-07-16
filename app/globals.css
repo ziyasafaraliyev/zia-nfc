@@ -1883,6 +1883,257 @@ a.dashboard-primary:hover {
 }
 
 /* ═══════════════════════════════════════════════════════════
+   iOS-STYLE TEMPLATES — simple, soft, easy on the eyes
+   ═══════════════════════════════════════════════════════════ */
+
+/* 1) iOS Light — system gray canvas, white cards, Apple blue */
+.lux-shell.ios-theme {
+    --ios-bg: #f2f2f7;
+    --ios-card: #ffffff;
+    --ios-text: #1c1c1e;
+    --ios-muted: #8e8e93;
+    --ios-accent: #007aff;
+    --ios-hairline: rgba(60, 60, 67, 0.12);
+    --ios-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.06);
+    background: var(--ios-bg) !important;
+    color: var(--ios-text) !important;
+}
+
+/* 2) iOS Soft — warm paper, graphite type, calm gray accent */
+.lux-shell.iossoft-theme {
+    --ios-bg: #f7f5f2;
+    --ios-card: #fffcf8;
+    --ios-text: #2c2c2e;
+    --ios-muted: #8a8680;
+    --ios-accent: #636366;
+    --ios-hairline: rgba(60, 56, 50, 0.1);
+    --ios-shadow: 0 1px 2px rgba(44, 40, 34, 0.03), 0 10px 28px rgba(44, 40, 34, 0.05);
+    background: var(--ios-bg) !important;
+    color: var(--ios-text) !important;
+}
+
+/* 3) iOS Dark — true system dark, soft labels, not neon */
+.lux-shell.iosdark-theme {
+    --ios-bg: #000000;
+    --ios-card: #1c1c1e;
+    --ios-text: #f5f5f7;
+    --ios-muted: #98989f;
+    --ios-accent: #0a84ff;
+    --ios-hairline: rgba(84, 84, 88, 0.45);
+    --ios-shadow: 0 1px 0 rgba(255, 255, 255, 0.04), 0 12px 32px rgba(0, 0, 0, 0.45);
+    background: var(--ios-bg) !important;
+    color: var(--ios-text) !important;
+}
+
+.lux-shell.ios-theme .lux-orb-1,
+.lux-shell.ios-theme .lux-orb-2,
+.lux-shell.ios-theme .lux-orb-3,
+.lux-shell.iossoft-theme .lux-orb-1,
+.lux-shell.iossoft-theme .lux-orb-2,
+.lux-shell.iossoft-theme .lux-orb-3,
+.lux-shell.iosdark-theme .lux-orb-1,
+.lux-shell.iosdark-theme .lux-orb-2,
+.lux-shell.iosdark-theme .lux-orb-3 {
+    opacity: 0.35;
+    filter: blur(8px);
+}
+
+.lux-shell.ios-theme .lux-orb-1,
+.lux-shell.iossoft-theme .lux-orb-1 {
+    background: radial-gradient(circle, rgba(0, 122, 255, 0.08) 0%, transparent 70%);
+}
+
+.lux-shell.iosdark-theme .lux-orb-1 {
+    background: radial-gradient(circle, rgba(10, 132, 255, 0.12) 0%, transparent 70%);
+}
+
+.lux-shell.ios-theme .lux-grid,
+.lux-shell.iossoft-theme .lux-grid,
+.lux-shell.iosdark-theme .lux-grid {
+    opacity: 0;
+}
+
+.lux-shell.ios-theme .lux-overline,
+.lux-shell.ios-theme .lux-brand-text,
+.lux-shell.iossoft-theme .lux-overline,
+.lux-shell.iossoft-theme .lux-brand-text,
+.lux-shell.iosdark-theme .lux-overline,
+.lux-shell.iosdark-theme .lux-brand-text {
+    color: var(--ios-accent);
+    letter-spacing: 0.06em;
+    font-weight: 600;
+}
+
+.lux-shell.ios-theme .lux-card,
+.lux-shell.ios-theme .lux-identity,
+.lux-shell.ios-theme .lux-save-contact,
+.lux-shell.ios-theme .lux-social-chip,
+.lux-shell.ios-theme .lux-qr-card,
+.lux-shell.iossoft-theme .lux-card,
+.lux-shell.iossoft-theme .lux-identity,
+.lux-shell.iossoft-theme .lux-save-contact,
+.lux-shell.iossoft-theme .lux-social-chip,
+.lux-shell.iossoft-theme .lux-qr-card,
+.lux-shell.iosdark-theme .lux-card,
+.lux-shell.iosdark-theme .lux-identity,
+.lux-shell.iosdark-theme .lux-save-contact,
+.lux-shell.iosdark-theme .lux-social-chip,
+.lux-shell.iosdark-theme .lux-qr-card {
+    background: var(--ios-card) !important;
+    border-color: var(--ios-hairline) !important;
+    box-shadow: var(--ios-shadow) !important;
+    border-radius: 1.15rem;
+}
+
+.lux-shell.ios-theme .lux-name,
+.lux-shell.ios-theme .lux-section-title,
+.lux-shell.ios-theme .lux-qr-card .text-slate-800,
+.lux-shell.ios-theme .lux-save-contact .text-gray-800,
+.lux-shell.iossoft-theme .lux-name,
+.lux-shell.iossoft-theme .lux-section-title,
+.lux-shell.iossoft-theme .lux-qr-card .text-slate-800,
+.lux-shell.iossoft-theme .lux-save-contact .text-gray-800,
+.lux-shell.iosdark-theme .lux-name,
+.lux-shell.iosdark-theme .lux-section-title,
+.lux-shell.iosdark-theme .lux-qr-card .text-slate-800,
+.lux-shell.iosdark-theme .lux-save-contact .text-gray-800 {
+    color: var(--ios-text) !important;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.lux-shell.ios-theme .lux-bio,
+.lux-shell.ios-theme .lux-social-chip span,
+.lux-shell.ios-theme .lux-qr-card .text-slate-400,
+.lux-shell.ios-theme .text-gray-400,
+.lux-shell.iossoft-theme .lux-bio,
+.lux-shell.iossoft-theme .lux-social-chip span,
+.lux-shell.iossoft-theme .lux-qr-card .text-slate-400,
+.lux-shell.iossoft-theme .text-gray-400,
+.lux-shell.iosdark-theme .lux-bio,
+.lux-shell.iosdark-theme .lux-social-chip span,
+.lux-shell.iosdark-theme .lux-qr-card .text-slate-400,
+.lux-shell.iosdark-theme .text-gray-400 {
+    color: var(--ios-muted) !important;
+}
+
+.lux-shell.ios-theme .lux-avatar-ring,
+.lux-shell.iossoft-theme .lux-avatar-ring,
+.lux-shell.iosdark-theme .lux-avatar-ring {
+    background: var(--ios-card);
+    box-shadow:
+        0 0 0 3px var(--ios-card),
+        0 0 0 4px var(--ios-hairline),
+        0 8px 20px rgba(0, 0, 0, 0.08);
+    border-radius: 1.4rem;
+}
+
+.lux-shell.ios-theme .lux-avatar-ring img,
+.lux-shell.iossoft-theme .lux-avatar-ring img,
+.lux-shell.iosdark-theme .lux-avatar-ring img {
+    border-radius: 1.25rem;
+}
+
+.lux-shell.ios-theme .lux-save-icon,
+.lux-shell.iossoft-theme .lux-save-icon,
+.lux-shell.iosdark-theme .lux-save-icon {
+    background: color-mix(in srgb, var(--ios-accent) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--ios-accent) 16%, transparent);
+    color: var(--ios-accent);
+    border-radius: 0.75rem;
+}
+
+.lux-shell.ios-theme .lux-save-contact:hover,
+.lux-shell.ios-theme .lux-social-chip:hover,
+.lux-shell.iossoft-theme .lux-save-contact:hover,
+.lux-shell.iossoft-theme .lux-social-chip:hover,
+.lux-shell.iosdark-theme .lux-save-contact:hover,
+.lux-shell.iosdark-theme .lux-social-chip:hover {
+    border-color: color-mix(in srgb, var(--ios-accent) 28%, transparent) !important;
+    box-shadow:
+        0 2px 8px color-mix(in srgb, var(--ios-accent) 10%, transparent),
+        var(--ios-shadow) !important;
+    transform: scale(1.01);
+}
+
+.lux-shell.ios-theme .lux-save-contact svg,
+.lux-shell.ios-theme .lux-social-icon,
+.lux-shell.iossoft-theme .lux-save-contact svg,
+.lux-shell.iossoft-theme .lux-social-icon,
+.lux-shell.iosdark-theme .lux-save-contact svg,
+.lux-shell.iosdark-theme .lux-social-icon {
+    color: var(--ios-accent);
+}
+
+.lux-shell.ios-theme .lux-gallery-item,
+.lux-shell.iossoft-theme .lux-gallery-item,
+.lux-shell.iosdark-theme .lux-gallery-item {
+    background: var(--ios-card);
+    border-color: var(--ios-hairline);
+    box-shadow: var(--ios-shadow);
+    border-radius: 1rem;
+}
+
+.lux-shell.ios-theme .lux-gallery-btn,
+.lux-shell.iossoft-theme .lux-gallery-btn,
+.lux-shell.iosdark-theme .lux-gallery-btn {
+    background: color-mix(in srgb, var(--ios-card) 88%, transparent);
+    border-color: var(--ios-hairline);
+    color: var(--ios-text);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.lux-shell.ios-theme .lux-btn-whatsapp,
+.lux-shell.ios-theme .lux-btn-call,
+.lux-shell.iossoft-theme .lux-btn-whatsapp,
+.lux-shell.iossoft-theme .lux-btn-call,
+.lux-shell.iosdark-theme .lux-btn-whatsapp,
+.lux-shell.iosdark-theme .lux-btn-call {
+    color: #ffffff !important;
+    background: var(--ios-accent) !important;
+    border: none !important;
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--ios-accent) 28%, transparent) !important;
+    border-radius: 0.95rem;
+}
+
+.lux-shell.ios-theme .lux-btn-whatsapp svg,
+.lux-shell.ios-theme .lux-btn-call svg,
+.lux-shell.iossoft-theme .lux-btn-whatsapp svg,
+.lux-shell.iossoft-theme .lux-btn-call svg,
+.lux-shell.iosdark-theme .lux-btn-whatsapp svg,
+.lux-shell.iosdark-theme .lux-btn-call svg {
+    color: #ffffff !important;
+}
+
+.lux-shell.ios-theme .lux-btn-whatsapp::after,
+.lux-shell.ios-theme .lux-btn-call::after,
+.lux-shell.iossoft-theme .lux-btn-whatsapp::after,
+.lux-shell.iossoft-theme .lux-btn-call::after,
+.lux-shell.iosdark-theme .lux-btn-whatsapp::after,
+.lux-shell.iosdark-theme .lux-btn-call::after {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+}
+
+/* Soft whatsapp green only for light/soft; dark keeps accent blue for calm UI */
+.lux-shell.ios-theme .lux-btn-whatsapp,
+.lux-shell.iossoft-theme .lux-btn-whatsapp {
+    background: #34c759 !important;
+    box-shadow: 0 6px 16px rgba(52, 199, 89, 0.28) !important;
+}
+
+.lux-shell.iosdark-theme .lux-btn-whatsapp {
+    background: #30d158 !important;
+    box-shadow: 0 6px 16px rgba(48, 209, 88, 0.22) !important;
+}
+
+.lux-shell.ios-theme .lux-footer-divider,
+.lux-shell.iossoft-theme .lux-footer-divider,
+.lux-shell.iosdark-theme .lux-footer-divider {
+    background: var(--ios-hairline);
+}
+
+/* ═══════════════════════════════════════════════════════════
    Design Template Layout Variants
    ═══════════════════════════════════════════════════════════ */
 

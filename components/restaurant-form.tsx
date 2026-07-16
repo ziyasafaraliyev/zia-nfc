@@ -447,6 +447,51 @@ export default function RestaurantForm({ restaurant, userRole = "super_admin" }:
             />
             <span>Digital</span>
           </label>
+          <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-3 text-xs font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
+            theme === "ios"
+              ? "border-[#007AFF] bg-[#F2F2F7] text-[#007AFF] shadow-sm"
+              : "border-slate-200 bg-[#F2F2F7] text-slate-700 hover:border-[#007AFF]/40"
+          }`}>
+            <input
+              type="radio"
+              name="theme"
+              value="ios"
+              checked={theme === "ios"}
+              onChange={() => setTheme("ios")}
+              className="sr-only"
+            />
+            <span>iOS Light</span>
+          </label>
+          <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-3 text-xs font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
+            theme === "iossoft"
+              ? "border-[#8E8E93] bg-[#F7F5F2] text-[#3A3A3C] shadow-sm"
+              : "border-slate-200 bg-[#F7F5F2] text-slate-700 hover:border-[#8E8E93]/50"
+          }`}>
+            <input
+              type="radio"
+              name="theme"
+              value="iossoft"
+              checked={theme === "iossoft"}
+              onChange={() => setTheme("iossoft")}
+              className="sr-only"
+            />
+            <span>iOS Soft</span>
+          </label>
+          <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-3 text-xs font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
+            theme === "iosdark"
+              ? "border-[#0A84FF] bg-[#1C1C1E] text-[#0A84FF] shadow-md"
+              : "border-slate-200 bg-[#1C1C1E] text-slate-300 hover:border-[#0A84FF]/40"
+          }`}>
+            <input
+              type="radio"
+              name="theme"
+              value="iosdark"
+              checked={theme === "iosdark"}
+              onChange={() => setTheme("iosdark")}
+              className="sr-only"
+            />
+            <span>iOS Dark</span>
+          </label>
         </div>
       </div>
 

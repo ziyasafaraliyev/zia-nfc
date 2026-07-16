@@ -17,6 +17,9 @@ const qrThemeColors: Record<NonNullable<Profile["theme"]>, string> = {
   sapphire: "#29AEEE",
   sunset: "#fb7185",
   copper: "#1da2f1",
+  ios: "#007AFF",
+  iossoft: "#636366",
+  iosdark: "#0A84FF",
 };
 
 function getQrColor(theme: Profile["theme"]) {

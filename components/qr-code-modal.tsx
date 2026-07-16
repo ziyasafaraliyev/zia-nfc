@@ -62,6 +62,24 @@ const qrThemeColors: Record<
     shadow: "rgba(29, 162, 241, 0.24)",
     text: "#ffffff",
   },
+  ios: {
+    accent: "#007AFF",
+    hover: "#0066D6",
+    shadow: "rgba(0, 122, 255, 0.22)",
+    text: "#ffffff",
+  },
+  iossoft: {
+    accent: "#636366",
+    hover: "#48484A",
+    shadow: "rgba(99, 99, 102, 0.18)",
+    text: "#ffffff",
+  },
+  iosdark: {
+    accent: "#0A84FF",
+    hover: "#409CFF",
+    shadow: "rgba(10, 132, 255, 0.28)",
+    text: "#ffffff",
+  },
 };
 
 function getQrThemeColor(theme: Profile["theme"]) {

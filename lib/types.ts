@@ -62,6 +62,9 @@ export type Profile = {
     | "sapphire"
     | "sunset"
     | "copper"
+    | "ios"
+    | "iossoft"
+    | "iosdark"
     | null;
   client_email?: string | null;
   client_password?: string | null;
@@ -112,6 +115,9 @@ export type Restaurant = {
     | "sapphire"
     | "sunset"
     | "copper"
+    | "ios"
+    | "iossoft"
+    | "iosdark"
     | null;
   /** Ortalama reytinq — rəylərdən avtomatik hesablanır */
   rating?: number;
