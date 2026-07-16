@@ -88,16 +88,26 @@ async function getCountViaStorage(
   visitDate: string,
 ) {
   const path = `${STORAGE_PREFIX}/${visitDate}.json`;
-  const { data, error } = await supabase.storage
-    .from(STORAGE_BUCKET)
-    .download(path);
+  const result = await supabase.storage.from(STORAGE_BUCKET).download(path);
+  const data = result.data;
+  const errMsg = result.error?.message ?? "";
 
-  if (error || !data) {
-    // Missing file = zero visits
-    if (error?.message?.toLowerCase().includes("not found") || !data) {
+  if (!data) {
+    // Missing file = zero visits for that day
+    const msg = errMsg.toLowerCase();
+    if (
+      !errMsg ||
+      msg.includes("not found") ||
+      msg.includes("object not found") ||
+      msg.includes("404")
+    ) {
       return { ok: true as const, count: 0 };
     }
-    return { ok: false as const, error: error.message, count: 0 };
+    return {
+      ok: false as const,
+      error: errMsg || "storage download failed",
+      count: 0,
+    };
   }
 
   try {
