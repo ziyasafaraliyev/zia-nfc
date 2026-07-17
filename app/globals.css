@@ -1544,20 +1544,7 @@ a.dashboard-primary:hover {
     --theme-button-text: #08202a;
 }
 
-.lux-shell.sunset-theme {
-    --theme-page-bg:
-        radial-gradient(ellipse 78% 52% at 50% -8%, rgba(251, 113, 133, 0.18) 0%, transparent 60%),
-        radial-gradient(ellipse 52% 34% at 88% 18%, rgba(253, 164, 175, 0.08) 0%, transparent 55%),
-        linear-gradient(180deg, #18090d 0%, #30151c 44%, #0f0407 100%);
-    --theme-accent: #fb7185;
-    --theme-accent-soft: #fff1f2;
-    --theme-accent-glow: rgba(251, 113, 133, 0.24);
-    --theme-surface-start: rgba(47, 18, 25, 0.97);
-    --theme-surface-end: rgba(23, 8, 12, 0.97);
-    --theme-text-primary: #fff4f5;
-    --theme-text-muted: #efbcc5;
-    --theme-button-text: #44131d;
-}
+/* sunset-theme (Sadə) — pure white iOS styles defined below */
 
 .lux-shell.copper-theme {
     --theme-page-bg:
@@ -1578,7 +1565,6 @@ a.dashboard-primary:hover {
 .lux-shell.ruby-theme,
 .lux-shell.violet-theme,
 .lux-shell.sapphire-theme,
-.lux-shell.sunset-theme,
 .lux-shell.copper-theme {
     background: var(--theme-page-bg) !important;
     color: var(--theme-text-primary) !important;
@@ -1592,8 +1578,6 @@ a.dashboard-primary:hover {
 .lux-shell.violet-theme .lux-brand-text,
 .lux-shell.sapphire-theme .lux-overline,
 .lux-shell.sapphire-theme .lux-brand-text,
-.lux-shell.sunset-theme .lux-overline,
-.lux-shell.sunset-theme .lux-brand-text,
 .lux-shell.copper-theme .lux-overline,
 .lux-shell.copper-theme .lux-brand-text {
     color: var(--theme-accent);
@@ -1603,7 +1587,6 @@ a.dashboard-primary:hover {
 .lux-shell.ruby-theme .lux-orb-1,
 .lux-shell.violet-theme .lux-orb-1,
 .lux-shell.sapphire-theme .lux-orb-1,
-.lux-shell.sunset-theme .lux-orb-1,
 .lux-shell.copper-theme .lux-orb-1 {
     background: radial-gradient(circle, var(--theme-accent-glow) 0%, rgba(255, 255, 255, 0.03) 50%, transparent 72%);
 }
@@ -1612,7 +1595,6 @@ a.dashboard-primary:hover {
 .lux-shell.ruby-theme .lux-orb-2,
 .lux-shell.violet-theme .lux-orb-2,
 .lux-shell.sapphire-theme .lux-orb-2,
-.lux-shell.sunset-theme .lux-orb-2,
 .lux-shell.copper-theme .lux-orb-2 {
     background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, var(--theme-accent-glow) 55%, transparent 75%);
 }
@@ -1621,7 +1603,6 @@ a.dashboard-primary:hover {
 .lux-shell.ruby-theme .lux-orb-3,
 .lux-shell.violet-theme .lux-orb-3,
 .lux-shell.sapphire-theme .lux-orb-3,
-.lux-shell.sunset-theme .lux-orb-3,
 .lux-shell.copper-theme .lux-orb-3 {
     background: radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, var(--theme-accent-glow) 60%, transparent 75%);
 }
@@ -1630,7 +1611,6 @@ a.dashboard-primary:hover {
 .lux-shell.ruby-theme .lux-grid,
 .lux-shell.violet-theme .lux-grid,
 .lux-shell.sapphire-theme .lux-grid,
-.lux-shell.sunset-theme .lux-grid,
 .lux-shell.copper-theme .lux-grid {
     background-image:
         linear-gradient(color-mix(in srgb, var(--theme-accent) 12%, transparent) 1px, transparent 1px),
@@ -1657,11 +1637,6 @@ a.dashboard-primary:hover {
 .lux-shell.sapphire-theme .lux-save-contact,
 .lux-shell.sapphire-theme .lux-social-chip,
 .lux-shell.sapphire-theme .lux-qr-card,
-.lux-shell.sunset-theme .lux-card,
-.lux-shell.sunset-theme .lux-identity,
-.lux-shell.sunset-theme .lux-save-contact,
-.lux-shell.sunset-theme .lux-social-chip,
-.lux-shell.sunset-theme .lux-qr-card,
 .lux-shell.copper-theme .lux-card,
 .lux-shell.copper-theme .lux-identity,
 .lux-shell.copper-theme .lux-save-contact,
@@ -1690,10 +1665,6 @@ a.dashboard-primary:hover {
 .lux-shell.sapphire-theme .lux-section-title,
 .lux-shell.sapphire-theme .lux-qr-card .text-slate-800,
 .lux-shell.sapphire-theme .lux-save-contact .text-gray-800,
-.lux-shell.sunset-theme .lux-name,
-.lux-shell.sunset-theme .lux-section-title,
-.lux-shell.sunset-theme .lux-qr-card .text-slate-800,
-.lux-shell.sunset-theme .lux-save-contact .text-gray-800,
 .lux-shell.copper-theme .lux-name,
 .lux-shell.copper-theme .lux-section-title,
 .lux-shell.copper-theme .lux-qr-card .text-slate-800,
@@ -1713,9 +1684,6 @@ a.dashboard-primary:hover {
 .lux-shell.sapphire-theme .lux-bio,
 .lux-shell.sapphire-theme .lux-social-chip span,
 .lux-shell.sapphire-theme .lux-qr-card .text-slate-400,
-.lux-shell.sunset-theme .lux-bio,
-.lux-shell.sunset-theme .lux-social-chip span,
-.lux-shell.sunset-theme .lux-qr-card .text-slate-400,
 .lux-shell.copper-theme .lux-bio,
 .lux-shell.copper-theme .lux-social-chip span,
 .lux-shell.copper-theme .lux-qr-card .text-slate-400 {
@@ -1726,7 +1694,6 @@ a.dashboard-primary:hover {
 .lux-shell.ruby-theme .lux-avatar-ring,
 .lux-shell.violet-theme .lux-avatar-ring,
 .lux-shell.sapphire-theme .lux-avatar-ring,
-.lux-shell.sunset-theme .lux-avatar-ring,
 .lux-shell.copper-theme .lux-avatar-ring {
     background: linear-gradient(180deg, var(--theme-surface-start) 0%, var(--theme-surface-end) 100%);
     box-shadow:
@@ -1747,9 +1714,6 @@ a.dashboard-primary:hover {
 .lux-shell.sapphire-theme .lux-save-contact:hover,
 .lux-shell.sapphire-theme .lux-gallery-item:hover,
 .lux-shell.sapphire-theme .lux-social-chip:hover,
-.lux-shell.sunset-theme .lux-save-contact:hover,
-.lux-shell.sunset-theme .lux-gallery-item:hover,
-.lux-shell.sunset-theme .lux-social-chip:hover,
 .lux-shell.copper-theme .lux-save-contact:hover,
 .lux-shell.copper-theme .lux-gallery-item:hover,
 .lux-shell.copper-theme .lux-social-chip:hover {
@@ -1763,7 +1727,6 @@ a.dashboard-primary:hover {
 .lux-shell.ruby-theme .lux-save-icon,
 .lux-shell.violet-theme .lux-save-icon,
 .lux-shell.sapphire-theme .lux-save-icon,
-.lux-shell.sunset-theme .lux-save-icon,
 .lux-shell.copper-theme .lux-save-icon {
     background: color-mix(in srgb, var(--theme-accent) 14%, transparent);
     border-color: color-mix(in srgb, var(--theme-accent) 30%, transparent);
@@ -1774,7 +1737,6 @@ a.dashboard-primary:hover {
 .lux-shell.ruby-theme .lux-location-chip,
 .lux-shell.violet-theme .lux-location-chip,
 .lux-shell.sapphire-theme .lux-location-chip,
-.lux-shell.sunset-theme .lux-location-chip,
 .lux-shell.copper-theme .lux-location-chip {
     background: color-mix(in srgb, var(--theme-accent) 10%, transparent);
     border-color: color-mix(in srgb, var(--theme-accent) 22%, transparent);
@@ -1785,7 +1747,6 @@ a.dashboard-primary:hover {
 .lux-shell.ruby-theme .lux-gallery-item,
 .lux-shell.violet-theme .lux-gallery-item,
 .lux-shell.sapphire-theme .lux-gallery-item,
-.lux-shell.sunset-theme .lux-gallery-item,
 .lux-shell.copper-theme .lux-gallery-item {
     background: linear-gradient(180deg, color-mix(in srgb, var(--theme-surface-start) 100%, black) 0%, color-mix(in srgb, var(--theme-surface-end) 100%, black) 100%);
     border-color: color-mix(in srgb, var(--theme-accent) 18%, transparent);
@@ -1795,7 +1756,6 @@ a.dashboard-primary:hover {
 .lux-shell.ruby-theme .lux-gallery-btn,
 .lux-shell.violet-theme .lux-gallery-btn,
 .lux-shell.sapphire-theme .lux-gallery-btn,
-.lux-shell.sunset-theme .lux-gallery-btn,
 .lux-shell.copper-theme .lux-gallery-btn {
     background: color-mix(in srgb, var(--theme-surface-end) 88%, transparent);
     border-color: color-mix(in srgb, var(--theme-accent) 20%, transparent);
@@ -1810,8 +1770,6 @@ a.dashboard-primary:hover {
 .lux-shell.violet-theme .lux-social-icon,
 .lux-shell.sapphire-theme .lux-save-contact svg,
 .lux-shell.sapphire-theme .lux-social-icon,
-.lux-shell.sunset-theme .lux-save-contact svg,
-.lux-shell.sunset-theme .lux-social-icon,
 .lux-shell.copper-theme .lux-save-contact svg,
 .lux-shell.copper-theme .lux-social-icon {
     color: var(--theme-accent);
@@ -1825,8 +1783,6 @@ a.dashboard-primary:hover {
 .lux-shell.violet-theme .lux-btn-call,
 .lux-shell.sapphire-theme .lux-btn-whatsapp,
 .lux-shell.sapphire-theme .lux-btn-call,
-.lux-shell.sunset-theme .lux-btn-whatsapp,
-.lux-shell.sunset-theme .lux-btn-call,
 .lux-shell.copper-theme .lux-btn-whatsapp,
 .lux-shell.copper-theme .lux-btn-call {
     color: var(--theme-button-text);
@@ -1844,8 +1800,6 @@ a.dashboard-primary:hover {
 .lux-shell.violet-theme .lux-btn-call svg,
 .lux-shell.sapphire-theme .lux-btn-whatsapp svg,
 .lux-shell.sapphire-theme .lux-btn-call svg,
-.lux-shell.sunset-theme .lux-btn-whatsapp svg,
-.lux-shell.sunset-theme .lux-btn-call svg,
 .lux-shell.copper-theme .lux-btn-whatsapp svg,
 .lux-shell.copper-theme .lux-btn-call svg {
     color: var(--theme-button-text);
@@ -1881,6 +1835,149 @@ a.dashboard-primary:hover {
 .lux-shell.copper-theme .lux-btn-call svg {
     color: #ffffff;
 }
+
+
+/* ===========================================================
+   SADE (sunset key) — pure white, simplest iOS-style profile
+   =========================================================== */
+
+.lux-shell.sunset-theme {
+    --ios-bg: #ffffff;
+    --ios-card: #ffffff;
+    --ios-text: #1c1c1e;
+    --ios-muted: #8e8e93;
+    --ios-accent: #007aff;
+    --ios-hairline: rgba(60, 60, 67, 0.1);
+    --ios-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    background: #ffffff !important;
+    color: var(--ios-text) !important;
+}
+
+.lux-shell.sunset-theme .lux-orb-1,
+.lux-shell.sunset-theme .lux-orb-2,
+.lux-shell.sunset-theme .lux-orb-3 {
+    opacity: 0 !important;
+    display: none !important;
+}
+
+.lux-shell.sunset-theme .lux-grid {
+    opacity: 0 !important;
+    display: none !important;
+}
+
+.lux-shell.sunset-theme .lux-overline,
+.lux-shell.sunset-theme .lux-brand-text {
+    color: var(--ios-muted);
+    letter-spacing: 0.08em;
+    font-weight: 600;
+}
+
+.lux-shell.sunset-theme .lux-card,
+.lux-shell.sunset-theme .lux-identity,
+.lux-shell.sunset-theme .lux-save-contact,
+.lux-shell.sunset-theme .lux-social-chip,
+.lux-shell.sunset-theme .lux-qr-card {
+    background: #ffffff !important;
+    border-color: var(--ios-hairline) !important;
+    box-shadow: none !important;
+    border-radius: 1.1rem;
+}
+
+.lux-shell.sunset-theme .lux-name,
+.lux-shell.sunset-theme .lux-section-title,
+.lux-shell.sunset-theme .lux-qr-card .text-slate-800,
+.lux-shell.sunset-theme .lux-save-contact .text-gray-800 {
+    color: var(--ios-text) !important;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.lux-shell.sunset-theme .lux-bio,
+.lux-shell.sunset-theme .lux-social-chip span,
+.lux-shell.sunset-theme .lux-qr-card .text-slate-400,
+.lux-shell.sunset-theme .text-gray-400 {
+    color: var(--ios-muted) !important;
+}
+
+.lux-shell.sunset-theme .lux-avatar-ring {
+    background: #ffffff;
+    box-shadow:
+        0 0 0 3px #ffffff,
+        0 0 0 4px var(--ios-hairline);
+    border-radius: 1.35rem;
+}
+
+.lux-shell.sunset-theme .lux-avatar-ring img {
+    border-radius: 1.2rem;
+}
+
+.lux-shell.sunset-theme .lux-save-icon {
+    background: #f2f2f7;
+    border: 1px solid var(--ios-hairline);
+    color: var(--ios-accent);
+    border-radius: 0.75rem;
+}
+
+.lux-shell.sunset-theme .lux-save-contact:hover,
+.lux-shell.sunset-theme .lux-social-chip:hover {
+    border-color: rgba(60, 60, 67, 0.18) !important;
+    box-shadow: none !important;
+    transform: none;
+}
+
+.lux-shell.sunset-theme .lux-save-contact svg,
+.lux-shell.sunset-theme .lux-social-icon {
+    color: var(--ios-accent);
+}
+
+.lux-shell.sunset-theme .lux-location-chip {
+    background: #f2f2f7;
+    border-color: var(--ios-hairline);
+    color: var(--ios-muted);
+}
+
+.lux-shell.sunset-theme .lux-gallery-item {
+    background: #ffffff;
+    border-color: var(--ios-hairline);
+    box-shadow: none;
+    border-radius: 1rem;
+}
+
+.lux-shell.sunset-theme .lux-gallery-btn {
+    background: rgba(255, 255, 255, 0.92);
+    border-color: var(--ios-hairline);
+    color: var(--ios-text);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.lux-shell.sunset-theme .lux-btn-whatsapp,
+.lux-shell.sunset-theme .lux-btn-call {
+    color: #ffffff !important;
+    background: var(--ios-accent) !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0.95rem;
+}
+
+.lux-shell.sunset-theme .lux-btn-whatsapp {
+    background: #34c759 !important;
+}
+
+.lux-shell.sunset-theme .lux-btn-whatsapp svg,
+.lux-shell.sunset-theme .lux-btn-call svg {
+    color: #ffffff !important;
+}
+
+.lux-shell.sunset-theme .lux-btn-whatsapp::after,
+.lux-shell.sunset-theme .lux-btn-call::after {
+    background: none;
+}
+
+.lux-shell.sunset-theme .lux-footer-divider {
+    background: var(--ios-hairline);
+}
+
 
 /* ═══════════════════════════════════════════════════════════
    iOS-STYLE TEMPLATES — simple, soft, easy on the eyes

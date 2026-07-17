@@ -419,8 +419,8 @@ export default function RestaurantForm({ restaurant, userRole = "super_admin" }:
           </label>
           <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-3 text-xs font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
             theme === "sunset"
-              ? "border-[#fb7185] bg-[linear-gradient(135deg,#2f1118_0%,#5b2434_45%,#9f4058_100%)] text-[#fff1f2] shadow-[0_12px_30px_rgba(251,113,133,0.22)]"
-              : "border-slate-200 bg-[linear-gradient(135deg,#fff1f2_0%,#ffffff_100%)] text-slate-700 hover:border-[#fb7185]/50 hover:bg-[#fff1f2]"
+              ? "border-slate-300 bg-white text-slate-800 shadow-sm"
+              : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
           }`}>
             <input
               type="radio"
@@ -430,7 +430,7 @@ export default function RestaurantForm({ restaurant, userRole = "super_admin" }:
               onChange={() => setTheme("sunset")}
               className="sr-only"
             />
-            <span>Günbatımı</span>
+            <span>Sadə</span>
           </label>
           <label className={`relative overflow-hidden flex items-center justify-center gap-2 rounded-2xl border p-3 text-xs font-bold uppercase tracking-wide cursor-pointer transition-all duration-200 ${
             theme === "copper"

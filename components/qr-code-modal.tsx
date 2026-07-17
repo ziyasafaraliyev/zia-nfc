@@ -51,10 +51,10 @@ const qrThemeColors: Record<
     text: "#ffffff",
   },
   sunset: {
-    accent: "#fb7185",
-    hover: "#f43f5e",
-    shadow: "rgba(251, 113, 133, 0.24)",
-    text: "#44131d",
+    accent: "#007AFF",
+    hover: "#0066D6",
+    shadow: "rgba(0, 122, 255, 0.18)",
+    text: "#ffffff",
   },
   copper: {
     accent: "#1da2f1",
