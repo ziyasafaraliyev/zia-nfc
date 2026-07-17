@@ -4,7 +4,6 @@ import QRCode from "qrcode";
 import sharp from "sharp";
 import { getProfileBySlug } from "@/lib/profiles";
 import { getProfileUrl } from "@/lib/urls";
-import type { Profile } from "@/lib/types";
 
 /** Cache QR PNG at CDN — profile URL rarely changes without admin save */
 export const revalidate = 300;
@@ -14,24 +13,11 @@ const QR_SIZE = 384;
 const LOGO_RATIO = 0.16;
 const LOGO_PAD_RATIO = 1.2;
 
-const qrThemeColors: Record<NonNullable<Profile["theme"]>, string> = {
-  light: "#1a1a2e",
-  dark: "#38bdf8",
-  premium: "#d4af37",
-  emerald: "#10b981",
-  ruby: "#e11d48",
-  violet: "#8b5cf6",
-  sapphire: "#29AEEE",
-  sunset: "#fb7185",
-  copper: "#1da2f1",
-  ios: "#007AFF",
-  iossoft: "#636366",
-  iosdark: "#0A84FF",
-};
-
-function getQrColor(theme: Profile["theme"]) {
-  return qrThemeColors[theme ?? "light"] ?? qrThemeColors.light;
-}
+/**
+ * Brand blue sampled from logoarxafonsuz.png so QR modules match the logo.
+ * (avg opaque pixels ≈ #1f99ff)
+ */
+const QR_BRAND_COLOR = "#1F99FF";
 
 // Validate slug format to prevent injection
 function isValidSlug(slug: string): boolean {
@@ -43,10 +29,11 @@ let cachedLogoOverlay: Buffer | null = null;
 async function getLogoOverlay(): Promise<Buffer> {
   if (cachedLogoOverlay) return cachedLogoOverlay;
 
-  const logoPath = path.join(process.cwd(), "public", "zianfclogo1.png");
+  const logoPath = path.join(process.cwd(), "public", "logoarxafonsuz.png");
   const logoSize = Math.round(QR_SIZE * LOGO_RATIO);
   const padSize = Math.round(logoSize * LOGO_PAD_RATIO);
 
+  // Transparent-bg logo — keep alpha; white pad supplies the background
   const resizedLogo = await sharp(logoPath)
     .resize(logoSize, logoSize, {
       fit: "contain",
@@ -55,7 +42,7 @@ async function getLogoOverlay(): Promise<Buffer> {
     .png()
     .toBuffer();
 
-  // White pad behind logo so QR modules don't show through
+  // White pad behind logo so QR modules don't show through transparent areas
   cachedLogoOverlay = await sharp({
     create: {
       width: padSize,
@@ -71,7 +58,7 @@ async function getLogoOverlay(): Promise<Buffer> {
   return cachedLogoOverlay;
 }
 
-async function buildQrPng(profileUrl: string, qrColor: string): Promise<Buffer> {
+async function buildQrPng(profileUrl: string): Promise<Buffer> {
   // H error correction so center logo does not break scanning
   const qrBuffer = await QRCode.toBuffer(profileUrl, {
     type: "png",
@@ -79,7 +66,7 @@ async function buildQrPng(profileUrl: string, qrColor: string): Promise<Buffer> 
     width: QR_SIZE,
     errorCorrectionLevel: "H",
     color: {
-      dark: qrColor,
+      dark: QR_BRAND_COLOR,
       light: "#ffffff",
     },
   });
@@ -114,8 +101,7 @@ export async function GET(
     }
 
     const profileUrl = getProfileUrl(profile.slug);
-    const qrColor = getQrColor(profile.theme);
-    const png = await buildQrPng(profileUrl, qrColor);
+    const png = await buildQrPng(profileUrl);
 
     return new NextResponse(new Uint8Array(png), {
       status: 200,
