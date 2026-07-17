@@ -9,9 +9,12 @@ import { getProfileUrl } from "@/lib/urls";
 export const revalidate = 300;
 
 const QR_SIZE = 384;
-/** Logo is small in the center (~16% of QR) so scanning still works */
-const LOGO_RATIO = 0.16;
-const LOGO_PAD_RATIO = 1.2;
+/**
+ * Center logo as large as safe with H error correction (~30% recovery).
+ * Pad is only a thin white rim so the logo fills the reserved area.
+ */
+const LOGO_RATIO = 0.26;
+const LOGO_PAD_RATIO = 1.06;
 
 /**
  * Brand blue sampled from logoarxafonsuz.png so QR modules match the logo.
