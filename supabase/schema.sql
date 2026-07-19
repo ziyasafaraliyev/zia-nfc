@@ -242,3 +242,53 @@ create policy "Service role manages site_daily_visits"
 on public.site_daily_visits for all
 using (auth.role() = 'service_role')
 with check (auth.role() = 'service_role');
+
+-- Revoke default broad SELECT permissions from public/anon/authenticated roles
+revoke select on table public.profiles from anon, authenticated;
+
+-- Explicitly grant SELECT permission only to non-sensitive public fields
+grant select (
+  id,
+  slug,
+  enabled,
+  name,
+  profession,
+  bio,
+  phone,
+  phone2,
+  whatsapp,
+  whatsapp2,
+  instagram,
+  tiktok,
+  telegram,
+  website,
+  facebook,
+  x,
+  linkedin,
+  youtube,
+  behance,
+  location,
+  location_url,
+  email,
+  avatar_url,
+  background_url,
+  cover_style,
+  cover_position,
+  gallery,
+  catalog,
+  theme,
+  created_at,
+  updated_at,
+  cv_url,
+  reservation_enabled,
+  portfolio_enabled,
+  referral_enabled,
+  referral_url
+) on table public.profiles to anon, authenticated;
+
+-- Restrict storage select policy so that files under internal/ cannot be accessed publicly
+drop policy if exists "Public profile images are readable" on storage.objects;
+create policy "Public profile images are readable"
+on storage.objects for select
+using (bucket_id = 'profiles' and (not (name like 'internal/%')));
+
