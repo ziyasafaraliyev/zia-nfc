@@ -243,10 +243,16 @@ on public.site_daily_visits for all
 using (auth.role() = 'service_role')
 with check (auth.role() = 'service_role');
 
--- Revoke default broad SELECT permissions from public/anon/authenticated roles
-revoke select on table public.profiles from anon, authenticated;
+-- ──────────────────────────────────────────────
+-- Column-Level Security: hide client_email and client_password from anon/authenticated
+-- We restore table-level SELECT (required by PostgREST) but restrict per-column access.
+-- client_email and client_password are intentionally omitted from this grant.
+-- ──────────────────────────────────────────────
 
--- Explicitly grant SELECT permission only to non-sensitive public fields
+-- Restore table-level SELECT (needed for PostgREST to work)
+grant select on table public.profiles to anon, authenticated;
+
+-- Override with explicit column-level grant (excludes client_email, client_password)
 grant select (
   id,
   slug,
@@ -261,6 +267,8 @@ grant select (
   instagram,
   tiktok,
   telegram,
+  threads,
+  waze,
   website,
   facebook,
   x,
@@ -269,6 +277,7 @@ grant select (
   behance,
   location,
   location_url,
+  google_review_url,
   email,
   avatar_url,
   background_url,
@@ -291,4 +300,3 @@ drop policy if exists "Public profile images are readable" on storage.objects;
 create policy "Public profile images are readable"
 on storage.objects for select
 using (bucket_id = 'profiles' and (not (name like 'internal/%')));
-
