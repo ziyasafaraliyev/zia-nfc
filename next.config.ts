@@ -108,6 +108,21 @@ const nextConfig: NextConfig = {
         ],
       },
       // NOTE: do not set Cache-Control on /u or /r HTML — breaks App Router RSC/navigation
+      {
+        // RFC 8288 Link headers for AI agent discovery on homepage
+        source: "/",
+        headers: [
+          {
+            key: "Link",
+            value: [
+              '</.well-known/api-catalog>; rel="api-catalog"',
+              '</sitemap.xml>; rel="sitemap"',
+              '</.well-known/agent-skills/index.json>; rel="agent-skills"',
+              '</.well-known/mcp/server-card.json>; rel="mcp-server-card"',
+            ].join(", "),
+          },
+        ],
+      },
     ];
   },
 };

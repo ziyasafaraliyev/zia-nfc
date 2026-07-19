@@ -3,3 +3,7 @@ Allow: /
 Disallow: /admin
 Disallow: /restoran
 Disallow: /api/
+
+Sitemap: https://zianfc.vercel.app/sitemap.xml
+
+Content-Signal: ai-train=no, search=yes, ai-input=yes

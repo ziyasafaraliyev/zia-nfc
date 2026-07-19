@@ -1,8 +1,66 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+/** Markdown homepage content for AI agents */
+const HOMEPAGE_MARKDOWN = `# Zia NFC — Premium NFC Digital Business Card Platform
+
+**URL**: https://zianfc.vercel.app  
+**Language**: Azerbaijani (az-AZ)  
+**Category**: NFC Technology / Digital Business Cards
+
+## About
+
+Zia NFC is a premium digital business card platform powered by NFC (Near Field Communication) technology. 
+It allows professionals and businesses to share contact information, portfolios, social media profiles, 
+and galleries instantly with a tap of an NFC card or sticker.
+
+## Products & Services
+
+- **NFC Business Cards** — Premium physical NFC-enabled business cards (vizit kart)
+- **NFC Stickers** — Adhesive NFC stickers for phones, laptops, and surfaces
+- **NFC Table Stands** — Desktop NFC display stands for restaurants and offices  
+- **Digital Profiles** — Customizable public profile pages with contact info and social links
+- **Restaurant Menus** — Digital menu system for restaurants with QR/NFC ordering
+- **Portfolio Pages** — Gallery and portfolio showcasing for creative professionals
+- **Analytics Dashboard** — Visit tracking and analytics for NFC card interactions
+
+## Public Profile Access
+
+Individual public profiles are accessible at:
+\`https://zianfc.vercel.app/u/{slug}\`
+
+Each profile contains:
+- Name, profession, bio
+- Phone numbers (WhatsApp, standard)
+- Social media links (Instagram, TikTok, LinkedIn, YouTube, etc.)
+- Location and Google Maps links
+- Portfolio gallery
+- Contact download (vCard)
+
+## API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| \`/api/chat\` | POST | AI-powered chat for product/service queries |
+| \`/api/visit\` | POST | NFC card visit tracking |
+
+## Agent Discovery
+
+- **API Catalog**: https://zianfc.vercel.app/.well-known/api-catalog
+- **MCP Server Card**: https://zianfc.vercel.app/.well-known/mcp/server-card.json
+- **Agent Skills**: https://zianfc.vercel.app/.well-known/agent-skills/index.json
+- **Sitemap**: https://zianfc.vercel.app/sitemap.xml
+
+## Contact & Purchase
+
+Visit https://zianfc.vercel.app to order NFC cards or explore digital profile options.
+
+---
+*Content-Type: text/markdown | Generated for AI agent consumption*
+`;
+
 /**
- * Edge middleware: security headers + basic request hardening.
+ * Edge middleware: security headers + basic request hardening + Markdown negotiation.
  * Auth for admin is enforced in server components/actions (HMAC cookie).
  */
 export function middleware(request: NextRequest) {
@@ -26,6 +84,27 @@ export function middleware(request: NextRequest) {
     )
   ) {
     return new NextResponse("Method Not Allowed", { status: 405 });
+  }
+
+  /**
+   * Markdown Negotiation for AI agents (RFC 7231 content negotiation)
+   * If an agent requests the homepage with Accept: text/markdown,
+   * return a markdown representation instead of HTML.
+   */
+  if (
+    pathname === "/" &&
+    (method === "GET" || method === "HEAD") &&
+    request.headers.get("accept")?.includes("text/markdown")
+  ) {
+    return new NextResponse(method === "HEAD" ? null : HOMEPAGE_MARKDOWN, {
+      status: 200,
+      headers: {
+        "Content-Type": "text/markdown; charset=utf-8",
+        "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
+        "X-Content-Type-Options": "nosniff",
+        Vary: "Accept",
+      },
+    });
   }
 
   /**
