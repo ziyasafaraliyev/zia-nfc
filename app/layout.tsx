@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit, Plus_Jakarta_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import VisitTracker from "@/components/VisitTracker";
+import { WebMCPProvider } from "@/components/WebMCPProvider";
 import "./globals.css";
 
 /** Self-hosted via next/font — avoids render-blocking Google Fonts CSS @import */
@@ -60,6 +61,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="az" className={`${plusJakarta.variable} ${outfit.variable}`}>
       <body className="bg-white text-slate-950 antialiased">
+        <WebMCPProvider />
         <VisitTracker />
         {children}
         <Analytics />

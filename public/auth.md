@@ -1,57 +1,79 @@
 # Auth.md — Zia NFC Agent Authentication Guide
 
-**Site**: https://zianfc.vercel.app  
-**Version**: 1.0.0  
-**Last Updated**: 2025-07-19
+This service supports agentic authentication via the [auth.md](https://github.com/workos/auth.md) protocol.
 
-## Overview
+- **Resource Server**: `https://zianfc.vercel.app`
+- **Authorization Server**: `https://zianfc.vercel.app`
 
-This document describes authentication requirements for AI agents and automated systems 
-interacting with the Zia NFC platform.
+---
 
-## Public Endpoints (No Authentication Required)
+## Step 1: Discover Protected Resource Metadata
 
-The following endpoints are publicly accessible without any authentication:
+Fetch the protected resource metadata to determine the authorization server(s):
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/u/{slug}` | GET | View a public NFC profile |
-| `/sitemap.xml` | GET | Site sitemap |
-| `/api/chat` | POST | AI chat for product queries |
-| `/api/visit` | POST | NFC card visit tracking |
-| `/.well-known/api-catalog` | GET | API catalog (RFC 9727) |
-| `/.well-known/mcp/server-card.json` | GET | MCP server card |
-| `/.well-known/agent-skills/index.json` | GET | Agent skills index |
+```http
+GET /.well-known/oauth-protected-resource HTTP/1.1
+Host: zianfc.vercel.app
+Accept: application/json
+```
 
-## Protected Endpoints (Authentication Required)
+## Step 2: Agent Registration
 
-The following sections require authentication:
+Most endpoints on this platform are **publicly accessible** without registration.
 
-| Path | Auth Method | Access |
-|------|-------------|--------|
-| `/admin/*` | HMAC cookie session | Admin users only |
-| `/restoran/*` | Session cookie | Restaurant operators only |
-| `/dashboard/*` | Session cookie | Profile owners only |
+### Agent Registration Details
 
-## Authentication for Admin/Dashboard
+- **register_uri**: `https://zianfc.vercel.app/api/agents/register`
+- **identity_types**: `anonymous`, `oidc_token`
+- **credential_types**: `none`, `bearer`
+- **scopes_supported**: `read:profiles`, `read:menus`
 
-Authentication is handled via **cookie-based HMAC sessions**. 
-Agents should not attempt to access `/admin` or `/dashboard` routes programmatically — 
-these are interactive user interfaces.
+### Public Endpoints (No Registration Required)
 
-## Rate Limits
+| Endpoint | Method | Scope |
+|----------|--------|-------|
+| `/u/{slug}` | GET | public |
+| `/api/chat` | POST | public |
+| `/api/visit` | POST | public |
+| `/.well-known/api-catalog` | GET | public |
+| `/.well-known/mcp/server-card.json` | GET | public |
+| `/.well-known/agent-skills/index.json` | GET | public |
+| `/sitemap.xml` | GET | public |
 
-- **Public API endpoints**: 100 requests/minute per IP
-- **Chat endpoint**: 20 requests/minute per IP
+### Protected Endpoints
 
-## Agent-Friendly Behavior
+| Endpoint | Method | Required Scope |
+|----------|--------|----------------|
+| `/admin/*` | ALL | admin session |
+| `/restoran/*` | ALL | operator session |
+| `/dashboard/*` | ALL | user session |
 
-This site:
-- Returns `robots.txt` allowing all crawlers on public paths
-- Serves `sitemap.xml` for content discovery
-- Supports `Accept: text/markdown` content negotiation on the homepage
-- Publishes MCP Server Card for tool-based agent interaction
+## Step 3: Making Requests
 
-## Contact
+For public endpoints, no authentication is needed:
 
-For API access questions or partnership inquiries, visit the main site at https://zianfc.vercel.app.
+```http
+GET /u/example-slug HTTP/1.1
+Host: zianfc.vercel.app
+Accept: application/json
+```
+
+For the AI chat endpoint:
+
+```http
+POST /api/chat HTTP/1.1
+Host: zianfc.vercel.app
+Content-Type: application/json
+
+{"message": "Tell me about Zia NFC products"}
+```
+
+## Step 4: Rate Limits
+
+- Public endpoints: 100 requests/minute per IP
+- Chat endpoint: 20 requests/minute per IP
+- On rate limit, the server returns `429 Too Many Requests`
+
+---
+
+*Zia NFC — https://zianfc.vercel.app*
