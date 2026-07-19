@@ -90,15 +90,68 @@ export default async function ProfilePage({ params }: Props) {
 
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Person",
-    name: profile.name,
-    jobTitle: profile.profession ?? undefined,
-    description: profile.bio ?? undefined,
-    url: profileUrl,
-    image: avatarSrc ?? profile.avatar_url ?? undefined,
-    telephone: profile.phone ?? profile.whatsapp ?? undefined,
-    address: profile.location ?? undefined,
-    sameAs,
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": `${profileUrl}#person`,
+        name: profile.name,
+        jobTitle: profile.profession ?? undefined,
+        description: profile.bio ?? undefined,
+        url: profileUrl,
+        image: avatarSrc
+          ? {
+              "@type": "ImageObject",
+              url: avatarSrc,
+              description: `${profile.name} profil şəkli`,
+            }
+          : undefined,
+        telephone: profile.phone ?? undefined,
+        email: profile.email ?? undefined,
+        address: profile.location
+          ? {
+              "@type": "PostalAddress",
+              addressLocality: profile.location,
+              addressCountry: "AZ",
+            }
+          : undefined,
+        sameAs: sameAs.length > 0 ? sameAs : undefined,
+        mainEntityOfPage: {
+          "@type": "ProfilePage",
+          "@id": profileUrl,
+          url: profileUrl,
+          name: `${profile.name} — Zia NFC Profili`,
+          isPartOf: { "@id": "https://zianfc.vercel.app/#website" },
+        },
+      },
+      {
+        "@type": "WebPage",
+        "@id": profileUrl,
+        url: profileUrl,
+        name: `${profile.name}${profile.profession ? ` — ${profile.profession}` : ""}`,
+        description:
+          profile.bio || `${profile.name} rəqəmsal vizit kart profili.`,
+        inLanguage: "az",
+        isPartOf: { "@id": "https://zianfc.vercel.app/#website" },
+        about: { "@id": `${profileUrl}#person` },
+        breadcrumb: {
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: "Zia NFC",
+              item: "https://zianfc.vercel.app",
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: profile.name,
+              item: profileUrl,
+            },
+          ],
+        },
+      },
+    ],
   };
 
   const lcpPreload = avatarSrc || coverSrc;
