@@ -41,6 +41,20 @@ type Props = {
   searchParams: Promise<{ error?: string; saved?: string; redirectTo?: string }>;
 };
 
+export const metadata = {
+  title: "Admin Panel",
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: {
+      index: false,
+      follow: false,
+      noimageindex: true,
+    },
+  },
+};
+
 const inputClass =
   "mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none transition duration-200 placeholder:text-slate-400 focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/20" +
   " font-sans"; 

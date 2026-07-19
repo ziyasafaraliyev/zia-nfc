@@ -79,12 +79,16 @@ const nextConfig: NextConfig = {
         headers: securityHeaders,
       },
       {
-        // Never cache admin UI
+        // Never cache admin UI and block search bots at HTTP level
         source: "/admin/:path*",
         headers: [
           {
             key: "Cache-Control",
             value: "no-store, no-cache, must-revalidate, private",
+          },
+          {
+            key: "X-Robots-Tag",
+            value: "noindex, nofollow, noarchive, nosnippet",
           },
         ],
       },
@@ -94,6 +98,10 @@ const nextConfig: NextConfig = {
           {
             key: "Cache-Control",
             value: "no-store, no-cache, must-revalidate, private",
+          },
+          {
+            key: "X-Robots-Tag",
+            value: "noindex, nofollow, noarchive, nosnippet",
           },
         ],
       },
