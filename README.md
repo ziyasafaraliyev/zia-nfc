@@ -16,8 +16,14 @@ Create the Supabase tables from `supabase/schema.sql`, then set:
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `ADMIN_EMAIL`
+- Cloudflare R2 vars (`CLOUDFLARE_R2_*`) — required for image uploads
 
-The schema also creates a public `profiles` storage bucket used by the admin panel for profile images and portfolio uploads.
+**Media architecture**
+
+- **Cloudflare R2** — actual image/PDF files (avatars, covers, gallery, CV)
+- **Supabase** — database only: stores public R2 URLs in columns like `avatar_url`, `gallery`, `cover_url`
+
+New uploads never write to Supabase Storage. Legacy Supabase Storage URLs are still deleted if present when media is replaced or a profile/restaurant is removed.
 
 Routes:
 

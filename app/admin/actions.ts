@@ -1,7 +1,14 @@
 "use server";
 
 import { createServiceSupabaseClient } from "@/lib/supabase";
-import { isR2Configured, uploadToR2 } from "@/lib/r2";
+import {
+  deleteManyFromR2,
+  deletePrefixFromR2,
+  isR2Configured,
+  isR2PublicUrl,
+  r2KeyFromPublicUrl,
+  uploadToR2,
+} from "@/lib/r2";
 import {
   type GalleryFileMetaEntry,
   getUploadFileName,
@@ -515,41 +522,112 @@ function redirectWithSaveError(error: string, basePath = "/admin"): never {
   redirect(`${basePath}?error=${encodeURIComponent(error)}`);
 }
 
-// Helper to extract storage path from URL
+/**
+ * Object key from a media public URL.
+ * - Cloudflare R2: https://pub-xxx.r2.dev/avatars/slug/file.webp → avatars/slug/file.webp
+ * - Legacy Supabase Storage: …/object/public/profiles/avatars/… → avatars/…
+ * Supabase DB only stores these URLs; binary files live on R2 for new uploads.
+ */
 function extractPathFromUrl(url: string | null): string | null {
   if (!url) return null;
   try {
+    // Prefer R2 public URL parsing
+    const r2Key = r2KeyFromPublicUrl(url);
+    if (r2Key) return r2Key;
+
     const urlObj = new URL(url);
     const pathParts = urlObj.pathname.split("/").filter(Boolean);
-    console.log("Full path parts from URL:", url, "→", pathParts);
-    
-    // Standard Supabase format: /storage/v1/object/public/<bucket>/<path>
+
+    // Supabase: /storage/v1/object/public/<bucket>/<path>
     const objectIndex = pathParts.indexOf("object");
     const publicIndex = pathParts.indexOf("public");
-    
-    if (objectIndex !== -1 && publicIndex !== -1 && publicIndex === objectIndex + 1) {
-      // Path is everything after "public"
-      const extractedPath = pathParts.slice(publicIndex + 1).join("/");
-      console.log("Extracted path (standard) from URL:", url, "→", extractedPath);
-      return extractedPath;
+    if (
+      objectIndex !== -1 &&
+      publicIndex !== -1 &&
+      publicIndex === objectIndex + 1 &&
+      pathParts.length > publicIndex + 2
+    ) {
+      // Skip bucket segment after "public"
+      return pathParts.slice(publicIndex + 2).join("/");
     }
-    
-    // Fallback: If URL just starts with /profiles/
+
     if (pathParts[0] === "profiles" && pathParts.length > 1) {
-      const extractedPath = pathParts.slice(1).join("/");
-      console.log("Extracted path (fallback) from URL:", url, "→", extractedPath);
-      return extractedPath;
+      return pathParts.slice(1).join("/");
     }
-    
-    // Last resort: Just use the full pathname without leading slash
-    const fallbackPath = pathParts.join("/");
-    console.log("Extracted path (last resort) from URL:", url, "→", fallbackPath);
-    return fallbackPath;
-  } catch (error) {
-    console.error("Error extracting path from URL:", url, error);
+
+    // Generic public host path (custom CDN / old R2 link)
+    return pathParts.join("/") || null;
+  } catch {
+    return null;
   }
-  console.log("Could not extract path from URL:", url);
-  return null;
+}
+
+type StoredMediaBackend = "r2" | "supabase" | "unknown";
+
+function mediaBackend(url: string): StoredMediaBackend {
+  if (isR2PublicUrl(url)) return "r2";
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes("supabase.co") && u.pathname.includes("/storage/")) {
+      return "supabase";
+    }
+  } catch {
+    /* ignore */
+  }
+  // New uploads always target R2 — treat unknown host paths as R2 keys when configured
+  return isR2Configured() ? "r2" : "unknown";
+}
+
+/**
+ * Delete media files. New files are on Cloudflare R2; legacy Supabase Storage
+ * objects are removed only when the URL still points at Supabase.
+ */
+async function deleteMediaUrls(urls: Array<string | null | undefined>) {
+  const r2Keys: string[] = [];
+  const supabasePaths: string[] = [];
+
+  for (const url of urls) {
+    if (!url) continue;
+    const path = extractPathFromUrl(url);
+    if (!path) continue;
+    const backend = mediaBackend(url);
+    if (backend === "supabase") {
+      supabasePaths.push(path);
+    } else {
+      r2Keys.push(path);
+    }
+  }
+
+  if (r2Keys.length > 0) {
+    await deleteManyFromR2(r2Keys);
+  }
+
+  if (supabasePaths.length > 0) {
+    const supabase = createServiceSupabaseClient();
+    if (supabase) {
+      try {
+        const unique = [...new Set(supabasePaths)];
+        const { error } = await supabase.storage.from("profiles").remove(unique);
+        if (error) {
+          console.error("Legacy Supabase storage delete error:", error);
+        }
+      } catch (err) {
+        console.error("Legacy Supabase storage delete exception:", err);
+      }
+    }
+  }
+}
+
+async function deleteMediaPrefixes(prefixes: string[]) {
+  await Promise.all(
+    prefixes.map(async (prefix) => {
+      try {
+        await deletePrefixFromR2(prefix);
+      } catch (err) {
+        console.error("R2 prefix delete failed:", prefix, err);
+      }
+    }),
+  );
 }
 
 // ──────────────────────────────────────────────
@@ -633,6 +711,11 @@ async function encodeRasterToWebp(
   return webpBuffer;
 }
 
+/**
+ * Upload customer/restaurant media to Cloudflare R2 only.
+ * Returns a public HTTPS URL — that string is what we store in Supabase columns
+ * (avatar_url, cover_url, gallery, cv_url, …). Binary never goes to Supabase Storage.
+ */
 async function uploadFile(
   file: Blob | File | null,
   folder: string,
@@ -651,6 +734,12 @@ async function uploadFile(
     throw new Error("File too large");
   }
 
+  if (!isR2Configured()) {
+    throw new Error(
+      "Cloudflare R2 is not configured. Set CLOUDFLARE_R2_ACCOUNT_ID, CLOUDFLARE_R2_ACCESS_KEY_ID, CLOUDFLARE_R2_SECRET_ACCESS_KEY, CLOUDFLARE_R2_BUCKET_NAME, CLOUDFLARE_R2_PUBLIC_URL.",
+    );
+  }
+
   // Sanitize folder — only allow path segments without traversal
   const safeFolder = folder
     .split("/")
@@ -659,11 +748,6 @@ async function uploadFile(
     .join("/");
   if (!safeFolder || safeFolder.includes("..")) {
     throw new Error("Invalid upload path");
-  }
-
-  const supabase = createServiceSupabaseClient();
-  if (!supabase) {
-    return null;
   }
 
   const fileName = getUploadFileName(file, options?.fileName);
@@ -684,7 +768,7 @@ async function uploadFile(
     (isImageMime(mimeType) && mimeType !== "image/svg+xml") ||
     IMAGE_EXTS.has(extFromName);
 
-  let fileToUpload: Blob | Buffer;
+  let fileToUpload: Buffer;
   let contentType: string;
   let ext: string;
 
@@ -722,35 +806,9 @@ async function uploadFile(
     throw new Error("File type not allowed");
   }
 
-  // Path always ends with .webp for images
+  // Object key in R2 bucket; public URL returned for Supabase columns
   const path = `${safeFolder}/${crypto.randomUUID()}.${ext}`;
-
-  if (isR2Configured()) {
-    try {
-      const buffer = Buffer.isBuffer(fileToUpload)
-        ? fileToUpload
-        : Buffer.from(await (fileToUpload as Blob).arrayBuffer());
-      const r2Url = await uploadToR2(path, buffer, contentType);
-      if (r2Url) {
-        return r2Url;
-      }
-    } catch (r2Err) {
-      console.error("Cloudflare R2 upload error, falling back to Supabase storage:", r2Err);
-    }
-  }
-
-  const { error } = await supabase.storage.from("profiles").upload(path, fileToUpload, {
-    contentType,
-    cacheControl: "31536000",
-    upsert: false,
-  });
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  const { data } = supabase.storage.from("profiles").getPublicUrl(path);
-  return data.publicUrl;
+  return uploadToR2(path, fileToUpload, contentType);
 }
 
 // ══════════════════════════════════════════════
@@ -1107,68 +1165,42 @@ export async function saveProfile(formData: FormData) {
   const removeBackground = bool(formData, "remove_background");
   const removeCv = bool(formData, "remove_cv");
 
-  // Collect files to delete from storage
-  const pathsToDelete: string[] = [];
+  // Collect public URLs of media to remove from Cloudflare R2 (or legacy Supabase)
+  const urlsToDelete: string[] = [];
 
-  // Delete old avatar if we're uploading a new one or removing it
   if ((avatar || removeAvatar) && existingProfile?.avatar_url) {
-    const path = extractPathFromUrl(existingProfile.avatar_url);
-    if (path) pathsToDelete.push(path);
+    urlsToDelete.push(existingProfile.avatar_url);
   }
-
-  // Delete old background if we're uploading a new one or removing it
   if ((background || removeBackground) && existingProfile?.background_url) {
-    const path = extractPathFromUrl(existingProfile.background_url);
-    if (path) pathsToDelete.push(path);
+    urlsToDelete.push(existingProfile.background_url);
   }
-
-  // Delete old cv if we're uploading a new one or removing it
   if ((cv || removeCv) && existingProfile?.cv_url) {
-    const path = extractPathFromUrl(existingProfile.cv_url);
-    if (path) pathsToDelete.push(path);
+    urlsToDelete.push(existingProfile.cv_url);
   }
 
-  // Delete gallery images that are no longer in the new list
-  const allNewImageUrls = new Set(newSections.flatMap(s => s.images || []));
-  
-  // Collect all old image urls
+  const allNewImageUrls = new Set(newSections.flatMap((s) => s.images || []));
   let allOldImageUrls: string[] = [];
   if (existingProfile?.gallery && Array.isArray(existingProfile.gallery)) {
-    // Check if it's old format (strings) or new format (objects)
-    if (existingProfile.gallery.length > 0 && typeof existingProfile.gallery[0] === 'object' && 'images' in existingProfile.gallery[0]) {
-      // New format (sections)
-      allOldImageUrls = (existingProfile.gallery as any[]).flatMap(s => s.images || []);
+    if (
+      existingProfile.gallery.length > 0 &&
+      typeof existingProfile.gallery[0] === "object" &&
+      existingProfile.gallery[0] !== null &&
+      "images" in existingProfile.gallery[0]
+    ) {
+      allOldImageUrls = (existingProfile.gallery as { images?: string[] }[]).flatMap(
+        (s) => s.images || [],
+      );
     } else {
-      // Old format (flat array)
       allOldImageUrls = existingProfile.gallery as string[];
     }
   }
-  
-  // Find images to delete
   for (const oldUrl of allOldImageUrls) {
     if (!allNewImageUrls.has(oldUrl)) {
-      const path = extractPathFromUrl(oldUrl);
-      if (path) pathsToDelete.push(path);
+      urlsToDelete.push(oldUrl);
     }
   }
 
-  // Delete the collected files from storage
-  if (pathsToDelete.length > 0) {
-    const uniquePaths = [...new Set(pathsToDelete)];
-    console.log("Files to delete from storage:", uniquePaths);
-    try {
-      const { data, error } = await supabase.storage.from("profiles").remove(uniquePaths);
-      if (error) {
-        console.error("Error deleting files from storage:", error);
-      } else {
-        console.log("Successfully deleted files from storage:", data);
-      }
-    } catch (error) {
-      console.error("Exception when deleting files from storage:", error);
-    }
-  } else {
-    console.log("No files to delete from storage");
-  }
+  await deleteMediaUrls(urlsToDelete);
 
   let client_email = undefined;
   let client_password = undefined;
@@ -1327,77 +1359,44 @@ export async function deleteProfile(formData: FormData) {
     throw new Error("Missing Supabase or profile id or slug");
   }
 
-  // First, get the profile to extract gallery URLs and other storage URLs
+  // Collect media URLs stored in Supabase, then remove binaries from R2
   const { data: profile } = await supabase
     .from("profiles")
     .select("avatar_url, background_url, cv_url, gallery")
     .eq("id", id)
     .single();
 
-  // Clean up storage files for this profile
-  const folders = [`avatars/${slug}`, `backgrounds/${slug}`, `gallery/${slug}`, `cvs/${slug}`];
-  const allPathsToDelete: string[] = [];
-
-  // Collect files from folders
-  for (const folder of folders) {
-    try {
-      const { data: files } = await supabase.storage.from("profiles").list(folder);
-      if (files && files.length > 0) {
-        const paths = files.map((f) => `${folder}/${f.name}`);
-        allPathsToDelete.push(...paths);
-      }
-    } catch {
-      // Storage cleanup is best-effort
-    }
-  }
-
-  // Collect paths from profile URLs (avatar, background, cv, gallery)
+  const urlsToDelete: string[] = [];
   if (profile) {
-    if (profile.avatar_url) {
-      const path = extractPathFromUrl(profile.avatar_url);
-      if (path) allPathsToDelete.push(path);
-    }
-    if (profile.background_url) {
-      const path = extractPathFromUrl(profile.background_url);
-      if (path) allPathsToDelete.push(path);
-    }
-    if (profile.cv_url) {
-      const path = extractPathFromUrl(profile.cv_url);
-      if (path) allPathsToDelete.push(path);
-    }
+    if (profile.avatar_url) urlsToDelete.push(profile.avatar_url);
+    if (profile.background_url) urlsToDelete.push(profile.background_url);
+    if (profile.cv_url) urlsToDelete.push(profile.cv_url);
     if (profile.gallery && Array.isArray(profile.gallery)) {
       let galleryUrls: string[] = [];
-      if (profile.gallery.length > 0 && typeof profile.gallery[0] === 'object' && 'images' in profile.gallery[0]) {
-        // New format (sections)
-        galleryUrls = (profile.gallery as any[]).flatMap(s => s.images || []);
+      if (
+        profile.gallery.length > 0 &&
+        typeof profile.gallery[0] === "object" &&
+        profile.gallery[0] !== null &&
+        "images" in profile.gallery[0]
+      ) {
+        galleryUrls = (profile.gallery as { images?: string[] }[]).flatMap(
+          (s) => s.images || [],
+        );
       } else {
-        // Old format (flat array)
         galleryUrls = profile.gallery as string[];
       }
-      for (const galleryUrl of galleryUrls) {
-        const path = extractPathFromUrl(galleryUrl);
-        if (path) allPathsToDelete.push(path);
-      }
+      urlsToDelete.push(...galleryUrls);
     }
   }
 
-  // Delete all collected files (remove duplicates first)
-  if (allPathsToDelete.length > 0) {
-    const uniquePaths = [...new Set(allPathsToDelete)];
-    console.log("All files to delete (including folders):", uniquePaths);
-    try {
-      const { data, error } = await supabase.storage.from("profiles").remove(uniquePaths);
-      if (error) {
-        console.error("Error deleting all files from storage:", error);
-      } else {
-        console.log("Successfully deleted all files from storage:", data);
-      }
-    } catch (error) {
-      console.error("Exception when deleting all files from storage:", error);
-    }
-  } else {
-    console.log("No files to delete from storage (delete operation)");
-  }
+  await deleteMediaUrls(urlsToDelete);
+  // Also wipe any leftover objects under this slug's prefixes on R2
+  await deleteMediaPrefixes([
+    `avatars/${slug}`,
+    `backgrounds/${slug}`,
+    `gallery/${slug}`,
+    `cvs/${slug}`,
+  ]);
 
   const { error } = await supabase.from("profiles").delete().eq("id", id);
   if (error) {
@@ -1543,51 +1542,26 @@ export async function saveRestaurant(formData: FormData) {
   const removeAvatar = bool(formData, "remove_avatar");
   const removeCover = bool(formData, "remove_cover");
 
-  // Collect files to delete from storage
-  const pathsToDelete: string[] = [];
+  // Collect public URLs of media to remove from Cloudflare R2 (or legacy Supabase)
+  const urlsToDelete: string[] = [];
 
-  // Delete old avatar if we're uploading a new one or removing it
   if ((avatar || removeAvatar) && existingRestaurant?.avatar_url) {
-    const path = extractPathFromUrl(existingRestaurant.avatar_url);
-    if (path) pathsToDelete.push(path);
+    urlsToDelete.push(existingRestaurant.avatar_url);
   }
-
-  // Delete old cover if we're uploading a new one or removing it
   if ((cover || removeCover) && existingRestaurant?.cover_url) {
-    const path = extractPathFromUrl(existingRestaurant.cover_url);
-    if (path) pathsToDelete.push(path);
+    urlsToDelete.push(existingRestaurant.cover_url);
   }
-
-  // Delete gallery images that are no longer in the new list
   if (existingRestaurant?.gallery && Array.isArray(existingRestaurant.gallery)) {
     const oldGalleryUrls = existingRestaurant.gallery as string[];
-    const oldGallerySet = new Set(oldGalleryUrls);
     const newGallerySet = new Set(newGalleryUrls);
-    for (const oldUrl of oldGallerySet) {
+    for (const oldUrl of oldGalleryUrls) {
       if (!newGallerySet.has(oldUrl)) {
-        const path = extractPathFromUrl(oldUrl);
-        if (path) pathsToDelete.push(path);
+        urlsToDelete.push(oldUrl);
       }
     }
   }
 
-  // Delete the collected files from storage
-  if (pathsToDelete.length > 0) {
-    const uniquePaths = [...new Set(pathsToDelete)];
-    console.log("Files to delete from storage:", uniquePaths);
-    try {
-      const { data, error } = await supabase.storage.from("profiles").remove(uniquePaths);
-      if (error) {
-        console.error("Error deleting files from storage:", error);
-      } else {
-        console.log("Successfully deleted files from storage:", data);
-      }
-    } catch (error) {
-      console.error("Exception when deleting files from storage:", error);
-    }
-  } else {
-    console.log("No files to delete from storage");
-  }
+  await deleteMediaUrls(urlsToDelete);
 
   const payload = {
     slug,
@@ -1698,66 +1672,28 @@ export async function deleteRestaurant(formData: FormData) {
     throw new Error("Missing Supabase or restaurant id or slug");
   }
 
-  // First, get the restaurant to extract gallery URLs and other storage URLs
+  // Collect media URLs stored in Supabase, then remove binaries from R2
   const { data: restaurant } = await supabase
     .from("restaurants")
     .select("avatar_url, cover_url, gallery")
     .eq("id", id)
     .single();
 
-  // Clean up storage files for this restaurant
-  const folders = [`restaurants/avatars/${slug}`, `restaurants/covers/${slug}`, `restaurants/gallery/${slug}`];
-  const allPathsToDelete: string[] = [];
-
-  // Collect files from folders
-  for (const folder of folders) {
-    try {
-      const { data: files } = await supabase.storage.from("profiles").list(folder);
-      if (files && files.length > 0) {
-        const paths = files.map((f) => `${folder}/${f.name}`);
-        allPathsToDelete.push(...paths);
-      }
-    } catch {
-      // Storage cleanup is best-effort
-    }
-  }
-
-  // Collect paths from restaurant URLs (avatar, cover, gallery)
+  const urlsToDelete: string[] = [];
   if (restaurant) {
-    if (restaurant.avatar_url) {
-      const path = extractPathFromUrl(restaurant.avatar_url);
-      if (path) allPathsToDelete.push(path);
-    }
-    if (restaurant.cover_url) {
-      const path = extractPathFromUrl(restaurant.cover_url);
-      if (path) allPathsToDelete.push(path);
-    }
+    if (restaurant.avatar_url) urlsToDelete.push(restaurant.avatar_url);
+    if (restaurant.cover_url) urlsToDelete.push(restaurant.cover_url);
     if (restaurant.gallery && Array.isArray(restaurant.gallery)) {
-      const galleryUrls = restaurant.gallery as string[];
-      for (const galleryUrl of galleryUrls) {
-        const path = extractPathFromUrl(galleryUrl);
-        if (path) allPathsToDelete.push(path);
-      }
+      urlsToDelete.push(...(restaurant.gallery as string[]));
     }
   }
 
-  // Delete all collected files (remove duplicates first)
-  if (allPathsToDelete.length > 0) {
-    const uniquePaths = [...new Set(allPathsToDelete)];
-    console.log("All files to delete (including folders):", uniquePaths);
-    try {
-      const { data, error } = await supabase.storage.from("profiles").remove(uniquePaths);
-      if (error) {
-        console.error("Error deleting all files from storage:", error);
-      } else {
-        console.log("Successfully deleted all files from storage:", data);
-      }
-    } catch (error) {
-      console.error("Exception when deleting all files from storage:", error);
-    }
-  } else {
-    console.log("No files to delete from storage (delete operation)");
-  }
+  await deleteMediaUrls(urlsToDelete);
+  await deleteMediaPrefixes([
+    `restaurants/avatars/${slug}`,
+    `restaurants/covers/${slug}`,
+    `restaurants/gallery/${slug}`,
+  ]);
 
   const { error } = await supabase.from("restaurants").delete().eq("id", id);
   if (error) {

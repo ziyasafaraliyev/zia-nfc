@@ -1,7 +1,8 @@
 /**
- * Supabase Storage image transforms (CDN-side resize).
- * object/public/... → render/image/public/...?width=&quality=
- * Falls back to original URL if not a public storage object URL.
+ * Optional CDN resize for media URLs.
+ * - Legacy Supabase Storage: object/public → render/image/public (width/quality)
+ * - Cloudflare R2 (and any other host): return the original public URL as-is
+ *   (R2 public buckets do not provide Supabase-style image transforms)
  *
  * Prefer resize "contain" for profile media so high-res uploads are not
  * center-cropped (which looks like a zoom) before CSS object-fit runs.
@@ -19,6 +20,7 @@ export function storageImageUrl(
   try {
     const u = new URL(url);
     const match = u.pathname.match(/\/storage\/v1\/object\/public\/(.+)$/);
+    // Not Supabase Storage (e.g. R2 public URL) — use as stored in DB
     if (!match) return url;
 
     u.pathname = `/storage/v1/render/image/public/${match[1]}`;
