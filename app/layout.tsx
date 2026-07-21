@@ -60,6 +60,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="az" className={`${plusJakarta.variable} ${outfit.variable}`}>
+      <head>
+        {/* Lemon Squeezy — checkout overlay skripti */}
+        <script src="https://app.lemonsqueezy.com/js/lemon.js" defer />
+      </head>
       <body className="bg-white text-slate-950 antialiased">
         <WebMCPProvider />
         <VisitTracker />

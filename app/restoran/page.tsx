@@ -214,7 +214,7 @@ function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
             )}
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <h3 className="truncate text-xl font-black tracking-tight text-slate-900" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
+                <h3 className="truncate text-xl font-black tracking-tight text-slate-900 restaurant-name" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
                   {restaurant.name}
                 </h3>
                 <StatusBadge enabled={restaurant.enabled} />

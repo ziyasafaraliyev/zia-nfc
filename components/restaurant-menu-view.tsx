@@ -41,7 +41,7 @@ export default function RestaurantMenuView({
             className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/60 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-white"
           >
             <ArrowLeft size={14} />
-            {restaurant.name}
+            <span className="restaurant-name">{restaurant.name}</span>
           </Link>
         ) : null}
 
@@ -66,7 +66,7 @@ export default function RestaurantMenuView({
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#29AEEE]">
                 Zia Menyu
               </p>
-              <h1 className="mt-0.5 truncate text-xl font-black tracking-tight text-slate-950">
+              <h1 className="mt-0.5 truncate text-xl font-black tracking-tight text-slate-950 restaurant-name">
                 {restaurant.name}
               </h1>
               <p className="mt-0.5 text-xs font-medium text-slate-500">

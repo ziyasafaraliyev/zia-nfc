@@ -1,4 +1,4 @@
-import { getRestaurantBySlug, getReviewsForRestaurant } from "@/lib/restaurants";
+import { getRestaurantBySlug } from "@/lib/restaurants";
 import { hasBuiltInMenu } from "@/lib/menu";
 import { getRestaurantMenuPath } from "@/lib/urls";
 import type { Metadata } from "next";
@@ -10,11 +10,11 @@ import {
   ExternalLink,
   Facebook,
   Menu,
+  Star,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import RestaurantRating from "@/components/restaurant-rating";
 import SmartImage from "@/components/smart-image";
 
 export const revalidate = 60;
@@ -57,8 +57,6 @@ export default async function RestaurantPage({ params }: Props) {
   const { slug } = await params;
   const restaurant = await getRestaurantBySlug(slug);
   if (!restaurant || !restaurant.enabled) notFound();
-
-  const reviews = restaurant.id ? await getReviewsForRestaurant(restaurant.id) : [];
 
   const coverStyle = restaurant.cover_style ?? "auto";
   const coverPosition = restaurant.cover_position ?? "center";
@@ -151,7 +149,7 @@ export default async function RestaurantPage({ params }: Props) {
               ) : null}
 
               <div className="pb-1 min-w-0">
-                <h1 className="lux-name mt-1 leading-[1.1]">
+                <h1 className="lux-name restaurant-name mt-1 leading-[1.1]">
                   {restaurant.name}
                 </h1>
               </div>
@@ -286,12 +284,31 @@ export default async function RestaurantPage({ params }: Props) {
           </div>
         ) : null}
 
-        {/* ── RATING & REVIEWS ── */}
-        {restaurant.id && <RestaurantRating 
-          restaurantId={restaurant.id}
-          currentRating={restaurant.rating}
-          reviews={reviews}
-        />}
+        {/* ── GOOGLE REVIEW LINK ── */}
+        {restaurant.google_review_url ? (
+          <a
+            href={restaurant.google_review_url}
+            target="_blank"
+            rel="noreferrer"
+            className="lux-save-contact group mt-3 flex h-14 w-full items-center justify-between gap-3 rounded-2xl px-4 transition-transform duration-200 hover:scale-[1.02]"
+          >
+            <span className="flex items-center gap-3">
+              <span className="lux-save-icon grid size-9 place-items-center rounded-xl">
+                <Star size={16} className="text-[#29AEEE]" />
+              </span>
+              <span className="flex flex-col items-start leading-tight">
+                <span className="text-sm font-bold text-gray-800">Rəy bildir</span>
+                <span className="text-[10px] font-semibold text-gray-400 mt-0.5">
+                  Google-da bizi qiymətləndirin
+                </span>
+              </span>
+            </span>
+            <ExternalLink
+              size={15}
+              className="text-gray-400 transition-all duration-300 group-hover:text-[#29AEEE] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            />
+          </a>
+        ) : null}
 
         {/* ── FOOTER ── */}
         <div className="mt-6 flex flex-col items-center gap-2">

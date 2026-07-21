@@ -1,6 +1,5 @@
 import {
   ArrowRight,
-  BadgeCheck,
   Camera,
   Check,
   ChevronRight,
@@ -20,6 +19,7 @@ import LandingHeroMockup from "@/components/landing-hero-mockup";
 import LandingNavbar from "@/components/landing-navbar";
 import NfcCardShowcase from "@/components/nfc-card-showcase";
 import { ProfileShowcase } from "@/components/landing-phone-profile";
+import PricingSection from "@/components/pricing-section";
 
 const features = [
   {
@@ -70,42 +70,7 @@ const steps = [
   ],
 ];
 
-const plans = [
-  {
-    name: "Standart",
-    price: "59 AZN",
-    note: "Fərdi peşəkarlar üçün",
-    items: [
-      "1 rəqəmsal profil",
-      "WhatsApp və sosial linklər",
-      "QR ehtiyat nüsxəsi",
-      "Standart NFC kartı",
-    ],
-  },
-  {
-    name: "Premium",
-    price: "99 AZN",
-    note: "Ən çox tələb olunan",
-    featured: true,
-    items: [
-      "Portfolio qalereyası",
-      "Kontaktı yadda saxla (.vcf)",
-      "Premium kart dizaynı",
-      "Premium qablaşdırma",
-    ],
-  },
-  {
-    name: "Studio",
-    price: "Özəl",
-    note: "Komandalar və brendlər üçün",
-    items: [
-      "Çoxsaylı profillər",
-      "Brendə uyğun profil sistemi",
-      "Toplu kart istehsalı",
-      "Prioritet yeniləmələr",
-    ],
-  },
-];
+
 
 const metrics = [
   ["1 toxunuş", "profil ötürülməsi"],
@@ -322,89 +287,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section id="pricing" className="bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-700">
-            Qiymətlər
-          </p>
-          <h2 className="mt-4 max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-            Rəqəmsal kimliyinizi başlatmaq üçün aydın paketlər.
-          </h2>
-          <div className="mt-10 grid gap-5 lg:grid-cols-3">
-            {plans.map((plan) => (
-              <div
-                key={plan.name}
-                className={`relative flex flex-col justify-between rounded-3xl border p-7 shadow-[0_16px_50px_rgba(15,23,42,0.07)] transition duration-300 ease-out hover:-translate-y-1.5 hover:scale-[1.03] ${
-                  plan.featured
-                    ? "border-sky-300 bg-slate-950 text-white hover:shadow-[0_24px_80px_rgba(14,165,233,0.15)]"
-                    : "border-slate-200 bg-white text-slate-950 hover:border-slate-300 hover:shadow-[0_24px_80px_rgba(15,23,42,0.12)]"
-                }`}
-              >
-                <div>
-                  {plan.featured ? (
-                    <div className="absolute right-5 top-5 rounded-full bg-sky-300 px-3 py-1 text-xs font-black uppercase tracking-[0.12em] text-slate-950">
-                      Populyar
-                    </div>
-                  ) : null}
-                  <h3 className="text-2xl font-black tracking-tight">
-                    {plan.name}
-                  </h3>
-                  <p
-                    className={`mt-2 text-sm font-bold ${plan.featured ? "text-slate-400" : "text-slate-500"}`}
-                  >
-                    {plan.note}
-                  </p>
-                  <p
-                    className={`mt-6 text-4xl font-black tracking-tight ${plan.featured ? "text-sky-300" : "text-slate-950"}`}
-                  >
-                    {plan.price}
-                  </p>
-                  <div className="mt-7 space-y-3">
-                    {plan.items.map((item) => (
-                      <div
-                        key={item}
-                        className={`flex items-center gap-3 text-sm font-semibold ${plan.featured ? "text-slate-200" : "text-slate-700"}`}
-                      >
-                        <BadgeCheck
-                          size={18}
-                          className={
-                            plan.featured ? "text-sky-300" : "text-sky-500"
-                          }
-                        />{" "}
-                        {item}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="mt-8">
-                  {plan.name === "Studio" ? (
-                    <a
-                      href="https://wa.me/994702990252"
-                      className="block w-full rounded-full bg-sky-500 px-4 py-3.5 text-center text-sm font-black uppercase tracking-[0.14em] text-white shadow-[0_12px_30px_rgba(14,165,233,0.2)] transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98]"
-                    >
-                      Bizimlə əlaqə
-                    </a>
-                  ) : plan.featured ? (
-                    <a
-                      href="https://wa.me/994702990252"
-                      className="block w-full rounded-full bg-sky-300 px-4 py-3.5 text-center text-sm font-black uppercase tracking-[0.14em] text-slate-950 shadow-md transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-white active:scale-[0.98]"
-                    >
-                      Sifariş et
-                    </a>
-                  ) : (
-                    <a
-                      href="https://wa.me/994702990252"
-                      className="block w-full rounded-full bg-slate-950 px-4 py-3.5 text-center text-sm font-black uppercase tracking-[0.14em] text-white shadow-md transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-slate-800 active:scale-[0.98]"
-                    >
-                      Sifariş et
-                    </a>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <PricingSection />
 
       <section id="features" className="bg-white px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">

@@ -56,7 +56,7 @@ export default function MenuStep() {
         <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-sky-600">
           Addım 1 · Menyu
         </p>
-        <h1 className="mt-1 text-2xl font-black tracking-tight text-slate-950">
+        <h1 className="mt-1 text-2xl font-black tracking-tight text-slate-950 restaurant-name">
           {restaurant.name}
         </h1>
         <p className="text-sm text-slate-500">

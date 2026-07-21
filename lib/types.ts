@@ -100,6 +100,7 @@ export type Restaurant = {
   menu?: RestaurantMenuCategory[];
   location_name?: string | null;
   location_url?: string | null;
+  google_review_url?: string | null;
   avatar_url?: string | null;
   cover_url?: string | null;
   cover_style?: "auto" | "square" | "banner" | null;

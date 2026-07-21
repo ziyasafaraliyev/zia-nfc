@@ -53,7 +53,7 @@ export default function RestaurantOrderChrome({
                 className="size-9 rounded-full object-cover shadow-md ring-2 ring-sky-400/40"
               />
             )}
-            <span className="truncate text-base font-black tracking-tight text-slate-950 group-hover:text-sky-600 sm:text-lg">
+            <span className="truncate text-base font-black tracking-tight text-slate-950 group-hover:text-sky-600 sm:text-lg restaurant-name">
               {restaurant.name}
             </span>
           </Link>

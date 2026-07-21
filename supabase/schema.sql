@@ -300,3 +300,6 @@ drop policy if exists "Public profile images are readable" on storage.objects;
 create policy "Public profile images are readable"
 on storage.objects for select
 using (bucket_id = 'profiles' and (not (name like 'internal/%')));
+
+alter table public.restaurants add column if not exists google_review_url text;
+

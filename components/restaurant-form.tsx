@@ -211,7 +211,7 @@ export default function RestaurantForm({ restaurant, userRole = "super_admin" }:
         />
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-3">
         <Field
           name="location_name"
           label="Konum Adı"
@@ -223,6 +223,12 @@ export default function RestaurantForm({ restaurant, userRole = "super_admin" }:
           label="Konum Linki (Google Maps)"
           defaultValue={restaurant?.location_url}
           placeholder="https://maps.google.com/..."
+        />
+        <Field
+          name="google_review_url"
+          label="Google Rəy Linki"
+          defaultValue={restaurant?.google_review_url}
+          placeholder="https://g.page/r/..."
         />
       </div>
 

@@ -1,6 +1,7 @@
 "use server";
 
 import { createServiceSupabaseClient } from "@/lib/supabase";
+import { isR2Configured, uploadToR2 } from "@/lib/r2";
 import {
   type GalleryFileMetaEntry,
   getUploadFileName,
@@ -723,6 +724,21 @@ async function uploadFile(
 
   // Path always ends with .webp for images
   const path = `${safeFolder}/${crypto.randomUUID()}.${ext}`;
+
+  if (isR2Configured()) {
+    try {
+      const buffer = Buffer.isBuffer(fileToUpload)
+        ? fileToUpload
+        : Buffer.from(await (fileToUpload as Blob).arrayBuffer());
+      const r2Url = await uploadToR2(path, buffer, contentType);
+      if (r2Url) {
+        return r2Url;
+      }
+    } catch (r2Err) {
+      console.error("Cloudflare R2 upload error, falling back to Supabase storage:", r2Err);
+    }
+  }
+
   const { error } = await supabase.storage.from("profiles").upload(path, fileToUpload, {
     contentType,
     cacheControl: "31536000",
@@ -1586,6 +1602,7 @@ export async function saveRestaurant(formData: FormData) {
     menu: parseRestaurantMenu(text(formData, "menu_json") || "[]"),
     location_name: text(formData, "location_name"),
     location_url: sanitizeRestaurantUrl(formData, "location_url"),
+    google_review_url: sanitizeRestaurantUrl(formData, "google_review_url"),
     cover_style: option(
       formData,
       "cover_style",
