@@ -45,20 +45,20 @@ const homeJsonLd = [
     offers: [
       {
         "@type": "Offer",
-        name: "NFC Vizit Kart",
-        description: "Premium NFC texnologiyalı rəqəmsal vizit kart",
+        name: "Standart Rəqəmsal Profil Hostinqi",
+        description: "Rəqəmsal vizit profil, vCard və sosial platforma hostinq abunəliyi",
         seller: { "@type": "Organization", name: "Zia NFC" },
       },
       {
         "@type": "Offer",
-        name: "NFC Stiker",
-        description: "Telefon və əşyalar üçün yapışqan NFC stiker",
+        name: "Premium Portfolio & Analitika SaaS",
+        description: "İnteraktiv portfolio hostinq, analitika və brend dizayn servisi",
         seller: { "@type": "Organization", name: "Zia NFC" },
       },
       {
         "@type": "Offer",
-        name: "NFC Masa Standı",
-        description: "Restoran və ofislər üçün NFC masa dayağı",
+        name: "Komanda & Menyu Rəqəmsal İnteqrasiya Platforması",
+        description: "Restoran və müəssisələr üçün rəqəmsal menyu və profil idarəetmə platforması",
         seller: { "@type": "Organization", name: "Zia NFC" },
       },
     ],

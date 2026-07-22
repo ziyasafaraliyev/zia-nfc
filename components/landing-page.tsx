@@ -40,12 +40,12 @@ const features = [
   {
     icon: RefreshCw,
     title: "Canlı yenilənmələr",
-    text: "Fiziki NFC kartı eyni qalmaqla linkləri, şəkilləri, qiymətləri və bioqrafiyanı dəyişin.",
+    text: "Məlumatlarınız eyni qalmaqla linkləri, şəkilləri, qiymətləri və bioqrafiyanı istənilən an onlayn dəyişin.",
   },
   {
     icon: QrCode,
-    title: "QR ehtiyat nüsxəsi",
-    text: "Hər bir kart köhnə telefonlar və kamera vasitəsilə skan etmək üçün təmiz QR nüsxəsini ehtiva edir.",
+    title: "NFC və QR Dəstəyi",
+    text: "Hər bir rəqəmsal profil təmiz QR kodu və ani paylaşım keçidi ehtiva edir.",
   },
   {
     icon: ShieldCheck,
@@ -55,43 +55,41 @@ const features = [
 ];
 
 const steps = [
-  ["Kartı dizayn edin", "Brendinizə uyğun premium NFC kart dizaynını seçin."],
+  ["Profili yaradın", "Brendinizə uyğun rəqəmsal profil mövzusunu seçin."],
   [
-    "Profili aktiv edin",
-    "Əlaqə vasitələrini, sosial linkləri, qalereyanı, QR və vCard ixracını tənzimləyirik.",
+    "Məlumatları daxil edin",
+    "Əlaqə vasitələrini, sosial linkləri, qalereyanı, QR və vCard ixracını tənzimləyin.",
   ],
   [
-    "Paylaşmaq üçün toxundurun",
-    "Müştərilər kartı toxundurur və ya QR-ı skan edərək sürətli mobil profilinizə daxil olurlar.",
+    "Sürətli paylaşın",
+    "Müştərilər keçid və ya QR skan edərək instant mobil profilinizə daxil olurlar.",
   ],
   [
     "İstənilən vaxt yeniləyin",
-    "Təklifiniz, kontentiniz və ya komandanız dəyişdikdə rəqəmsal profili yeniləyin.",
+    "Təklifiniz, kontentiniz və ya komandanız dəyişdikdə rəqəmsal profili istənilən an yeniləyin.",
   ],
 ];
 
-
-
 const metrics = [
-  ["1 toxunuş", "profil ötürülməsi"],
+  ["1 keçid", "profil ötürülməsi"],
   ["24/7", "redaktə edilə bilən kimlik"],
   ["0 tətbiq", "açmaq üçün tələb olunur"],
 ];
 
-const products = [
+const digitalServices = [
   {
-    title: "NFC Vizit Kart",
-    desc: "Premium dizaynlı NFC smart vizit kartı ilə müştərilərinizə təsirli ilk tanışlıq yaradın.",
+    title: "Rəqəmsal Profil Hostinqi",
+    desc: "Fərdi peşəkarlar üçün mobil rəqəmsal profil, vCard ixracı və sosial platforma inteqrasiyası.",
     image: "/vizit-kart.webp",
   },
   {
-    title: "NFC Stiker",
-    desc: "Telefon, noutbuk və ya istənilən səthə yapışdırıla bilən kompakt NFC stiker.",
+    title: "Portfolio & Analitika SaaS",
+    desc: "İnteraktiv portfolio qalereyası, brend mövzuları və real-vaxt ziyarətçi statistikası.",
     image: "/stiker.webp",
   },
   {
-    title: "NFC Masa Standı",
-    desc: "Kafe, restoran və ofislər üçün masaüstü NFC menyu və ya profil standı.",
+    title: "Restoran Menyu & Komanda Platforması",
+    desc: "Kafe, restoran və komandalar üçün cloud menyu, çoxsaylı profil idarəçiliyi və QR sistemi.",
     image: "/masa-standi.webp",
   },
 ];
@@ -112,22 +110,22 @@ export default function LandingPage() {
         <div className="mx-auto grid max-w-7xl items-center gap-12 pb-8 pt-14 lg:min-h-[calc(100vh-104px)] lg:grid-cols-[1.02fr_0.98fr] lg:pt-10">
           <div>
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-sky-200/70 bg-sky-50 px-3.5 py-2 text-sm font-bold text-sky-800">
-              <Sparkles size={16} /> Premium NFC kimlik platforması
+              <Sparkles size={16} /> Rəqəmsal Profil & SaaS Platforması
             </div>
             <h1 className="max-w-4xl text-balance text-5xl font-black leading-[0.96] tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
-              Bir Toxunuşla Sonsuz Əlaqələr
+              Rəqəmsal Vizit Və Profil Platforması
             </h1>
             <p className="mt-6 max-w-2xl text-pretty text-lg leading-8 text-slate-600 sm:text-xl">
-              Zia NFC fiziki smart kartı kontaktlar, sosial şəbəkələr və
-              portfolionu bir araya gətirən zərif rəqəmsal profilə çevirir. QR
-              ehtiyat nüsxəsi ilə hər zaman əlçatan olur.
+              Zia NFC brendinizi, kontaktlarınızı və portfolionuzu bir araya gətirən
+              müasir rəqəmsal profil platformasıdır. Avtomatik vCard və dinamik QR
+              kod inteqrasiyası ilə 24/7 əlçatandır.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <a
                 href="#pricing"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-6 py-4 font-extrabold text-white shadow-[0_18px_45px_rgba(14,165,233,0.28)] transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98]"
               >
-                Kart sifariş et <ArrowRight size={18} />
+                Abunə ol <ArrowRight size={18} />
               </a>
               <Link
                 href="/pay"
@@ -163,7 +161,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="perf-cv bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
+      <section id="digital-profile" className="perf-cv bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[0.94fr_1.06fr]">
           <ProfileShowcase />
           <div>
@@ -171,8 +169,7 @@ export default function LandingPage() {
               Mobil öncəlikli
             </p>
             <h2 className="mt-4 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-              Telefonlarda sürətli açılan və rahat istifadə olunan profil
-              səhifəsi.
+              Telefonlarda sürətli açılan və rahat istifadə olunan rəqəmsal profil.
             </h2>
             <p className="mt-5 text-lg leading-8 text-slate-600">
               İlk ekran kim olduğunuzu, nə etdiyinizi və sizinlə necə əlaqə
@@ -200,20 +197,19 @@ export default function LandingPage() {
 
       <NfcCardShowcase />
 
-      <section id="nfc-products" className="perf-cv bg-white px-4 py-20 sm:px-6 lg:px-8">
+      <section id="digital-services" className="perf-cv bg-white px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-700">
-            Məhsullar
+            Xidmətlər
           </p>
           <h2 className="mt-4 max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-            NFC məhsulları
+            Rəqəmsal SaaS Xidmətlərimiz
           </h2>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-            Biznesinizi rəqəmsallaşdıracaq premium NFC məhsullarımız ilə tanış
-            olun.
+            Biznesinizi və şəxsi brendinizi rəqəmsallaşdıracaq cloud platformamız ilə tanış olun.
           </p>
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {products.map((product) => (
+            {digitalServices.map((product) => (
               <div
                 key={product.title}
                 className="group flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_16px_50px_rgba(15,23,42,0.06)] transition duration-200 ease-out hover:-translate-y-1 hover:border-sky-200 hover:shadow-[0_22px_70px_rgba(15,23,42,0.1)]"
@@ -241,12 +237,10 @@ export default function LandingPage() {
                     {product.desc}
                   </p>
                   <a
-                    href="https://wa.me/994702990252"
-                    target="_blank"
-                    rel="noreferrer"
+                    href="#pricing"
                     className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-sky-500 py-3.5 text-sm font-black uppercase tracking-[0.14em] text-white shadow-[0_12px_30px_rgba(14,165,233,0.2)] transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98]"
                   >
-                    Sifariş et <ArrowRight size={16} />
+                    Başla <ArrowRight size={16} />
                   </a>
                 </div>
               </div>
@@ -266,7 +260,7 @@ export default function LandingPage() {
                 İş Prinsipi
               </p>
               <h2 className="mt-4 max-w-xl text-4xl font-black tracking-tight sm:text-5xl">
-                NFC texnologiyası ilə innovativ həllər.
+                Rəqəmsal profil platforması necə işləyir?
               </h2>
             </div>
             <div className="grid gap-3 md:grid-cols-4">
@@ -297,8 +291,7 @@ export default function LandingPage() {
                 Özəlliklər
               </p>
               <h2 className="mt-4 max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-                Müasir vizit kartın sahib olmalı olduğu hər şey tək bir sürətli
-                profildə.
+                Müasir rəqəmsal kimliyin sahib olmalı olduğu hər şey tək bir sürətli profildə.
               </h2>
             </div>
           </div>
@@ -337,16 +330,16 @@ export default function LandingPage() {
           <div className="space-y-3">
             {[
               [
-                "Kartı dəyişmədən profili yeniləyə bilərəm?",
-                "Bəli. NFC kart eyni profil URL-ni açır, profil məzmunu isə istənilən vaxt redaktə edilə bilər.",
+                "Profili sonradan yeniləyə bilərəm?",
+                "Bəli. Rəqəmsal profiliniz istənilən vaxt idarəetmə panelindən redaktə edilə və yenilənə bilər.",
               ],
               [
                 "Hər profildə QR kod olur?",
-                "Bəli. Profil üçün QR ehtiyat nüsxəsi yaradılır ki, NFC işləmədikdə müştərilər skan edə bilsinlər.",
+                "Bəli. Profil üçün dinamik QR koda bütöv keçid və ehtiyat nüsxəsi təmin edilir.",
               ],
               [
                 "İstifadəçilər əlaqə məlumatlarımı yadda saxlaya bilərmi?",
-                "Bəli. Profil vCard dəstəkləyir, beləcə müştərilər əlaqə məlumatlarınızı telefonlarına əlavə edə bilərlər.",
+                "Bəli. Profil vCard dəstəkləyir, beləcə müştərilər əlaqə məlumatlarınızı telefonlarına bir kliklə əlavə edə bilərlər.",
               ],
             ].map(([q, a]) => (
               <details
@@ -383,8 +376,7 @@ export default function LandingPage() {
               Zia NFC
             </div>
             <p className="mt-4 max-w-xl text-sm leading-6 text-slate-400">
-              Rəqəmsal biznes kartlar, canlı profil yenilənmələri və NFC tək
-              toxunuşda əlaqə paylaşımı.
+              Rəqəmsal profil hostinq platforması, canlı profil yenilənmələri və ani əlaqə paylaşımı.
             </p>
           </div>
 

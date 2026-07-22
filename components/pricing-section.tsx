@@ -96,8 +96,7 @@ export default function PricingSection() {
 
         {/* Qiymət izahatı */}
         <p className="mt-4 max-w-2xl text-base leading-7 text-slate-500">
-          Kart qiyməti <strong className="text-slate-700">bir dəfəlik</strong> ödənilir.
-          Aylıq abunəlik isə kartınızdan <strong className="text-slate-700">avtomatik</strong> tutulur.
+          Rəqəmsal profil hostinq və SaaS abunəlik xidmətləri. Profiliniz <strong className="text-slate-700">24/7 canlı</strong> saxlanılır və istənilən vaxt yenilənə bilir.
         </p>
 
         {/* Xəta mesajı */}

@@ -6,8 +6,8 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 
 const navItems = [
-  ["Kartlar", "#cards"],
-  ["Məhsullar", "#nfc-products"],
+  ["Rəqəmsal Profil", "#digital-profile"],
+  ["Xidmətlər", "#digital-services"],
   ["İş Prinsipi", "#how-it-works"],
   ["Qiymətlər", "#pricing"],
   ["Özəlliklər", "#features"],
