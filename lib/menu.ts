@@ -95,8 +95,12 @@ export function parseRestaurantMenu(raw: unknown): RestaurantMenuCategory[] {
       if (!itemName) continue;
 
       const imageUrl =
-        typeof it.image_url === "string" && it.image_url.startsWith("http")
-          ? it.image_url.slice(0, 500)
+        typeof it.image_url === "string" &&
+        (it.image_url.startsWith("http://") ||
+          it.image_url.startsWith("https://") ||
+          it.image_url.startsWith("data:image/") ||
+          it.image_url.startsWith("/"))
+          ? it.image_url
           : null;
 
       items.push({

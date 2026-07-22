@@ -5,10 +5,14 @@ import {
   ChevronDown,
   ChevronUp,
   GripVertical,
+  ImageIcon,
   Plus,
   Trash2,
+  Upload,
   UtensilsCrossed,
+  X,
 } from "lucide-react";
+import SmartImage from "@/components/smart-image";
 import {
   countMenuItems,
   emptyMenuCategory,
@@ -19,6 +23,42 @@ import {
   parseRestaurantMenu,
 } from "@/lib/menu";
 import type { RestaurantMenuCategory } from "@/lib/types";
+
+async function compressMenuItemImage(file: File): Promise<string> {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let width = img.width;
+        let height = img.height;
+        const maxEdge = 600;
+        if (width > maxEdge || height > maxEdge) {
+          if (width > height) {
+            height = Math.round((height * maxEdge) / width);
+            width = maxEdge;
+          } else {
+            width = Math.round((width * maxEdge) / height);
+            height = maxEdge;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL("image/webp", 0.8));
+          return;
+        }
+        resolve(e.target?.result as string);
+      };
+      img.onerror = () => resolve(e.target?.result as string);
+      img.src = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  });
+}
 
 const inputClass =
   "w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/15";
@@ -294,6 +334,79 @@ export default function RestaurantMenuEditor({ initialMenu }: Props) {
                                 <Trash2 size={14} />
                               </button>
                             </div>
+                          </div>
+
+                          {/* Məhsul Şəkli (İstəyə bağlı) */}
+                          <div className="mt-2 flex items-center gap-2">
+                            {item.image_url ? (
+                              <div className="relative size-11 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-white">
+                                <SmartImage
+                                  src={item.image_url}
+                                  alt={item.name || "Məhsul şəkli"}
+                                  width={44}
+                                  height={44}
+                                  className="size-full object-cover"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    updateCategory(cat.id, (c) => ({
+                                      ...c,
+                                      items: c.items.map((it) =>
+                                        it.id === item.id
+                                          ? { ...it, image_url: null }
+                                          : it,
+                                      ),
+                                    }))
+                                  }
+                                  className="absolute right-0.5 top-0.5 grid size-4 place-items-center rounded-full bg-slate-900/80 text-white hover:bg-rose-600"
+                                  title="Şəkli sil"
+                                >
+                                  <X size={10} />
+                                </button>
+                              </div>
+                            ) : (
+                              <label className="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white text-slate-400 transition hover:border-[#29AEEE] hover:text-[#29AEEE]" title="Şəkil seç">
+                                <Upload size={16} />
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  className="hidden"
+                                  onChange={async (e) => {
+                                    const file = e.target.files?.[0];
+                                    if (!file) return;
+                                    const compressed = await compressMenuItemImage(file);
+                                    updateCategory(cat.id, (c) => ({
+                                      ...c,
+                                      items: c.items.map((it) =>
+                                        it.id === item.id
+                                          ? { ...it, image_url: compressed }
+                                          : it,
+                                      ),
+                                    }));
+                                  }}
+                                />
+                              </label>
+                            )}
+
+                            <input
+                              value={item.image_url ?? ""}
+                              onChange={(e) =>
+                                updateCategory(cat.id, (c) => ({
+                                  ...c,
+                                  items: c.items.map((it) =>
+                                    it.id === item.id
+                                      ? {
+                                          ...it,
+                                          image_url: e.target.value || null,
+                                        }
+                                      : it,
+                                  ),
+                                }))
+                              }
+                              placeholder="Şəkil URL-i və ya düymədən şəkil yükləyin"
+                              className={inputClass}
+                            />
                           </div>
                           <div className="mt-2 grid gap-2 sm:grid-cols-[1fr_auto]">
                             <input
