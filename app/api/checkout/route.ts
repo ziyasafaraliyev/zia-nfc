@@ -40,8 +40,8 @@ export async function POST(request: Request) {
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-    // Polar.sh checkouts/custom endpoint
-    const polarRes = await fetch("https://api.polar.sh/v1/checkouts/custom", {
+    // Polar.sh checkouts endpoint: POST https://api.polar.sh/v1/checkouts/
+    const polarRes = await fetch("https://api.polar.sh/v1/checkouts/", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -60,8 +60,19 @@ export async function POST(request: Request) {
     if (!polarRes.ok) {
       const errText = await polarRes.text();
       console.error("[checkout] Polar.sh API xətası:", polarRes.status, errText);
+
+      let parsedErr: { detail?: string; message?: string } | null = null;
+      try {
+        parsedErr = JSON.parse(errText);
+      } catch {
+        // null
+      }
+
+      const detailMsg =
+        parsedErr?.detail || parsedErr?.message || `Polar API xətası (${polarRes.status})`;
+
       return NextResponse.json(
-        { error: "Ödəniş sessiyası yaradıla bilmədi." },
+        { error: `Ödəniş sessiyası yaradıla bilmədi: ${detailMsg}` },
         { status: 502 }
       );
     }
