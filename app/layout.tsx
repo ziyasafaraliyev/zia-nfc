@@ -21,9 +21,21 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Zia NFC | Premium NFC vizit kart platforması",
+  title: "Zia NFC | Premium NFC Vizit Kart və Rəqəmsal Profil Platforması",
   description:
-    "Premium NFC vizit kartları, rəqəmsal profillər, portfoliolar və kontakt paylaşımı üçün mükəmməl həll.",
+    "Azərbaycanda premium NFC vizit kartları, rəqəmsal profillər, vCard və restoran menyu QR sistemi. Bir toxunuşla kontakt və portfolio paylaşın.",
+  keywords: [
+    "NFC vizit kart",
+    "NFC vizit kart Bakı",
+    "rəqəmsal profil",
+    "elektron vizitka",
+    "smart vizit kart",
+    "vCard paylaşımı",
+    "restoran menyu QR",
+    "NFC stiker",
+    "Zia NFC",
+    "rəqəmsal vizit kart",
+  ],
   metadataBase: new URL("https://zianfc.vercel.app"),
   openGraph: {
     title: "Zia NFC | Premium NFC vizit kart platforması",
