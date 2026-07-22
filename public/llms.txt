@@ -1,0 +1,43 @@
+# Zia NFC — Premium NFC Digital Business Card & Profile Platform
+
+> Zia NFC (https://zianfc.vercel.app) is Azerbaijan's premier NFC (Near Field Communication) digital business card, digital profile hosting, and restaurant QR menu platform.
+
+## Summary
+
+Zia NFC enables professionals, creators, and businesses to replace traditional paper business cards with dynamic, interactive digital profiles. By tapping an NFC-enabled card/sticker or scanning a QR code, contacts and customers instantly view digital business cards, portfolios, social media links, location maps, and vCard downloads.
+
+## Core Features & Services
+
+- **NFC Digital Business Cards**: Premium physical smart cards embedded with NFC chips for instant contact sharing.
+- **NFC Stickers & Table Stands**: Compact adhesive stickers for phones/laptops and desktop stands for cafes/restaurants.
+- **Digital Profile Hosting**: Mobile-first responsive profile pages hosted 24/7 with customizable themes.
+- **Instant vCard Export**: Allows contacts to save full phone numbers and info to their mobile phonebook in 1 click.
+- **Interactive Portfolio Showcase**: Visual gallery to showcase services, designs, and work without messy links.
+- **Zia Menyu (Restaurant QR Menu)**: Digital menu solution for cafes and restaurants with categories, items, and ordering.
+- **Analytics & Admin Dashboard**: Track profile visits, interactions, and customize links in real-time.
+
+## Key Links & URLs
+
+- [Homepage](https://zianfc.vercel.app): Main platform overview and pricing.
+- [Public Profile Pattern](https://zianfc.vercel.app/u/{slug}): Individual user digital business cards.
+- [Restaurant Profile Pattern](https://zianfc.vercel.app/r/{slug}): Restaurant digital menus.
+- [Sitemap](https://zianfc.vercel.app/sitemap.xml): Full URL structure of indexed public pages.
+
+## Frequently Asked Questions
+
+### What is Zia NFC?
+Zia NFC is a digital profile platform that combines NFC technology with cloud-hosted digital profile pages.
+
+### How does contact sharing work?
+When an NFC card is tapped against a smartphone (or QR code scanned), the phone instantly opens the user's digital profile page without requiring any app installation.
+
+### Can profiles be updated after purchasing?
+Yes, profile information (links, bio, portfolio, phone numbers) can be updated anytime in real-time via the admin dashboard without changing the physical card.
+
+## Contact Information
+
+- **Website**: https://zianfc.vercel.app
+- **Instagram**: https://www.instagram.com/zianfc.az
+- **TikTok**: https://www.tiktok.com/@zianfc.az
+- **WhatsApp**: +994702990252
+- **Email**: nfczia@gmail.com
