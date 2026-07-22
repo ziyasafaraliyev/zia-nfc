@@ -3,20 +3,6 @@
 import { useState } from "react";
 import { ArrowRight, BadgeCheck, Loader2 } from "lucide-react";
 
-// Lemon.js global tipi
-declare global {
-  interface Window {
-    LemonSqueezy?: {
-      Setup: (opts: { eventHandler?: (event: { event: string }) => void }) => void;
-      Url: {
-        Open: (url: string) => void;
-        Close: () => void;
-      };
-    };
-    createLemonSqueezy?: () => void;
-  }
-}
-
 const plans = [
   {
     plan: "standard" as const,
@@ -84,13 +70,8 @@ export default function PricingSection() {
         return;
       }
 
-      // Lemon.js overlay ilə açılır (əgər yükləndisə)
-      if (window.LemonSqueezy?.Url) {
-        window.LemonSqueezy.Url.Open(data.url);
-      } else {
-        // Fallback: yeni sekmədə aç
-        window.open(data.url, "_blank", "noopener,noreferrer");
-      }
+      // Polar.sh checkout səhifəsinə yönləndir
+      window.location.href = data.url;
     } catch {
       setError("Şəbəkə xətası baş verdi. Yenidən cəhd edin.");
     } finally {
@@ -197,7 +178,7 @@ export default function PricingSection() {
                     Bizimlə əlaqə
                   </a>
                 ) : plan.featured ? (
-                  /* Premium — Lemon Squeezy checkout */
+                  /* Premium — Polar.sh checkout */
                   <button
                     id="btn-checkout-premium"
                     onClick={() => handleCheckout("premium")}
@@ -207,7 +188,7 @@ export default function PricingSection() {
                     {loading === "premium" ? (
                       <>
                         <Loader2 size={16} className="animate-spin" />
-                        Açılır...
+                        Yönləndirilir...
                       </>
                     ) : (
                       <>
@@ -216,7 +197,7 @@ export default function PricingSection() {
                     )}
                   </button>
                 ) : (
-                  /* Standart — Lemon Squeezy checkout */
+                  /* Standart — Polar.sh checkout */
                   <button
                     id="btn-checkout-standard"
                     onClick={() => handleCheckout("standard")}
@@ -226,7 +207,7 @@ export default function PricingSection() {
                     {loading === "standard" ? (
                       <>
                         <Loader2 size={16} className="animate-spin" />
-                        Açılır...
+                        Yönləndirilir...
                       </>
                     ) : (
                       <>

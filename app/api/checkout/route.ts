@@ -4,8 +4,8 @@ import { NextResponse } from "next/server";
  * POST /api/checkout
  * Body: { plan: "standard" | "premium" }
  *
- * Lemon Squeezy API-da checkout yaradır və overlay URL qaytarır.
- * API key server-side saxlanılır — client-ə heç vaxt göndərilmir.
+ * Polar.sh API ilə checkout yaradır və ödəniş URL-ni qaytarır.
+ * Access Token server-side saxlanılır — client-ə heç vaxt göndərilmir.
  */
 export async function POST(request: Request) {
   try {
@@ -16,81 +16,61 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Yanlış plan növü." }, { status: 400 });
     }
 
-    const apiKey = process.env.LEMONSQUEEZY_API_KEY;
-    const storeId = process.env.LEMONSQUEEZY_STORE_ID;
-    const variantId =
+    const accessToken = process.env.POLAR_ACCESS_TOKEN;
+    const productId =
       plan === "standard"
-        ? process.env.LEMONSQUEEZY_STANDARD_VARIANT_ID
-        : process.env.LEMONSQUEEZY_PREMIUM_VARIANT_ID;
+        ? process.env.POLAR_STANDARD_PRODUCT_ID
+        : process.env.POLAR_PREMIUM_PRODUCT_ID;
 
-    if (!apiKey || !storeId || !variantId) {
-      console.error("[checkout] Lemon Squeezy env dəyişənləri çatışmır.");
+    if (!accessToken) {
+      console.error("[checkout] POLAR_ACCESS_TOKEN təyin edilməyib.");
       return NextResponse.json(
-        { error: "Ödəniş sistemi konfiqurasiya edilməyib." },
+        { error: "Ödəniş sistemi konfiqurasiya edilməyib (Access Token çatışmır)." },
         { status: 500 }
       );
     }
 
-    const planLabel = plan === "standard" ? "Standart" : "Premium";
-    const planPrice = plan === "standard" ? "59 AZN" : "99 AZN";
-    const monthlyPrice = plan === "standard" ? "2.90 AZN/ay" : "4.90 AZN/ay";
+    if (!productId) {
+      console.error(`[checkout] POLAR_${plan.toUpperCase()}_PRODUCT_ID təyin edilməyib.`);
+      return NextResponse.json(
+        { error: `Ödəniş sistemi konfiqurasiya edilməyib (${plan} Məhsul ID çatışmır).` },
+        { status: 500 }
+      );
+    }
 
-    // Lemon Squeezy checkouts endpoint
-    const lsRes = await fetch("https://api.lemonsqueezy.com/v1/checkouts", {
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+    // Polar.sh checkouts/custom endpoint
+    const polarRes = await fetch("https://api.polar.sh/v1/checkouts/custom", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/vnd.api+json",
-        Accept: "application/vnd.api+json",
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify({
-        data: {
-          type: "checkouts",
-          attributes: {
-            // Checkout pəncərəsini overlay olaraq aç
-            checkout_options: {
-              embed: true,
-              media: true,
-              logo: true,
-              desc: true,
-              discount: false,
-            },
-            product_options: {
-              name: `Zia NFC — ${planLabel} Paket`,
-              description: `NFC vizit kart: ${planPrice} (bir dəfəlik) + ${monthlyPrice} aylıq abunəlik.`,
-            },
-            checkout_data: {
-              custom: {
-                plan,
-              },
-            },
-          },
-          relationships: {
-            store: {
-              data: { type: "stores", id: storeId },
-            },
-            variant: {
-              data: { type: "variants", id: variantId },
-            },
-          },
+        product_id: productId,
+        success_url: `${siteUrl}?checkout=success`,
+        metadata: {
+          plan,
         },
       }),
     });
 
-    if (!lsRes.ok) {
-      const errText = await lsRes.text();
-      console.error("[checkout] Lemon Squeezy API xətası:", errText);
+    if (!polarRes.ok) {
+      const errText = await polarRes.text();
+      console.error("[checkout] Polar.sh API xətası:", polarRes.status, errText);
       return NextResponse.json(
         { error: "Ödəniş sessiyası yaradıla bilmədi." },
         { status: 502 }
       );
     }
 
-    const lsData = await lsRes.json();
-    const checkoutUrl: string = lsData?.data?.attributes?.url;
+    const polarData = await polarRes.json();
+    const checkoutUrl: string = polarData?.url;
 
     if (!checkoutUrl) {
-      console.error("[checkout] Checkout URL tapılmadı:", lsData);
+      console.error("[checkout] Checkout URL tapılmadı:", polarData);
       return NextResponse.json(
         { error: "Checkout URL alına bilmədi." },
         { status: 502 }
