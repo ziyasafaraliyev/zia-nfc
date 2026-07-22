@@ -10,11 +10,13 @@ const plans = [
     price: "59 AZN",
     monthly: "2.90 AZN/ay",
     note: "Fərdi peşəkarlar üçün",
+    cta: "Aktivləşdir",
     items: [
-      "1 rəqəmsal profil",
-      "WhatsApp və sosial linklər",
-      "QR ehtiyat nüsxəsi",
-      "Standart NFC kartı",
+      "1 Rəqəmsal Profil və Veb-Sahə",
+      "WhatsApp və Sosial Media İnteqrasiyası",
+      "Dinamik QR Kod Generatoru",
+      "Ağıllı Cihazlar və NFC üçün Tam Uyğunluq",
+      "24/7 Avtomatik Giriş",
     ],
     featured: false,
   },
@@ -24,11 +26,13 @@ const plans = [
     price: "99 AZN",
     monthly: "4.90 AZN/ay",
     note: "Ən çox tələb olunan",
+    cta: "İndi Başla",
     items: [
-      "Portfolio qalereyası",
-      "Kontaktı yadda saxla (.vcf)",
-      "Premium kart dizaynı",
-      "Premium qablaşdırma",
+      "Standart plandakı bütün imkanlar",
+      "İnteraktiv Portfolio Qalereyası",
+      "1-Kliklə Kontakt Yadda Saxlanması (.vcf)",
+      "Premium Rəqəmsal Mövzu və Brendinq",
+      "Ətraflı Ziyarətçi Analitikası və Prioritet Dəstək",
     ],
     featured: true,
   },
@@ -38,6 +42,7 @@ const plans = [
     price: "Özəl",
     monthly: null,
     note: "Komandalar və brendlər üçün",
+    cta: "Bizimlə əlaqə",
     items: [
       "Çoxsaylı profillər",
       "Brendə uyğun profil sistemi",
@@ -175,7 +180,7 @@ export default function PricingSection() {
                     rel="noreferrer"
                     className="block w-full rounded-full bg-sky-500 px-4 py-3.5 text-center text-sm font-black uppercase tracking-[0.14em] text-white shadow-[0_12px_30px_rgba(14,165,233,0.2)] transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98]"
                   >
-                    Bizimlə əlaqə
+                    {plan.cta}
                   </a>
                 ) : plan.featured ? (
                   /* Premium — Polar.sh checkout */
@@ -192,7 +197,7 @@ export default function PricingSection() {
                       </>
                     ) : (
                       <>
-                        Sifariş et <ArrowRight size={15} />
+                        {plan.cta} <ArrowRight size={15} />
                       </>
                     )}
                   </button>
@@ -211,7 +216,7 @@ export default function PricingSection() {
                       </>
                     ) : (
                       <>
-                        Sifariş et <ArrowRight size={15} />
+                        {plan.cta} <ArrowRight size={15} />
                       </>
                     )}
                   </button>
