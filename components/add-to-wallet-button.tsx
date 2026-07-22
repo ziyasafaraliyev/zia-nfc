@@ -41,13 +41,17 @@ export default function AddToWalletButton({
       });
       const data = await res.json();
       if (data.walletUrl) {
-        window.location.href = data.walletUrl;
+        const a = document.createElement("a");
+        a.href = data.walletUrl;
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.click();
       } else {
-        alert("Xəta baş verdi: " + (data.error || "Bilinməyən xəta"));
-        setLoading(false);
+        alert("Xəta: " + (data.error || "Bilinməyən xəta"));
       }
-    } catch (e) {
+    } catch {
       alert("Şəbəkə xətası baş verdi");
+    } finally {
       setLoading(false);
     }
   }
