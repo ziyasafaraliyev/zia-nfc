@@ -137,7 +137,7 @@ export function middleware(request: NextRequest) {
   );
   response.headers.set("X-DNS-Prefetch-Control", "off");
   response.headers.set("Cross-Origin-Opener-Policy", "same-origin");
-  response.headers.set("Cross-Origin-Resource-Policy", "same-site");
+  response.headers.set("Cross-Origin-Resource-Policy", "cross-origin");
   response.headers.set("X-Permitted-Cross-Domain-Policies", "none");
 
   // Don't cache authenticated admin shells
