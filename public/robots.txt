@@ -1,4 +1,4 @@
-# Allow all crawlers and AI bots to read public pages
+# Allow all search engines and AI bots to index public pages
 User-agent: *
 Allow: /
 Disallow: /admin
@@ -8,26 +8,48 @@ Disallow: /api/
 # OpenAI / ChatGPT Bots
 User-agent: GPTBot
 Allow: /
+Disallow: /admin
+Disallow: /restoran
+Disallow: /api/
 
 User-agent: ChatGPT-User
 Allow: /
+Disallow: /admin
+Disallow: /restoran
+Disallow: /api/
 
 User-agent: OAI-SearchBot
 Allow: /
+Disallow: /admin
+Disallow: /restoran
+Disallow: /api/
 
 # Anthropic Claude Bot
 User-agent: ClaudeBot
 Allow: /
+Disallow: /admin
+Disallow: /restoran
+Disallow: /api/
 
 # Perplexity Bot
 User-agent: PerplexityBot
 Allow: /
+Disallow: /admin
+Disallow: /restoran
+Disallow: /api/
 
-# Google & Bing
+# Google Search Bot
 User-agent: Googlebot
 Allow: /
+Disallow: /admin
+Disallow: /restoran
+Disallow: /api/
 
+# Bing Search Bot
 User-agent: Bingbot
 Allow: /
+Disallow: /admin
+Disallow: /restoran
+Disallow: /api/
 
 Sitemap: https://zianfc.vercel.app/sitemap.xml
