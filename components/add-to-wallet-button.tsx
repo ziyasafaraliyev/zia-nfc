@@ -41,7 +41,7 @@ export default function AddToWalletButton({
       });
       const data = await res.json();
       if (data.walletUrl) {
-        window.open(data.walletUrl, "_blank");
+        window.location.href = data.walletUrl;
       }
     } catch {
       // silent fail
