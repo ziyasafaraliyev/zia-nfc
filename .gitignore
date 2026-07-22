@@ -5,3 +5,4 @@ next-dev.log
 next-dev.err.log
 npm-debug.log*
 *.tsbuildinfo
+scripts/*.json
