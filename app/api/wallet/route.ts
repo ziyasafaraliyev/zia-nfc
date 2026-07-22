@@ -3,7 +3,10 @@ import { SignJWT, importPKCS8 } from "jose";
 
 const ISSUER_ID = process.env.GOOGLE_WALLET_ISSUER_ID!;
 const SA_EMAIL = process.env.GOOGLE_WALLET_SERVICE_ACCOUNT_EMAIL!;
-const PRIVATE_KEY_PEM = process.env.GOOGLE_WALLET_PRIVATE_KEY!;
+const PRIVATE_KEY_PEM = (process.env.GOOGLE_WALLET_PRIVATE_KEY ?? "").replace(
+  /\\n/g,
+  "\n",
+);
 
 /**
  * POST /api/wallet

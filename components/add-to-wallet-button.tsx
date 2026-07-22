@@ -42,10 +42,12 @@ export default function AddToWalletButton({
       const data = await res.json();
       if (data.walletUrl) {
         window.location.href = data.walletUrl;
+      } else {
+        alert("Xəta baş verdi: " + (data.error || "Bilinməyən xəta"));
+        setLoading(false);
       }
-    } catch {
-      // silent fail
-    } finally {
+    } catch (e) {
+      alert("Şəbəkə xətası baş verdi");
       setLoading(false);
     }
   }
