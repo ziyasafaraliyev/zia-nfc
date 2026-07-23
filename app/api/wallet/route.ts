@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
     const token = await getAccessToken();
 
     const objectSuffix = slug.replace(/[^a-zA-Z0-9_.-]/g, "_");
-    const classId = `${ISSUER_ID}.zianfc_vcard_class_light_v2`;
+    const classId = `${ISSUER_ID}.zianfc_vcard_class_light_v3`;
     const objectId = `${ISSUER_ID}.zianfc_pass_${objectSuffix}`;
 
     // 1. Ensure Class Exists
@@ -115,20 +115,6 @@ export async function POST(req: NextRequest) {
                     },
                   },
                   {
-                    twoItems: {
-                      startItem: {
-                        firstValue: {
-                          fields: [{ fieldPath: "object.textModulesData['website']" }],
-                        },
-                      },
-                      endItem: {
-                        firstValue: {
-                          fields: [{ fieldPath: "object.textModulesData['location']" }],
-                        },
-                      },
-                    },
-                  },
-                  {
                     oneItem: {
                       item: {
                         firstValue: {
@@ -157,17 +143,10 @@ export async function POST(req: NextRequest) {
     if (email) {
       textModulesData.push({ id: "email", header: "E-POÇT", body: email });
     }
-    if (website) {
-      textModulesData.push({ id: "website", header: "VEB SAYT", body: website });
-    }
-    if (location) {
-      textModulesData.push({ id: "location", header: "ÜNVAN", body: location });
-    }
     if (bio) {
       textModulesData.push({ id: "bio", header: "HAQQINDA", body: bio });
     }
 
-    const heroImgUrl = avatarUrl || backgroundUrl;
     const vcardUrl = `https://zianfc.vercel.app/api/vcard/${slug}`;
 
     const urisData: { uri: string; description: string; id: string }[] = [
@@ -189,15 +168,6 @@ export async function POST(req: NextRequest) {
         uri: `https://wa.me/${waClean}`,
         description: "WhatsApp ilə Yaz",
         id: "whatsapp_link",
-      });
-    }
-
-    if (website) {
-      const webUrl = website.startsWith("http") ? website : `https://${website}`;
-      urisData.push({
-        uri: webUrl,
-        description: "Veb Saytına Keçid",
-        id: "website_link",
       });
     }
 
@@ -233,18 +203,6 @@ export async function POST(req: NextRequest) {
           defaultValue: { language: "az", value: "Zia NFC Logo" },
         },
       },
-      ...(heroImgUrl
-        ? {
-            heroImage: {
-              sourceUri: {
-                uri: heroImgUrl,
-              },
-              contentDescription: {
-                defaultValue: { language: "az", value: name },
-              },
-            },
-          }
-        : {}),
       hexBackgroundColor: "#FFFFFF",
       barcode: {
         type: "QR_CODE",
