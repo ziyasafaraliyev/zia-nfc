@@ -142,6 +142,22 @@ export default function ProfilePageView({
 
   const themeClass =
     profile.theme && profile.theme !== "light" ? `${profile.theme}-theme` : "";
+  const templateClass =
+    profile.theme === "editorial"
+      ? "template-editorial"
+      : profile.theme === "spotlight"
+        ? "template-spotlight"
+        : profile.theme === "compact"
+          ? "template-compact"
+          : "template-business";
+  const sectionOrder =
+    profile.theme === "editorial"
+      ? (["identity", "socials", "actions", "save", "qr", "reservation", "location", "google_review", "catalog", "portfolio", "cv", "footer"] as const)
+      : profile.theme === "spotlight"
+        ? (["identity", "actions", "qr", "save", "socials", "reservation", "catalog", "portfolio", "location", "google_review", "cv", "footer"] as const)
+        : profile.theme === "compact"
+          ? (["actions", "identity", "save", "socials", "qr", "location", "google_review", "reservation", "catalog", "portfolio", "cv", "footer"] as const)
+          : DEFAULT_SECTION_ORDER;
 
   const sections: Record<typeof DEFAULT_SECTION_ORDER[number], React.ReactNode> = {
     identity: (
@@ -615,7 +631,7 @@ export default function ProfilePageView({
 
   return (
     <main
-      className={`lux-shell relative min-h-screen overflow-x-hidden ${themeClass} template-business`}
+      className={`lux-shell relative min-h-screen overflow-x-hidden ${themeClass} ${templateClass}`}
     >
       <script
         type="application/ld+json"
@@ -637,7 +653,7 @@ export default function ProfilePageView({
       </div>
 
       <div className="relative z-10 mx-auto max-w-[440px] px-4 py-6 pb-16">
-        {DEFAULT_SECTION_ORDER.map((key) => sections[key])}
+        {sectionOrder.map((key) => sections[key])}
       </div>
     </main>
   );

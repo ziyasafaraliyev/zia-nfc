@@ -2439,3 +2439,80 @@ a.dashboard-primary:hover {
 .delay-300 {
   animation-delay: 0.3s;
 }
+
+
+/* 3 additional customer profile templates */
+.lux-shell.template-editorial {
+    background: linear-gradient(180deg, #fff7ed 0%, #ffffff 44%, #f8fafc 100%);
+}
+
+.template-editorial .template-hero-classic {
+    border-radius: 0 0 1.25rem 1.25rem;
+}
+
+.template-editorial .template-hero-classic .lux-identity {
+    text-align: center;
+}
+
+.template-editorial .template-hero-classic .lux-avatar-ring {
+    border-radius: 999px;
+}
+
+.template-editorial .template-hero-classic .lux-avatar-ring img {
+    border-radius: 999px;
+}
+
+.template-editorial .template-social-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.lux-shell.template-spotlight {
+    background: #f8fafc;
+}
+
+.template-spotlight .template-hero-classic {
+    border-radius: 1.5rem;
+    margin-top: 0.5rem;
+    box-shadow: 0 18px 60px rgba(15, 23, 42, 0.14);
+}
+
+.template-spotlight .template-hero-classic .lux-identity {
+    padding-top: 1.5rem;
+}
+
+.template-spotlight .lux-btn-whatsapp,
+.template-spotlight .lux-btn-call {
+    min-height: 4rem;
+    border-radius: 1.5rem;
+}
+
+.template-spotlight .lux-qr-card {
+    flex-direction: row-reverse;
+}
+
+.lux-shell.template-compact {
+    background: linear-gradient(180deg, #ecfeff 0%, #ffffff 38%, #f1f5f9 100%);
+}
+
+.template-compact .template-hero-classic {
+    border-radius: 1.25rem;
+}
+
+.template-compact .template-hero-classic > div:first-child {
+    height: 10rem !important;
+}
+
+.template-compact .template-hero-classic .lux-identity {
+    padding-bottom: 1rem;
+}
+
+.template-compact .lux-save-contact,
+.template-compact .lux-btn-whatsapp,
+.template-compact .lux-btn-call {
+    height: 3.25rem;
+    border-radius: 1rem;
+}
+
+.template-compact .template-social-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}

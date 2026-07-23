@@ -67,6 +67,9 @@ export type Profile = {
     | "ios"
     | "iossoft"
     | "iosdark"
+    | "editorial"
+    | "spotlight"
+    | "compact"
     | null;
   client_email?: string | null;
   client_password?: string | null;
@@ -121,6 +124,9 @@ export type Restaurant = {
     | "ios"
     | "iossoft"
     | "iosdark"
+    | "editorial"
+    | "spotlight"
+    | "compact"
     | null;
   /** Ortalama reytinq — rəylərdən avtomatik hesablanır */
   rating?: number;

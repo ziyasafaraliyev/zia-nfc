@@ -307,6 +307,9 @@ export default function ProfileForm({
         ios: "iOS Light",
         iossoft: "iOS Soft",
         iosdark: "iOS Dark",
+        editorial: "Editorial",
+        spotlight: "Spotlight",
+        compact: "Compact",
       } as Record<string, string>
     )[theme] || "Ağ (Light)";
 
@@ -1030,6 +1033,18 @@ export default function ProfileForm({
                 className="sr-only"
               />
               <span>iOS Dark</span>
+            </label>
+            <label className="flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-rose-200 bg-rose-50 p-2.5 text-[11px] font-bold uppercase tracking-wide text-rose-700 transition-all duration-200 hover:bg-rose-100">
+              <input type="radio" name="theme" value="editorial" checked={theme === "editorial"} onChange={() => setTheme("editorial")} className="sr-only" />
+              <span>Editorial</span>
+            </label>
+            <label className="flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white p-2.5 text-[11px] font-bold uppercase tracking-wide text-slate-800 transition-all duration-200 hover:bg-slate-50">
+              <input type="radio" name="theme" value="spotlight" checked={theme === "spotlight"} onChange={() => setTheme("spotlight")} className="sr-only" />
+              <span>Spotlight</span>
+            </label>
+            <label className="flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-teal-200 bg-teal-50 p-2.5 text-[11px] font-bold uppercase tracking-wide text-teal-700 transition-all duration-200 hover:bg-teal-100">
+              <input type="radio" name="theme" value="compact" checked={theme === "compact"} onChange={() => setTheme("compact")} className="sr-only" />
+              <span>Compact</span>
             </label>
           </div>
         ) : (

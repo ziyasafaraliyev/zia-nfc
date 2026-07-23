@@ -80,6 +80,24 @@ const qrThemeColors: Record<
     shadow: "rgba(10, 132, 255, 0.28)",
     text: "#ffffff",
   },
+  editorial: {
+    accent: "#ef4444",
+    hover: "#dc2626",
+    shadow: "rgba(239, 68, 68, 0.22)",
+    text: "#ffffff",
+  },
+  spotlight: {
+    accent: "#111827",
+    hover: "#020617",
+    shadow: "rgba(15, 23, 42, 0.18)",
+    text: "#ffffff",
+  },
+  compact: {
+    accent: "#14b8a6",
+    hover: "#0f766e",
+    shadow: "rgba(20, 184, 166, 0.22)",
+    text: "#042f2e",
+  },
 };
 
 function getQrThemeColor(theme: Profile["theme"]) {
@@ -217,6 +235,14 @@ export default function QrCodeModal({
               <Download size={16} />
               {downloading ? "Endirilir..." : "PNG olaraq endir"}
             </button>
+            <a
+              href={`${qrUrl}?format=svg`}
+              download={`${profileName.replace(/\s+/g, "-").toLowerCase()}-qr.svg`}
+              className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 shadow-sm transition-all duration-200 active:scale-[0.96] hover:bg-slate-50"
+            >
+              <Download size={16} />
+              SVG olaraq endir
+            </a>
           </div>
         </div>
       ) : null}

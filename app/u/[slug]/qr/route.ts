@@ -86,8 +86,21 @@ async function buildQrPng(profileUrl: string): Promise<Buffer> {
   }
 }
 
+async function buildQrSvg(profileUrl: string): Promise<string> {
+  return QRCode.toString(profileUrl, {
+    type: "svg",
+    margin: 2,
+    width: QR_SIZE,
+    errorCorrectionLevel: "H",
+    color: {
+      dark: QR_BRAND_COLOR,
+      light: "#ffffff",
+    },
+  });
+}
+
 export async function GET(
-  _req: Request,
+  req: Request,
   ctx: { params: Promise<{ slug: string }> },
 ) {
   try {
@@ -104,6 +117,21 @@ export async function GET(
     }
 
     const profileUrl = getProfileUrl(profile.slug);
+    const format = new URL(req.url).searchParams.get("format");
+
+    if (format === "svg") {
+      const svg = await buildQrSvg(profileUrl);
+
+      return new NextResponse(svg, {
+        status: 200,
+        headers: {
+          "Content-Type": "image/svg+xml",
+          "Content-Disposition": `inline; filename="${profile.slug}-qr.svg"`,
+          "Cache-Control": "public, max-age=300, s-maxage=300, stale-while-revalidate=86400",
+        },
+      });
+    }
+
     const png = await buildQrPng(profileUrl);
 
     return new NextResponse(new Uint8Array(png), {
