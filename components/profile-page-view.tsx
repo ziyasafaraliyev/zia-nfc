@@ -437,6 +437,7 @@ export default function ProfilePageView({
             location={profile.location}
             whatsapp={whatsapp}
             linkedin={profile.linkedin}
+            instagram={profile.instagram}
           />
         ) : null}
         {/* 2 — Referral linki (kontakt-dan dərhal sonra) */}

@@ -16,6 +16,7 @@ type Props = {
   location?: string | null;
   whatsapp?: string | null;
   linkedin?: string | null;
+  instagram?: string | null;
 };
 
 export default function AddToWalletButton({
@@ -32,6 +33,7 @@ export default function AddToWalletButton({
   location,
   whatsapp,
   linkedin,
+  instagram,
 }: Props) {
   const [loading, setLoading] = useState(false);
 
@@ -55,6 +57,7 @@ export default function AddToWalletButton({
           location: location ?? undefined,
           whatsapp: whatsapp ?? undefined,
           linkedin: linkedin ?? undefined,
+          instagram: instagram ?? undefined,
         }),
       });
       const data = await res.json();

@@ -54,6 +54,7 @@ export async function POST(req: NextRequest) {
       location,
       whatsapp,
       linkedin,
+      instagram,
     } = body as {
       slug: string;
       name: string;
@@ -68,6 +69,7 @@ export async function POST(req: NextRequest) {
       location?: string;
       whatsapp?: string;
       linkedin?: string;
+      instagram?: string;
     };
 
     if (!slug || !name) {
@@ -77,7 +79,7 @@ export async function POST(req: NextRequest) {
     const token = await getAccessToken();
 
     const objectSuffix = slug.replace(/[^a-zA-Z0-9_.-]/g, "_");
-    const classId = `${ISSUER_ID}.zianfc_vcard_class_light_v4`;
+    const classId = `${ISSUER_ID}.zianfc_vcard_class_light_v5`;
     const objectId = `${ISSUER_ID}.zianfc_pass_${objectSuffix}`;
 
     // 1. Ensure Class Exists
@@ -122,6 +124,15 @@ export async function POST(req: NextRequest) {
                     oneItem: {
                       item: {
                         firstValue: {
+                          fields: [{ fieldPath: "object.textModulesData['instagram']" }],
+                        },
+                      },
+                    },
+                  },
+                  {
+                    oneItem: {
+                      item: {
+                        firstValue: {
                           fields: [{ fieldPath: "object.textModulesData['bio']" }],
                         },
                       },
@@ -147,6 +158,22 @@ export async function POST(req: NextRequest) {
     if (email) {
       textModulesData.push({ id: "email", header: "E-POÇT", body: email });
     }
+
+    let instaHandle = instagram ? instagram.trim() : "";
+    let instaUrl = "";
+    if (instaHandle) {
+      if (instaHandle.startsWith("http://") || instaHandle.startsWith("https://")) {
+        instaUrl = instaHandle;
+        const match = instaHandle.match(/instagram\.com\/([^/?#]+)/i);
+        instaHandle = match ? `@${match[1]}` : "@instagram";
+      } else {
+        const cleanName = instaHandle.replace(/^@/, "");
+        instaUrl = `https://instagram.com/${cleanName}`;
+        instaHandle = `@${cleanName}`;
+      }
+      textModulesData.push({ id: "instagram", header: "INSTAGRAM", body: instaHandle });
+    }
+
     if (bio) {
       textModulesData.push({ id: "bio", header: "HAQQINDA", body: bio });
     }
@@ -172,6 +199,14 @@ export async function POST(req: NextRequest) {
         uri: `https://wa.me/${waClean}`,
         description: "WhatsApp ilə Yaz",
         id: "whatsapp_link",
+      });
+    }
+
+    if (instaUrl) {
+      urisData.push({
+        uri: instaUrl,
+        description: "Instagram Profilı",
+        id: "instagram_link",
       });
     }
 
