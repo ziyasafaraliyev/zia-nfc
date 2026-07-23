@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
     const token = await getAccessToken();
 
     const objectSuffix = slug.replace(/[^a-zA-Z0-9_.-]/g, "_");
-    const classId = `${ISSUER_ID}.zianfc_vcard_class_light_v3`;
+    const classId = `${ISSUER_ID}.zianfc_vcard_class_light_v4`;
     const objectId = `${ISSUER_ID}.zianfc_pass_${objectSuffix}`;
 
     // 1. Ensure Class Exists
@@ -101,13 +101,17 @@ export async function POST(req: NextRequest) {
               cardTemplateOverride: {
                 cardRowTemplateInfos: [
                   {
-                    twoItems: {
-                      startItem: {
+                    oneItem: {
+                      item: {
                         firstValue: {
                           fields: [{ fieldPath: "object.textModulesData['phone']" }],
                         },
                       },
-                      endItem: {
+                    },
+                  },
+                  {
+                    oneItem: {
+                      item: {
                         firstValue: {
                           fields: [{ fieldPath: "object.textModulesData['email']" }],
                         },
