@@ -150,6 +150,7 @@ alter table public.profiles add column if not exists waze text;
 alter table public.profiles add column if not exists email text;
 alter table public.profiles add column if not exists google_review_url text;
 alter table public.profiles add column if not exists portfolio_enabled boolean not null default true;
+alter table public.profiles add column if not exists wallet_enabled boolean not null default true;
 alter table public.profiles add column if not exists catalog jsonb not null default '[]'::jsonb;
 alter table public.profiles add column if not exists referral_enabled boolean not null default false;
 alter table public.profiles add column if not exists referral_url text;

@@ -40,15 +40,35 @@ async function getAccessToken(): Promise<string> {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { slug, name, profession, phone, email, profileUrl } =
-      body as {
-        slug: string;
-        name: string;
-        profession?: string;
-        phone?: string;
-        email?: string;
-        profileUrl: string;
-      };
+    const {
+      slug,
+      name,
+      profession,
+      phone,
+      email,
+      profileUrl,
+      avatarUrl,
+      backgroundUrl,
+      bio,
+      website,
+      location,
+      whatsapp,
+      linkedin,
+    } = body as {
+      slug: string;
+      name: string;
+      profession?: string;
+      phone?: string;
+      email?: string;
+      profileUrl: string;
+      avatarUrl?: string;
+      backgroundUrl?: string;
+      bio?: string;
+      website?: string;
+      location?: string;
+      whatsapp?: string;
+      linkedin?: string;
+    };
 
     if (!slug || !name) {
       return NextResponse.json({ error: "slug and name required" }, { status: 400 });
@@ -57,7 +77,7 @@ export async function POST(req: NextRequest) {
     const token = await getAccessToken();
 
     const objectSuffix = slug.replace(/[^a-zA-Z0-9_.-]/g, "_");
-    const classId = `${ISSUER_ID}.zianfc_vcard_class`;
+    const classId = `${ISSUER_ID}.zianfc_vcard_class_light_v2`;
     const objectId = `${ISSUER_ID}.zianfc_pass_${objectSuffix}`;
 
     // 1. Ensure Class Exists
@@ -94,6 +114,29 @@ export async function POST(req: NextRequest) {
                       },
                     },
                   },
+                  {
+                    twoItems: {
+                      startItem: {
+                        firstValue: {
+                          fields: [{ fieldPath: "object.textModulesData['website']" }],
+                        },
+                      },
+                      endItem: {
+                        firstValue: {
+                          fields: [{ fieldPath: "object.textModulesData['location']" }],
+                        },
+                      },
+                    },
+                  },
+                  {
+                    oneItem: {
+                      item: {
+                        firstValue: {
+                          fields: [{ fieldPath: "object.textModulesData['bio']" }],
+                        },
+                      },
+                    },
+                  },
                 ],
               },
             },
@@ -114,13 +157,64 @@ export async function POST(req: NextRequest) {
     if (email) {
       textModulesData.push({ id: "email", header: "E-POÇT", body: email });
     }
+    if (website) {
+      textModulesData.push({ id: "website", header: "VEB SAYT", body: website });
+    }
+    if (location) {
+      textModulesData.push({ id: "location", header: "ÜNVAN", body: location });
+    }
+    if (bio) {
+      textModulesData.push({ id: "bio", header: "HAQQINDA", body: bio });
+    }
+
+    const heroImgUrl = avatarUrl || backgroundUrl;
+    const vcardUrl = `https://zianfc.vercel.app/api/vcard/${slug}`;
+
+    const urisData: { uri: string; description: string; id: string }[] = [
+      {
+        uri: profileUrl,
+        description: "Zia NFC Profilini Aç",
+        id: "profile_link",
+      },
+      {
+        uri: vcardUrl,
+        description: "Kontaktı Telefonuna Yüklə (.vcf)",
+        id: "vcard_link",
+      },
+    ];
+
+    if (whatsapp) {
+      const waClean = whatsapp.replace(/[^0-9]/g, "");
+      urisData.push({
+        uri: `https://wa.me/${waClean}`,
+        description: "WhatsApp ilə Yaz",
+        id: "whatsapp_link",
+      });
+    }
+
+    if (website) {
+      const webUrl = website.startsWith("http") ? website : `https://${website}`;
+      urisData.push({
+        uri: webUrl,
+        description: "Veb Saytına Keçid",
+        id: "website_link",
+      });
+    }
+
+    if (linkedin) {
+      urisData.push({
+        uri: linkedin,
+        description: "LinkedIn Profilı",
+        id: "linkedin_link",
+      });
+    }
 
     const genericObject: Record<string, unknown> = {
       id: objectId,
       classId,
       state: "ACTIVE",
       cardTitle: {
-        defaultValue: { language: "az", value: "ZIA NFC" },
+        defaultValue: { language: "az", value: "ZIA NFC | Rəqəmsal Vizit Kart" },
       },
       header: {
         defaultValue: { language: "az", value: name },
@@ -139,20 +233,26 @@ export async function POST(req: NextRequest) {
           defaultValue: { language: "az", value: "Zia NFC Logo" },
         },
       },
-      hexBackgroundColor: "#111827",
+      ...(heroImgUrl
+        ? {
+            heroImage: {
+              sourceUri: {
+                uri: heroImgUrl,
+              },
+              contentDescription: {
+                defaultValue: { language: "az", value: name },
+              },
+            },
+          }
+        : {}),
+      hexBackgroundColor: "#FFFFFF",
       barcode: {
         type: "QR_CODE",
         value: profileUrl,
-        alternateText: "Profili Aç",
+        alternateText: "Profili Skan Et",
       },
       linksModuleData: {
-        uris: [
-          {
-            uri: profileUrl,
-            description: "Zia NFC Profilinə Keçid",
-            id: "profile_link",
-          },
-        ],
+        uris: urisData,
       },
       textModulesData: textModulesData.length > 0 ? textModulesData : undefined,
     };

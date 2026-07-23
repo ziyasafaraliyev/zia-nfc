@@ -18,6 +18,8 @@ export type Profile = {
   reservation_enabled?: boolean;
   /** When false, portfolio button is hidden on public profile (super admin) */
   portfolio_enabled?: boolean;
+  /** When false, Google Wallet button is hidden on public profile (super admin) */
+  wallet_enabled?: boolean;
   /** When true, referral link button is shown on public profile (super admin) */
   referral_enabled?: boolean;
   /** Optional custom referral URL; falls back to profile public URL when empty */

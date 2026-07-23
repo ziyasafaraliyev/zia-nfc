@@ -10,6 +10,12 @@ type Props = {
   email?: string | null;
   profileUrl: string;
   avatarUrl?: string | null;
+  backgroundUrl?: string | null;
+  bio?: string | null;
+  website?: string | null;
+  location?: string | null;
+  whatsapp?: string | null;
+  linkedin?: string | null;
 };
 
 export default function AddToWalletButton({
@@ -20,6 +26,12 @@ export default function AddToWalletButton({
   email,
   profileUrl,
   avatarUrl,
+  backgroundUrl,
+  bio,
+  website,
+  location,
+  whatsapp,
+  linkedin,
 }: Props) {
   const [loading, setLoading] = useState(false);
 
@@ -37,6 +49,12 @@ export default function AddToWalletButton({
           email: email ?? undefined,
           profileUrl,
           avatarUrl: avatarUrl ?? undefined,
+          backgroundUrl: backgroundUrl ?? undefined,
+          bio: bio ?? undefined,
+          website: website ?? undefined,
+          location: location ?? undefined,
+          whatsapp: whatsapp ?? undefined,
+          linkedin: linkedin ?? undefined,
         }),
       });
       const data = await res.json();

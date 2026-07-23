@@ -422,15 +422,23 @@ export default function ProfilePageView({
           />
         </a>
         {/* 1.5 — Google Wallet */}
-        <AddToWalletButton
-          slug={profile.slug}
-          name={profile.name}
-          profession={profile.profession}
-          phone={profile.phone}
-          email={profile.email}
-          profileUrl={profileUrl}
-          avatarUrl={profile.avatar_url}
-        />
+        {(profile.wallet_enabled ?? true) ? (
+          <AddToWalletButton
+            slug={profile.slug}
+            name={profile.name}
+            profession={profile.profession}
+            phone={profile.phone}
+            email={profile.email}
+            profileUrl={profileUrl}
+            avatarUrl={profile.avatar_url}
+            backgroundUrl={profile.background_url}
+            bio={profile.bio}
+            website={profile.website}
+            location={profile.location}
+            whatsapp={whatsapp}
+            linkedin={profile.linkedin}
+          />
+        ) : null}
         {/* 2 — Referral linki (kontakt-dan dərhal sonra) */}
         {profile.referral_enabled ? (
           <ReferralButton

@@ -40,6 +40,7 @@ const PUBLIC_PROFILE_SELECT = [
   "gallery",
   "catalog",
   "portfolio_enabled",
+  "wallet_enabled",
   "cv_url",
   "theme",
 ].join(",");
