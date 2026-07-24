@@ -37,6 +37,7 @@ const PUBLIC_PROFILE_SELECT = [
   "background_url",
   "cover_style",
   "cover_position",
+  "avatar_shape",
   "gallery",
   "catalog",
   "portfolio_enabled",

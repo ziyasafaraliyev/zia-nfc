@@ -27,6 +27,7 @@ create table if not exists public.profiles (
   background_url text,
   cover_style text not null default 'auto',
   cover_position text not null default 'center',
+  avatar_shape text not null default 'square',
   gallery jsonb not null default '[]'::jsonb,
   catalog jsonb not null default '[]'::jsonb,
   theme text not null default 'light',
@@ -131,6 +132,7 @@ using (true);
 alter table public.profiles add column if not exists background_url text;
 alter table public.profiles add column if not exists cover_style text not null default 'auto';
 alter table public.profiles add column if not exists cover_position text not null default 'center';
+alter table public.profiles add column if not exists avatar_shape text not null default 'square';
 alter table public.profiles add column if not exists facebook text;
 alter table public.profiles add column if not exists x text;
 alter table public.profiles add column if not exists linkedin text;
@@ -162,6 +164,10 @@ check (cover_style in ('auto', 'square', 'banner'));
 alter table public.profiles drop constraint if exists profiles_cover_position_check;
 alter table public.profiles add constraint profiles_cover_position_check
 check (cover_position in ('top', 'center', 'bottom'));
+
+alter table public.profiles drop constraint if exists profiles_avatar_shape_check;
+alter table public.profiles add constraint profiles_avatar_shape_check
+check (avatar_shape in ('square', 'circle'));
 
 alter table public.profiles enable row level security;
 
@@ -284,6 +290,7 @@ grant select (
   background_url,
   cover_style,
   cover_position,
+  avatar_shape,
   gallery,
   catalog,
   theme,

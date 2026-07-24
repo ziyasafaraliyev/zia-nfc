@@ -113,6 +113,7 @@ export default function ProfilePageView({
 
   const coverStyle = profile.cover_style ?? "auto";
   const coverPosition = profile.cover_position ?? "center";
+  const avatarShape = profile.avatar_shape ?? "square";
   /** Slightly shorter covers on small phones → less paint + smaller LCP surface */
   const coverH =
     coverStyle === "banner"
@@ -218,7 +219,7 @@ export default function ProfilePageView({
           >
             {profile.avatar_url ? (
               <div className="absolute left-0 top-0 z-10 -translate-y-9">
-                <div className="lux-avatar-ring p-[3px] rounded-[1.7rem]">
+                <div className={`lux-avatar-ring p-[3px] ${avatarShape === "circle" ? "rounded-full" : "rounded-[1.7rem]"}`}>
                   <SmartImage
                     src={profile.avatar_url}
                     alt={profile.name}
@@ -226,7 +227,7 @@ export default function ProfilePageView({
                     height={112}
                     priority
                     sizes="112px"
-                    className="size-[7rem] rounded-[1.55rem] object-cover"
+                    className={`size-[7rem] object-cover ${avatarShape === "circle" ? "rounded-full" : "rounded-[1.55rem]"}`}
                   />
                 </div>
               </div>

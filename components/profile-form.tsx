@@ -291,6 +291,7 @@ export default function ProfileForm({
   const [theme, setTheme] = useState(profile?.theme || "light");
   const [coverStyle, setCoverStyle] = useState(profile?.cover_style ?? "auto");
   const [coverPosition, setCoverPosition] = useState(profile?.cover_position ?? "center");
+  const [avatarShape, setAvatarShape] = useState(profile?.avatar_shape ?? "square");
 
   const themeLabel =
     (
@@ -342,6 +343,7 @@ export default function ProfileForm({
     setTheme(profile?.theme || "light");
     setCoverStyle(profile?.cover_style ?? "auto");
     setCoverPosition(profile?.cover_position ?? "center");
+    setAvatarShape(profile?.avatar_shape ?? "square");
   }, [profile?.id]);
 
   // Add new section
@@ -800,6 +802,18 @@ export default function ProfileForm({
       <input type="hidden" name="remove_background" value={removeBackground ? "on" : "off"} />
 
       <div className="grid gap-4 md:grid-cols-2">
+        {userRole === "super_admin" && (
+          <SelectField
+            name="avatar_shape"
+            label="Avatar görünüşü"
+            value={avatarShape}
+            onChange={(value) => setAvatarShape(value as typeof avatarShape)}
+            options={[
+              { value: "square", label: "Kvadrat / varsayılan" },
+              { value: "circle", label: "Dairevi" },
+            ]}
+          />
+        )}
         <SelectField
           name="cover_style"
           label="Cover görünüşü"

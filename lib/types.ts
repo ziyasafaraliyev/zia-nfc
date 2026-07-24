@@ -50,6 +50,7 @@ export type Profile = {
   background_url?: string | null;
   cover_style?: "auto" | "square" | "banner" | null;
   cover_position?: "top" | "center" | "bottom" | null;
+  avatar_shape?: "square" | "circle" | null;
   gallery: string[] | PortfolioSection[];
   /** Separate link catalog (title + URL) */
   catalog?: CatalogItem[] | null;

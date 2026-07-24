@@ -1263,6 +1263,11 @@ export async function saveProfile(formData: FormData) {
       ["top", "center", "bottom"],
       "center",
     ),
+    ...(isSuper
+      ? {
+          avatar_shape: option(formData, "avatar_shape", ["square", "circle"], "square"),
+        }
+      : {}),
     theme: option(
       formData,
       "theme",
