@@ -202,7 +202,7 @@ export default function ProfilePageView({
         </div>
 
         <div
-          className={`lux-identity px-5 pb-6 ${
+          className={`lux-identity pl-3 pr-5 pb-6 ${
             profile.avatar_url ? "pt-1" : "pt-5"
           }`}
         >
@@ -236,7 +236,7 @@ export default function ProfilePageView({
             <div
               className={
                 profile.avatar_url
-                  ? "flex min-h-[5rem] min-w-0 flex-col justify-end pb-1 pl-[8rem]"
+                  ? "flex min-h-[5rem] min-w-0 flex-col justify-end pb-1 pl-[7.75rem]"
                   : "min-w-0 pb-1"
               }
             >
