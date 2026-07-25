@@ -98,6 +98,7 @@ const DEFAULT_SECTION_ORDER = [
   "reservation",
   "portfolio",
   "catalog",
+  "wallet",
   "qr",
   "footer",
 ] as const;
@@ -438,25 +439,6 @@ export default function ProfilePageView({
             className="text-gray-400 transition-all duration-300 group-hover:text-[#29AEEE] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
           />
         </a>
-        {/* 1.5 — Google Wallet */}
-        {(profile.wallet_enabled ?? true) ? (
-          <AddToWalletButton
-            slug={profile.slug}
-            name={profile.name}
-            profession={profile.profession}
-            phone={profile.phone}
-            email={profile.email}
-            profileUrl={profileUrl}
-            avatarUrl={profile.avatar_url}
-            backgroundUrl={profile.background_url}
-            bio={profile.bio}
-            website={profile.website}
-            location={profile.location}
-            whatsapp={whatsapp}
-            linkedin={profile.linkedin}
-            instagram={profile.instagram}
-          />
-        ) : null}
         {/* 2 — Referral linki (kontakt-dan dərhal sonra) */}
         {profile.referral_enabled ? (
           <ReferralButton
@@ -601,6 +583,27 @@ export default function ProfilePageView({
         />
       </a>
     ) : null,
+    wallet:
+      (profile.wallet_enabled ?? true) ? (
+        <div key="wallet" className="mt-2.5">
+          <AddToWalletButton
+            name={profile.name}
+            profession={profile.profession}
+            phone={profile.phone}
+            email={profile.email}
+            slug={profile.slug}
+            profileUrl={profileUrl}
+            avatarUrl={profile.avatar_url}
+            backgroundUrl={profile.background_url}
+            bio={profile.bio}
+            website={profile.website}
+            location={profile.location}
+            whatsapp={whatsapp}
+            linkedin={profile.linkedin}
+            instagram={profile.instagram}
+          />
+        </div>
+      ) : null,
     qr: (
       <QrCodeModal
         key="qr"
