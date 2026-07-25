@@ -504,15 +504,15 @@ export default function ProfilePageView({
           href={profile.location_url}
           target="_blank"
           rel="noreferrer"
-          className="lux-save-contact group mt-2.5 flex h-14 w-full items-center justify-between gap-3 rounded-2xl px-4 lux-card-enter-4 transition-transform duration-200 hover:scale-[1.02]"
+          className="lux-save-contact group mt-2.5 flex min-h-14 w-full items-center justify-between gap-3 rounded-2xl px-4 lux-card-enter-4 transition-transform duration-200 hover:scale-[1.02]"
         >
           <span className="flex items-center gap-3">
             <span className="lux-save-icon grid size-9 place-items-center rounded-xl">
               <MapPin size={16} className="text-[#29AEEE]" />
             </span>
-            <span className="flex flex-col items-start leading-tight">
+            <span className="flex min-w-0 flex-col items-start leading-tight">
               <span className="text-sm font-bold text-gray-800">Lokasiya</span>
-              <span className="text-[10px] font-semibold text-gray-400 mt-0.5">
+              <span className="mt-0.5 max-w-full whitespace-normal break-words text-[10px] font-semibold text-gray-400">
                 {profile.location}
               </span>
             </span>
