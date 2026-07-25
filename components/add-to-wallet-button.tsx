@@ -79,68 +79,39 @@ export default function AddToWalletButton({
 
   return (
     <button
+      type="button"
       onClick={handleClick}
       disabled={loading}
-      className="lux-save-contact group flex h-14 w-full items-center justify-between gap-3 rounded-2xl px-4 lux-card-enter-4 transition-transform duration-200 hover:scale-[1.02] disabled:opacity-50"
+      className="group flex h-14 w-full items-center gap-3 rounded-full border border-slate-200 bg-white px-4 text-left shadow-sm transition duration-200 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 disabled:cursor-not-allowed disabled:opacity-60"
     >
       <span className="flex items-center gap-3">
-        <span className="lux-save-icon grid size-9 place-items-center rounded-xl">
+        <span className="grid h-11 w-11 place-items-center rounded-2xl bg-slate-50 ring-1 ring-slate-200">
           <svg
-            width="18"
-            height="18"
+            width="20"
+            height="20"
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
           >
             <path
-              d="M12 2L3 7v10l9 5 9-5V7l-9-5z"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+              d="M4 7.5C4 6.12 5.12 5 6.5 5h11A2.5 2.5 0 0 1 20 7.5V16a2.5 2.5 0 0 1-2.5 2.5H6.5A2.5 2.5 0 0 1 4 16V7.5Z"
+              fill="#4285F4"
             />
-            <path
-              d="M12 22V12"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M12 12L3 7"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M12 12l9-5"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
+            <path d="M6.5 5C5.12 5 4 6.12 4 7.5V16C4 17.88 5.12 19 6.5 19H9V5H6.5Z" fill="#0F9D58" />
+            <path d="M9 5H18.5C19.33 5 20 5.67 20 6.5V8H9V5Z" fill="#F4B400" />
+            <path d="M18.5 8H20C20.83 8 21.5 8.67 21.5 9.5V13.5C21.5 14.33 20.83 15 20 15H18.5V8Z" fill="#DB4437" />
           </svg>
         </span>
-        <span className="flex flex-col items-start leading-tight">
-          <span className="text-sm font-bold text-gray-800">
+        <span className="flex flex-col justify-center leading-tight">
+          <span className="text-sm font-semibold text-slate-950">
             {loading ? "Yüklənir..." : "Google Wallet-ə əlavə et"}
           </span>
-          <span className="text-[10px] font-semibold text-gray-400 mt-0.5">
+          <span className="text-[10px] font-semibold text-slate-500 mt-0.5">
             Kontaktı telefonuna saxla
           </span>
         </span>
       </span>
-      <svg
-        width="15"
-        height="15"
-        viewBox="0 0 24 24"
-        fill="none"
-        className="text-gray-400 transition-all duration-300 group-hover:text-[#29AEEE] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M7 17L17 7M17 7H7M17 7v10" />
-      </svg>
     </button>
   );
 }

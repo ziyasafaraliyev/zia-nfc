@@ -155,7 +155,7 @@ export default function ProfilePageView({
     profile.theme === "editorial"
       ? (["identity", "socials", "actions", "save", "qr", "reservation", "location", "google_review", "catalog", "portfolio", "cv", "footer"] as const)
       : profile.theme === "spotlight"
-        ? (["identity", "actions", "qr", "save", "socials", "reservation", "catalog", "portfolio", "location", "google_review", "cv", "footer"] as const)
+        ? (["identity", "actions", "save", "qr", "socials", "reservation", "catalog", "portfolio", "location", "google_review", "cv", "footer"] as const)
         : profile.theme === "compact"
           ? (["actions", "identity", "save", "socials", "qr", "location", "google_review", "reservation", "catalog", "portfolio", "cv", "footer"] as const)
           : DEFAULT_SECTION_ORDER;
@@ -512,7 +512,7 @@ export default function ProfilePageView({
             </span>
             <span className="flex min-w-0 flex-col items-start leading-tight">
               <span className="text-sm font-bold text-gray-800">Lokasiya</span>
-              <span className="mt-0.5 max-w-full whitespace-normal break-words text-[10px] font-semibold text-gray-400">
+                <span className="mt-0.5 max-w-full whitespace-pre-line break-words text-[10px] font-semibold text-gray-400">
                 {profile.location}
               </span>
             </span>

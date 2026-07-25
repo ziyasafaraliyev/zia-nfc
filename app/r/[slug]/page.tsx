@@ -249,7 +249,7 @@ export default async function RestaurantPage({ params }: Props) {
               </span>
               <span className="flex min-w-0 flex-col items-start leading-tight">
                 <span className="text-sm font-bold text-gray-800">Konum</span>
-                <span className="mt-0.5 max-w-full whitespace-normal break-words text-[10px] font-semibold text-gray-400">{restaurant.location_name}</span>
+                <span className="mt-0.5 max-w-full whitespace-pre-line break-words text-[10px] font-semibold text-gray-400">{restaurant.location_name}</span>
               </span>
             </span>
             <ExternalLink

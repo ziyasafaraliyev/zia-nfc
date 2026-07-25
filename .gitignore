@@ -6,3 +6,6 @@ next-dev.err.log
 npm-debug.log*
 *.tsbuildinfo
 scripts/*.json
+node_modules
+node_modules
+node_modules
