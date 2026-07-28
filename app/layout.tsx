@@ -5,16 +5,16 @@ import VisitTracker from "@/components/VisitTracker";
 import { WebMCPProvider } from "@/components/WebMCPProvider";
 import "./globals.css";
 
-/** Self-hosted via next/font — avoids render-blocking Google Fonts CSS @import */
+/** Self-hosted via next/font — includes latin-ext for Azerbaijani characters (ə, Ə, ğ, Ğ, ş, Ş, ç, Ç, ö, Ö, ü, Ü) */
 const plusJakarta = Plus_Jakarta_Sans({
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   variable: "--font-sans",
   display: "swap",
   weight: ["400", "500", "600", "700", "800"],
 });
 
 const outfit = Outfit({
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   variable: "--font-outfit",
   display: "swap",
   weight: ["400", "500", "600", "700", "800", "900"],
