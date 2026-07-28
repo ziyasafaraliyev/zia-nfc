@@ -1,14 +1,20 @@
 import type { Metadata } from "next";
+import { Noto_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import VisitTracker from "@/components/VisitTracker";
 import { WebMCPProvider } from "@/components/WebMCPProvider";
 import "./globals.css";
 
 /**
- * No Google Fonts — system-ui is used as the primary font.
- * On Windows: Segoe UI, on macOS/iOS: SF Pro, on Android: Roboto.
- * These system fonts have FULL bold glyph support for Azerbaijani ə/Ə in ALL weights.
+ * Noto Sans — Google's font designed for complete Unicode coverage.
+ * "No Tofu" = no missing glyphs. Full support for Azerbaijani ə/Ə in ALL weights (100–900).
  */
+const notoSans = Noto_Sans({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-sans",
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800", "900"],
+});
 
 export const metadata: Metadata = {
   title: "Zia NFC | Premium NFC Vizit Kart və Rəqəmsal Profil Platforması",
@@ -61,7 +67,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="az">
+    <html lang="az" className={notoSans.variable}>
       <head />
       <body className="bg-white text-slate-950 antialiased">
         <WebMCPProvider />
