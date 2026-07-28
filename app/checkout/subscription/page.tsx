@@ -2,17 +2,19 @@
 
 import React, { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
-  CheckCircle2,
+  BadgeCheck,
   Sparkles,
   CreditCard,
   Zap,
   ArrowRight,
-  ShieldCheck,
   Loader2,
   Calendar,
+  ShieldCheck,
+  ArrowLeft,
 } from "lucide-react";
 
 function SubscriptionContent() {
@@ -37,7 +39,7 @@ function SubscriptionContent() {
       const data = await res.json();
 
       if (!res.ok || !data.url) {
-        throw new Error(data.error || "Checkout sessiyası yaradıla bilmədi.");
+        throw new Error(data.error || "Ödəniş sessiyası yaradıla bilmədi.");
       }
 
       window.location.href = data.url;
@@ -52,81 +54,95 @@ function SubscriptionContent() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className="rounded-3xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-2xl p-6 sm:p-10 shadow-2xl shadow-cyan-950/20"
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="relative rounded-3xl border border-slate-200 bg-white p-7 sm:p-10 shadow-[0_20px_70px_rgba(15,23,42,0.08)] text-slate-950"
     >
-      {/* Step Badge */}
-      <div className="flex items-center justify-between border-b border-slate-800/80 pb-6 mb-6">
+      {/* Progress Badge */}
+      <div className="flex items-center justify-between border-b border-slate-100 pb-5 mb-6">
         <div className="flex items-center gap-2">
-          <span className="flex items-center justify-center w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold border border-emerald-500/30">
+          <span className="flex size-7 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 text-xs font-black">
             ✓
           </span>
-          <span className="text-xs font-medium text-slate-400">Addım 1: Kart Alındı</span>
+          <span className="text-xs font-bold uppercase tracking-[0.1em] text-slate-500">
+            Addım 1: Kart Alındı
+          </span>
         </div>
-        <div className="w-8 h-px bg-slate-700" />
+        <div className="h-px w-8 bg-slate-200" />
         <div className="flex items-center gap-2">
-          <span className="flex items-center justify-center w-7 h-7 rounded-full bg-cyan-500 text-slate-950 text-xs font-bold shadow-md shadow-cyan-500/30">
+          <span className="flex size-7 items-center justify-center rounded-full bg-sky-500 text-white text-xs font-black shadow-md shadow-sky-500/20">
             2
           </span>
-          <span className="text-xs font-semibold text-cyan-400">Addım 2: Aylıq Abunəlik</span>
+          <span className="text-xs font-bold uppercase tracking-[0.1em] text-sky-600">
+            Addım 2: Aylıq Abunəlik
+          </span>
         </div>
       </div>
 
-      {/* Header */}
+      {/* Header Info */}
       <div className="text-center space-y-3 mb-8">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 shadow-lg shadow-cyan-500/10">
-          <Calendar className="w-8 h-8" />
+        <div className="inline-flex items-center justify-center size-16 rounded-2xl bg-sky-50 text-sky-600 border border-sky-100 shadow-sm">
+          <Calendar className="size-8" />
         </div>
 
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-          Aylıq Profil Abunəliyi 🔥
+        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-950">
+          Aylıq Profil Abunəliyi
         </h1>
 
-        <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-md mx-auto">
-          Vizit kartınızın ödənişi təsdiqləndi! Kartınızın aktiv qalması və rəqəmsal profiliniz üçün aylıq abunəliyinizi aktivləşdirin.
+        <p className="text-sm text-slate-600 max-w-md mx-auto leading-relaxed font-semibold">
+          Təbrik edirik! Vizit kartınızın ödənişi təsdiqləndi. Rəqəmsal profilinizin 24/7 canlı qalması üçün abunəliyinizi aktivləşdirin.
         </p>
       </div>
 
-      {/* Selected Plan Details Box */}
-      <div className="bg-slate-950/80 border border-slate-800/90 rounded-2xl p-5 mb-6 space-y-3">
+      {/* Selected Plan Details Card */}
+      <div className={`rounded-2xl p-5 mb-6 border transition duration-200 ${
+        isPremium
+          ? "bg-slate-950 text-white border-slate-800"
+          : "bg-slate-50 text-slate-950 border-slate-200"
+      }`}>
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className={`p-2 rounded-xl ${isPremium ? "bg-amber-500/10 text-amber-400" : "bg-cyan-500/10 text-cyan-400"}`}>
-              {isPremium ? <Sparkles className="w-5 h-5" /> : <Zap className="w-5 h-5" />}
+          <div className="flex items-center gap-3">
+            <div className={`p-2.5 rounded-xl ${isPremium ? "bg-sky-300/20 text-sky-300" : "bg-sky-500/10 text-sky-600"}`}>
+              {isPremium ? <Sparkles className="size-5" /> : <Zap className="size-5" />}
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-                {isPremium ? "Premium Paket Abunəliyi" : "Standart Paket Abunəliyi"}
+              <h3 className="text-base font-black tracking-tight uppercase">
+                {isPremium ? "Premium Abunəlik" : "Standart Abunəlik"}
               </h3>
-              <p className="text-xs text-slate-400">Aylıq profil hostinqi və analitika</p>
+              <p className={`text-xs font-bold ${isPremium ? "text-slate-400" : "text-slate-500"}`}>
+                {isPremium ? "4.90 AZN / ay" : "2.90 AZN / ay"}
+              </p>
             </div>
           </div>
-          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-            Aktivləşdirməyə Hazır
+          <span className={`text-xs font-black uppercase tracking-[0.12em] px-3 py-1 rounded-full ${
+            isPremium ? "bg-sky-300 text-slate-950" : "bg-sky-100 text-sky-700"
+          }`}>
+            Aktivləşir
           </span>
         </div>
 
-        <ul className="text-xs text-slate-300 space-y-2 pt-2 border-t border-slate-800/80">
-          <li className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span>Rəqəmsal Profil Hostinqi (7/24 Aktiv)</span>
-          </li>
-          <li className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span>Canlı Analitika & Ziyarətçi Sayğacı</span>
-          </li>
-          <li className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span>İstənilən vaxt ləğv etmək imkanı</span>
-          </li>
-        </ul>
+        <div className={`mt-4 pt-4 border-t space-y-2.5 text-xs font-semibold ${
+          isPremium ? "border-slate-800 text-slate-300" : "border-slate-200 text-slate-700"
+        }`}>
+          <div className="flex items-center gap-2.5">
+            <BadgeCheck size={16} className={isPremium ? "text-sky-300" : "text-sky-500"} />
+            <span>24/7 Canlı Profil və Veb-Hostinq</span>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <BadgeCheck size={16} className={isPremium ? "text-sky-300" : "text-sky-500"} />
+            <span>Canlı Ziyarətçi Analitikası və QR Kodlar</span>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <BadgeCheck size={16} className={isPremium ? "text-sky-300" : "text-sky-500"} />
+            <span>İstənilən vaxt idarə etmək imkanı</span>
+          </div>
+        </div>
       </div>
 
       {error && (
-        <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 text-xs text-center">
-          {error}
+        <div className="mb-5 flex items-center gap-2 rounded-2xl border border-red-200 bg-red-50 p-4 text-xs font-semibold text-red-700">
+          <span>⚠️</span> {error}
         </div>
       )}
 
@@ -135,31 +151,33 @@ function SubscriptionContent() {
         <button
           onClick={handleSubscribe}
           disabled={loading}
-          className="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-bold text-sm shadow-xl shadow-cyan-500/25 hover:shadow-cyan-500/40 flex items-center justify-center gap-2.5 transition-all duration-200 active:scale-[0.98] disabled:opacity-50"
+          className="flex w-full items-center justify-center gap-2 rounded-full bg-sky-500 px-6 py-4 text-sm font-black uppercase tracking-[0.14em] text-white shadow-[0_12px_30px_rgba(14,165,233,0.25)] transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
         >
           {loading ? (
-            <Loader2 className="w-5 h-5 animate-spin" />
+            <>
+              <Loader2 size={18} className="animate-spin" />
+              Yönləndirilir...
+            </>
           ) : (
             <>
-              <CreditCard className="w-5 h-5" />
+              <CreditCard size={18} />
               <span>Aylıq Abunəliyi Aktivləşdir</span>
-              <ArrowRight className="w-4 h-4 ml-auto" />
+              <ArrowRight size={16} />
             </>
           )}
         </button>
 
         <Link
           href="/checkout/success"
-          className="block w-full py-3 text-center text-xs text-slate-400 hover:text-slate-200 transition-colors"
+          className="block w-full py-2.5 text-center text-xs font-bold uppercase tracking-[0.08em] text-slate-500 hover:text-slate-900 transition duration-200"
         >
-          Aylıq abunəliyi sonra aktivləşdir (Forma keçin)
+          Aylıq abunəliyi sonra aktivləşdir (Forma Keç)
         </Link>
       </div>
 
-      {/* Footer info */}
-      <div className="mt-6 pt-5 border-t border-slate-800/80 flex items-center justify-center gap-2 text-xs text-slate-400">
-        <ShieldCheck className="w-4 h-4 text-cyan-400" />
-        <span>Təhlükəsiz Polar.sh Ödəniş Sistemi</span>
+      <div className="mt-8 pt-5 border-t border-slate-100 flex items-center justify-center gap-2 text-xs font-semibold text-slate-500">
+        <ShieldCheck size={16} className="text-sky-500" />
+        <span>Polar.sh tərəfindən 256-bit SSL ilə qorunur</span>
       </div>
     </motion.div>
   );
@@ -167,14 +185,40 @@ function SubscriptionContent() {
 
 export default function SubscriptionPage() {
   return (
-    <div className="min-h-screen bg-[#05070E] text-white flex flex-col justify-between selection:bg-cyan-500/30 selection:text-cyan-200 relative overflow-hidden font-sans">
-      <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-cyan-500/15 via-blue-600/10 to-transparent blur-[120px] rounded-full" />
+    <div className="min-h-screen bg-slate-50 text-slate-950 flex flex-col justify-between selection:bg-sky-500/20 selection:text-sky-950 font-sans">
+      {/* Header Navbar */}
+      <header className="mx-auto w-full max-w-7xl px-4 py-5 sm:px-6">
+        <div className="flex items-center justify-between rounded-full border border-slate-200 bg-white/90 px-5 py-3 shadow-md backdrop-blur-xl">
+          <Link
+            href="/"
+            className="flex items-center gap-2.5 text-lg font-black tracking-tight text-slate-950 transition hover:-translate-y-0.5"
+          >
+            <Image
+              src="/logo.webp"
+              alt="Zia NFC"
+              width={38}
+              height={38}
+              className="size-9 rounded-full object-cover"
+            />
+            <span>Zia NFC</span>
+          </Link>
 
-      <main className="relative z-10 max-w-xl mx-auto w-full px-4 py-12 my-auto">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-4 py-2 text-xs font-black uppercase tracking-[0.1em] text-slate-700 hover:bg-slate-200 transition"
+          >
+            <ArrowLeft size={14} />
+            <span>Ana Səhifə</span>
+          </Link>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="mx-auto w-full max-w-xl px-4 py-8 my-auto">
         <Suspense
           fallback={
-            <div className="flex items-center justify-center py-20 text-slate-400">
-              <Loader2 className="w-8 h-8 animate-spin text-cyan-500" />
+            <div className="flex items-center justify-center py-20 text-slate-500">
+              <Loader2 className="size-8 animate-spin text-sky-500" />
             </div>
           }
         >
@@ -182,7 +226,8 @@ export default function SubscriptionPage() {
         </Suspense>
       </main>
 
-      <footer className="relative z-10 max-w-5xl mx-auto w-full px-6 py-6 text-center text-xs text-slate-400">
+      {/* Footer */}
+      <footer className="mx-auto w-full max-w-7xl px-6 py-6 text-center text-xs font-semibold text-slate-500">
         © {new Date().getFullYear()} Zia NFC. Bütün hüquqlar qorunur.
       </footer>
     </div>
