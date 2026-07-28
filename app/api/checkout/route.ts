@@ -10,17 +10,30 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { plan } = body as { plan: "standard" | "premium" };
+    const { plan, type = "card" } = body as {
+      plan: "standard" | "premium";
+      type?: "card" | "monthly";
+    };
 
     if (plan !== "standard" && plan !== "premium") {
       return NextResponse.json({ error: "Yanlış plan növü." }, { status: 400 });
     }
 
     const accessToken = process.env.POLAR_ACCESS_TOKEN;
-    const productId =
-      plan === "standard"
-        ? process.env.POLAR_STANDARD_PRODUCT_ID
-        : process.env.POLAR_PREMIUM_PRODUCT_ID;
+
+    let productId: string | undefined;
+
+    if (type === "monthly") {
+      productId =
+        plan === "standard"
+          ? process.env.POLAR_STANDARD_MONTHLY_PRODUCT_ID
+          : process.env.POLAR_PREMIUM_MONTHLY_PRODUCT_ID;
+    } else {
+      productId =
+        plan === "standard"
+          ? process.env.POLAR_STANDARD_PRODUCT_ID
+          : process.env.POLAR_PREMIUM_PRODUCT_ID;
+    }
 
     if (!accessToken) {
       console.error("[checkout] POLAR_ACCESS_TOKEN təyin edilməyib.");
@@ -31,14 +44,21 @@ export async function POST(request: Request) {
     }
 
     if (!productId) {
-      console.error(`[checkout] POLAR_${plan.toUpperCase()}_PRODUCT_ID təyin edilməyib.`);
+      console.error(
+        `[checkout] POLAR_${plan.toUpperCase()}_${type === "monthly" ? "MONTHLY_" : ""}PRODUCT_ID təyin edilməyib.`
+      );
       return NextResponse.json(
-        { error: `Ödəniş sistemi konfiqurasiya edilməyib (${plan} Məhsul ID çatışmır).` },
+        { error: `Ödəniş sistemi konfiqurasiya edilməyib (${plan} ${type} Məhsul ID çatışmır).` },
         { status: 500 }
       );
     }
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+    const successUrl =
+      type === "card"
+        ? `${siteUrl}/checkout/subscription?plan=${plan}`
+        : `${siteUrl}/checkout/success`;
 
     // Polar.sh checkouts endpoint: POST https://api.polar.sh/v1/checkouts/
     const polarRes = await fetch("https://api.polar.sh/v1/checkouts/", {
@@ -50,9 +70,10 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         product_id: productId,
-        success_url: `${siteUrl}/checkout/success`,
+        success_url: successUrl,
         metadata: {
           plan,
+          type,
         },
       }),
     });
