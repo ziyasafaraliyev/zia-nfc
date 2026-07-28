@@ -50,7 +50,7 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         product_id: productId,
-        success_url: `${siteUrl}?checkout=success`,
+        success_url: `${siteUrl}/checkout/success`,
         metadata: {
           plan,
         },
