@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
-import { Outfit, Plus_Jakarta_Sans } from "next/font/google";
+import { Inter, Outfit } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import VisitTracker from "@/components/VisitTracker";
 import { WebMCPProvider } from "@/components/WebMCPProvider";
 import "./globals.css";
 
-/** Self-hosted via next/font — includes latin-ext for Azerbaijani characters (ə, Ə, ğ, Ğ, ş, Ş, ç, Ç, ö, Ö, ü, Ü) */
-const plusJakarta = Plus_Jakarta_Sans({
+/** Inter font has 100% full bold glyph support for Azerbaijani ə/Ə */
+const inter = Inter({
   subsets: ["latin", "latin-ext"],
   variable: "--font-sans",
   display: "swap",
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700", "800", "900"],
 });
 
 const outfit = Outfit({
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="az" className={`${plusJakarta.variable} ${outfit.variable}`}>
+    <html lang="az" className={`${inter.variable} ${outfit.variable}`}>
       <head />
       <body className="bg-white text-slate-950 antialiased">
         <WebMCPProvider />
