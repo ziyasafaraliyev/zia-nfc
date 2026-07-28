@@ -23,8 +23,8 @@ const config: Config = {
         lift: "0 20px 60px rgba(15, 23, 42, 0.1)"
       },
       fontFamily: {
-        sans: ["var(--font-sans)", "Noto Sans", "Arial", "Helvetica", "sans-serif"],
-        outfit: ["var(--font-sans)", "Noto Sans", "Arial", "Helvetica", "sans-serif"],
+        sans: ["var(--font-sans)", "Plus Jakarta Sans", "Inter", "sans-serif"],
+        outfit: ["var(--font-sans)", "Plus Jakarta Sans", "Inter", "sans-serif"],
       }
     }
   },

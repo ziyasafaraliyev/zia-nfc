@@ -18,8 +18,8 @@ html {
 
 body {
     min-height: 100vh;
-    /* Noto Sans: "No Tofu" — full Unicode coverage, ə/Ə correct in ALL bold weights */
-    font-family: var(--font-sans), "Noto Sans", Arial, Helvetica, sans-serif;
+    /* Plus Jakarta Sans: full Unicode Latin-Extended coverage (ə/Ə) across all bold/black weights */
+    font-family: var(--font-sans), "Plus Jakarta Sans", "Inter", sans-serif;
     scrollbar-width: thin;
     scrollbar-color: rgba(56, 189, 248, 0.9) rgba(15, 23, 42, 0.45);
 }
@@ -64,8 +64,7 @@ a {
 
 .dashboard-bg {
     background: #f5f7fa;
-    /* Admin / restoran panels — Arial for correct Azerbaijani glyphs (ə) */
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-sans), "Plus Jakarta Sans", sans-serif;
 }
 
 .dashboard-bg input,
@@ -116,7 +115,7 @@ a {
 
 .restaurant-name,
 .restaurant-title {
-    font-family: Arial, Helvetica, sans-serif !important;
+    font-family: var(--font-sans), "Plus Jakarta Sans", sans-serif !important;
     font-weight: 700 !important;
 }
 
@@ -273,8 +272,7 @@ a.dashboard-primary:hover {
         radial-gradient(ellipse 60% 40% at 90% 20%, rgba(56, 189, 248, 0.05) 0%, transparent 55%),
         linear-gradient(180deg, #f2f3f8 0%, #eef0f7 40%, #f5f6fa 100%);
     min-height: 100dvh;
-    /* Arial: full Latin Extended (ə, ğ, ş, …) — custom fonts often misrender “ə” */
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-sans), "Plus Jakarta Sans", sans-serif;
     color: #1a1a2e;
 }
 
@@ -505,13 +503,12 @@ a.dashboard-primary:hover {
 
 .lux-avatar-fallback {
     background: #29AEEE;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-sans), "Plus Jakarta Sans", sans-serif;
 }
 
 /* Typography — dark text for light background */
 .lux-overline {
-    /* Profession: always Arial Bold across all themes */
-    font-family: Arial, Helvetica, sans-serif !important;
+    font-family: var(--font-sans), "Plus Jakarta Sans", sans-serif !important;
     font-size: 10px;
     font-weight: 700 !important;
     letter-spacing: 0.24em;
@@ -520,7 +517,7 @@ a.dashboard-primary:hover {
 }
 
 .lux-name {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-sans), "Plus Jakarta Sans", sans-serif;
     font-size: 1.6rem;
     font-weight: 800;
     letter-spacing: -0.03em;
@@ -537,7 +534,7 @@ a.dashboard-primary:hover {
 }
 
 .lux-section-title {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-sans), "Plus Jakarta Sans", sans-serif;
     font-size: 1.2rem;
     font-weight: 700;
     letter-spacing: -0.02em;
@@ -566,7 +563,7 @@ a.dashboard-primary:hover {
     justify-content: center;
     gap: 10px;
     border-radius: 1.15rem;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-sans), "Plus Jakarta Sans", sans-serif;
     font-size: 14px;
     font-weight: 700;
     color: #ffffff;
@@ -613,7 +610,7 @@ a.dashboard-primary:hover {
     justify-content: center;
     gap: 10px;
     border-radius: 1.15rem;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-sans), "Plus Jakarta Sans", sans-serif;
     font-size: 14px;
     font-weight: 700;
     color: #ffffff;
@@ -824,7 +821,7 @@ a.dashboard-primary:hover {
     background: rgba(99, 102, 241, 0.07);
     border: 1px solid rgba(99, 102, 241, 0.18);
     color: #6366f1;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-sans), "Plus Jakarta Sans", sans-serif;
     letter-spacing: 0.04em;
 }
 
@@ -882,7 +879,7 @@ a.dashboard-primary:hover {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     font-weight: 800;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-sans), "Plus Jakarta Sans", sans-serif;
     letter-spacing: 0.06em;
 }
 

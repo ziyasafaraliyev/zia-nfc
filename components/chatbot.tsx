@@ -57,7 +57,6 @@ export default function Chatbot() {
       <button
         onClick={handleOpenChat}
         className="fixed bottom-6 right-6 z-[9999] flex items-center gap-2.5 rounded-full bg-[#29AEEE] px-4 py-3 text-xs font-bold text-white shadow-[0_8px_30px_rgba(41,174,238,0.35)] transition-all duration-300 hover:scale-105 hover:bg-[#1a9ad4] hover:shadow-[0_12px_40px_rgba(41,174,238,0.5)] active:scale-[0.97] group border border-white/10"
-        style={{ fontFamily: "'Outfit', sans-serif" }}
         title="ZIANFC chatbot"
       >
         {/* Round Logo */}

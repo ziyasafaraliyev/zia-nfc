@@ -245,7 +245,6 @@ export default function ProfilePageView({
                 <p
                   className="lux-overline truncate"
                   style={{
-                    fontFamily: "Arial, Helvetica, sans-serif",
                     fontWeight: 700,
                   }}
                 >

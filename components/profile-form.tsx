@@ -597,7 +597,6 @@ export default function ProfileForm({
         });
       }}
       className="grid gap-5"
-      style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
     >
       <input type="hidden" name="id" value={profile?.id ?? ""} />
 
@@ -1493,7 +1492,6 @@ export default function ProfileForm({
       <button
         disabled={submitting}
         className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#29AEEE] px-5 py-3.5 text-sm font-bold text-white shadow-md shadow-[#29AEEE]/20 transition-all duration-200 hover:bg-[#1a9ad4] hover:shadow-lg hover:shadow-[#29AEEE]/25 active:scale-[0.96] disabled:bg-slate-300 disabled:shadow-none"
-        style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
       >
         <Save size={16} /> {submitting ? statusText : "Yadda Saxla"}
       </button>

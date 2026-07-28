@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
-import { Noto_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import VisitTracker from "@/components/VisitTracker";
 import { WebMCPProvider } from "@/components/WebMCPProvider";
 import "./globals.css";
 
 /**
- * Noto Sans — Google's font designed for complete Unicode coverage.
- * "No Tofu" = no missing glyphs. Full support for Azerbaijani ə/Ə in ALL weights (100–900).
+ * Plus Jakarta Sans — Modern font with full Azerbaijani (Latin-Extended ə/Ə) support
+ * across all font weights (400, 500, 600, 700, 800).
  */
-const notoSans = Noto_Sans({
+const jakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin", "latin-ext"],
   variable: "--font-sans",
   display: "swap",
-  weight: ["400", "500", "600", "700", "800", "900"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="az" className={notoSans.variable}>
+    <html lang="az" className={jakartaSans.variable}>
       <head />
       <body className="bg-white text-slate-950 antialiased">
         <WebMCPProvider />

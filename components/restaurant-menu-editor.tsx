@@ -140,10 +140,7 @@ export default function RestaurantMenuEditor({ initialMenu }: Props) {
   }
 
   return (
-    <div
-      className="rounded-3xl border border-slate-200 bg-white p-5 space-y-4"
-      style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
-    >
+    <div className="rounded-3xl border border-slate-200 bg-white p-5 space-y-4">
       <input type="hidden" name="menu_json" value={menuJson} readOnly />
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
