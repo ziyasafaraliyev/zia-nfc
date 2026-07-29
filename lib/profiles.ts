@@ -73,7 +73,7 @@ export const getProfileBySlug = cache(async (slug: string): Promise<Profile | nu
 
   return unstable_cache(
     () => fetchPublicProfileBySlug(slug),
-    ["profile-by-slug-v5", slug],
+    ["profile-by-slug-v6", slug],
     {
       revalidate: 60,
       tags: [`profile:${slug}`, "profiles"],

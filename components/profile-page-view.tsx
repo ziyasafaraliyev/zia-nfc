@@ -208,11 +208,11 @@ export default function ProfilePageView({
           : "template-business";
   const sectionOrder =
     profile.theme === "editorial"
-      ? (["identity", "socials", "actions", "save", "qr", "reservation", "location", "google_review", "catalog", "portfolio", "cv", "footer"] as const)
+      ? (["identity", "socials", "actions", "save", "qr", "reservation", "location", "google_review", "catalog", "portfolio", "cv", "stats", "footer"] as const)
       : profile.theme === "spotlight"
-        ? (["identity", "actions", "save", "qr", "socials", "reservation", "catalog", "portfolio", "location", "google_review", "cv", "footer"] as const)
+        ? (["identity", "actions", "save", "qr", "socials", "reservation", "catalog", "portfolio", "location", "google_review", "cv", "stats", "footer"] as const)
         : profile.theme === "compact"
-          ? (["actions", "identity", "save", "socials", "qr", "location", "google_review", "reservation", "catalog", "portfolio", "cv", "footer"] as const)
+          ? (["actions", "identity", "save", "socials", "qr", "location", "google_review", "reservation", "catalog", "portfolio", "cv", "stats", "footer"] as const)
           : DEFAULT_SECTION_ORDER;
 
   const sections: Record<typeof DEFAULT_SECTION_ORDER[number], React.ReactNode> = {
