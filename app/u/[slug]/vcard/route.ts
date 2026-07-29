@@ -67,69 +67,6 @@ export async function GET(request: Request, { params }: Props) {
 
   const cleanUrl = (url: string) => url.replace(/[\r\n]/g, "");
 
-  const noteLines: string[] = [];
-
-  if (profile.bio) {
-    noteLines.push(profile.bio.trim());
-    noteLines.push("");
-  }
-
-  noteLines.push(`Rəqəmsal Profil: ${getProfileUrl(profile.slug)}`);
-
-  if (profile.phone2) {
-    noteLines.push(`Əlavə Nömrə: ${profile.phone2}`);
-  }
-  if (profile.whatsapp) {
-    noteLines.push(`WhatsApp: ${profile.whatsapp}`);
-  }
-  if (profile.whatsapp2) {
-    noteLines.push(`WhatsApp 2: ${profile.whatsapp2}`);
-  }
-  if (profile.website) {
-    noteLines.push(`Veb-sayt: ${profile.website}`);
-  }
-  if (profile.instagram) {
-    noteLines.push(`Instagram: ${profile.instagram}`);
-  }
-  if (profile.tiktok) {
-    noteLines.push(`TikTok: ${profile.tiktok}`);
-  }
-  if (profile.telegram) {
-    noteLines.push(`Telegram: ${profile.telegram}`);
-  }
-  if (profile.linkedin) {
-    noteLines.push(`LinkedIn: ${profile.linkedin}`);
-  }
-  if (profile.facebook) {
-    noteLines.push(`Facebook: ${profile.facebook}`);
-  }
-  if (profile.youtube) {
-    noteLines.push(`YouTube: ${profile.youtube}`);
-  }
-  if (profile.x) {
-    noteLines.push(`X (Twitter): ${profile.x}`);
-  }
-  if (profile.behance) {
-    noteLines.push(`Behance: ${profile.behance}`);
-  }
-  if (profile.threads) {
-    noteLines.push(`Threads: ${profile.threads}`);
-  }
-  if (profile.waze) {
-    noteLines.push(`Waze: ${profile.waze}`);
-  }
-  if (profile.location_url) {
-    noteLines.push(`Məkan Linki: ${profile.location_url}`);
-  }
-  if (profile.google_review_url) {
-    noteLines.push(`Google Rəy: ${profile.google_review_url}`);
-  }
-  if (profile.cv_url) {
-    noteLines.push(`CV / Portfolio: ${profile.cv_url}`);
-  }
-
-  const noteText = noteLines.join("\n");
-
   const photoLine = await getPhotoVCardLine(profile.avatar_url, request.url);
 
   const socialProfiles: string[] = [];
@@ -153,7 +90,6 @@ export async function GET(request: Request, { params }: Props) {
     profile.location ? `ADR;TYPE=WORK:;;${escapeVCardValue(profile.location)};;;;` : "",
     photoLine,
     ...socialProfiles,
-    noteText ? `NOTE:${escapeVCardValue(noteText)}` : "",
     "END:VCARD",
   ]
     .filter(Boolean)
