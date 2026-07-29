@@ -249,6 +249,8 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <PricingSection />
+
       <section
         id="how-it-works"
         className="bg-slate-950 px-4 py-20 text-white sm:px-6 lg:px-8"
@@ -280,8 +282,6 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-
-      <PricingSection />
 
       <section id="features" className="bg-white px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
