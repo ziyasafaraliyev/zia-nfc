@@ -1475,6 +1475,16 @@ export default function ProfileForm({
             />
           </label>
 
+          <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition">
+            <span>Statistika & Paylaşım bloku aktivdir</span>
+            <input
+              type="checkbox"
+              name="stats_enabled"
+              defaultChecked={profile?.stats_enabled ?? true}
+              className="size-5 rounded accent-indigo-650"
+            />
+          </label>
+
           <div className="rounded-3xl border border-slate-200 bg-white p-5 space-y-4">
             <span className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide">
               Google Review

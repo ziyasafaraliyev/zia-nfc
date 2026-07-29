@@ -666,39 +666,40 @@ export default function ProfilePageView({
         theme={profile.theme}
       />
     ),
-    stats: (
-      <div
-        key="stats"
-        className="mt-6 grid grid-cols-3 gap-2 rounded-2xl border border-gray-200/80 bg-white/80 p-3 shadow-sm text-center backdrop-blur-md"
-      >
-        {/* 1 — Görülmə (Baxış) Sayı */}
-        <div className="flex flex-col items-center justify-center border-r border-gray-200/60 pr-1">
-          <Eye size={18} className="text-sky-500 mb-1" />
-          <span className="text-sm font-black text-slate-800">{viewsCount}</span>
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Baxış</span>
-        </div>
-
-        {/* 2 — Kontaktı Saxlayanların Sayı */}
-        <div className="flex flex-col items-center justify-center border-r border-gray-200/60 px-1">
-          <UserCheck size={18} className="text-emerald-500 mb-1" />
-          <span className="text-sm font-black text-slate-800">{savesCount}</span>
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Saxlanıldı</span>
-        </div>
-
-        {/* 3 — Profili Paylaş (iOS/Android Native Share) */}
-        <button
-          type="button"
-          onClick={handleShare}
-          className="flex flex-col items-center justify-center pl-1 transition-transform active:scale-95 group cursor-pointer"
+    stats:
+      (profile.stats_enabled ?? true) ? (
+        <div
+          key="stats"
+          className="mt-6 grid grid-cols-3 gap-2 rounded-2xl border border-gray-200/80 bg-white/80 p-3 shadow-sm text-center backdrop-blur-md"
         >
-          <Share2 size={18} className="text-sky-600 mb-1 transition-transform group-hover:scale-110" />
-          <span className="text-sm font-black text-sky-600">
-            {copied ? "Kopyalandı!" : "Paylaş"}
-          </span>
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Profili</span>
-        </button>
-      </div>
-    ),
+          {/* 1 — Görülmə (Baxış) Sayı */}
+          <div className="flex flex-col items-center justify-center border-r border-gray-200/60 pr-1">
+            <Eye size={18} className="text-sky-500 mb-1" />
+            <span className="text-sm font-black text-slate-800">{viewsCount}</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Baxış</span>
+          </div>
+
+          {/* 2 — Kontaktı Saxlayanların Sayı */}
+          <div className="flex flex-col items-center justify-center border-r border-gray-200/60 px-1">
+            <UserCheck size={18} className="text-emerald-500 mb-1" />
+            <span className="text-sm font-black text-slate-800">{savesCount}</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Saxlanıldı</span>
+          </div>
+
+          {/* 3 — Profili Paylaş (iOS/Android Native Share) */}
+          <button
+            type="button"
+            onClick={handleShare}
+            className="flex flex-col items-center justify-center pl-1 transition-transform active:scale-95 group cursor-pointer"
+          >
+            <Share2 size={18} className="text-sky-600 mb-1 transition-transform group-hover:scale-110" />
+            <span className="text-sm font-black text-sky-600">
+              {copied ? "Kopyalandı!" : "Paylaş"}
+            </span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Profili</span>
+          </button>
+        </div>
+      ) : null,
     footer: (
       <div key="footer" className="mt-6 flex flex-col items-center gap-2">
         <div className="lux-footer-divider" />

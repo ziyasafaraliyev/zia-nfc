@@ -26,6 +26,8 @@ export type Profile = {
   referral_url?: string | null;
   views_count?: number;
   saves_count?: number;
+  /** When false, view/save stats & share panel is hidden on public profile (super admin) */
+  stats_enabled?: boolean;
   name: string;
   profession?: string | null;
   bio?: string | null;

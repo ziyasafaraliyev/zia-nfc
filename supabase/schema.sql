@@ -158,6 +158,7 @@ alter table public.profiles add column if not exists referral_enabled boolean no
 alter table public.profiles add column if not exists referral_url text;
 alter table public.profiles add column if not exists views_count integer not null default 0;
 alter table public.profiles add column if not exists saves_count integer not null default 0;
+alter table public.profiles add column if not exists stats_enabled boolean not null default true;
 
 alter table public.profiles drop constraint if exists profiles_cover_style_check;
 alter table public.profiles add constraint profiles_cover_style_check
@@ -304,7 +305,8 @@ grant select (
   referral_enabled,
   referral_url,
   views_count,
-  saves_count
+  saves_count,
+  stats_enabled
 ) on table public.profiles to anon, authenticated;
 
 -- Restrict storage select policy so that files under internal/ cannot be accessed publicly
