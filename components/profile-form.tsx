@@ -787,6 +787,8 @@ export default function ProfileForm({
           removed={removeBackground}
           aspect="square"
           compact
+          enableCrop
+          cropTitle="Cover şəklini kəsin"
           onFileChange={(file) => {
             setBackgroundPreview(URL.createObjectURL(file));
             setRemoveBackground(false);
