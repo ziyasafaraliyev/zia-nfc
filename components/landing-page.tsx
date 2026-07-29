@@ -195,8 +195,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <NfcCardShowcase />
-
       <section id="digital-services" className="perf-cv bg-white px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-700">
@@ -250,6 +248,8 @@ export default function LandingPage() {
       </section>
 
       <PricingSection />
+
+      <NfcCardShowcase />
 
       <section
         id="how-it-works"
