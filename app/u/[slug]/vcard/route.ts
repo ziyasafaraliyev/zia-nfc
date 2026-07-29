@@ -2,6 +2,8 @@ import { getProfileBySlug } from "@/lib/profiles";
 import { getProfileUrl } from "@/lib/urls";
 import { NextResponse } from "next/server";
 
+import { createServiceSupabaseClient } from "@/lib/supabase";
+
 export const dynamic = "force-dynamic";
 
 type Props = {
@@ -56,6 +58,14 @@ export async function GET(request: Request, { params }: Props) {
   if (!profile || !profile.enabled) {
     return new NextResponse("Not found", { status: 404 });
   }
+
+  // Increment save count in background
+  try {
+    const supabase = createServiceSupabaseClient();
+    if (supabase) {
+      void supabase.rpc("increment_profile_save", { p_slug: slug });
+    }
+  } catch {}
 
   const escapeVCardValue = (val: string) => {
     return val

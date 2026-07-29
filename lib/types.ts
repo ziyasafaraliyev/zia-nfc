@@ -24,6 +24,8 @@ export type Profile = {
   referral_enabled?: boolean;
   /** Optional custom referral URL; falls back to profile public URL when empty */
   referral_url?: string | null;
+  views_count?: number;
+  saves_count?: number;
   name: string;
   profession?: string | null;
   bio?: string | null;

@@ -300,7 +300,9 @@ grant select (
   reservation_enabled,
   portfolio_enabled,
   referral_enabled,
-  referral_url
+  referral_url,
+  views_count,
+  saves_count
 ) on table public.profiles to anon, authenticated;
 
 -- Restrict storage select policy so that files under internal/ cannot be accessed publicly
@@ -308,6 +310,39 @@ drop policy if exists "Public profile images are readable" on storage.objects;
 create policy "Public profile images are readable"
 on storage.objects for select
 using (bucket_id = 'profiles' and (not (name like 'internal/%')));
+
+alter table public.profiles add column if not exists views_count integer not null default 0;
+alter table public.profiles add column if not exists saves_count integer not null default 0;
+
+-- Functions to increment profile statistics
+create or replace function public.increment_profile_view(p_slug text)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  update public.profiles
+  set views_count = coalesce(views_count, 0) + 1
+  where slug = p_slug;
+end;
+$$;
+
+create or replace function public.increment_profile_save(p_slug text)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  update public.profiles
+  set saves_count = coalesce(saves_count, 0) + 1
+  where slug = p_slug;
+end;
+$$;
+
+grant execute on function public.increment_profile_view(text) to anon, authenticated, service_role;
+grant execute on function public.increment_profile_save(text) to anon, authenticated, service_role;
 
 alter table public.restaurants add column if not exists google_review_url text;
 

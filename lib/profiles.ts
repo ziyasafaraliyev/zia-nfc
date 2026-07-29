@@ -44,6 +44,8 @@ const PUBLIC_PROFILE_SELECT = [
   "wallet_enabled",
   "cv_url",
   "theme",
+  "views_count",
+  "saves_count",
 ].join(",");
 
 async function fetchPublicProfileBySlug(slug: string): Promise<Profile | null> {

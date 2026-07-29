@@ -1,7 +1,11 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import type { Profile } from "@/lib/types";
 import { getProfileVcardPath } from "@/lib/urls";
 import {
   ExternalLink,
+  Eye,
   Facebook,
   Globe,
   Instagram,
@@ -13,10 +17,12 @@ import {
   Navigation,
   PenTool,
   Phone,
+  Share2,
+  Star,
   Twitter,
+  UserCheck,
   UserPlus,
   Youtube,
-  Star,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
@@ -100,6 +106,7 @@ const DEFAULT_SECTION_ORDER = [
   "catalog",
   "wallet",
   "qr",
+  "stats",
   "footer",
 ] as const;
 
@@ -109,6 +116,53 @@ export default function ProfilePageView({
   qrUrl,
   jsonLd,
 }: Props) {
+  const [viewsCount, setViewsCount] = useState(profile.views_count ?? 0);
+  const [savesCount, setSavesCount] = useState(profile.saves_count ?? 0);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    const trackedKey = `viewed_${profile.slug}`;
+    if (typeof sessionStorage !== "undefined" && !sessionStorage.getItem(trackedKey)) {
+      sessionStorage.setItem(trackedKey, "1");
+      setViewsCount((prev) => prev + 1);
+      fetch("/api/profile/track", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug: profile.slug, action: "view" }),
+      }).catch(() => {});
+    }
+  }, [profile.slug]);
+
+  const handleSaveContact = () => {
+    setSavesCount((prev) => prev + 1);
+    fetch("/api/profile/track", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slug: profile.slug, action: "save" }),
+    }).catch(() => {});
+  };
+
+  const handleShare = async () => {
+    const shareData = {
+      title: profile.name,
+      text: `${profile.name} — Zia NFC Rəqəmsal Profil`,
+      url: profileUrl,
+    };
+
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch {
+        // User cancelled or share failed
+      }
+    } else if (typeof navigator !== "undefined" && navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(profileUrl);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch {}
+    }
+  };
   const whatsapp = profile.whatsapp?.replace(/[^\d]/g, "");
   const whatsapp2 = profile.whatsapp2?.replace(/[^\d]/g, "");
 
@@ -423,6 +477,7 @@ export default function ProfilePageView({
         {/* 1 — Kontaktı yadda saxla */}
         <a
           href={getProfileVcardPath(profile.slug)}
+          onClick={handleSaveContact}
           className="lux-save-contact group flex h-14 w-full items-center justify-between gap-3 rounded-2xl px-4 lux-card-enter-4 transition-transform duration-200 hover:scale-[1.02]"
         >
           <span className="flex items-center gap-3">
@@ -610,6 +665,39 @@ export default function ProfilePageView({
         profileName={profile.name}
         theme={profile.theme}
       />
+    ),
+    stats: (
+      <div
+        key="stats"
+        className="mt-6 grid grid-cols-3 gap-2 rounded-2xl border border-gray-200/80 bg-white/80 p-3 shadow-sm text-center backdrop-blur-md"
+      >
+        {/* 1 — Görülmə (Baxış) Sayı */}
+        <div className="flex flex-col items-center justify-center border-r border-gray-200/60 pr-1">
+          <Eye size={18} className="text-sky-500 mb-1" />
+          <span className="text-sm font-black text-slate-800">{viewsCount}</span>
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Baxış</span>
+        </div>
+
+        {/* 2 — Kontaktı Saxlayanların Sayı */}
+        <div className="flex flex-col items-center justify-center border-r border-gray-200/60 px-1">
+          <UserCheck size={18} className="text-emerald-500 mb-1" />
+          <span className="text-sm font-black text-slate-800">{savesCount}</span>
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Saxlanıldı</span>
+        </div>
+
+        {/* 3 — Profili Paylaş (iOS/Android Native Share) */}
+        <button
+          type="button"
+          onClick={handleShare}
+          className="flex flex-col items-center justify-center pl-1 transition-transform active:scale-95 group cursor-pointer"
+        >
+          <Share2 size={18} className="text-sky-600 mb-1 transition-transform group-hover:scale-110" />
+          <span className="text-sm font-black text-sky-600">
+            {copied ? "Kopyalandı!" : "Paylaş"}
+          </span>
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Profili</span>
+        </button>
+      </div>
     ),
     footer: (
       <div key="footer" className="mt-6 flex flex-col items-center gap-2">
