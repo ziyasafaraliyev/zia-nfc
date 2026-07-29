@@ -156,6 +156,8 @@ alter table public.profiles add column if not exists wallet_enabled boolean not 
 alter table public.profiles add column if not exists catalog jsonb not null default '[]'::jsonb;
 alter table public.profiles add column if not exists referral_enabled boolean not null default false;
 alter table public.profiles add column if not exists referral_url text;
+alter table public.profiles add column if not exists views_count integer not null default 0;
+alter table public.profiles add column if not exists saves_count integer not null default 0;
 
 alter table public.profiles drop constraint if exists profiles_cover_style_check;
 alter table public.profiles add constraint profiles_cover_style_check
@@ -310,9 +312,6 @@ drop policy if exists "Public profile images are readable" on storage.objects;
 create policy "Public profile images are readable"
 on storage.objects for select
 using (bucket_id = 'profiles' and (not (name like 'internal/%')));
-
-alter table public.profiles add column if not exists views_count integer not null default 0;
-alter table public.profiles add column if not exists saves_count integer not null default 0;
 
 -- Functions to increment profile statistics
 create or replace function public.increment_profile_view(p_slug text)
