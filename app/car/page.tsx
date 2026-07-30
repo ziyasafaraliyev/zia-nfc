@@ -34,9 +34,9 @@ type DemoState = {
 };
 
 const INITIAL_DEMO: DemoState = {
-  carName: "BMW M5 Competition",
+  carName: "Mercedes-Benz S-Class",
   plate: "99-AA-001",
-  driverName: "Kənan Məmmədov",
+  driverName: "Ziya Səfərəliyev",
   phone1: "+994 50 123 45 67",
   phone2: "+994 70 987 65 43",
   whatsapp: "994501234567",
@@ -44,8 +44,8 @@ const INITIAL_DEMO: DemoState = {
   tiktok: "https://tiktok.com/@zianfc.az",
   telegram: "https://t.me/zianfc",
   waze: "https://waze.com/ul",
-  coverUrl: "https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1200&q=80",
-  avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+  coverUrl: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=1200&q=80",
+  avatarUrl: "/ziya.webp",
 };
 
 export default function ZiaCarPage() {
