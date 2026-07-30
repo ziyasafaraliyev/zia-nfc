@@ -257,7 +257,7 @@ function CarProfileCard({ profile }: { profile: CarProfile }) {
                 <StatusBadge enabled={profile.enabled} />
               </div>
               <p className="mt-1 truncate text-xs font-extrabold text-sky-600">
-                🚘 {profile.plate} · {profile.car_name}
+                {profile.plate} · {profile.car_name}
               </p>
               <p className="mt-0.5 truncate text-xs font-medium text-slate-400">
                 /{profile.slug}

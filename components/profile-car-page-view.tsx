@@ -107,12 +107,6 @@ END:VCARD`;
                   </div>
                 )}
               </div>
-
-              <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-1 text-right shadow-sm">
-                <span className="flex items-center gap-1.5 text-[11px] font-extrabold text-emerald-700">
-                  <span className="size-2 rounded-full bg-emerald-500 animate-pulse" /> Parkinqdədir
-                </span>
-              </div>
             </div>
 
             <div className="mt-4">
@@ -120,10 +114,10 @@ END:VCARD`;
                 {profile.driver_name}
               </h1>
               <div className="mt-1.5 flex flex-wrap items-center gap-2">
-                <span className="rounded-lg bg-sky-100 border border-sky-200 px-3 py-0.5 text-xs font-black text-sky-800 uppercase tracking-widest">
-                  🚘 {profile.plate}
+                <span className="rounded-xl bg-sky-100 border border-sky-200 px-3.5 py-1 text-sm font-black text-sky-900 uppercase tracking-widest shadow-sm">
+                  {profile.plate}
                 </span>
-                <span className="text-xs font-bold text-slate-500">
+                <span className="text-sm font-bold text-slate-500">
                   {profile.car_name}
                 </span>
               </div>
