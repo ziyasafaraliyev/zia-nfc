@@ -111,7 +111,7 @@ function SubscriptionContent() {
                 {isPremium ? "Premium Abunəlik" : "Standart Abunəlik"}
               </h3>
               <p className={`text-xs font-bold ${isPremium ? "text-slate-400" : "text-slate-500"}`}>
-                {isPremium ? "4.90 AZN / ay" : "2.90 AZN / ay"}
+                {isPremium ? "6.90 AZN / ay" : "3.90 AZN / ay"}
               </p>
             </div>
           </div>

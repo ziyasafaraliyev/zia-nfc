@@ -211,7 +211,7 @@ function LandingPageInner() {
                 Zia Pay <ArrowRight size={18} />
               </Link>
               <Link
-                href="/restoran"
+                href="/menu"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-6 py-4 font-extrabold text-white shadow-[0_18px_45px_rgba(14,165,233,0.28)] transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98]"
               >
                 {t("Zia Menyu", "Zia Menu")} <ArrowRight size={18} />

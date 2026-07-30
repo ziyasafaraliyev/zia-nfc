@@ -136,7 +136,7 @@ export default function Navbar() {
 
         <div className="hidden items-center gap-2 md:flex">
           <Link
-            href="/restoran"
+            href="/menu"
             className="inline-flex items-center justify-center gap-1.5 rounded-full bg-sky-500 px-4 py-2 text-xs font-black uppercase tracking-[0.1em] text-white shadow-md transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98] sm:px-5 sm:py-2.5 sm:text-sm"
           >
             Restoran
@@ -184,7 +184,7 @@ export default function Navbar() {
               )
             )}
             <Link
-              href="/restoran"
+              href="/menu"
               onClick={() => setOpen(false)}
               className="mt-2 rounded-full bg-sky-500 px-5 py-3 text-center text-sm font-black uppercase tracking-[0.1em] text-white"
             >
