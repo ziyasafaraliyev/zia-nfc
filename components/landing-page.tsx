@@ -1,3 +1,5 @@
+"use client";
+
 import {
   ArrowRight,
   Camera,
@@ -20,8 +22,13 @@ import LandingNavbar from "@/components/landing-navbar";
 import NfcCardShowcase from "@/components/nfc-card-showcase";
 import { ProfileShowcase } from "@/components/landing-phone-profile";
 import PricingSection from "@/components/pricing-section";
+import { LanguageProvider, useLang } from "@/components/language-context";
 
-const features = [
+// ---------------------------------------------------------------------------
+// Translation helpers — all content lives here, keyed by lang
+// ---------------------------------------------------------------------------
+
+const FEATURES_AZ = [
   {
     icon: MessageCircle,
     title: "Sürətli əlaqə",
@@ -54,29 +61,66 @@ const features = [
   },
 ];
 
-const steps = [
-  ["Profili yaradın", "Brendinizə uyğun rəqəmsal profil mövzusunu seçin."],
-  [
-    "Məlumatları daxil edin",
-    "Əlaqə vasitələrini, sosial linkləri, qalereyanı, QR və vCard ixracını tənzimləyin.",
-  ],
-  [
-    "Sürətli paylaşın",
-    "Müştərilər keçid və ya QR skan edərək instant mobil profilinizə daxil olurlar.",
-  ],
-  [
-    "İstənilən vaxt yeniləyin",
-    "Təklifiniz, kontentiniz və ya komandanız dəyişdikdə rəqəmsal profili istənilən an yeniləyin.",
-  ],
+const FEATURES_EN = [
+  {
+    icon: MessageCircle,
+    title: "Instant Contact",
+    text: "Open WhatsApp, calls, email and social networks with a single tap from one mobile profile.",
+  },
+  {
+    icon: Camera,
+    title: "Portfolio First",
+    text: "Showcase your services and work without sending clients to scattered links.",
+  },
+  {
+    icon: UserPlus,
+    title: "Save Contact",
+    text: "A downloadable vCard turns a quick meeting into a permanent phone contact.",
+  },
+  {
+    icon: RefreshCw,
+    title: "Live Updates",
+    text: "Change links, photos, prices and bio online at any time — your data stays the same.",
+  },
+  {
+    icon: QrCode,
+    title: "NFC & QR Support",
+    text: "Every digital profile includes a clean QR code and instant sharing link.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Brand Security",
+    text: "Profiles can be activated, deactivated, edited and shared for teams from the admin panel.",
+  },
 ];
 
-const metrics = [
+const STEPS_AZ = [
+  ["Profili yaradın", "Brendinizə uyğun rəqəmsal profil mövzusunu seçin."],
+  ["Məlumatları daxil edin", "Əlaqə vasitələrini, sosial linkləri, qalereyanı, QR və vCard ixracını tənzimləyin."],
+  ["Sürətli paylaşın", "Müştərilər keçid və ya QR skan edərək instant mobil profilinizə daxil olurlar."],
+  ["İstənilən vaxt yeniləyin", "Təklifiniz, kontentiniz və ya komandanız dəyişdikdə rəqəmsal profili istənilən an yeniləyin."],
+] as const;
+
+const STEPS_EN = [
+  ["Create a Profile", "Choose the digital profile theme that fits your brand."],
+  ["Enter Your Info", "Set up contact details, social links, gallery, QR and vCard export."],
+  ["Share Instantly", "Clients access your instant mobile profile via link or QR scan."],
+  ["Update Anytime", "Edit your digital profile whenever your offer, content or team changes."],
+] as const;
+
+const METRICS_AZ = [
   ["1 keçid", "profil ötürülməsi"],
   ["24/7", "redaktə edilə bilən kimlik"],
   ["0 tətbiq", "açmaq üçün tələb olunur"],
-];
+] as const;
 
-const digitalServices = [
+const METRICS_EN = [
+  ["1 tap", "profile sharing"],
+  ["24/7", "editable identity"],
+  ["0 apps", "required to open"],
+] as const;
+
+const SERVICES_AZ = [
   {
     title: "Rəqəmsal Profil Hostinqi",
     desc: "Fərdi peşəkarlar üçün mobil rəqəmsal profil, vCard ixracı və sosial platforma inteqrasiyası.",
@@ -94,12 +138,44 @@ const digitalServices = [
   },
 ];
 
+const SERVICES_EN = [
+  {
+    title: "Digital Profile Hosting",
+    desc: "Mobile digital profile, vCard export and social platform integration for individual professionals.",
+    image: "/vizit-kart.webp",
+  },
+  {
+    title: "Portfolio & Analytics SaaS",
+    desc: "Interactive portfolio gallery, brand themes and real-time visitor statistics.",
+    image: "/stiker.webp",
+  },
+  {
+    title: "Restaurant Menu & Team Platform",
+    desc: "Cloud menu, multi-profile management and QR system for cafes, restaurants and teams.",
+    image: "/masa-standi.webp",
+  },
+];
+
 /**
- * Server Component landing — static HTML for SEO/LCP.
- * Interactive/animated islands: LandingHeroMockup, NfcCardShowcase (client).
+ * Landing page wrapped in LanguageProvider so the AZ/EN switcher
+ * (in LandingNavbar) can reactively translate all content.
  */
 export default function LandingPage() {
+  return (
+    <LanguageProvider>
+      <LandingPageInner />
+    </LanguageProvider>
+  );
+}
+
+function LandingPageInner() {
+  const { lang, t } = useLang();
   const year = new Date().getFullYear();
+
+  const features = lang === "en" ? FEATURES_EN : FEATURES_AZ;
+  const steps    = lang === "en" ? STEPS_EN    : STEPS_AZ;
+  const metrics  = lang === "en" ? METRICS_EN  : METRICS_AZ;
+  const digitalServices = lang === "en" ? SERVICES_EN : SERVICES_AZ;
 
   return (
     <main className="min-h-screen overflow-hidden bg-white text-slate-950">
@@ -110,22 +186,23 @@ export default function LandingPage() {
         <div className="mx-auto grid max-w-7xl items-center gap-12 pb-8 pt-14 lg:min-h-[calc(100vh-104px)] lg:grid-cols-[1.02fr_0.98fr] lg:pt-10">
           <div>
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-sky-200/70 bg-sky-50 px-3.5 py-2 text-sm font-bold text-sky-800">
-              <Sparkles size={16} /> Rəqəmsal Profil & SaaS Platforması
+              <Sparkles size={16} /> {t("Rəqəmsal Profil & SaaS Platforması", "Digital Profile & SaaS Platform")}
             </div>
             <h1 className="max-w-4xl text-balance text-5xl font-black leading-[0.96] tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
-              Rəqəmsal Vizit Və Profil Platforması
+              {t("Rəqəmsal Vizit Və Profil Platforması", "Digital Business Card & Profile Platform")}
             </h1>
             <p className="mt-6 max-w-2xl text-pretty text-lg leading-8 text-slate-600 sm:text-xl">
-              Zia NFC brendinizi, kontaktlarınızı və portfolionuzu bir araya gətirən
-              müasir rəqəmsal profil platformasıdır. Avtomatik vCard və dinamik QR
-              kod inteqrasiyası ilə 24/7 əlçatandır.
+              {t(
+                "Zia NFC brendinizi, kontaktlarınızı və portfolionuzu bir araya gətirən müasir rəqəmsal profil platformasıdır. Avtomatik vCard və dinamik QR kod inteqrasiyası ilə 24/7 əlçatandır.",
+                "Zia NFC is the modern digital profile platform that brings together your brand, contacts and portfolio. Available 24/7 with automatic vCard and dynamic QR code integration."
+              )}
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <a
                 href="#pricing"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-6 py-4 font-extrabold text-white shadow-[0_18px_45px_rgba(14,165,233,0.28)] transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98]"
               >
-                Abunə ol <ArrowRight size={18} />
+                {t("Abunə ol", "Subscribe")} <ArrowRight size={18} />
               </a>
               <Link
                 href="/pay"
@@ -137,7 +214,7 @@ export default function LandingPage() {
                 href="/restoran"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-6 py-4 font-extrabold text-white shadow-[0_18px_45px_rgba(14,165,233,0.28)] transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98]"
               >
-                Zia Menyu <ArrowRight size={18} />
+                {t("Zia Menyu", "Zia Menu")} <ArrowRight size={18} />
               </Link>
             </div>
             <div className="mt-10 grid max-w-2xl grid-cols-3 gap-3">
@@ -166,23 +243,25 @@ export default function LandingPage() {
           <ProfileShowcase />
           <div>
             <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-700">
-              Mobil öncəlikli
+              {t("Mobil öncəlikli", "Mobile First")}
             </p>
             <h2 className="mt-4 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-              Telefonlarda sürətli açılan və rahat istifadə olunan rəqəmsal profil.
+              {t(
+                "Telefonlarda sürətli açılan və rahat istifadə olunan rəqəmsal profil.",
+                "A digital profile that loads fast and feels great on phones."
+              )}
             </h2>
             <p className="mt-5 text-lg leading-8 text-slate-600">
-              İlk ekran kim olduğunuzu, nə etdiyinizi və sizinlə necə əlaqə
-              saxlayacağınızı aydınlaşdırır. Qalereya, sosial linklər, vCard və
-              QR ehtiyat nüsxəsi qarışıqlıq yaratmadan əlçatandır.
+              {t(
+                "İlk ekran kim olduğunuzu, nə etdiyinizi və sizinlə necə əlaqə saxlayacağınızı aydınlaşdırır. Qalereya, sosial linklər, vCard və QR ehtiyat nüsxəsi qarışıqlıq yaratmadan əlçatandır.",
+                "The first screen clarifies who you are, what you do and how to reach you. Gallery, social links, vCard and QR backup are accessible without any confusion."
+              )}
             </p>
             <div className="mt-8 grid gap-3 sm:grid-cols-2">
-              {[
-                "Sürətli mobil profil",
-                "Təmiz əlaqə düymələri",
-                "Vizual portfolio",
-                "Admin nəzarəti",
-              ].map((item) => (
+              {(lang === "en"
+                ? ["Fast mobile profile", "Clean contact buttons", "Visual portfolio", "Admin control"]
+                : ["Sürətli mobil profil", "Təmiz əlaqə düymələri", "Vizual portfolio", "Admin nəzarəti"]
+              ).map((item) => (
                 <div
                   key={item}
                   className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 font-bold text-slate-700 shadow-sm"
@@ -198,13 +277,16 @@ export default function LandingPage() {
       <section id="digital-services" className="perf-cv bg-white px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-700">
-            Xidmətlər
+            {t("Xidmətlər", "Services")}
           </p>
           <h2 className="mt-4 max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-            Rəqəmsal SaaS Xidmətlərimiz
+            {t("Rəqəmsal SaaS Xidmətlərimiz", "Our Digital SaaS Services")}
           </h2>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-            Biznesinizi və şəxsi brendinizi rəqəmsallaşdıracaq cloud platformamız ilə tanış olun.
+            {t(
+              "Biznesinizi və şəxsi brendinizi rəqəmsallaşdıracaq cloud platformamız ilə tanış olun.",
+              "Get to know our cloud platform that will digitize your business and personal brand."
+            )}
           </p>
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {digitalServices.map((product) => (
@@ -238,7 +320,7 @@ export default function LandingPage() {
                     href="#pricing"
                     className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-sky-500 py-3.5 text-sm font-black uppercase tracking-[0.14em] text-white shadow-[0_12px_30px_rgba(14,165,233,0.2)] transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98]"
                   >
-                    Başla <ArrowRight size={16} />
+                    {t("Başla", "Get Started")} <ArrowRight size={16} />
                   </a>
                 </div>
               </div>
@@ -259,10 +341,10 @@ export default function LandingPage() {
           <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-300">
-                İş Prinsipi
+                {t("İş Prinsipi", "How It Works")}
               </p>
               <h2 className="mt-4 max-w-xl text-4xl font-black tracking-tight sm:text-5xl">
-                Rəqəmsal profil platforması necə işləyir?
+                {t("Rəqəmsal profil platforması necə işləyir?", "How does the digital profile platform work?")}
               </h2>
             </div>
             <div className="grid gap-3 md:grid-cols-4">
@@ -288,10 +370,13 @@ export default function LandingPage() {
           <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-700">
-                Özəlliklər
+                {t("Özəlliklər", "Features")}
               </p>
               <h2 className="mt-4 max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-                Müasir rəqəmsal kimliyin sahib olmalı olduğu hər şey tək bir sürətli profildə.
+                {t(
+                  "Müasir rəqəmsal kimliyin sahib olmalı olduğu hər şey tək bir sürətli profildə.",
+                  "Everything a modern digital identity needs, in one fast profile."
+                )}
               </h2>
             </div>
           </div>
@@ -324,24 +409,22 @@ export default function LandingPage() {
               FAQ
             </p>
             <h2 className="mt-4 text-4xl font-black tracking-tight">
-              Tez-tez verilən suallar.
+              {t("Tez-tez verilən suallar.", "Frequently Asked Questions.")}
             </h2>
           </div>
           <div className="space-y-3">
-            {[
-              [
-                "Profili sonradan yeniləyə bilərəm?",
-                "Bəli. Rəqəmsal profiliniz istənilən vaxt idarəetmə panelindən redaktə edilə və yenilənə bilər.",
-              ],
-              [
-                "Hər profildə QR kod olur?",
-                "Bəli. Profil üçün dinamik QR koda bütöv keçid və ehtiyat nüsxəsi təmin edilir.",
-              ],
-              [
-                "İstifadəçilər əlaqə məlumatlarımı yadda saxlaya bilərmi?",
-                "Bəli. Profil vCard dəstəkləyir, beləcə müştərilər əlaqə məlumatlarınızı telefonlarına bir kliklə əlavə edə bilərlər.",
-              ],
-            ].map(([q, a]) => (
+            {(lang === "en"
+              ? [
+                  ["Can I update the profile later?", "Yes. Your digital profile can be edited and updated at any time from the control panel."],
+                  ["Does every profile have a QR code?", "Yes. A dynamic QR code with a full link and backup is provided for each profile."],
+                  ["Can users save my contact info?", "Yes. The profile supports vCard, so clients can add your contact details to their phone in one click."],
+                ]
+              : [
+                  ["Profili sonradan yeniləyə bilərəm?", "Bəli. Rəqəmsal profiliniz istənilən vaxt idarəetmə panelindən redaktə edilə və yenilənə bilər."],
+                  ["Hər profildə QR kod olur?", "Bəli. Profil üçün dinamik QR koda bütöv keçid və ehtiyat nüsxəsi təmin edilir."],
+                  ["İstifadəçilər əlaqə məlumatlarımı yadda saxlaya bilərmi?", "Bəli. Profil vCard dəstəkləyir, beləcə müştərilər əlaqə məlumatlarınızı telefonlarına bir kliklə əlavə edə bilərlər."],
+                ]
+            ).map(([q, a]) => (
               <details
                 key={q}
                 className="group rounded-2xl border border-white/10 bg-white/[0.045] p-5 transition-colors duration-200 ease-out open:bg-white/[0.07]"
@@ -376,7 +459,10 @@ export default function LandingPage() {
               Zia NFC
             </div>
             <p className="mt-4 max-w-xl text-sm leading-6 text-slate-400">
-              Rəqəmsal profil hostinq platforması, canlı profil yenilənmələri və ani əlaqə paylaşımı.
+              {t(
+                "Rəqəmsal profil hostinq platforması, canlı profil yenilənmələri və ani əlaqə paylaşımı.",
+                "Digital profile hosting platform, live profile updates and instant contact sharing."
+              )}
             </p>
           </div>
 
@@ -434,10 +520,10 @@ export default function LandingPage() {
             <div className="flex flex-wrap gap-4 text-sm text-slate-500">
               <span>© {year} Zia NFC</span>
               <a href="#" className="transition-colors hover:text-white">
-                Məxfilik
+                {t("Məxfilik", "Privacy")}
               </a>
               <a href="#" className="transition-colors hover:text-white">
-                Şərtlər
+                {t("Şərtlər", "Terms")}
               </a>
             </div>
           </div>
@@ -446,3 +532,4 @@ export default function LandingPage() {
     </main>
   );
 }
+
