@@ -44,7 +44,7 @@ const INITIAL_DEMO: DemoState = {
   tiktok: "https://tiktok.com/@zianfc.az",
   telegram: "https://t.me/zianfc",
   waze: "https://waze.com/ul",
-  coverUrl: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=1200&q=80",
+  coverUrl: "/s-class.png",
   avatarUrl: "/ziya.webp",
 };
 
