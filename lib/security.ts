@@ -23,7 +23,7 @@ export function timingSafeEqualString(a: string, b: string): boolean {
 
 // ─── Open-redirect protection ───────────────────────────────────────────────
 
-const SAFE_REDIRECT_PREFIXES = ["/admin", "/restoran", "/pay", "/"];
+const SAFE_REDIRECT_PREFIXES = ["/admin", "/restoran", "/pay", "/car", "/"];
 
 /**
  * Only allow same-origin relative paths used by the app.

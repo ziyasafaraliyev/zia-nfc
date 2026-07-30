@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { ArrowRight, BadgeCheck, Loader2 } from "lucide-react";
+import { useLang } from "@/components/language-context";
 
-const plans = [
+const PLANS_AZ = [
   {
     plan: "standard" as const,
     name: "Standart",
@@ -11,6 +12,7 @@ const plans = [
     monthly: "2.90 AZN/ay",
     note: "Fərdi peşəkarlar üçün",
     cta: "Aktivləşdir",
+    popular: "Populyar",
     items: [
       "1 Rəqəmsal Profil və Veb-Sahə",
       "WhatsApp və Sosial Media İnteqrasiyası",
@@ -27,6 +29,7 @@ const plans = [
     monthly: "4.90 AZN/ay",
     note: "Ən çox tələb olunan",
     cta: "İndi Başla",
+    popular: "Populyar",
     items: [
       "Standart plandakı bütün imkanlar",
       "İnteraktiv Portfolio Qalereyası",
@@ -43,6 +46,7 @@ const plans = [
     monthly: null,
     note: "Komandalar və brendlər üçün",
     cta: "Bizimlə əlaqə",
+    popular: "Populyar",
     items: [
       "Çoxsaylı profillər",
       "Brendə uyğun profil sistemi",
@@ -53,9 +57,65 @@ const plans = [
   },
 ];
 
+const PLANS_EN = [
+  {
+    plan: "standard" as const,
+    name: "Standard",
+    price: "59 AZN",
+    monthly: "2.90 AZN/mo",
+    note: "For individual professionals",
+    cta: "Activate",
+    popular: "Popular",
+    items: [
+      "1 Digital Profile & Website",
+      "WhatsApp & Social Media Integration",
+      "Dynamic QR Code Generator",
+      "Full Compatibility with Smart Devices & NFC",
+      "24/7 Automatic Access",
+    ],
+    featured: false,
+  },
+  {
+    plan: "premium" as const,
+    name: "Premium",
+    price: "99 AZN",
+    monthly: "4.90 AZN/mo",
+    note: "Most popular plan",
+    cta: "Get Started",
+    popular: "Popular",
+    items: [
+      "Everything in Standard",
+      "Interactive Portfolio Gallery",
+      "1-Click Contact Save (.vcf)",
+      "Premium Digital Theme & Branding",
+      "Detailed Visitor Analytics & Priority Support",
+    ],
+    featured: true,
+  },
+  {
+    plan: null,
+    name: "Studio",
+    price: "Custom",
+    monthly: null,
+    note: "For teams & brands",
+    cta: "Contact Us",
+    popular: "Popular",
+    items: [
+      "Multiple profiles",
+      "Brand-tailored profile system",
+      "Bulk card production",
+      "Priority updates",
+    ],
+    featured: false,
+  },
+];
+
 export default function PricingSection() {
+  const { lang, t } = useLang();
   const [loading, setLoading] = useState<"standard" | "premium" | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const plans = lang === "en" ? PLANS_EN : PLANS_AZ;
 
   async function handleCheckout(plan: "standard" | "premium") {
     setLoading(plan);
@@ -71,14 +131,21 @@ export default function PricingSection() {
       const data = await res.json();
 
       if (!res.ok || !data.url) {
-        setError(data.error ?? "Ödəniş sessiyası yaradıla bilmədi.");
+        setError(
+          data.error ??
+            t(
+              "Ödəniş sessiyası yaradıla bilmədi.",
+              "Could not create payment session."
+            )
+        );
         return;
       }
 
-      // Polar.sh checkout səhifəsinə yönləndir
       window.location.href = data.url;
     } catch {
-      setError("Şəbəkə xətası baş verdi. Yenidən cəhd edin.");
+      setError(
+        t("Şəbəkə xətası baş verdi. Yenidən cəhd edin.", "A network error occurred. Please try again.")
+      );
     } finally {
       setLoading(null);
     }
@@ -88,18 +155,22 @@ export default function PricingSection() {
     <section id="pricing" className="bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-700">
-          Qiymətlər
+          {t("Qiymətlər", "Pricing")}
         </p>
         <h2 className="mt-4 max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-          Rəqəmsal kimliyinizi başlatmaq üçün aydın paketlər.
+          {t(
+            "Rəqəmsal kimliyinizi başlatmaq üçün aydın paketlər.",
+            "Clear plans to launch your digital identity."
+          )}
         </h2>
 
-        {/* Qiymət izahatı */}
         <p className="mt-4 max-w-2xl text-base leading-7 text-slate-500">
-          Rəqəmsal profil hostinq və SaaS abunəlik xidmətləri. Profiliniz <strong className="text-slate-700">24/7 canlı</strong> saxlanılır və istənilən vaxt yenilənə bilir.
+          {t(
+            <>Rəqəmsal profil hostinq və SaaS abunəlik xidmətləri. Profiliniz <strong className="text-slate-700">24/7 canlı</strong> saxlanılır və istənilən vaxt yenilənə bilir.</>,
+            <>Digital profile hosting and SaaS subscription services. Your profile is kept <strong className="text-slate-700">live 24/7</strong> and can be updated at any time.</>
+          )}
         </p>
 
-        {/* Xəta mesajı */}
         {error && (
           <div className="mt-6 flex items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-semibold text-red-700">
             <span>⚠️</span> {error}
@@ -119,35 +190,22 @@ export default function PricingSection() {
               <div>
                 {plan.featured ? (
                   <div className="absolute right-5 top-5 rounded-full bg-sky-300 px-3 py-1 text-xs font-black uppercase tracking-[0.12em] text-slate-950">
-                    Populyar
+                    {plan.popular}
                   </div>
                 ) : null}
 
                 <h3 className="text-2xl font-black tracking-tight">{plan.name}</h3>
-                <p
-                  className={`mt-2 text-sm font-bold ${
-                    plan.featured ? "text-slate-400" : "text-slate-500"
-                  }`}
-                >
+                <p className={`mt-2 text-sm font-bold ${plan.featured ? "text-slate-400" : "text-slate-500"}`}>
                   {plan.note}
                 </p>
 
-                {/* Qiymət bloku */}
                 <div className="mt-6">
-                  <p
-                    className={`text-4xl font-black tracking-tight ${
-                      plan.featured ? "text-sky-300" : "text-slate-950"
-                    }`}
-                  >
+                  <p className={`text-4xl font-black tracking-tight ${plan.featured ? "text-sky-300" : "text-slate-950"}`}>
                     {plan.price}
                   </p>
                   {plan.monthly && (
-                    <p
-                      className={`mt-1.5 text-sm font-semibold ${
-                        plan.featured ? "text-slate-400" : "text-slate-500"
-                      }`}
-                    >
-                      + {plan.monthly} abunəlik
+                    <p className={`mt-1.5 text-sm font-semibold ${plan.featured ? "text-slate-400" : "text-slate-500"}`}>
+                      + {plan.monthly} {t("abunəlik", "subscription")}
                     </p>
                   )}
                 </div>
@@ -156,14 +214,9 @@ export default function PricingSection() {
                   {plan.items.map((item) => (
                     <div
                       key={item}
-                      className={`flex items-center gap-3 text-sm font-semibold ${
-                        plan.featured ? "text-slate-200" : "text-slate-700"
-                      }`}
+                      className={`flex items-center gap-3 text-sm font-semibold ${plan.featured ? "text-slate-200" : "text-slate-700"}`}
                     >
-                      <BadgeCheck
-                        size={18}
-                        className={plan.featured ? "text-sky-300" : "text-sky-500"}
-                      />
+                      <BadgeCheck size={18} className={plan.featured ? "text-sky-300" : "text-sky-500"} />
                       {item}
                     </div>
                   ))}
@@ -172,7 +225,6 @@ export default function PricingSection() {
 
               <div className="mt-8">
                 {plan.plan === null ? (
-                  /* Studio planı — WhatsApp */
                   <a
                     href="https://wa.me/994702990252"
                     target="_blank"
@@ -182,7 +234,6 @@ export default function PricingSection() {
                     {plan.cta}
                   </a>
                 ) : plan.featured ? (
-                  /* Premium — Polar.sh checkout */
                   <button
                     id="btn-checkout-premium"
                     onClick={() => handleCheckout("premium")}
@@ -192,16 +243,13 @@ export default function PricingSection() {
                     {loading === "premium" ? (
                       <>
                         <Loader2 size={16} className="animate-spin" />
-                        Yönləndirilir...
+                        {t("Yönləndirilir...", "Redirecting...")}
                       </>
                     ) : (
-                      <>
-                        {plan.cta} <ArrowRight size={15} />
-                      </>
+                      <>{plan.cta} <ArrowRight size={15} /></>
                     )}
                   </button>
                 ) : (
-                  /* Standart — Polar.sh checkout */
                   <button
                     id="btn-checkout-standard"
                     onClick={() => handleCheckout("standard")}
@@ -211,12 +259,10 @@ export default function PricingSection() {
                     {loading === "standard" ? (
                       <>
                         <Loader2 size={16} className="animate-spin" />
-                        Yönləndirilir...
+                        {t("Yönləndirilir...", "Redirecting...")}
                       </>
                     ) : (
-                      <>
-                        {plan.cta} <ArrowRight size={15} />
-                      </>
+                      <>{plan.cta} <ArrowRight size={15} /></>
                     )}
                   </button>
                 )}

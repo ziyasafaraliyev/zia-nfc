@@ -117,7 +117,7 @@ export function middleware(request: NextRequest) {
     pathname.startsWith("/r/") ||
     // short slug path e.g. /zaur (single segment, not reserved)
     (/^\/[a-z0-9-]+\/?$/i.test(pathname) &&
-      !["/admin", "/pay", "/restoran", "/api"].some((p) =>
+      !["/admin", "/pay", "/restoran", "/car", "/api"].some((p) =>
         pathname.startsWith(p),
       ));
 

@@ -71,6 +71,7 @@ const RESERVED_SLUGS = new Set([
   "robots.txt",
   "sitemap.xml",
   "pay",
+  "car",
   "demo",
   "restoran",
   "r",
