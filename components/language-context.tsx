@@ -13,14 +13,17 @@ export type Lang = "az" | "en";
 interface LangContextValue {
   lang: Lang;
   setLang: (l: Lang) => void;
-  t: (az: string, en: string) => string;
+  /** String overload */
+  t(az: string, en: string): string;
+  /** ReactNode overload — use when passing JSX */
+  t(az: ReactNode, en: ReactNode): ReactNode;
 }
 
 const LangContext = createContext<LangContextValue>({
   lang: "az",
   setLang: () => {},
-  t: (az) => az,
-});
+  t: (az: ReactNode) => az,
+} as LangContextValue);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>("az");
@@ -40,12 +43,12 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     } catch {}
   }
 
-  function t(az: string, en: string) {
+  function t(az: ReactNode, en: ReactNode): ReactNode {
     return lang === "en" ? en : az;
   }
 
   return (
-    <LangContext.Provider value={{ lang, setLang, t }}>
+    <LangContext.Provider value={{ lang, setLang, t: t as LangContextValue["t"] }}>
       {children}
     </LangContext.Provider>
   );
