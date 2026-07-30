@@ -1773,3 +1773,162 @@ export async function submitRestaurantReview(formData: FormData) {
     revalidatePath(`/${restaurant.slug}`);
   }
 }
+
+// ─── Zia Car Profiles Actions ────────────────────────────────────────────────
+
+export async function saveCarProfile(formData: FormData) {
+  await requireSuperAdmin();
+  const supabase = createServiceSupabaseClient();
+  if (!supabase) {
+    redirectWithSaveError("supabase", "/car/admin");
+  }
+
+  const id = text(formData, "id");
+  const driver_name = text(formData, "driver_name");
+  const car_name = text(formData, "car_name");
+  const plate = text(formData, "plate");
+  const rawSlug = text(formData, "slug");
+  const slug = slugify(rawSlug || driver_name || car_name || "car");
+
+  if (!driver_name || !car_name || !plate || !slug) {
+    redirectWithSaveError("required", "/car/admin");
+  }
+
+  const slugError = validateSlug(slug);
+  if (slugError) {
+    redirectWithSaveError(slugError, "/car/admin");
+  }
+
+  // Handle Avatar file
+  let avatar_url = text(formData, "existing_avatar_url");
+  const avatarFile = formData.get("avatar") as File | null;
+  if (avatarFile && avatarFile.size > 0) {
+    if (avatarFile.size > MAX_UPLOAD_SIZE) {
+      redirectWithSaveError("file-too-large", "/car/admin");
+    }
+    if (!ALLOWED_IMAGE_TYPES.has(avatarFile.type)) {
+      redirectWithSaveError("unsupported-image", "/car/admin");
+    }
+    try {
+      const uploadRes = await uploadFile(avatarFile, "car_profiles/avatars", { kind: "avatar" });
+      if (uploadRes) avatar_url = uploadRes;
+    } catch {
+      redirectWithSaveError("upload", "/car/admin");
+    }
+  }
+
+  // Handle Cover file
+  let cover_url = text(formData, "existing_cover_url");
+  const coverFile = formData.get("cover") as File | null;
+  if (coverFile && coverFile.size > 0) {
+    if (coverFile.size > MAX_UPLOAD_SIZE) {
+      redirectWithSaveError("file-too-large", "/car/admin");
+    }
+    if (!ALLOWED_IMAGE_TYPES.has(coverFile.type)) {
+      redirectWithSaveError("unsupported-image", "/car/admin");
+    }
+    try {
+      const uploadRes = await uploadFile(coverFile, "car_profiles/covers", { kind: "cover" });
+      if (uploadRes) cover_url = uploadRes;
+    } catch {
+      redirectWithSaveError("upload", "/car/admin");
+    }
+  }
+
+  const rowData = {
+    slug,
+    driver_name,
+    car_name,
+    plate,
+    phone: text(formData, "phone"),
+    phone2: text(formData, "phone2"),
+    whatsapp: text(formData, "whatsapp"),
+    instagram: text(formData, "instagram"),
+    tiktok: text(formData, "tiktok"),
+    telegram: text(formData, "telegram"),
+    waze: text(formData, "waze"),
+    avatar_url,
+    cover_url,
+    enabled: bool(formData, "enabled") ?? true,
+    updated_at: new Date().toISOString(),
+  };
+
+  if (id) {
+    const { error } = await supabase.from("car_profiles").update(rowData).eq("id", id);
+    if (error) {
+      if (error.code === "23505") redirectWithSaveError("duplicate-slug", "/car/admin");
+      redirectWithSaveError("save", "/car/admin");
+    }
+  } else {
+    const { error } = await supabase.from("car_profiles").insert(rowData);
+    if (error) {
+      if (error.code === "23505") redirectWithSaveError("duplicate-slug", "/car/admin");
+      redirectWithSaveError("save", "/car/admin");
+    }
+  }
+
+  revalidatePath("/car/admin");
+  revalidatePath(`/${slug}`);
+  revalidateTag("car_profiles");
+  revalidateTag(`car-profile:${slug}`);
+
+  redirect("/car/admin?saved=1");
+}
+
+export async function toggleCarProfile(formData: FormData) {
+  await requireSuperAdmin();
+  const supabase = createServiceSupabaseClient();
+  const id = text(formData, "id");
+  const enabled = bool(formData, "enabled");
+
+  if (!supabase || !id) {
+    throw new Error("Missing Supabase or car profile id");
+  }
+
+  const { error } = await supabase
+    .from("car_profiles")
+    .update({ enabled: !enabled })
+    .eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/car/admin");
+  revalidateTag("car_profiles");
+  redirect("/car/admin");
+}
+
+export async function deleteCarProfile(formData: FormData) {
+  await requireSuperAdmin();
+  const supabase = createServiceSupabaseClient();
+  const id = text(formData, "id");
+  const slug = text(formData, "slug");
+
+  if (!supabase || !id || !slug) {
+    throw new Error("Missing Supabase or car profile id or slug");
+  }
+
+  const { data: carProfile } = await supabase
+    .from("car_profiles")
+    .select("avatar_url, cover_url")
+    .eq("id", id)
+    .single();
+
+  const urlsToDelete: string[] = [];
+  if (carProfile) {
+    if (carProfile.avatar_url) urlsToDelete.push(carProfile.avatar_url);
+    if (carProfile.cover_url) urlsToDelete.push(carProfile.cover_url);
+  }
+
+  await deleteMediaUrls(urlsToDelete);
+
+  const { error } = await supabase.from("car_profiles").delete().eq("id", id);
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/car/admin");
+  revalidateTag("car_profiles");
+  redirect("/car/admin");
+}

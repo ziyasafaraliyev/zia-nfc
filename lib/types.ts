@@ -144,3 +144,22 @@ export type RestaurantReview = {
   comment?: string | null;
   created_at?: Date;
 };
+
+export type CarProfile = {
+  id?: string;
+  slug: string;
+  enabled: boolean;
+  car_name: string;
+  plate: string;
+  driver_name: string;
+  phone?: string | null;
+  phone2?: string | null;
+  whatsapp?: string | null;
+  avatar_url?: string | null;
+  cover_url?: string | null;
+  instagram?: string | null;
+  tiktok?: string | null;
+  telegram?: string | null;
+  waze?: string | null;
+  created_at?: string | Date;
+};

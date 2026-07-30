@@ -347,3 +347,33 @@ grant execute on function public.increment_profile_save(text) to anon, authentic
 
 alter table public.restaurants add column if not exists google_review_url text;
 
+-- ─── Zia Car Profiles Table ────────────────────────────────────────────────
+create table if not exists public.car_profiles (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  enabled boolean not null default true,
+  car_name text not null,
+  plate text not null,
+  driver_name text not null,
+  phone text,
+  phone2 text,
+  whatsapp text,
+  avatar_url text,
+  cover_url text,
+  instagram text,
+  tiktok text,
+  telegram text,
+  waze text,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+alter table public.car_profiles enable row level security;
+
+create policy "Public car_profiles select enabled"
+  on public.car_profiles for select
+  using (enabled = true);
+
+grant select on public.car_profiles to anon, authenticated;
+grant all on public.car_profiles to service_role;
+

@@ -2,13 +2,13 @@
 
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
-import { deleteProfile, deleteRestaurant } from "@/app/admin/actions";
+import { deleteProfile, deleteRestaurant, deleteCarProfile } from "@/app/admin/actions";
 import { handleServerActionRejection } from "@/lib/server-action-client";
 
 type Props = {
   id: string;
   slug: string;
-  actionName?: "deleteProfile" | "deleteRestaurant";
+  actionName?: "deleteProfile" | "deleteRestaurant" | "deleteCarProfile";
 };
 
 export default function DeleteProfileButton({
@@ -17,12 +17,27 @@ export default function DeleteProfileButton({
   actionName = "deleteProfile",
 }: Props) {
   const [pending, setPending] = useState(false);
+
   const message =
     actionName === "deleteRestaurant"
       ? "Bu restoranı silmək istədiyinizə əminsiniz?"
-      : "Bu profili silmək istədiyinizə əminsiniz?";
-  const action = actionName === "deleteRestaurant" ? deleteRestaurant : deleteProfile;
-  const title = actionName === "deleteRestaurant" ? "Restoranı sil" : "Profili sil";
+      : actionName === "deleteCarProfile"
+        ? "Bu Zia Car profilini silmək istədiyinizə əminsiniz?"
+        : "Bu profili silmək istədiyinizə əminsiniz?";
+
+  const action =
+    actionName === "deleteRestaurant"
+      ? deleteRestaurant
+      : actionName === "deleteCarProfile"
+        ? deleteCarProfile
+        : deleteProfile;
+
+  const title =
+    actionName === "deleteRestaurant"
+      ? "Restoranı sil"
+      : actionName === "deleteCarProfile"
+        ? "Zia Car Profilini sil"
+        : "Profili sil";
 
   async function handleDelete() {
     if (!window.confirm(message)) {

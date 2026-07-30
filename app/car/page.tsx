@@ -13,6 +13,7 @@ import {
   Music2,
   Navigation,
   Phone,
+  ShieldCheck,
   Sparkles,
   UserPlus,
   Zap,
@@ -80,6 +81,12 @@ export default function ZiaCarPage() {
           </div>
 
           <div className="flex items-center gap-3">
+            <Link
+              href="/car/admin"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-black uppercase tracking-[0.1em] text-slate-700 shadow-sm transition duration-200 hover:border-sky-500 hover:text-sky-600 hover:bg-sky-50 active:scale-[0.98] sm:px-5 sm:py-2.5 sm:text-sm"
+            >
+              <ShieldCheck size={16} className="text-sky-500" /> Zia Car Admin
+            </Link>
             <a
               href="https://wa.me/994702990252?text=Salam,%20Zia%20Car%20avto%20stikeri%20sifarish%20etmek%20isteyirem"
               target="_blank"

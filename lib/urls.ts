@@ -59,3 +59,11 @@ export function getRestaurantPayPath(slug: string) {
 export function getRestaurantDonePath(slug: string) {
   return `/${slug}/hazir`;
 }
+
+export function getCarProfilePath(slug: string) {
+  return `/${slug}`;
+}
+
+export function getCarProfileUrl(slug: string) {
+  return `${getSiteUrl()}${getCarProfilePath(slug)}`;
+}

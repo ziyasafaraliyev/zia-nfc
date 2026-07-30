@@ -136,6 +136,13 @@ export default async function CombinedPage({ params }: Props) {
     );
   }
 
+  const { getCarProfileBySlug } = await import("@/lib/car");
+  const carProfile = await getCarProfileBySlug(slug);
+  if (carProfile?.enabled) {
+    const { default: ProfileCarPageView } = await import("@/components/profile-car-page-view");
+    return <ProfileCarPageView profile={carProfile} profileUrl={getProfileUrl(carProfile.slug)} />;
+  }
+
   const restaurant = await getRestaurantBySlug(slug);
   if (restaurant?.enabled) {
     return <RestaurantPage params={Promise.resolve({ slug })} />;
