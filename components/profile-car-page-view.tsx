@@ -145,18 +145,7 @@ END:VCARD`;
               </a>
             )}
 
-            {/* Call 2 */}
-            {profile.phone2 && (
-              <a
-                href={`tel:${profile.phone2}`}
-                className="flex h-14 w-full items-center justify-between rounded-2xl border border-slate-200 bg-white px-5 font-bold text-slate-800 shadow-sm transition hover:border-sky-500 hover:text-sky-600 active:scale-95"
-              >
-                <span className="flex items-center gap-3 text-sm">
-                  <Phone size={19} className="text-sky-500" /> Təcili Əlaqə
-                </span>
-                <span className="text-xs font-semibold text-slate-500">{profile.phone2}</span>
-              </a>
-            )}
+
 
             {/* WhatsApp */}
             {whatsapp && (

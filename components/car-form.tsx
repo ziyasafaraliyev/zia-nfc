@@ -178,16 +178,6 @@ export default function CarForm({ profile }: Props) {
         />
       </Field>
 
-      <Field label="Telefon 2 (Təcili Əlaqə)">
-        <input
-          name="phone2"
-          type="text"
-          defaultValue={profile?.phone2 || ""}
-          placeholder="+994 70 987 65 43"
-          className={inputClass}
-        />
-      </Field>
-
       <Field label="WhatsApp Nömrəsi">
         <input
           name="whatsapp"
