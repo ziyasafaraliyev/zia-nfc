@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { Profile } from "@/lib/types";
-import { ProfileLangSwitcher, useLang } from "@/components/language-context";
+import { LanguageProvider, ProfileLangSwitcher, useLang } from "@/components/language-context";
 import { getProfileVcardPath } from "@/lib/urls";
 import {
   ExternalLink,
@@ -111,7 +111,7 @@ const DEFAULT_SECTION_ORDER = [
   "footer",
 ] as const;
 
-export default function ProfilePageView({
+function ProfilePageViewInner({
   profile,
   profileUrl,
   qrUrl,
@@ -753,6 +753,14 @@ export default function ProfilePageView({
         {sectionOrder.map((key) => sections[key])}
       </div>
     </main>
+  );
+}
+
+export default function ProfilePageView(props: Props) {
+  return (
+    <LanguageProvider>
+      <ProfilePageViewInner {...props} />
+    </LanguageProvider>
   );
 }
 
