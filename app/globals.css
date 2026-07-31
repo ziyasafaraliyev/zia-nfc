@@ -1326,7 +1326,8 @@ a.dashboard-primary:hover {
     color: #f8fafc;
 }
 
-.lux-shell.dark-theme .lux-qr-card {
+.lux-shell.dark-theme .lux-qr-card,
+.lux-shell.dark-theme .lux-stats-card {
     background: #0f172a;
     border-color: rgba(255, 255, 255, 0.08);
     box-shadow:
@@ -1334,12 +1335,18 @@ a.dashboard-primary:hover {
         0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
-.lux-shell.dark-theme .lux-qr-card .text-slate-800 {
+.lux-shell.dark-theme .lux-qr-card .text-slate-800,
+.lux-shell.dark-theme .lux-stats-card .text-gray-800 {
     color: #ffffff;
 }
 
-.lux-shell.dark-theme .lux-qr-card .text-slate-400 {
+.lux-shell.dark-theme .lux-qr-card .text-slate-400,
+.lux-shell.dark-theme .lux-stats-card .text-gray-400 {
     color: #94a3b8;
+}
+
+.lux-shell.dark-theme .lux-stat-divider {
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
 .lux-shell.dark-theme .lux-save-contact svg {
@@ -1385,7 +1392,8 @@ a.dashboard-primary:hover {
 .lux-shell.premium-theme .lux-identity,
 .lux-shell.premium-theme .lux-save-contact,
 .lux-shell.premium-theme .lux-social-chip,
-.lux-shell.premium-theme .lux-qr-card {
+.lux-shell.premium-theme .lux-qr-card,
+.lux-shell.premium-theme .lux-stats-card {
     background: linear-gradient(180deg, rgba(27, 20, 11, 0.96) 0%, rgba(18, 13, 7, 0.96) 100%);
     border-color: rgba(212, 175, 55, 0.18);
     box-shadow:
@@ -1396,14 +1404,20 @@ a.dashboard-primary:hover {
 .lux-shell.premium-theme .lux-name,
 .lux-shell.premium-theme .lux-section-title,
 .lux-shell.premium-theme .lux-qr-card .text-slate-800,
-.lux-shell.premium-theme .lux-save-contact .text-gray-800 {
+.lux-shell.premium-theme .lux-save-contact .text-gray-800,
+.lux-shell.premium-theme .lux-stats-card .text-gray-800 {
     color: #f8edd1;
 }
 
 .lux-shell.premium-theme .lux-bio,
 .lux-shell.premium-theme .lux-social-chip span,
-.lux-shell.premium-theme .lux-qr-card .text-slate-400 {
+.lux-shell.premium-theme .lux-qr-card .text-slate-400,
+.lux-shell.premium-theme .lux-stats-card .text-gray-400 {
     color: #c9b78f;
+}
+
+.lux-shell.premium-theme .lux-stat-divider {
+    border-color: rgba(212, 175, 55, 0.18);
 }
 
 .lux-shell.premium-theme .lux-avatar-ring {
@@ -1626,26 +1640,31 @@ a.dashboard-primary:hover {
 .lux-shell.emerald-theme .lux-save-contact,
 .lux-shell.emerald-theme .lux-social-chip,
 .lux-shell.emerald-theme .lux-qr-card,
+.lux-shell.emerald-theme .lux-stats-card,
 .lux-shell.ruby-theme .lux-card,
 .lux-shell.ruby-theme .lux-identity,
 .lux-shell.ruby-theme .lux-save-contact,
 .lux-shell.ruby-theme .lux-social-chip,
 .lux-shell.ruby-theme .lux-qr-card,
+.lux-shell.ruby-theme .lux-stats-card,
 .lux-shell.violet-theme .lux-card,
 .lux-shell.violet-theme .lux-identity,
 .lux-shell.violet-theme .lux-save-contact,
 .lux-shell.violet-theme .lux-social-chip,
 .lux-shell.violet-theme .lux-qr-card,
+.lux-shell.violet-theme .lux-stats-card,
 .lux-shell.sapphire-theme .lux-card,
 .lux-shell.sapphire-theme .lux-identity,
 .lux-shell.sapphire-theme .lux-save-contact,
 .lux-shell.sapphire-theme .lux-social-chip,
 .lux-shell.sapphire-theme .lux-qr-card,
+.lux-shell.sapphire-theme .lux-stats-card,
 .lux-shell.copper-theme .lux-card,
 .lux-shell.copper-theme .lux-identity,
 .lux-shell.copper-theme .lux-save-contact,
 .lux-shell.copper-theme .lux-social-chip,
-.lux-shell.copper-theme .lux-qr-card {
+.lux-shell.copper-theme .lux-qr-card,
+.lux-shell.copper-theme .lux-stats-card {
     background: linear-gradient(180deg, var(--theme-surface-start) 0%, var(--theme-surface-end) 100%);
     border-color: color-mix(in srgb, var(--theme-accent) 24%, transparent);
     box-shadow:
@@ -1657,41 +1676,59 @@ a.dashboard-primary:hover {
 .lux-shell.emerald-theme .lux-section-title,
 .lux-shell.emerald-theme .lux-qr-card .text-slate-800,
 .lux-shell.emerald-theme .lux-save-contact .text-gray-800,
+.lux-shell.emerald-theme .lux-stats-card .text-gray-800,
 .lux-shell.ruby-theme .lux-name,
 .lux-shell.ruby-theme .lux-section-title,
 .lux-shell.ruby-theme .lux-qr-card .text-slate-800,
 .lux-shell.ruby-theme .lux-save-contact .text-gray-800,
+.lux-shell.ruby-theme .lux-stats-card .text-gray-800,
 .lux-shell.violet-theme .lux-name,
 .lux-shell.violet-theme .lux-section-title,
 .lux-shell.violet-theme .lux-qr-card .text-slate-800,
 .lux-shell.violet-theme .lux-save-contact .text-gray-800,
+.lux-shell.violet-theme .lux-stats-card .text-gray-800,
 .lux-shell.sapphire-theme .lux-name,
 .lux-shell.sapphire-theme .lux-section-title,
 .lux-shell.sapphire-theme .lux-qr-card .text-slate-800,
 .lux-shell.sapphire-theme .lux-save-contact .text-gray-800,
+.lux-shell.sapphire-theme .lux-stats-card .text-gray-800,
 .lux-shell.copper-theme .lux-name,
 .lux-shell.copper-theme .lux-section-title,
 .lux-shell.copper-theme .lux-qr-card .text-slate-800,
-.lux-shell.copper-theme .lux-save-contact .text-gray-800 {
+.lux-shell.copper-theme .lux-save-contact .text-gray-800,
+.lux-shell.copper-theme .lux-stats-card .text-gray-800 {
     color: var(--theme-text-primary);
 }
 
 .lux-shell.emerald-theme .lux-bio,
 .lux-shell.emerald-theme .lux-social-chip span,
 .lux-shell.emerald-theme .lux-qr-card .text-slate-400,
+.lux-shell.emerald-theme .lux-stats-card .text-gray-400,
 .lux-shell.ruby-theme .lux-bio,
 .lux-shell.ruby-theme .lux-social-chip span,
 .lux-shell.ruby-theme .lux-qr-card .text-slate-400,
+.lux-shell.ruby-theme .lux-stats-card .text-gray-400,
 .lux-shell.violet-theme .lux-bio,
 .lux-shell.violet-theme .lux-social-chip span,
 .lux-shell.violet-theme .lux-qr-card .text-slate-400,
+.lux-shell.violet-theme .lux-stats-card .text-gray-400,
 .lux-shell.sapphire-theme .lux-bio,
 .lux-shell.sapphire-theme .lux-social-chip span,
 .lux-shell.sapphire-theme .lux-qr-card .text-slate-400,
+.lux-shell.sapphire-theme .lux-stats-card .text-gray-400,
 .lux-shell.copper-theme .lux-bio,
 .lux-shell.copper-theme .lux-social-chip span,
-.lux-shell.copper-theme .lux-qr-card .text-slate-400 {
+.lux-shell.copper-theme .lux-qr-card .text-slate-400,
+.lux-shell.copper-theme .lux-stats-card .text-gray-400 {
     color: var(--theme-text-muted);
+}
+
+.lux-shell.emerald-theme .lux-stat-divider,
+.lux-shell.ruby-theme .lux-stat-divider,
+.lux-shell.violet-theme .lux-stat-divider,
+.lux-shell.sapphire-theme .lux-stat-divider,
+.lux-shell.copper-theme .lux-stat-divider {
+    border-color: color-mix(in srgb, var(--theme-accent) 24%, transparent);
 }
 
 .lux-shell.emerald-theme .lux-avatar-ring,
@@ -2070,16 +2107,19 @@ a.dashboard-primary:hover {
 .lux-shell.ios-theme .lux-save-contact,
 .lux-shell.ios-theme .lux-social-chip,
 .lux-shell.ios-theme .lux-qr-card,
+.lux-shell.ios-theme .lux-stats-card,
 .lux-shell.iossoft-theme .lux-card,
 .lux-shell.iossoft-theme .lux-identity,
 .lux-shell.iossoft-theme .lux-save-contact,
 .lux-shell.iossoft-theme .lux-social-chip,
 .lux-shell.iossoft-theme .lux-qr-card,
+.lux-shell.iossoft-theme .lux-stats-card,
 .lux-shell.iosdark-theme .lux-card,
 .lux-shell.iosdark-theme .lux-identity,
 .lux-shell.iosdark-theme .lux-save-contact,
 .lux-shell.iosdark-theme .lux-social-chip,
-.lux-shell.iosdark-theme .lux-qr-card {
+.lux-shell.iosdark-theme .lux-qr-card,
+.lux-shell.iosdark-theme .lux-stats-card {
     background: var(--ios-card) !important;
     border-color: var(--ios-hairline) !important;
     box-shadow: var(--ios-shadow) !important;
@@ -2090,14 +2130,17 @@ a.dashboard-primary:hover {
 .lux-shell.ios-theme .lux-section-title,
 .lux-shell.ios-theme .lux-qr-card .text-slate-800,
 .lux-shell.ios-theme .lux-save-contact .text-gray-800,
+.lux-shell.ios-theme .lux-stats-card .text-gray-800,
 .lux-shell.iossoft-theme .lux-name,
 .lux-shell.iossoft-theme .lux-section-title,
 .lux-shell.iossoft-theme .lux-qr-card .text-slate-800,
 .lux-shell.iossoft-theme .lux-save-contact .text-gray-800,
+.lux-shell.iossoft-theme .lux-stats-card .text-gray-800,
 .lux-shell.iosdark-theme .lux-name,
 .lux-shell.iosdark-theme .lux-section-title,
 .lux-shell.iosdark-theme .lux-qr-card .text-slate-800,
-.lux-shell.iosdark-theme .lux-save-contact .text-gray-800 {
+.lux-shell.iosdark-theme .lux-save-contact .text-gray-800,
+.lux-shell.iosdark-theme .lux-stats-card .text-gray-800 {
     color: var(--ios-text) !important;
     font-weight: 700;
     letter-spacing: -0.02em;
@@ -2106,16 +2149,25 @@ a.dashboard-primary:hover {
 .lux-shell.ios-theme .lux-bio,
 .lux-shell.ios-theme .lux-social-chip span,
 .lux-shell.ios-theme .lux-qr-card .text-slate-400,
+.lux-shell.ios-theme .lux-stats-card .text-gray-400,
 .lux-shell.ios-theme .text-gray-400,
 .lux-shell.iossoft-theme .lux-bio,
 .lux-shell.iossoft-theme .lux-social-chip span,
 .lux-shell.iossoft-theme .lux-qr-card .text-slate-400,
+.lux-shell.iossoft-theme .lux-stats-card .text-gray-400,
 .lux-shell.iossoft-theme .text-gray-400,
 .lux-shell.iosdark-theme .lux-bio,
 .lux-shell.iosdark-theme .lux-social-chip span,
 .lux-shell.iosdark-theme .lux-qr-card .text-slate-400,
+.lux-shell.iosdark-theme .lux-stats-card .text-gray-400,
 .lux-shell.iosdark-theme .text-gray-400 {
     color: var(--ios-muted) !important;
+}
+
+.lux-shell.ios-theme .lux-stat-divider,
+.lux-shell.iossoft-theme .lux-stat-divider,
+.lux-shell.iosdark-theme .lux-stat-divider {
+    border-color: var(--ios-hairline);
 }
 
 .lux-shell.ios-theme .lux-avatar-ring,

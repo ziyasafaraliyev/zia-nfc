@@ -52,7 +52,7 @@ export type Profile = {
   email?: string | null;
   avatar_url?: string | null;
   background_url?: string | null;
-  cover_style?: "auto" | "square" | "banner" | null;
+  cover_style?: "auto" | "square" | "banner" | "fit" | null;
   cover_position?: "top" | "center" | "bottom" | null;
   avatar_shape?: "square" | "circle" | null;
   gallery: string[] | PortfolioSection[];
@@ -113,7 +113,7 @@ export type Restaurant = {
   google_review_url?: string | null;
   avatar_url?: string | null;
   cover_url?: string | null;
-  cover_style?: "auto" | "square" | "banner" | null;
+  cover_style?: "auto" | "square" | "banner" | "fit" | null;
   cover_position?: "top" | "center" | "bottom" | null;
   gallery: string[];
   theme?:

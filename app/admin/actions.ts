@@ -1269,7 +1269,7 @@ export async function saveProfile(formData: FormData) {
     cover_style: option(
       formData,
       "cover_style",
-      ["auto", "square", "banner"],
+      ["auto", "square", "banner", "fit"],
       "auto",
     ),
     cover_position: option(

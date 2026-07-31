@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ExternalLink } from "lucide-react";
 
 type Props = {
   slug: string;
@@ -82,13 +83,13 @@ export default function AddToWalletButton({
       type="button"
       onClick={handleClick}
       disabled={loading}
-      className="group flex h-14 w-full items-center gap-3 rounded-full border border-slate-200 bg-white px-4 text-left shadow-sm transition duration-200 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 disabled:cursor-not-allowed disabled:opacity-60"
+      className="lux-save-contact group flex h-14 w-full items-center justify-between gap-3 rounded-2xl px-4 lux-card-enter-4 transition-transform duration-200 hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
     >
-      <span className="flex items-center gap-3">
-        <span className="grid h-11 w-11 place-items-center rounded-2xl bg-slate-50 ring-1 ring-slate-200">
+      <span className="flex min-w-0 items-center gap-3">
+        <span className="lux-save-icon grid size-9 place-items-center rounded-xl shrink-0">
           <svg
-            width="20"
-            height="20"
+            width="18"
+            height="18"
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -103,15 +104,20 @@ export default function AddToWalletButton({
             <path d="M18.5 8H20C20.83 8 21.5 8.67 21.5 9.5V13.5C21.5 14.33 20.83 15 20 15H18.5V8Z" fill="#DB4437" />
           </svg>
         </span>
-        <span className="flex flex-col justify-center leading-tight">
-          <span className="text-sm font-semibold text-slate-950">
+        <span className="flex min-w-0 flex-col items-start leading-tight">
+          <span className="text-sm font-bold text-gray-800">
             {loading ? "Yüklənir..." : "Google Wallet-ə əlavə et"}
           </span>
-          <span className="text-[10px] font-semibold text-slate-500 mt-0.5">
+          <span className="mt-0.5 max-w-full truncate text-[10px] font-semibold text-gray-400">
             Kontaktı telefonuna saxla
           </span>
         </span>
       </span>
+      <ExternalLink
+        size={15}
+        className="shrink-0 text-gray-400 transition-all duration-300 group-hover:text-[#29AEEE] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+      />
     </button>
   );
 }
+
