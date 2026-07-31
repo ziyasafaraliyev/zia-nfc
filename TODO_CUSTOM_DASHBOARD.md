@@ -6,8 +6,8 @@
 
 - [x] Redesign `app/admin/page.tsx` layout (premium SaaS shell + section navigation)
 
-- [ ] Enforce palette: replace emerald/amber/rose usage in dashboard (UI only)
-- [ ] Restyle dashboard-visible parts of profile editing (via `ProfileForm` container classes/overrides if needed)
-- [ ] Validate interactions: enable/disable toggle, delete, copy URL, expand edit, submit save
-- [ ] Run `npm run dev` and manually test desktop + mobile
+- [x] Enforce palette: replace emerald/amber/rose usage in dashboard (UI only)
+- [x] Restyle dashboard-visible parts of profile editing (via `ProfileForm` container classes/overrides if needed)
+- [x] Validate interactions: enable/disable toggle, delete, copy URL, expand edit, submit save
+- [x] Run `npm run dev` and manually test desktop + mobile
 

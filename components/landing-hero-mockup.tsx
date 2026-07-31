@@ -14,25 +14,23 @@ export default function LandingHeroMockup() {
       </div>
 
       {/* NFC card — static on mobile; gentle CSS float only on md+ */}
-      <div className="hero-card-float absolute left-0 top-28 h-60 w-[390px] -rotate-[7deg] rounded-[1.65rem] border border-white/10 bg-slate-950 p-7 text-white shadow-[0_20px_50px_rgba(15,23,42,0.18)] md:shadow-[0_35px_100px_rgba(15,23,42,0.25)]">
+      <div className="hero-card-float absolute left-0 top-28 h-60 w-[390px] -rotate-[7deg] overflow-hidden rounded-[1.65rem] border border-white/10 bg-slate-950 text-white shadow-[0_20px_50px_rgba(15,23,42,0.18)] md:shadow-[0_35px_100px_rgba(15,23,42,0.25)]">
+        <Image
+          src="/1bab6639-1224-4e39-9294-a5194ec7e60c.png"
+          alt="NFC Card"
+          fill
+          sizes="390px"
+          className="object-cover"
+        />
         <div className="absolute inset-0 rounded-[1.65rem] bg-[linear-gradient(135deg,rgba(56,189,248,0.24),transparent_38%),linear-gradient(115deg,transparent_0%,rgba(255,255,255,0.08)_38%,transparent_56%)]" />
-        <div className="relative flex items-start justify-between">
+        <div className="absolute inset-0 z-10 flex items-center justify-center">
           <Image
             src="/logo.webp"
             alt="Zia NFC Logo"
-            width={48}
-            height={48}
-            className="size-12 rounded-full object-cover bg-white p-0.5 shadow-sm"
+            width={72}
+            height={72}
+            className="size-[72px] rounded-full object-cover bg-white p-0.5 shadow-lg"
           />
-          <Copy className="text-white/55" />
-        </div>
-        <div className="relative mt-20">
-          <p className="text-xs font-bold uppercase tracking-[0.22em] text-sky-200/80">
-            NFC Kimlik Kartı
-          </p>
-          <h3 className="mt-2 text-2xl font-black tracking-tight">
-            Ziya Safaraliyev
-          </h3>
         </div>
       </div>
 

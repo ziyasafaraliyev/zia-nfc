@@ -32,7 +32,7 @@ const FEATURES_AZ = [
   {
     icon: MessageCircle,
     title: "Sürətli əlaqə",
-    text: "Bir mobil profildən WhatsApp, zənglər, e-poçt və sosial şəbəkələri asanlıqla açın.",
+    text: "NFC kartınızı toxundurun — WhatsApp, zəng, e-poçt və sosial şəbəkələriniz bir anda açılsın.",
   },
   {
     icon: Camera,
@@ -47,17 +47,17 @@ const FEATURES_AZ = [
   {
     icon: RefreshCw,
     title: "Canlı yenilənmələr",
-    text: "Məlumatlarınız eyni qalmaqla linkləri, şəkilləri, qiymətləri və bioqrafiyanı istənilən an onlayn dəyişin.",
+    text: "Kartınız eyni qalmaqla linkləri, şəkilləri, qiymətləri və bioqrafiyanı istənilən an onlayn dəyişin.",
   },
   {
     icon: QrCode,
     title: "NFC və QR Dəstəyi",
-    text: "Hər bir rəqəmsal profil təmiz QR kodu və ani paylaşım keçidi ehtiva edir.",
+    text: "Hər bir NFC kartın arxasında təmiz QR kodu və ani paylaşım keçidi var.",
   },
   {
     icon: ShieldCheck,
     title: "Brend təhlükəsizliyi",
-    text: "Profillər admin panelindən komandalar üçün aktivləşdirilə, söndürülə, redaktə edilə və paylaşıla bilər.",
+    text: "Kartlar admin panelindən komandalar üçün aktivləşdirilə, söndürülə, redaktə edilə və paylaşıla bilər.",
   },
 ];
 
@@ -65,7 +65,7 @@ const FEATURES_EN = [
   {
     icon: MessageCircle,
     title: "Instant Contact",
-    text: "Open WhatsApp, calls, email and social networks with a single tap from one mobile profile.",
+    text: "Tap your NFC card — WhatsApp, calls, email and social networks open instantly.",
   },
   {
     icon: Camera,
@@ -80,78 +80,78 @@ const FEATURES_EN = [
   {
     icon: RefreshCw,
     title: "Live Updates",
-    text: "Change links, photos, prices and bio online at any time — your data stays the same.",
+    text: "Your card stays the same — change links, photos, prices and bio online at any time.",
   },
   {
     icon: QrCode,
     title: "NFC & QR Support",
-    text: "Every digital profile includes a clean QR code and instant sharing link.",
+    text: "Every NFC card comes with a clean QR code and instant sharing link on the back.",
   },
   {
     icon: ShieldCheck,
     title: "Brand Security",
-    text: "Profiles can be activated, deactivated, edited and shared for teams from the admin panel.",
+    text: "Cards can be activated, deactivated, edited and shared for teams from the admin panel.",
   },
 ];
 
 const STEPS_AZ = [
-  ["Profili yaradın", "Brendinizə uyğun rəqəmsal profil mövzusunu seçin."],
+  ["Kartı sifariş edin", "Brendinizə uyğun NFC vizit kart dizaynını seçin."],
   ["Məlumatları daxil edin", "Əlaqə vasitələrini, sosial linkləri, qalereyanı, QR və vCard ixracını tənzimləyin."],
-  ["Sürətli paylaşın", "Müştərilər keçid və ya QR skan edərək instant mobil profilinizə daxil olurlar."],
-  ["İstənilən vaxt yeniləyin", "Təklifiniz, kontentiniz və ya komandanız dəyişdikdə rəqəmsal profili istənilən an yeniləyin."],
+  ["Kartı toxundurun", "Müştərilər telefonlarını kartınıza toxunduraraq profil səhifənizə daxil olurlar."],
+  ["İstənilən vaxt yeniləyin", "Kartı dəyişmədən linkləri, şəkilləri və məlumatları istənilən an yeniləyin."],
 ] as const;
 
 const STEPS_EN = [
-  ["Create a Profile", "Choose the digital profile theme that fits your brand."],
+  ["Order Your Card", "Choose the NFC business card design that fits your brand."],
   ["Enter Your Info", "Set up contact details, social links, gallery, QR and vCard export."],
-  ["Share Instantly", "Clients access your instant mobile profile via link or QR scan."],
-  ["Update Anytime", "Edit your digital profile whenever your offer, content or team changes."],
+  ["Tap & Share", "Clients tap their phone on your card to access your profile page."],
+  ["Update Anytime", "Update links, photos and info anytime without changing the card."],
 ] as const;
 
 const METRICS_AZ = [
-  ["1 keçid", "profil ötürülməsi"],
-  ["24/7", "redaktə edilə bilən kimlik"],
+  ["1 toxunuş", "kart paylaşımı"],
+  ["24/7", "redaktə edilə bilən kart"],
   ["0 tətbiq", "açmaq üçün tələb olunur"],
 ] as const;
 
 const METRICS_EN = [
-  ["1 tap", "profile sharing"],
-  ["24/7", "editable identity"],
+  ["1 tap", "card sharing"],
+  ["24/7", "editable card"],
   ["0 apps", "required to open"],
 ] as const;
 
 const SERVICES_AZ = [
   {
-    title: "Rəqəmsal Profil Hostinqi",
-    desc: "Fərdi peşəkarlar üçün mobil rəqəmsal profil, vCard ixracı və sosial platforma inteqrasiyası.",
-    image: "/vizit-kart.webp",
+    title: "NFC Vizit Kart",
+    desc: "Fərdi peşəkarlar üçün premium NFC vizit kart, vCard ixracı və sosial platforma inteqrasiyası.",
+    image: "/2f3919bd-3f33-4efe-bb1b-b8757f487d33.png",
   },
   {
-    title: "Portfolio & Analitika SaaS",
-    desc: "İnteraktiv portfolio qalereyası, brend mövzuları və real-vaxt ziyarətçi statistikası.",
+    title: "NFC Stiker",
+    desc: "Telefonunuzun arxasına, noutbuka və ya masa üstünə yapışdırın — bir toxunuşla profil paylaşın.",
     image: "/stiker.webp",
   },
   {
-    title: "Restoran Menyu & Komanda Platforması",
-    desc: "Kafe, restoran və komandalar üçün cloud menyu, çoxsaylı profil idarəçiliyi və QR sistemi.",
+    title: "NFC Masa Standı",
+    desc: "Kafe, restoran və ofislər üçün masa üstü NFC standı — müştərilər toxunaraq menyu və ya profil açır.",
     image: "/masa-standi.webp",
   },
 ];
 
 const SERVICES_EN = [
   {
-    title: "Digital Profile Hosting",
-    desc: "Mobile digital profile, vCard export and social platform integration for individual professionals.",
-    image: "/vizit-kart.webp",
+    title: "NFC Business Card",
+    desc: "Premium NFC business card for professionals, with vCard export and social platform integration.",
+    image: "/2f3919bd-3f33-4efe-bb1b-b8757f487d33.png",
   },
   {
-    title: "Portfolio & Analytics SaaS",
-    desc: "Interactive portfolio gallery, brand themes and real-time visitor statistics.",
+    title: "NFC Sticker",
+    desc: "Stick it on your phone, laptop or desk — share your profile with a single tap.",
     image: "/stiker.webp",
   },
   {
-    title: "Restaurant Menu & Team Platform",
-    desc: "Cloud menu, multi-profile management and QR system for cafes, restaurants and teams.",
+    title: "NFC Table Stand",
+    desc: "Tabletop NFC stand for cafes, restaurants and offices — customers tap to open menu or profile.",
     image: "/masa-standi.webp",
   },
 ];
@@ -186,7 +186,7 @@ function LandingPageInner() {
         <div className="mx-auto grid max-w-7xl items-center gap-12 pb-8 pt-14 lg:min-h-[calc(100vh-104px)] lg:grid-cols-[1.02fr_0.98fr] lg:pt-10">
           <div>
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-sky-200/70 bg-sky-50 px-3.5 py-2 text-sm font-bold text-sky-800">
-              <Sparkles size={16} /> {t("Rəqəmsal Profil & SaaS Platforması", "Digital Profile & SaaS Platform")}
+              <Sparkles size={16} /> {t("Premium NFC Vizit Kartları", "Premium NFC Business Cards")}
             </div>
             <h1 className="max-w-4xl text-balance text-5xl font-black leading-[0.96] tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
               {t("Ağıllı NFC Vizit Kartları", "Smart NFC Business Cards")}
@@ -249,24 +249,24 @@ function LandingPageInner() {
           <ProfileShowcase />
           <div>
             <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-700">
-              {t("Mobil öncəlikli", "Mobile First")}
+              {t("Bir toxunuş kifayətdir", "One Tap Is Enough")}
             </p>
             <h2 className="mt-4 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
               {t(
-                "Telefonlarda sürətli açılan və rahat istifadə olunan rəqəmsal profil.",
-                "A digital profile that loads fast and feels great on phones."
+                "NFC kartınızla telefonlarda sürətli açılan premium profil.",
+                "A premium profile that opens instantly with your NFC card."
               )}
             </h2>
             <p className="mt-5 text-lg leading-8 text-slate-600">
               {t(
-                "İlk ekran kim olduğunuzu, nə etdiyinizi və sizinlə necə əlaqə saxlayacağınızı aydınlaşdırır. Qalereya, sosial linklər, vCard və QR ehtiyat nüsxəsi qarışıqlıq yaratmadan əlçatandır.",
-                "The first screen clarifies who you are, what you do and how to reach you. Gallery, social links, vCard and QR backup are accessible without any confusion."
+                "Kartınızı toxundurun — kim olduğunuz, nə etdiyiniz və sizinlə necə əlaqə saxlamaq lazımdır bir anda görünsün. Qalereya, sosial linklər, vCard və QR ehtiyat nüsxəsi qarışıqlıq yaratmadan əlçatandır.",
+                "Tap your card — who you are, what you do and how to reach you appears instantly. Gallery, social links, vCard and QR backup are accessible without any confusion."
               )}
             </p>
             <div className="mt-8 grid gap-3 sm:grid-cols-2">
               {(lang === "en"
-                ? ["Fast mobile profile", "Clean contact buttons", "Visual portfolio", "Admin control"]
-                : ["Sürətli mobil profil", "Təmiz əlaqə düymələri", "Vizual portfolio", "Admin nəzarəti"]
+                ? ["Premium NFC card", "Clean contact buttons", "Visual portfolio", "Admin control"]
+                : ["Premium NFC kart", "Təmiz əlaqə düymələri", "Vizual portfolio", "Admin nəzarəti"]
               ).map((item) => (
                 <div
                   key={item}
@@ -280,18 +280,18 @@ function LandingPageInner() {
         </div>
       </section>
 
-      <section id="digital-services" className="perf-cv bg-white px-4 py-20 sm:px-6 lg:px-8">
+      <section id="products" className="perf-cv bg-white px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <p className="text-sm font-black uppercase tracking-[0.22em] text-sky-700">
-            {t("Xidmətlər", "Services")}
+            {t("Məhsullar", "Products")}
           </p>
           <h2 className="mt-4 max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-            {t("Rəqəmsal SaaS Xidmətlərimiz", "Our Digital SaaS Services")}
+            {t("NFC Məhsullarımız", "Our NFC Products")}
           </h2>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
             {t(
-              "Biznesinizi və şəxsi brendinizi rəqəmsallaşdıracaq cloud platformamız ilə tanış olun.",
-              "Get to know our cloud platform that will digitize your business and personal brand."
+              "Biznesinizi və şəxsi brendinizi bir toxunuşla tanıdacaq NFC məhsullarımız ilə tanış olun.",
+              "Discover our NFC products that introduce your business and personal brand with a single tap."
             )}
           </p>
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -326,7 +326,7 @@ function LandingPageInner() {
                     href="#pricing"
                     className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-sky-500 py-3.5 text-sm font-black uppercase tracking-[0.14em] text-white shadow-[0_12px_30px_rgba(14,165,233,0.2)] transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98]"
                   >
-                    {t("Başla", "Get Started")} <ArrowRight size={16} />
+                    {t("Sifariş et", "Order Now")} <ArrowRight size={16} />
                   </a>
                 </div>
               </div>
@@ -350,7 +350,7 @@ function LandingPageInner() {
                 {t("İş Prinsipi", "How It Works")}
               </p>
               <h2 className="mt-4 max-w-xl text-4xl font-black tracking-tight sm:text-5xl">
-                {t("Rəqəmsal profil platforması necə işləyir?", "How does the digital profile platform work?")}
+                {t("NFC vizit kart necə işləyir?", "How does the NFC business card work?")}
               </h2>
             </div>
             <div className="grid gap-3 md:grid-cols-4">
@@ -380,8 +380,8 @@ function LandingPageInner() {
               </p>
               <h2 className="mt-4 max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
                 {t(
-                  "Müasir rəqəmsal kimliyin sahib olmalı olduğu hər şey tək bir sürətli profildə.",
-                  "Everything a modern digital identity needs, in one fast profile."
+                  "Müasir NFC vizit kartın sahib olmalı olduğu hər şey tək bir kartda.",
+                  "Everything a modern NFC business card needs, in one premium card."
                 )}
               </h2>
             </div>
@@ -421,14 +421,14 @@ function LandingPageInner() {
           <div className="space-y-3">
             {(lang === "en"
               ? [
-                  ["Can I update the profile later?", "Yes. Your digital profile can be edited and updated at any time from the control panel."],
-                  ["Does every profile have a QR code?", "Yes. A dynamic QR code with a full link and backup is provided for each profile."],
-                  ["Can users save my contact info?", "Yes. The profile supports vCard, so clients can add your contact details to their phone in one click."],
+                  ["Can I update the card info later?", "Yes. Your NFC card's profile can be edited and updated at any time from the control panel — no need to reprint."],
+                  ["Does every card have a QR code?", "Yes. Every NFC card comes with a dynamic QR code on the back as a backup."],
+                  ["Can users save my contact info?", "Yes. The card profile supports vCard, so clients can add your contact details to their phone in one click."],
                 ]
               : [
-                  ["Profili sonradan yeniləyə bilərəm?", "Bəli. Rəqəmsal profiliniz istənilən vaxt idarəetmə panelindən redaktə edilə və yenilənə bilər."],
-                  ["Hər profildə QR kod olur?", "Bəli. Profil üçün dinamik QR koda bütöv keçid və ehtiyat nüsxəsi təmin edilir."],
-                  ["İstifadəçilər əlaqə məlumatlarımı yadda saxlaya bilərmi?", "Bəli. Profil vCard dəstəkləyir, beləcə müştərilər əlaqə məlumatlarınızı telefonlarına bir kliklə əlavə edə bilərlər."],
+                  ["Kartın məlumatlarını sonradan yeniləyə bilərəm?", "Bəli. NFC kartınızın profili istənilən vaxt idarəetmə panelindən redaktə edilə bilər — yenidən çap lazım deyil."],
+                  ["Hər kartda QR kod olur?", "Bəli. Hər NFC kartın arxasında dinamik QR kod ehtiyat nüsxəsi var."],
+                  ["İstifadəçilər əlaqə məlumatlarımı yadda saxlaya bilərmi?", "Bəli. Kart profili vCard dəstəkləyir, beləcə müştərilər əlaqə məlumatlarınızı telefonlarına bir kliklə əlavə edə bilərlər."],
                 ]
             ).map(([q, a]) => (
               <details
@@ -466,8 +466,8 @@ function LandingPageInner() {
             </div>
             <p className="mt-4 max-w-xl text-sm leading-6 text-slate-400">
               {t(
-                "Rəqəmsal profil hostinq platforması, canlı profil yenilənmələri və ani əlaqə paylaşımı.",
-                "Digital profile hosting platform, live profile updates and instant contact sharing."
+                "Premium NFC vizit kartları, stikerler, masa standları və ani əlaqə paylaşımı.",
+                "Premium NFC business cards, stickers, table stands and instant contact sharing."
               )}
             </p>
           </div>

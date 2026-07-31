@@ -19,15 +19,22 @@ export function LandingPhoneProfile({ compact = false }: { compact?: boolean }) 
       className={`${compact ? "" : "p-1"} overflow-hidden rounded-[1.5rem] bg-white`}
     >
       <div
-        className={`relative flex flex-col items-center justify-center overflow-visible bg-[linear-gradient(145deg,#0f172a_0%,#0c2340_45%,#0369a1_100%)] ${compact ? "h-28" : "h-40"}`}
+        className={`relative flex flex-col items-center justify-center overflow-hidden ${compact ? "h-28" : "h-40"}`}
       >
-        <div className="absolute inset-0 bg-[linear-gradient(115deg,transparent_30%,rgba(255,255,255,0.06)_50%,transparent_70%)]" />
+        <Image
+          src="/1bab6639-1224-4e39-9294-a5194ec7e60c.png"
+          alt="Cover"
+          fill
+          sizes="(max-width: 640px) 100vw, 520px"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-black/30" />
         <Image
           src="/logo.webp"
           alt="Zia NFC"
-          width={compact ? 48 : 80}
-          height={compact ? 48 : 80}
-          className={`relative z-10 rounded-full object-cover ring-2 ring-white/20 shadow-xl ${compact ? "size-12" : "size-20"}`}
+          width={compact ? 64 : 100}
+          height={compact ? 64 : 100}
+          className={`relative z-10 rounded-full object-cover ring-2 ring-white/20 shadow-xl ${compact ? "size-16" : "size-[100px]"}`}
         />
         <p
           className={`relative z-10 mt-1.5 font-black uppercase tracking-[0.18em] text-white/80 ${compact ? "text-[9px]" : "text-[11px]"}`}
