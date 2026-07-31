@@ -1489,6 +1489,16 @@ export default function ProfileForm({
             />
           </label>
 
+          <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition">
+            <span>Dil seçimi (AZ | EN | DE | FR) aktivdir</span>
+            <input
+              type="checkbox"
+              name="lang_switcher_enabled"
+              defaultChecked={profile?.lang_switcher_enabled ?? false}
+              className="size-5 rounded accent-indigo-650"
+            />
+          </label>
+
           <div className="rounded-3xl border border-slate-200 bg-white p-5 space-y-4">
             <span className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide">
               Google Review

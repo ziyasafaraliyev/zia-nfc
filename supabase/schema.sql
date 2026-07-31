@@ -159,6 +159,8 @@ alter table public.profiles add column if not exists referral_url text;
 alter table public.profiles add column if not exists views_count integer not null default 0;
 alter table public.profiles add column if not exists saves_count integer not null default 0;
 alter table public.profiles add column if not exists stats_enabled boolean not null default true;
+alter table public.profiles add column if not exists lang_switcher_enabled boolean not null default false;
+
 
 alter table public.profiles drop constraint if exists profiles_cover_style_check;
 alter table public.profiles add constraint profiles_cover_style_check

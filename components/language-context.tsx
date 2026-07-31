@@ -8,15 +8,23 @@ import {
   type ReactNode,
 } from "react";
 
-export type Lang = "az" | "en";
+export type Lang = "az" | "en" | "de" | "fr";
+export const LANGS: Lang[] = ["az", "en", "de", "fr"];
+
+const LANG_LABELS: Record<Lang, string> = {
+  az: "AZ",
+  en: "EN",
+  de: "DE",
+  fr: "FR",
+};
 
 interface LangContextValue {
   lang: Lang;
   setLang: (l: Lang) => void;
   /** String overload */
-  t(az: string, en: string): string;
+  t(az: string, en: string, de?: string, fr?: string): string;
   /** ReactNode overload — use when passing JSX */
-  t(az: ReactNode, en: ReactNode): ReactNode;
+  t(az: ReactNode, en: ReactNode, de?: ReactNode, fr?: ReactNode): ReactNode;
 }
 
 const LangContext = createContext<LangContextValue>({
@@ -32,7 +40,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const stored = localStorage.getItem("zia-lang") as Lang | null;
-      if (stored === "az" || stored === "en") setLangState(stored);
+      if (stored && LANGS.includes(stored)) setLangState(stored);
     } catch {}
   }, []);
 
@@ -43,8 +51,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     } catch {}
   }
 
-  function t(az: ReactNode, en: ReactNode): ReactNode {
-    return lang === "en" ? en : az;
+  function t(az: ReactNode, en: ReactNode, de?: ReactNode, fr?: ReactNode): ReactNode {
+    if (lang === "en") return en;
+    if (lang === "de") return de ?? az;
+    if (lang === "fr") return fr ?? az;
+    return az;
   }
 
   return (
@@ -58,7 +69,7 @@ export function useLang() {
   return useContext(LangContext);
 }
 
-/** Pill-style AZ | EN language switcher */
+/** Pill-style AZ | EN language switcher (landing page — only 2 langs) */
 export function LangSwitcher({ className = "" }: { className?: string }) {
   const { lang, setLang } = useLang();
 
@@ -93,6 +104,38 @@ export function LangSwitcher({ className = "" }: { className?: string }) {
       >
         EN
       </button>
+    </div>
+  );
+}
+
+/** Full 4-language switcher for customer profile pages */
+export function ProfileLangSwitcher({ className = "" }: { className?: string }) {
+  const { lang, setLang } = useLang();
+
+  return (
+    <div
+      role="group"
+      aria-label="Dil seçimi"
+      className={`flex shrink-0 items-center overflow-hidden rounded-full border border-slate-200/60 bg-black/20 backdrop-blur-md text-[10px] font-black uppercase tracking-wider shadow-sm ${className}`}
+    >
+      {LANGS.map((l, i) => (
+        <>
+          {i > 0 && <span key={`sep-${l}`} className="h-3.5 w-px bg-white/20" aria-hidden="true" />}
+          <button
+            key={l}
+            type="button"
+            aria-pressed={lang === l}
+            onClick={() => setLang(l)}
+            className={`px-2.5 py-1.5 transition-all duration-200 ease-out ${
+              lang === l
+                ? "bg-white/90 text-slate-900 shadow-inner"
+                : "text-white/70 hover:text-white hover:bg-white/10"
+            }`}
+          >
+            {LANG_LABELS[l]}
+          </button>
+        </>
+      ))}
     </div>
   );
 }

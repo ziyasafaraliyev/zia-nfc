@@ -1241,6 +1241,9 @@ export async function saveProfile(formData: FormData) {
     stats_enabled: isSuper
       ? bool(formData, "stats_enabled")
       : (existingProfile?.stats_enabled ?? true),
+    lang_switcher_enabled: isSuper
+      ? bool(formData, "lang_switcher_enabled")
+      : (existingProfile?.lang_switcher_enabled ?? false),
     ...(isSuper
       ? { referral_url: sanitizeUrl(formData, "referral_url") || null }
       : {}),

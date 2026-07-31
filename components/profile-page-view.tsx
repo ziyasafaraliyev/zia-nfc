@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { Profile } from "@/lib/types";
+import { ProfileLangSwitcher, useLang } from "@/components/language-context";
 import { getProfileVcardPath } from "@/lib/urls";
 import {
   ExternalLink,
@@ -119,6 +120,7 @@ export default function ProfilePageView({
   const [viewsCount, setViewsCount] = useState(profile.views_count ?? 0);
   const [savesCount, setSavesCount] = useState(profile.saves_count ?? 0);
   const [copied, setCopied] = useState(false);
+  const { t } = useLang();
 
   useEffect(() => {
     const trackedKey = `viewed_${profile.slug}`;
@@ -253,6 +255,9 @@ export default function ProfilePageView({
                 Zia NFC
               </span>
             </Link>
+            {profile.lang_switcher_enabled ? (
+              <ProfileLangSwitcher />
+            ) : null}
           </div>
         </div>
 
@@ -360,7 +365,7 @@ export default function ProfilePageView({
               size={18}
               className="transition-transform duration-300 group-hover:scale-110"
             />
-            <span>Zəng et</span>
+            <span>{t("Zəng et", "Call", "Anrufen", "Appeler")}</span>
           </a>
         ) : null}
         {profile.phone2 ? (
@@ -372,7 +377,7 @@ export default function ProfilePageView({
               size={18}
               className="transition-transform duration-300 group-hover:scale-110"
             />
-            <span>Zəng et 2</span>
+            <span>{t("Zəng et 2", "Call 2", "Anrufen 2", "Appeler 2")}</span>
           </a>
         ) : null}
       </div>
@@ -485,7 +490,7 @@ export default function ProfilePageView({
               <UserPlus size={16} />
             </span>
             <span className="text-sm font-bold text-gray-800">
-              Kontaktı yadda saxla
+              {t("Kontaktı yadda saxla", "Save Contact", "Kontakt speichern", "Sauvegarder le contact")}
             </span>
           </span>
           <ExternalLink
@@ -511,7 +516,7 @@ export default function ProfilePageView({
                 <Mail size={16} />
               </span>
               <span className="flex min-w-0 flex-col items-start leading-tight">
-                <span className="text-sm font-bold text-gray-800">E-poçt</span>
+                <span className="text-sm font-bold text-gray-800">{t("E-poçt", "Email", "E-Mail", "E-mail")}</span>
                 <span className="mt-0.5 max-w-full truncate text-[10px] font-semibold text-gray-400">
                   {profile.email}
                 </span>
@@ -547,7 +552,7 @@ export default function ProfilePageView({
               <MapPin size={16} className="text-[#29AEEE]" />
             </span>
             <span className="flex min-w-0 flex-col items-start leading-tight">
-              <span className="text-sm font-bold text-gray-800">Lokasiya</span>
+              <span className="text-sm font-bold text-gray-800">{t("Lokasiya", "Location", "Standort", "Localisation")}</span>
                 <span className="mt-0.5 max-w-full whitespace-pre-line break-words text-[10px] font-semibold text-gray-400">
                 {profile.location}
               </span>
@@ -573,9 +578,9 @@ export default function ProfilePageView({
               <Star size={16} className="text-[#29AEEE]" />
             </span>
             <span className="flex flex-col items-start leading-tight">
-              <span className="text-sm font-bold text-gray-800">Rəy bildir</span>
+              <span className="text-sm font-bold text-gray-800">{t("Rəy bildir", "Leave a Review", "Bewertung abgeben", "Laisser un avis")}</span>
               <span className="text-[10px] font-semibold text-gray-400 mt-0.5">
-                Google-da bizi qiymətləndirin
+                {t("Google-da bizi qiymətləndirin", "Rate us on Google", "Bewerten Sie uns auf Google", "Évaluez-nous sur Google")}
               </span>
             </span>
           </span>
@@ -627,7 +632,7 @@ export default function ProfilePageView({
           <span className="flex flex-col items-start leading-tight">
             <span className="text-sm font-bold text-gray-800">CV</span>
             <span className="text-[10px] font-semibold text-gray-400 mt-0.5">
-              PDF formatında endir / bax
+              {t("PDF formatında endir / bax", "Download / View PDF", "PDF herunterladen / ansehen", "Télécharger / voir le PDF")}
             </span>
           </span>
         </span>
@@ -676,14 +681,14 @@ export default function ProfilePageView({
           <div className="lux-stat-divider flex flex-col items-center justify-center border-r border-gray-200/60 pr-1">
             <Eye size={18} className="text-sky-500 mb-1" />
             <span className="text-sm font-black text-gray-800">{viewsCount}</span>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Baxış</span>
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t("Baxış", "Views", "Aufrufe", "Vues")}</span>
           </div>
 
           {/* 2 — Kontaktı Saxlayanların Sayı */}
           <div className="lux-stat-divider flex flex-col items-center justify-center border-r border-gray-200/60 px-1">
             <UserCheck size={18} className="text-emerald-500 mb-1" />
             <span className="text-sm font-black text-gray-800">{savesCount}</span>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Saxlanıldı</span>
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t("Saxlanıldı", "Saved", "Gespeichert", "Enregistré")}</span>
           </div>
 
           {/* 3 — Profili Paylaş (iOS/Android Native Share) */}
@@ -694,9 +699,9 @@ export default function ProfilePageView({
           >
             <Share2 size={18} className="text-sky-600 mb-1 transition-transform group-hover:scale-110" />
             <span className="text-sm font-black text-sky-600">
-              {copied ? "Kopyalandı!" : "Paylaş"}
+              {copied ? t("Kopyalandı!", "Copied!", "Kopiert!", "Copié!") : t("Paylaş", "Share", "Teilen", "Partager")}
             </span>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Profili</span>
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t("Profili", "Profile", "Profil", "Profil")}</span>
           </button>
         </div>
       ) : null,
