@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ExternalLink } from "lucide-react";
+import { useLang } from "@/components/language-context";
 
 type Props = {
   slug: string;
@@ -37,6 +38,7 @@ export default function AddToWalletButton({
   instagram,
 }: Props) {
   const [loading, setLoading] = useState(false);
+  const { t } = useLang();
 
   async function handleClick() {
     setLoading(true);
@@ -69,10 +71,10 @@ export default function AddToWalletButton({
         a.rel = "noopener";
         a.click();
       } else {
-        alert("Xəta: " + (data.error || "Bilinməyən xəta"));
+        alert(t("Xəta: ", "Error: ", "Fehler: ", "Erreur : ") + (data.error || t("Bilinməyən xəta", "Unknown error", "Unbekannter Fehler", "Erreur inconnue")));
       }
     } catch {
-      alert("Şəbəkə xətası baş verdi");
+      alert(t("Şəbəkə xətası baş verdi", "Network error occurred", "Netzwerkfehler aufgetreten", "Une erreur réseau est survenue"));
     } finally {
       setLoading(false);
     }
@@ -106,10 +108,12 @@ export default function AddToWalletButton({
         </span>
         <span className="flex min-w-0 flex-col items-start leading-tight">
           <span className="text-sm font-bold text-gray-800">
-            {loading ? "Yüklənir..." : "Google Wallet-ə əlavə et"}
+            {loading
+              ? t("Yüklənir...", "Loading...", "Wird geladen...", "Chargement...")
+              : t("Google Wallet-ə əlavə et", "Add to Google Wallet", "Zu Google Wallet hinzufügen", "Ajouter à Google Wallet")}
           </span>
           <span className="mt-0.5 max-w-full truncate text-[10px] font-semibold text-gray-400">
-            Kontaktı telefonuna saxla
+            {t("Kontaktı telefonuna saxla", "Save contact to phone", "Kontakt auf dem Telefon speichern", "Enregistrer le contact sur le téléphone")}
           </span>
         </span>
       </span>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Calendar, Clock, User, Send, X } from "lucide-react";
+import { useLang } from "@/components/language-context";
 
 // Azerbaijan timezone helper
 function getBakuDate() {
@@ -91,6 +92,7 @@ export default function ReservationModal({
   const [time, setTime] = useState("");
   const [note, setNote] = useState("");
   const minDate = getTomorrowDateISO();
+  const { t } = useLang();
 
   // Initialize with current date when modal opens
   useEffect(() => {
@@ -122,23 +124,23 @@ export default function ReservationModal({
 
   const handleSubmit = () => {
     if (!firstName || !lastName || !date || !time) {
-      alert("Zəhmət olmasa bütün sahələri doldurun");
+      alert(t("Zəhmət olmasa bütün sahələri doldurun", "Please fill in all fields", "Bitte füllen Sie alle Felder aus", "Veuillez remplir tous les champs"));
       return;
     }
 
-    // Format WhatsApp message with Azerbaijani date format
+    // Format WhatsApp message with date format
     const formattedDate = formatDateAz(date);
     const formattedTime = formatTime24(time);
-    const noteLine = note.trim() ? `\nQeyd: ${note.trim()}` : "";
+    const noteLine = note.trim() ? `\n${t("Qeyd:", "Note:", "Hinweis:", "Note:")} ${note.trim()}` : "";
 
-    const message = `Salam ${profileName}.
+    const message = `${t("Salam", "Hello", "Hallo", "Bonjour")} ${profileName}.
 
-Yeni rezervasiya müraciəti:
+${t("Yeni rezervasiya müraciəti:", "New reservation request:", "Neue Reservierungsanfrage:", "Nouvelle demande de réservation:")}
 
-Ad: ${firstName}
-Soyad: ${lastName}
-Tarix: ${formattedDate}
-Saat: ${formattedTime}${noteLine}`;
+${t("Ad:", "First Name:", "Vorname:", "Prénom:")} ${firstName}
+${t("Soyad:", "Last Name:", "Nachname:", "Nom:")} ${lastName}
+${t("Tarix:", "Date:", "Datum:", "Date:")} ${formattedDate}
+${t("Saat:", "Time:", "Uhrzeit:", "Heure:")} ${formattedTime}${noteLine}`;
 
     // Clean WhatsApp number (remove non-digits)
     const cleanNumber = whatsappNumber.replace(/[^\d]/g, "");
@@ -170,7 +172,9 @@ Saat: ${formattedTime}${noteLine}`;
       <div className="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-xl font-black text-slate-900">Rezervasiya Et</h2>
+          <h2 className="text-xl font-black text-slate-900">
+            {t("Rezervasiya Et", "Make a Reservation", "Reservierung vornehmen", "Faire une réservation")}
+          </h2>
           <button
             onClick={onClose}
             className="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition"
@@ -184,7 +188,7 @@ Saat: ${formattedTime}${noteLine}`;
           {/* First Name */}
           <div>
             <label className="mb-1.5 block text-xs font-bold text-slate-500 uppercase tracking-wide">
-              Ad
+              {t("Ad", "First Name", "Vorname", "Prénom")}
             </label>
             <div className="relative">
               <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -192,7 +196,7 @@ Saat: ${formattedTime}${noteLine}`;
                 type="text"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                placeholder="Adınız"
+                placeholder={t("Adınız", "Your first name", "Ihr Vorname", "Votre prénom") as string}
                 className="w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none transition focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/20"
               />
             </div>
@@ -201,7 +205,7 @@ Saat: ${formattedTime}${noteLine}`;
           {/* Last Name */}
           <div>
             <label className="mb-1.5 block text-xs font-bold text-slate-500 uppercase tracking-wide">
-              Soyad
+              {t("Soyad", "Last Name", "Nachname", "Nom")}
             </label>
             <div className="relative">
               <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -209,7 +213,7 @@ Saat: ${formattedTime}${noteLine}`;
                 type="text"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                placeholder="Soyadınız"
+                placeholder={t("Soyadınız", "Your last name", "Ihr Nachname", "Votre nom") as string}
                 className="w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none transition focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/20"
               />
             </div>
@@ -218,7 +222,7 @@ Saat: ${formattedTime}${noteLine}`;
           {/* Date */}
           <div>
             <label className="mb-1.5 block text-xs font-bold text-slate-500 uppercase tracking-wide">
-              Tarix (Ay / Gün)
+              {t("Tarix", "Date", "Datum", "Date")}
             </label>
             <div className="relative">
               <Calendar size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -240,7 +244,7 @@ Saat: ${formattedTime}${noteLine}`;
           {/* Time */}
           <div>
             <label className="mb-1.5 block text-xs font-bold text-slate-500 uppercase tracking-wide">
-              Saat (24 saatlik)
+              {t("Saat", "Time", "Uhrzeit", "Heure")}
             </label>
             <div className="relative">
               <Clock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -249,7 +253,7 @@ Saat: ${formattedTime}${noteLine}`;
                 onChange={(e) => setTime(e.target.value)}
                 className="w-full appearance-none rounded-2xl border border-slate-200 bg-white pl-11 pr-20 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none transition focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/20"
               >
-                <option value="">Saat seçin</option>
+                <option value="">{t("Saat seçin", "Select time", "Uhrzeit wählen", "Sélectionnez l'heure")}</option>
                 {TIME_OPTIONS.map((option) => (
                   <option key={option} value={option}>
                     {option}
@@ -266,12 +270,12 @@ Saat: ${formattedTime}${noteLine}`;
 
           <div>
             <label className="mb-1.5 block text-xs font-bold text-slate-500 uppercase tracking-wide">
-              Qeyd
+              {t("Qeyd", "Note", "Hinweis", "Note")}
             </label>
             <textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="Əlavə qeyd yaza bilərsiniz"
+              placeholder={t("Əlavə qeyd yaza bilərsiniz", "Additional note", "Zusätzliche Anmerkung", "Note supplémentaire") as string}
               rows={3}
               className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none transition focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/20"
             />
@@ -284,7 +288,7 @@ Saat: ${formattedTime}${noteLine}`;
           className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-[#25D366] px-5 py-3.5 text-sm font-bold text-white shadow-md transition-all duration-200 hover:bg-[#20bd5a] hover:shadow-lg active:scale-[0.96]"
         >
           <Send size={16} />
-          WhatsApp ilə göndər
+          {t("WhatsApp ilə göndər", "Send via WhatsApp", "Per WhatsApp senden", "Envoyer via WhatsApp")}
         </button>
       </div>
     </div>

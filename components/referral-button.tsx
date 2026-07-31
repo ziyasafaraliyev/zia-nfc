@@ -1,6 +1,7 @@
 "use client";
 
 import { ExternalLink, Link2 } from "lucide-react";
+import { useLang } from "@/components/language-context";
 
 interface ReferralButtonProps {
   profileName: string;
@@ -11,12 +12,14 @@ export default function ReferralButton({
   profileName,
   referralUrl,
 }: ReferralButtonProps) {
+  const { t } = useLang();
+
   return (
     <a
       href={referralUrl}
       target="_blank"
       rel="noreferrer"
-      aria-label={`${profileName} — referral linki. Özün qeydiyyatdan keç, linki kopyala və paylaş`}
+      aria-label={`${profileName} — ${t("referral linki. Özün qeydiyyatdan keç, linki kopyala və paylaş", "referral link. Register yourself, copy and share the link", "Empfehlungslink. Registrieren Sie sich selbst, kopieren und teilen Sie den Link", "lien de parrainage. Inscrivez-vous, copiez et partagez le lien")}`}
       className="lux-save-contact group flex h-14 w-full items-center justify-between gap-3 rounded-2xl px-4 lux-card-enter-4 transition-transform duration-200 hover:scale-[1.02]"
     >
       <span className="flex min-w-0 items-center gap-3">
@@ -25,10 +28,15 @@ export default function ReferralButton({
         </span>
         <span className="flex min-w-0 flex-col items-start leading-tight">
           <span className="text-sm font-bold text-gray-800">
-            Referral linki
+            {t("Referral linki", "Referral link", "Empfehlungslink", "Lien de parrainage")}
           </span>
           <span className="mt-0.5 max-w-full truncate text-[10px] font-semibold text-gray-400">
-            Linki kopyala və paylaş · Özün qeydiyyatdan keç
+            {t(
+              "Linki kopyala və paylaş · Özün qeydiyyatdan keç",
+              "Copy & share link · Register yourself",
+              "Link kopieren & teilen · Selbst registrieren",
+              "Copier et partager le lien · Inscrivez-vous"
+            )}
           </span>
         </span>
       </span>

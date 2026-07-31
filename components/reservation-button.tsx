@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Calendar, ExternalLink } from "lucide-react";
 import ReservationModal from "./reservation-modal";
+import { useLang } from "@/components/language-context";
 
 interface ReservationButtonProps {
   profileName: string;
@@ -14,6 +15,7 @@ export default function ReservationButton({
   whatsappNumber,
 }: ReservationButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { t } = useLang();
 
   return (
     <>
@@ -25,7 +27,9 @@ export default function ReservationButton({
           <span className="lux-save-icon grid size-9 place-items-center rounded-xl">
             <Calendar size={16} />
           </span>
-          <span className="text-sm font-bold text-gray-800">Rezervasiya Et</span>
+          <span className="text-sm font-bold text-gray-800">
+            {t("Rezervasiya Et", "Make a Reservation", "Reservieren", "Réserver")}
+          </span>
         </span>
         <ExternalLink
           size={15}
