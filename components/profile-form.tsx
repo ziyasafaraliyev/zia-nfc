@@ -468,7 +468,8 @@ export default function ProfileForm({
       const avatarFile = formData.get("avatar") as File | null;
       if (avatarFile && avatarFile.size > 0 && !removeAvatar) {
         const compressed = await compressImage(avatarFile, 1200, 0.88);
-        formData.set("avatar", compressed);
+        const fileName = compressed.name || avatarFile.name || "avatar.webp";
+        formData.set("avatar", compressed, fileName);
       } else if (removeAvatar) {
         formData.delete("avatar");
       }
@@ -476,7 +477,8 @@ export default function ProfileForm({
       const backgroundFile = formData.get("background") as File | null;
       if (backgroundFile && backgroundFile.size > 0 && !removeBackground) {
         const compressed = await compressImage(backgroundFile, 2000, 0.86);
-        formData.set("background", compressed);
+        const fileName = compressed.name || backgroundFile.name || "background.webp";
+        formData.set("background", compressed, fileName);
       } else if (removeBackground) {
         formData.delete("background");
       }

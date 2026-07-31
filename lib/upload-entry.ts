@@ -50,7 +50,12 @@ export function isUploadEntry(
 }
 
 export function getUploadFileName(file: Blob, fallbackName?: string): string {
-  if (file instanceof File && file.name) {
+  if (
+    file instanceof File &&
+    file.name &&
+    file.name !== "blob" &&
+    file.name !== "undefined"
+  ) {
     return file.name;
   }
   return fallbackName || `upload-${Date.now()}.webp`;
@@ -61,12 +66,16 @@ export function getExtension(fileName: string): string {
 }
 
 export function guessMimeType(fileName: string, declaredType?: string): string {
-  if (declaredType && declaredType.trim()) {
+  if (
+    declaredType &&
+    declaredType.trim() &&
+    declaredType.trim() !== "application/octet-stream"
+  ) {
     return declaredType.trim();
   }
 
   const ext = getExtension(fileName);
-  return MIME_BY_EXTENSION[ext] || "application/octet-stream";
+  return MIME_BY_EXTENSION[ext] || declaredType?.trim() || "application/octet-stream";
 }
 
 export function isAllowedImageMime(mime: string, fileName: string): boolean {

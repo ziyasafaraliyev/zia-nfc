@@ -1042,7 +1042,9 @@ export async function saveProfile(formData: FormData) {
     if (cvFile.size > MAX_UPLOAD_SIZE) {
       redirectWithSaveError("file-too-large");
     }
-    if (cvFile.type !== "application/pdf") {
+    const cvFileName = cvFile instanceof File ? cvFile.name : "cv.pdf";
+    const cvMime = guessMimeType(cvFileName, cvFile.type);
+    if (cvMime !== "application/pdf" && !cvFileName.toLowerCase().endsWith(".pdf")) {
       redirectWithSaveError("unsupported-cv");
     }
   }
@@ -1053,23 +1055,32 @@ export async function saveProfile(formData: FormData) {
 
   const avatar = avatarUpload
     ? await uploadFile(avatarUpload, `avatars/${slug}`, {
-        fileName: getUploadFileName(avatarUpload),
-        mimeType: guessMimeType(getUploadFileName(avatarUpload), avatarUpload.type),
+        fileName: getUploadFileName(avatarUpload, "avatar.webp"),
+        mimeType: guessMimeType(getUploadFileName(avatarUpload, "avatar.webp"), avatarUpload.type),
         kind: "avatar",
-      }).catch(() => redirectWithSaveError("upload"))
+      }).catch((err) => {
+        console.error("Avatar upload failed:", err);
+        redirectWithSaveError("upload");
+      })
     : null;
   const background = backgroundUpload
     ? await uploadFile(backgroundUpload, `backgrounds/${slug}`, {
-        fileName: getUploadFileName(backgroundUpload),
-        mimeType: guessMimeType(getUploadFileName(backgroundUpload), backgroundUpload.type),
+        fileName: getUploadFileName(backgroundUpload, "background.webp"),
+        mimeType: guessMimeType(getUploadFileName(backgroundUpload, "background.webp"), backgroundUpload.type),
         kind: "cover",
-      }).catch(() => redirectWithSaveError("upload"))
+      }).catch((err) => {
+        console.error("Background upload failed:", err);
+        redirectWithSaveError("upload");
+      })
     : null;
   const cv = cvUpload
     ? await uploadFile(cvUpload, `cvs/${slug}`, {
         fileName: getUploadFileName(cvUpload, "cv.pdf"),
         mimeType: guessMimeType(getUploadFileName(cvUpload, "cv.pdf"), cvUpload.type),
-      }).catch(() => redirectWithSaveError("upload"))
+      }).catch((err) => {
+        console.error("CV upload failed:", err);
+        redirectWithSaveError("upload");
+      })
     : null;
 
   // Upload files for each section (sequential to avoid storage rate limits)
