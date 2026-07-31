@@ -189,21 +189,21 @@ function LandingPageInner() {
               <Sparkles size={16} /> {t("Rəqəmsal Profil & SaaS Platforması", "Digital Profile & SaaS Platform")}
             </div>
             <h1 className="max-w-4xl text-balance text-5xl font-black leading-[0.96] tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
-              {t("Rəqəmsal Vizit Və Profil Platforması", "Digital Business Card & Profile Platform")}
+              {t("Ağıllı NFC Vizit Kartları", "Smart NFC Business Cards")}
             </h1>
             <p className="mt-6 max-w-2xl text-pretty text-lg leading-8 text-slate-600 sm:text-xl">
               {t(
-                "Zia NFC brendinizi, kontaktlarınızı və portfolionuzu bir araya gətirən müasir rəqəmsal profil platformasıdır. Avtomatik vCard və dinamik QR kod inteqrasiyası ilə 24/7 əlçatandır.",
-                "Zia NFC is the modern digital profile platform that brings together your brand, contacts and portfolio. Available 24/7 with automatic vCard and dynamic QR code integration."
+                "Bir toxunuşla əlaqələrinizi, sosial şəbəkələrinizi və biznes profilinizi saniyələr içində paylaşın. Kağız vizitlərdən daha sürətli, daha premium və daha effektiv.",
+                "Share your contacts, social networks, and business profile in seconds with a single tap. Faster, more premium, and more effective than paper cards."
               )}
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <a
-                href="#pricing"
+              <Link
+                href="/admin"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-6 py-4 font-extrabold text-white shadow-[0_18px_45px_rgba(14,165,233,0.28)] transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98]"
               >
-                {t("Abunə ol", "Subscribe")} <ArrowRight size={18} />
-              </a>
+                {t("Zia NFC", "Zia NFC")} <ArrowRight size={18} />
+              </Link>
               <Link
                 href="/pay"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-6 py-4 font-extrabold text-white shadow-[0_18px_45px_rgba(14,165,233,0.28)] transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98]"

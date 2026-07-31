@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { LangSwitcher, useLang } from "@/components/language-context";
 import {
   ArrowLeft,
   ArrowRight,
@@ -91,6 +92,76 @@ const HOW_IT_WORKS = [
 ];
 
 export default function ZiaMenuPage() {
+  const { lang, t } = useLang();
+
+  const features = lang === "en" ? [
+    {
+      icon: UtensilsCrossed,
+      color: "bg-sky-50 text-sky-600",
+      hoverBorder: "hover:border-sky-200",
+      title: "Digital Menu",
+      desc: "Full digital menu with categories, prices, photos and descriptions. No paper menus needed.",
+    },
+    {
+      icon: QrCode,
+      color: "bg-sky-50 text-sky-600",
+      hoverBorder: "hover:border-sky-200",
+      title: "QR Code & NFC Support",
+      desc: "Place a QR code or NFC sticker on every table. Customers tap or scan — menu opens instantly.",
+    },
+    {
+      icon: Layers,
+      color: "bg-purple-50 text-purple-600",
+      hoverBorder: "hover:border-purple-200",
+      title: "Category System",
+      desc: "Main dishes, drinks, desserts — each category separated. Up to 30 categories with 80 products each.",
+    },
+    {
+      icon: Smartphone,
+      color: "bg-emerald-50 text-emerald-600",
+      hoverBorder: "hover:border-emerald-200",
+      title: "Mobile Optimized",
+      desc: "Looks perfect on any smartphone. Loads fast, requires no app installation.",
+    },
+    {
+      icon: Globe,
+      color: "bg-amber-50 text-amber-600",
+      hoverBorder: "hover:border-amber-200",
+      title: "Live Updates",
+      desc: "Price change or new item? Update from admin panel — changes reflect instantly on the menu.",
+    },
+    {
+      icon: Star,
+      color: "bg-pink-50 text-pink-600",
+      hoverBorder: "hover:border-pink-200",
+      title: "Customer Rating System",
+      desc: "Customers can rate your restaurant. Ratings and reviews appear directly on your profile.",
+    },
+  ] : FEATURES;
+
+  const howItWorks = lang === "en" ? [
+    {
+      step: "01",
+      title: "Registration",
+      desc: "Add your restaurant from admin panel. Enter name, logo, cover image, and contact details.",
+    },
+    {
+      step: "02",
+      title: "Create Menu",
+      desc: "Create categories and add dishes — name, price, description, photo. Everything in a visual editor.",
+    },
+    {
+      step: "03",
+      title: "Place QR / NFC",
+      desc: "Print auto-generated QR codes or order NFC stickers. Place them on each table.",
+    },
+    {
+      step: "04",
+      title: "Customers Use It",
+      desc: "Customers tap or scan — menu opens. They browse categories, select, and order.",
+    },
+  ] : HOW_IT_WORKS;
+
   return (
     <main className="min-h-screen bg-white text-slate-950 selection:bg-sky-500 selection:text-white">
       {/* Header */}
@@ -100,7 +171,7 @@ export default function ZiaMenuPage() {
             <Link
               href="/"
               className="grid size-9 place-items-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition duration-200 hover:border-sky-500 hover:text-sky-500 hover:bg-sky-50 active:scale-95"
-              title="Əsas səhifəyə qayıt"
+              title={t("Əsas səhifəyə qayıt", "Back to main page")}
             >
               <ArrowLeft size={18} />
             </Link>
@@ -118,10 +189,11 @@ export default function ZiaMenuPage() {
             </Link>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <LangSwitcher />
             <Link
               href="/restoran"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-black uppercase tracking-[0.1em] text-slate-700 shadow-sm transition duration-200 hover:border-sky-500 hover:text-sky-600 hover:bg-sky-50 active:scale-[0.98] sm:px-5 sm:py-2.5 sm:text-sm"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-black uppercase tracking-[0.1em] text-slate-700 shadow-sm transition duration-200 hover:border-sky-500 hover:text-sky-600 hover:bg-sky-50 active:scale-[0.98] sm:px-5 sm:py-2.5 sm:text-sm"
             >
               <ShieldCheck size={16} className="text-sky-500" /> Zia Menu Admin
             </Link>
@@ -129,9 +201,9 @@ export default function ZiaMenuPage() {
               href="https://wa.me/994702990252?text=Salam,%20Zia%20Menu%20restoran%20menyusu%20sifarish%20etmek%20isteyirem"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-4 py-2 text-xs font-black uppercase tracking-[0.1em] text-white shadow-[0_12px_30px_rgba(14,165,233,0.25)] transition duration-200 hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98] sm:px-5 sm:py-2.5 sm:text-sm"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-3.5 py-2 text-xs font-black uppercase tracking-[0.1em] text-white shadow-[0_12px_30px_rgba(14,165,233,0.25)] transition duration-200 hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98] sm:px-5 sm:py-2.5 sm:text-sm"
             >
-              <MessageCircle size={16} /> Əlaqə
+              <MessageCircle size={16} /> {t("Əlaqə", "Contact")}
             </a>
           </div>
         </div>
@@ -142,18 +214,19 @@ export default function ZiaMenuPage() {
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/70 to-transparent" />
         <div className="relative mx-auto max-w-7xl text-center">
           <div className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-sky-200/70 bg-sky-50 px-4 py-2 text-xs font-extrabold text-sky-800">
-            <Sparkles size={16} className="text-sky-500" /> Zia Menu — Rəqəmsal Restoran Menyusu
+            <Sparkles size={16} className="text-sky-500" /> {t("Zia Menu — Rəqəmsal Restoran Menyusu", "Zia Menu — Digital Restaurant Menu")}
           </div>
 
           <h1 className="mx-auto max-w-4xl text-balance text-4xl font-black tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
-            Restoranınız üçün{" "}
-            <span className="text-sky-500">Rəqəmsal Menyu</span> Həlli
+            {t("Restoranınız üçün", "Digital Menu Solution for")} {" "}
+            <span className="text-sky-500">{t("Rəqəmsal Menyu", "Your Restaurant")}</span> {t("Həlli", "")}
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-pretty text-base leading-8 text-slate-600 sm:text-lg">
-            Kağız menyuya son verin. NFC və ya QR kod ilə müştəriləriniz
-            telefondan menyuya baxsın, kateqoriyaları görsün, qiymətləri
-            öyrənsin — hamısı 1 saniyədə.
+            {t(
+              "Kağız menyuya son verin. NFC və ya QR kod ilə müştəriləriniz telefondan menyuya baxsın, kateqoriyaları görsün, qiymətləri öyrənsin — hamısı 1 saniyədə.",
+              "End paper menus. Let your customers view the menu, browse categories, and check prices on their phone via NFC or QR code — all in 1 second."
+            )}
           </p>
 
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -163,22 +236,22 @@ export default function ZiaMenuPage() {
               rel="noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-8 py-4 text-base font-extrabold text-white shadow-[0_18px_45px_rgba(14,165,233,0.28)] transition duration-200 hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98]"
             >
-              Əlaqə saxla <ArrowRight size={18} />
+              {t("Əlaqə saxla", "Contact Us")} <ArrowRight size={18} />
             </a>
             <Link
               href="/restoran"
               className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-8 py-4 text-base font-extrabold text-slate-800 shadow-sm transition hover:bg-slate-50 active:scale-95"
             >
-              <ShieldCheck size={16} className="text-sky-500" /> Admin Paneli
+              <ShieldCheck size={16} className="text-sky-500" /> {t("Admin Paneli", "Admin Panel")}
             </Link>
           </div>
 
           {/* Stats */}
           <div className="mx-auto mt-12 grid max-w-3xl grid-cols-3 gap-3">
             {[
-              ["∞", "Limitsiz Yemək"],
-              ["30+", "Kateqoriya"],
-              ["1 san", "Menyu Yüklənmə"],
+              ["∞", t("Limitsiz Yemək", "Unlimited Dishes")],
+              ["30+", t("Kateqoriya", "Categories")],
+              ["1 san", t("Menyu Yüklənmə", "Load Time")],
             ].map(([value, label]) => (
               <div
                 key={label}
@@ -204,24 +277,26 @@ export default function ZiaMenuPage() {
             <div className="space-y-5">
               <div>
                 <p className="text-xs font-black uppercase tracking-[0.2em] text-sky-600">
-                  Canlı Nümunə
+                  {t("Canlı Nümunə", "Live Demo")}
                 </p>
                 <h2 className="mt-1 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
-                  Müştəri Nə Görür?
+                  {t("Müştəri Nə Görür?", "What Customers See")}
                 </h2>
                 <p className="mt-3 text-base text-slate-600">
-                  QR kodu oxudan və ya NFC stikerə telefonu yaxınlaşdıran müştəri
-                  dərhal menyunuzu görür.
+                  {t(
+                    "QR kodu oxudan və ya NFC stikerə telefonu yaxınlaşdıran müştəri dərhal menyunuzu görür.",
+                    "Customers who scan the QR code or tap the NFC sticker see your menu immediately."
+                  )}
                 </p>
               </div>
 
               <div className="space-y-3">
                 {[
-                  "Kateqoriyalar arasında rahat naviqasiya",
-                  "Hər yeməyin şəkli, qiyməti və təsviri",
-                  "Mobil-uyğun dizayn, tez yüklənmə",
-                  "Heç bir app yükləmə tələb olunmur",
-                  "Onlayn sifariş imkanı",
+                  t("Kateqoriyalar arasında rahat naviqasiya", "Easy navigation between categories"),
+                  t("Hər yeməyin şəkli, qiyməti və təsviri", "Photo, price and description for every dish"),
+                  t("Mobil-uyğun dizayn, tez yüklənmə", "Mobile-friendly design, fast loading"),
+                  t("Heç bir app yükləmə tələb olunmur", "No app download required"),
+                  t("Onlayn sifariş imkanı", "Online ordering capability"),
                 ].map((text) => (
                   <div
                     key={text}
@@ -277,53 +352,40 @@ export default function ZiaMenuPage() {
                     </div>
                   </div>
 
-                  {/* Category Tabs */}
-                  <div className="px-5 mt-4">
-                    <div className="grid grid-cols-4 gap-1.5 text-center">
-                      {["Yeməklər", "Salatlar", "İçkilər", "Desertlər"].map(
-                        (cat, i) => (
-                          <span
-                            key={cat}
-                            className={`rounded-full px-2 py-1.5 text-[10px] font-bold transition truncate ${
-                              i === 0
-                                ? "bg-sky-500 text-white shadow-sm"
-                                : "bg-white border border-slate-200 text-slate-600"
-                            }`}
-                          >
-                            {cat}
-                          </span>
-                        )
-                      )}
+                  {/* Demo Menu Content */}
+                  <div className="px-5 mt-5 space-y-4">
+                    <div className="flex gap-2 overflow-x-auto pb-1 text-xs font-bold scrollbar-none">
+                      <span className="bg-sky-500 text-white px-3 py-1.5 rounded-full shrink-0">
+                        {t("Əsas Yeməklər", "Main Dishes")}
+                      </span>
+                      <span className="bg-slate-200 text-slate-700 px-3 py-1.5 rounded-full shrink-0">
+                        {t("Desertlər", "Desserts")}
+                      </span>
+                      <span className="bg-slate-200 text-slate-700 px-3 py-1.5 rounded-full shrink-0">
+                        {t("İçkilər", "Drinks")}
+                      </span>
                     </div>
-                  </div>
 
-                  {/* Menu Items */}
-                  <div className="px-5 mt-4 space-y-2.5">
                     {[
                       {
-                        name: "Qutab (ət)",
-                        price: "4.50 ₼",
-                        desc: "Nazik xəmirdə ət ilə",
+                        name: t("Tərəvəzli Bifşteks", "Vegetable Steak"),
+                        desc: t("Təzə tərəvəzlər və xüsusi sous", "Fresh vegetables & special sauce"),
+                        price: "18.00 ₼",
                       },
                       {
-                        name: "Plov",
+                        name: t("Sezar Salatı", "Caesar Salad"),
+                        desc: t("Toyuq feli, parmesan, parmezan sousu", "Chicken fillet, parmesan, caesar dressing"),
+                        price: "12.50 ₼",
+                      },
+                      {
+                        name: t("Tiramisu", "Tiramisu"),
+                        desc: t("İtalyan resepti ilə hazırlanan şirniyyat", "Authentic Italian dessert"),
                         price: "8.00 ₼",
-                        desc: "Şəhriyyə ilə klassik plov",
-                      },
-                      {
-                        name: "Dolma",
-                        price: "7.00 ₼",
-                        desc: "Üzüm yarpağında dolma",
-                      },
-                      {
-                        name: "Lülə Kabab",
-                        price: "9.50 ₼",
-                        desc: "Odda bişmiş əl lüləsi",
                       },
                     ].map((item) => (
                       <div
                         key={item.name}
-                        className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-3.5 shadow-sm"
+                        className="p-3 bg-white rounded-2xl border border-slate-200/70 shadow-sm flex items-center justify-between gap-3"
                       >
                         <div className="min-w-0">
                           <p className="text-sm font-black text-slate-900 truncate">
@@ -361,18 +423,18 @@ export default function ZiaMenuPage() {
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
             <p className="text-xs font-black uppercase tracking-[0.2em] text-sky-600">
-              Xüsusiyyətlər
+              {t("Xüsusiyyətlər", "Features")}
             </p>
             <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
-              Niyə Zia Menu?
+              {t("Niyə Zia Menu?", "Why Zia Menu?")}
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-base text-slate-600">
-              Kafe və restoranlar üçün hazırlanmış tam rəqəmsal menyu sistemi.
+              {t("Kafe və restoranlar üçün hazırlanmış tam rəqəmsal menyu sistemi.", "Complete digital menu system designed for cafes and restaurants.")}
             </p>
           </div>
 
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {FEATURES.map((f) => (
+            {features.map((f) => (
               <div
                 key={f.title}
                 className={`group rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_16px_50px_rgba(15,23,42,0.06)] transition duration-200 ease-out hover:-translate-y-0.5 ${f.hoverBorder}`}
@@ -401,15 +463,15 @@ export default function ZiaMenuPage() {
         <div className="mx-auto max-w-5xl">
           <div className="text-center">
             <p className="text-xs font-black uppercase tracking-[0.2em] text-sky-600">
-              Necə İşləyir
+              {t("Necə İşləyir", "How It Works")}
             </p>
             <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
-              4 Sadə Addım
+              {t("4 Sadə Addım", "4 Simple Steps")}
             </h2>
           </div>
 
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {HOW_IT_WORKS.map((item) => (
+            {howItWorks.map((item) => (
               <div
                 key={item.step}
                 className="group relative rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-sky-200"
@@ -433,12 +495,13 @@ export default function ZiaMenuPage() {
       <section className="border-t border-slate-200/80 bg-white px-4 py-16 text-center sm:px-6">
         <div className="mx-auto max-w-3xl">
           <h2 className="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
-            Restoranınızı Rəqəmsallaşdırın
+            {t("Restoranınızı Rəqəmsallaşdırın", "Digitize Your Restaurant")}
           </h2>
           <p className="mt-4 text-base leading-relaxed text-slate-600">
-            Zia Menu ilə kağız menyulara son verin. NFC stiker və QR kod ilə
-            müştəriləriniz 1 saniyədə menyunuzu görsün. Admin panelindən
-            istədiyiniz vaxt yeniləyin.
+            {t(
+              "Zia Menu ilə kağız menyulara son verin. NFC stiker və QR kod ilə müştəriləriniz 1 saniyədə menyunuzu görsün. Admin panelindən istədiyiniz vaxt yeniləyin.",
+              "End paper menus with Zia Menu. Let your customers see your menu in 1 second via NFC stickers and QR codes. Update anytime from the admin panel."
+            )}
           </p>
           <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
             <a
@@ -447,13 +510,13 @@ export default function ZiaMenuPage() {
               rel="noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-8 py-4 text-base font-extrabold text-white shadow-[0_18px_45px_rgba(14,165,233,0.28)] transition duration-200 hover:-translate-y-0.5 hover:bg-sky-400 active:scale-95"
             >
-              WhatsApp ilə Əlaqə <ArrowRight size={18} />
+              {t("WhatsApp ilə Əlaqə", "Contact via WhatsApp")} <ArrowRight size={18} />
             </a>
             <Link
               href="/"
               className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-8 py-4 text-base font-extrabold text-slate-800 shadow-sm transition hover:bg-slate-50 active:scale-95"
             >
-              Əsas Səhifə
+              {t("Əsas Səhifə", "Home Page")}
             </Link>
           </div>
         </div>

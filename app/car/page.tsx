@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { LangSwitcher, useLang } from "@/components/language-context";
 import {
   ArrowLeft,
   ArrowRight,
@@ -39,7 +40,7 @@ const INITIAL_DEMO: DemoState = {
   plate: "99-AA-001",
   driverName: "Ziya Səfərəliyev",
   phone1: "+994 50 123 45 67",
-  phone2: "+994 70 987 65 43",
+  phone2: "",
   whatsapp: "994501234567",
   instagram: "https://instagram.com/zianfc.az",
   tiktok: "https://tiktok.com/@zianfc.az",
@@ -52,6 +53,7 @@ const INITIAL_DEMO: DemoState = {
 export default function ZiaCarPage() {
   const [demo, setDemo] = useState<DemoState>(INITIAL_DEMO);
   const [showEditControls, setShowEditControls] = useState(false);
+  const { lang, t } = useLang();
 
   return (
     <main className="min-h-screen bg-white text-slate-950 selection:bg-sky-500 selection:text-white">
@@ -62,7 +64,7 @@ export default function ZiaCarPage() {
             <Link
               href="/"
               className="grid size-9 place-items-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition duration-200 hover:border-sky-500 hover:text-sky-500 hover:bg-sky-50 active:scale-95"
-              title="Əsas səhifəyə qayıt"
+              title={t("Əsas səhifəyə qayıt", "Back to main page")}
             >
               <ArrowLeft size={18} />
             </Link>
@@ -80,10 +82,11 @@ export default function ZiaCarPage() {
             </Link>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <LangSwitcher />
             <Link
               href="/car/admin"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-black uppercase tracking-[0.1em] text-slate-700 shadow-sm transition duration-200 hover:border-sky-500 hover:text-sky-600 hover:bg-sky-50 active:scale-[0.98] sm:px-5 sm:py-2.5 sm:text-sm"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-black uppercase tracking-[0.1em] text-slate-700 shadow-sm transition duration-200 hover:border-sky-500 hover:text-sky-600 hover:bg-sky-50 active:scale-[0.98] sm:px-5 sm:py-2.5 sm:text-sm"
             >
               <ShieldCheck size={16} className="text-sky-500" /> Zia Car Admin
             </Link>
@@ -91,9 +94,9 @@ export default function ZiaCarPage() {
               href="https://wa.me/994702990252?text=Salam,%20Zia%20Car%20avto%20stikeri%20sifarish%20etmek%20isteyirem"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-4 py-2 text-xs font-black uppercase tracking-[0.1em] text-white shadow-[0_12px_30px_rgba(14,165,233,0.25)] transition duration-200 hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98] sm:px-5 sm:py-2.5 sm:text-sm"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-3.5 py-2 text-xs font-black uppercase tracking-[0.1em] text-white shadow-[0_12px_30px_rgba(14,165,233,0.25)] transition duration-200 hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98] sm:px-5 sm:py-2.5 sm:text-sm"
             >
-              <MessageCircle size={16} /> Sifariş et
+              <MessageCircle size={16} /> {t("Sifariş et", "Order Now")}
             </a>
           </div>
         </div>
@@ -104,15 +107,18 @@ export default function ZiaCarPage() {
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/70 to-transparent" />
         <div className="relative mx-auto max-w-7xl text-center">
           <div className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-sky-200/70 bg-sky-50 px-4 py-2 text-xs font-extrabold text-sky-800">
-            <Sparkles size={16} className="text-sky-500" /> Zia Car — Sadə Avto NFC Vizitka
+            <Sparkles size={16} className="text-sky-500" /> {t("Zia Car — Sadə Avto NFC Vizitka", "Zia Car — Simple Auto NFC Card")}
           </div>
 
           <h1 className="mx-auto max-w-4xl text-balance text-4xl font-black tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
-            Avtomobiliniz üçün <span className="text-sky-500">Sadə və Təhlükəsiz</span> Rəqəmsal Profil
+            {t("Avtomobiliniz üçün", "Simple & Safe Digital Profile")} <span className="text-sky-500">{t("Sadə və Təhlükəsiz", "for Your Car")}</span> {t("Rəqəmsal Profil", "")}
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-pretty text-base leading-8 text-slate-600 sm:text-lg">
-            Kağız üzərində nömrə yazmağa son! Ön şüşədəki NFC stiker və ya QR kod vasitəsilə 1 saniyədə zəng edin, WhatsApp-da yazın və sosial şəbəkələrinizə keçid edin.
+            {t(
+              "Kağız üzərində nömrə yazmağa son! Ön şüşədəki NFC stiker və ya QR kod vasitəsilə 1 saniyədə zəng edin, WhatsApp-da yazın və sosial şəbəkələrinizə keçid edin.",
+              "No more writing numbers on paper! Call, text on WhatsApp, or visit social networks in 1 second via the windshield NFC sticker or QR code."
+            )}
           </p>
         </div>
       </section>
@@ -123,17 +129,17 @@ export default function ZiaCarPage() {
           <div className="mb-6 flex flex-col items-center justify-between gap-4 sm:flex-row">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.2em] text-sky-600">
-                Canlı Nümunə
+                {t("Canlı Nümunə", "Live Demo")}
               </p>
               <h2 className="mt-1 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
-                Sadə Avto Profil Görünüşü
+                {t("Sadə Avto Profil Görünüşü", "Simple Auto Profile View")}
               </h2>
             </div>
             <button
               onClick={() => setShowEditControls(!showEditControls)}
               className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 shadow-sm transition hover:border-sky-500 hover:text-sky-600 active:scale-95"
             >
-              <Zap size={14} className="text-sky-500" /> {showEditControls ? "Redaktəni bağla" : "Test üçün məlumatları dəyiş"}
+              <Zap size={14} className="text-sky-500" /> {showEditControls ? t("Redaktəni bağla", "Close Edit") : t("Test üçün məlumatları dəyiş", "Edit details for demo")}
             </button>
           </div>
 
@@ -141,11 +147,11 @@ export default function ZiaCarPage() {
           {showEditControls && (
             <div className="mb-8 rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_16px_50px_rgba(15,23,42,0.08)]">
               <h3 className="mb-4 text-xs font-extrabold uppercase tracking-wider text-sky-600">
-                Canlı Test Redaktəsi (Nümunə üçün)
+                {t("Canlı Test Redaktəsi (Nümunə üçün)", "Live Demo Editor")}
               </h3>
               <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
                 <div>
-                  <label className="text-[11px] font-bold text-slate-500">Avto / Model</label>
+                  <label className="text-[11px] font-bold text-slate-500">{t("Avto / Model", "Car / Model")}</label>
                   <input
                     type="text"
                     value={demo.carName}
@@ -154,7 +160,7 @@ export default function ZiaCarPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] font-bold text-slate-500">Dövlət Nömrəsi</label>
+                  <label className="text-[11px] font-bold text-slate-500">{t("Dövlət Nömrəsi", "License Plate")}</label>
                   <input
                     type="text"
                     value={demo.plate}
@@ -163,7 +169,7 @@ export default function ZiaCarPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] font-bold text-slate-500">Sürücü Adı</label>
+                  <label className="text-[11px] font-bold text-slate-500">{t("Sürücü Adı", "Driver Name")}</label>
                   <input
                     type="text"
                     value={demo.driverName}
@@ -172,7 +178,7 @@ export default function ZiaCarPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] font-bold text-slate-500">Nömrə 1 (Sürücü)</label>
+                  <label className="text-[11px] font-bold text-slate-500">{t("Əlaqə Nömrəsi", "Phone Number")}</label>
                   <input
                     type="text"
                     value={demo.phone1}
@@ -181,16 +187,7 @@ export default function ZiaCarPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] font-bold text-slate-500">Nömrə 2 (Təcili)</label>
-                  <input
-                    type="text"
-                    value={demo.phone2}
-                    onChange={(e) => setDemo({ ...demo, phone2: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-900 outline-none focus:border-sky-500 focus:bg-white"
-                  />
-                </div>
-                <div>
-                  <label className="text-[11px] font-bold text-slate-500">WhatsApp Nömrəsi</label>
+                  <label className="text-[11px] font-bold text-slate-500">{t("WhatsApp Nömrəsi", "WhatsApp Number")}</label>
                   <input
                     type="text"
                     value={demo.whatsapp}
@@ -211,10 +208,13 @@ export default function ZiaCarPage() {
                   <div className="grid size-11 place-items-center rounded-2xl bg-sky-50 text-sky-600">
                     <Car size={22} />
                   </div>
-                  <h3 className="text-lg font-black text-slate-950">Profil Şəkli & Cover Dəstəyi</h3>
+                  <h3 className="text-lg font-black text-slate-950">{t("Profil Şəkli & Cover Dəstəyi", "Profile Picture & Cover Support")}</h3>
                 </div>
                 <p className="mt-3 text-sm leading-relaxed text-slate-600">
-                  Avtomobilinizin şəkli (Cover) və sürücü/müştəri fotosu profilin yuxarı hissəsində təmiz göstərilir.
+                  {t(
+                    "Avtomobilinizin şəkli (Cover) və sürücü/müştəri fotosu profilin yuxarı hissəsində təmiz göstərilir.",
+                    "Your vehicle's cover photo and driver photo are clearly presented at the top of your profile."
+                  )}
                 </p>
               </div>
 
@@ -223,10 +223,13 @@ export default function ZiaCarPage() {
                   <div className="grid size-11 place-items-center rounded-2xl bg-emerald-50 text-emerald-600">
                     <Phone size={22} />
                   </div>
-                  <h3 className="text-lg font-black text-slate-950">İki Əlaqə Nömrəsi & WhatsApp</h3>
+                  <h3 className="text-lg font-black text-slate-950">{t("İki Əlaqə Nömrəsi & WhatsApp", "Two Contact Numbers & WhatsApp")}</h3>
                 </div>
                 <p className="mt-3 text-sm leading-relaxed text-slate-600">
-                  Parkinq zamanı maneə yarandıqda bir toxunuşla birbaşa zəng açılır və ya WhatsApp çatı başlanır.
+                  {t(
+                    "Parkinq zamanı maneə yarandıqda bir toxunuşla birbaşa zəng açılır və ya WhatsApp çatı başlanır.",
+                    "If blocking parking, call directly or open WhatsApp chat with a single tap."
+                  )}
                 </p>
               </div>
 
@@ -235,10 +238,13 @@ export default function ZiaCarPage() {
                   <div className="grid size-11 place-items-center rounded-2xl bg-purple-50 text-purple-600">
                     <Instagram size={22} />
                   </div>
-                  <h3 className="text-lg font-black text-slate-950">Sosial Şəbəkələr & Lokasiya</h3>
+                  <h3 className="text-lg font-black text-slate-950">{t("Sosial Şəbəkələr & Lokasiya", "Social Networks & Location")}</h3>
                 </div>
                 <p className="mt-3 text-sm leading-relaxed text-slate-600">
-                  Instagram, TikTok, Telegram və Waze naviqasiya düymələri tam inteqrasiya edilib.
+                  {t(
+                    "Instagram, TikTok, Telegram və Waze naviqasiya düymələri tam inteqrasiya edilib.",
+                    "Instagram, TikTok, Telegram, and Waze navigation buttons are fully integrated."
+                  )}
                 </p>
               </div>
             </div>
@@ -301,7 +307,7 @@ export default function ZiaCarPage() {
                       className="flex h-12 w-full items-center justify-between rounded-2xl bg-sky-500 px-4 font-extrabold text-white shadow-md shadow-sky-500/20 transition hover:bg-sky-400 active:scale-95"
                     >
                       <span className="flex items-center gap-2.5 text-sm">
-                        <Phone size={18} /> Zəng et (Sürücü)
+                        <Phone size={18} /> {t("Zəng et (Sürücü)", "Call (Driver)")}
                       </span>
                       <span className="text-xs font-bold opacity-90">{demo.phone1}</span>
                     </a>
@@ -313,7 +319,7 @@ export default function ZiaCarPage() {
                         className="flex h-12 w-full items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 font-bold text-slate-700 shadow-sm transition hover:border-sky-500 hover:text-sky-600 active:scale-95"
                       >
                         <span className="flex items-center gap-2.5 text-sm">
-                          <Phone size={18} className="text-sky-500" /> Təcili Əlaqə
+                          <Phone size={18} className="text-sky-500" /> {t("Təcili Əlaqə", "Emergency Contact")}
                         </span>
                         <span className="text-xs font-semibold text-slate-500">{demo.phone2}</span>
                       </a>
@@ -327,7 +333,7 @@ export default function ZiaCarPage() {
                       className="flex h-12 w-full items-center justify-between rounded-2xl bg-emerald-500 px-4 font-extrabold text-white shadow-md shadow-emerald-500/20 transition hover:bg-emerald-400 active:scale-95"
                     >
                       <span className="flex items-center gap-2.5 text-sm">
-                        <MessageCircle size={18} /> WhatsApp ilə yaz
+                        <MessageCircle size={18} /> {t("WhatsApp ilə yaz", "Text on WhatsApp")}
                       </span>
                       <ExternalLink size={15} className="opacity-80" />
                     </a>
@@ -335,11 +341,11 @@ export default function ZiaCarPage() {
                     {/* Save Contact vCard */}
                     <button
                       type="button"
-                      onClick={() => alert("Profil kontakt faylı (.vcf) endirilir.")}
+                      onClick={() => alert(t("Profil kontakt faylı (.vcf) endirilir.", "Downloading contact file (.vcf)."))}
                       className="flex h-12 w-full items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 font-bold text-slate-800 shadow-sm transition hover:border-slate-300 active:scale-95"
                     >
                       <span className="flex items-center gap-2.5 text-sm">
-                        <UserPlus size={18} className="text-sky-500" /> Kontaktı Yadda Saxla
+                        <UserPlus size={18} className="text-sky-500" /> {t("Kontaktı Yadda Saxla", "Save Contact")}
                       </span>
                       <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">vCard</span>
                     </button>
@@ -348,7 +354,7 @@ export default function ZiaCarPage() {
                   {/* Social Buttons Grid */}
                   <div className="px-5 mt-5">
                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2.5">
-                      Sosial Şəbəkələr & Lokasiya
+                      {t("Sosial Şəbəkələr & Lokasiya", "Social & Location")}
                     </p>
                     <div className="grid grid-cols-4 gap-2">
                       <a
@@ -414,10 +420,13 @@ export default function ZiaCarPage() {
       <section className="border-t border-slate-200/80 bg-white px-4 py-16 text-center sm:px-6">
         <div className="mx-auto max-w-3xl">
           <h2 className="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
-            Avtomobiliniz üçün Zia Car Şüşə Stikeri Əldə Edin
+            {t("Avtomobiliniz üçün Zia Car Şüşə Stikeri Əldə Edin", "Get Zia Car Windshield Sticker for Your Vehicle")}
           </h2>
           <p className="mt-4 text-base leading-relaxed text-slate-600">
-            Professional su keçirməz NFC şüşə stikeri və ya NFC avto kartı sifariş edin. Məlumatlarınızı istənilən an idarəetmə panelindən yeniləyə bilərsiniz.
+            {t(
+              "Professional su keçirməz NFC şüşə stikeri və ya NFC avto kartı sifariş edin. Məlumatlarınızı istənilən an idarəetmə panelindən yeniləyə bilərsiniz.",
+              "Order a professional waterproof NFC windshield sticker or NFC auto card. Update your details anytime from the management dashboard."
+            )}
           </p>
           <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
             <a
@@ -426,13 +435,13 @@ export default function ZiaCarPage() {
               rel="noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-8 py-4 text-base font-extrabold text-white shadow-[0_18px_45px_rgba(14,165,233,0.28)] transition duration-200 hover:-translate-y-0.5 hover:bg-sky-400 active:scale-95"
             >
-              WhatsApp ilə Sifariş et <ArrowRight size={18} />
+              {t("WhatsApp ilə Sifariş et", "Order via WhatsApp")} <ArrowRight size={18} />
             </a>
             <Link
               href="/"
               className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-8 py-4 text-base font-extrabold text-slate-800 shadow-sm transition hover:bg-slate-50 active:scale-95"
             >
-              Əsas Səhifə
+              {t("Əsas Səhifə", "Home Page")}
             </Link>
           </div>
         </div>
@@ -440,7 +449,7 @@ export default function ZiaCarPage() {
 
       {/* Light Footer */}
       <footer className="border-t border-slate-200 bg-slate-50 px-4 py-8 text-center text-xs font-semibold text-slate-500">
-        <p>© {new Date().getFullYear()} Zia NFC & Zia Car. Bütün hüquqlar qorunur.</p>
+        <p>© {new Date().getFullYear()} Zia NFC & Zia Car. {t("Bütün hüquqlar qorunur.", "All rights reserved.")}</p>
       </footer>
     </main>
   );

@@ -4,16 +4,26 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
+import { LangSwitcher, useLang } from "@/components/language-context";
 
 const SCROLL_KEY = "pay-scroll-to";
 
-const links = [
+const LINKS_AZ = [
   { label: "Demo", href: "/pay/demo/skan" as const },
   { label: "İş prinsipi", id: "how-it-works" },
   { label: "Xüsusiyyətlər", id: "features" },
   { label: "Qiymət", id: "pricing" },
   { label: "FAQ", id: "faq" },
   { label: "Haqqında", href: "/pay/about" as const },
+];
+
+const LINKS_EN = [
+  { label: "Demo", href: "/pay/demo/skan" as const },
+  { label: "How It Works", id: "how-it-works" },
+  { label: "Features", id: "features" },
+  { label: "Pricing", id: "pricing" },
+  { label: "FAQ", id: "faq" },
+  { label: "About", href: "/pay/about" as const },
 ];
 
 function scrollToId(id: string) {
@@ -74,6 +84,9 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  const { lang, t } = useLang();
+
+  const links = lang === "en" ? LINKS_EN : LINKS_AZ;
 
   usePaySectionScroll(pathname);
 
@@ -134,29 +147,34 @@ export default function Navbar() {
           )}
         </div>
 
-        <div className="hidden items-center gap-2 md:flex">
-          <Link
-            href="/menu"
-            className="inline-flex items-center justify-center gap-1.5 rounded-full bg-sky-500 px-4 py-2 text-xs font-black uppercase tracking-[0.1em] text-white shadow-md transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98] sm:px-5 sm:py-2.5 sm:text-sm"
-          >
-            Restoran
-          </Link>
-          <Link
-            href="/admin"
-            className="inline-flex items-center justify-center gap-1.5 rounded-full bg-sky-500 px-4 py-2 text-xs font-black uppercase tracking-[0.1em] text-white shadow-md transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98] sm:px-5 sm:py-2.5 sm:text-sm"
-          >
-            Admin
-          </Link>
-        </div>
+        <div className="flex items-center gap-2">
+          <div className="hidden md:block">
+            <LangSwitcher />
+          </div>
+          <div className="hidden items-center gap-2 md:flex">
+            <Link
+              href="/menu"
+              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-sky-500 px-4 py-2 text-xs font-black uppercase tracking-[0.1em] text-white shadow-md transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98] sm:px-5 sm:py-2.5 sm:text-sm"
+            >
+              Restoran
+            </Link>
+            <Link
+              href="/admin"
+              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-sky-500 px-4 py-2 text-xs font-black uppercase tracking-[0.1em] text-white shadow-md transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98] sm:px-5 sm:py-2.5 sm:text-sm"
+            >
+              Admin
+            </Link>
+          </div>
 
-        <button
-          type="button"
-          aria-label="Menyu"
-          className="flex size-11 items-center justify-center rounded-full text-slate-900 md:hidden"
-          onClick={() => setOpen((v) => !v)}
-        >
-          {open ? <X size={22} /> : <Menu size={22} />}
-        </button>
+          <button
+            type="button"
+            aria-label="Menyu"
+            className="flex size-11 items-center justify-center rounded-full text-slate-900 md:hidden"
+            onClick={() => setOpen((v) => !v)}
+          >
+            {open ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </nav>
 
       {open && (
@@ -183,6 +201,10 @@ export default function Navbar() {
                 </Link>
               )
             )}
+            <div className="mt-2 flex items-center justify-between border-t border-slate-100 pt-3">
+              <span className="text-xs font-semibold uppercase tracking-widest text-slate-400">Language</span>
+              <LangSwitcher />
+            </div>
             <Link
               href="/menu"
               onClick={() => setOpen(false)}
