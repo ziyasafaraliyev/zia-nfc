@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Download, QrCode, X, ZoomIn } from "lucide-react";
 import type { Profile } from "@/lib/types";
+import { useLang } from "@/components/language-context";
 
 const qrThemeColors: Record<
   NonNullable<Profile["theme"]>,
@@ -121,6 +122,7 @@ export default function QrCodeModal({
   const [loadQr, setLoadQr] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const themeColor = getQrThemeColor(theme);
+  const { t } = useLang();
 
   function open() {
     setLoadQr(true);
@@ -180,10 +182,15 @@ export default function QrCodeModal({
         <div className="min-w-0">
           <div className="flex items-center gap-2 text-sm font-bold text-gray-800">
             <QrCode size={14} className="shrink-0 text-indigo-500" />
-            <span>QR kod</span>
+            <span>{t("QR kod", "QR Code", "QR-Code", "Code QR")}</span>
           </div>
           <p className="mt-1 text-[11px] font-medium leading-[1.6] text-gray-400">
-            NFC işləmədikdə klikləyib böyüdün və kamera ilə skan edin.
+            {t(
+              "NFC işləmədikdə klikləyib böyüdün və kamera ilə skan edin.",
+              "If NFC does not work, click to enlarge and scan with camera.",
+              "Wenn NFC nicht funktioniert, klicken Sie zum Vergrößern und Scannen mit der Kamera.",
+              "Si le NFC ne fonctionne pas, cliquez pour agrandir et scanner avec l'appareil photo."
+            )}
           </p>
         </div>
       </div>
@@ -205,7 +212,7 @@ export default function QrCodeModal({
               <X size={20} />
             </button>
             <h3 className="mb-4 text-center text-lg font-bold text-slate-800">
-              {profileName} — QR Kod
+              {profileName} — {t("QR Kod", "QR Code", "QR-Code", "Code QR")}
             </h3>
             <div className="rounded-2xl bg-white p-3 shadow-inner">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -217,7 +224,12 @@ export default function QrCodeModal({
               />
             </div>
             <p className="mt-4 text-center text-xs font-semibold text-slate-400">
-              Digər cihazın kamerası ilə skan edərək profili tez aça bilərsiniz.
+              {t(
+                "Digər cihazın kamerası ilə skan edərək profili tez aça bilərsiniz.",
+                "Scan with another device's camera to quickly open the profile.",
+                "Scannen Sie mit der Kamera eines anderen Geräts, um das Profil schnell zu öffnen.",
+                "Scannez avec l'appareil photo d'un autre appareil pour ouvrir rapidement le profil."
+              )}
             </p>
             <button
               type="button"
@@ -233,7 +245,9 @@ export default function QrCodeModal({
               }}
             >
               <Download size={16} />
-              {downloading ? "Endirilir..." : "PNG olaraq endir"}
+              {downloading
+                ? t("Endirilir...", "Downloading...", "Wird heruntergeladen...", "Téléchargement...")
+                : t("PNG olaraq endir", "Download as PNG", "Als PNG herunterladen", "Télécharger en PNG")}
             </button>
             <a
               href={`${qrUrl}?format=svg`}
@@ -241,7 +255,7 @@ export default function QrCodeModal({
               className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 shadow-sm transition-all duration-200 active:scale-[0.96] hover:bg-slate-50"
             >
               <Download size={16} />
-              SVG olaraq endir
+              {t("SVG olaraq endir", "Download as SVG", "Als SVG herunterladen", "Télécharger en SVG")}
             </a>
           </div>
         </div>
