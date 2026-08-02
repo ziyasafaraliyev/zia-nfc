@@ -1490,7 +1490,7 @@ export default function ProfileForm({
           </label>
 
           <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition">
-            <span>Dil seçimi (AZ | EN | DE | FR) aktivdir</span>
+            <span>Dil seçimi (AZ | EN | DE | FR | RU) aktivdir</span>
             <input
               type="checkbox"
               name="lang_switcher_enabled"

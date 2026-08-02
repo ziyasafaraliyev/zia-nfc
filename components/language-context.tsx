@@ -8,23 +8,24 @@ import {
   type ReactNode,
 } from "react";
 
-export type Lang = "az" | "en" | "de" | "fr";
-export const LANGS: Lang[] = ["az", "en", "de", "fr"];
+export type Lang = "az" | "en" | "de" | "fr" | "ru";
+export const LANGS: Lang[] = ["az", "en", "de", "fr", "ru"];
 
 const LANG_LABELS: Record<Lang, string> = {
   az: "AZ",
   en: "EN",
   de: "DE",
   fr: "FR",
+  ru: "RU",
 };
 
 interface LangContextValue {
   lang: Lang;
   setLang: (l: Lang) => void;
   /** String overload */
-  t(az: string, en: string, de?: string, fr?: string): string;
+  t(az: string, en: string, de?: string, fr?: string, ru?: string): string;
   /** ReactNode overload — use when passing JSX */
-  t(az: ReactNode, en: ReactNode, de?: ReactNode, fr?: ReactNode): ReactNode;
+  t(az: ReactNode, en: ReactNode, de?: ReactNode, fr?: ReactNode, ru?: ReactNode): ReactNode;
 }
 
 const LangContext = createContext<LangContextValue>({
@@ -51,10 +52,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     } catch {}
   }
 
-  function t(az: ReactNode, en: ReactNode, de?: ReactNode, fr?: ReactNode): ReactNode {
+  function t(az: ReactNode, en: ReactNode, de?: ReactNode, fr?: ReactNode, ru?: ReactNode): ReactNode {
     if (lang === "en") return en;
     if (lang === "de") return de ?? az;
     if (lang === "fr") return fr ?? az;
+    if (lang === "ru") return ru ?? az;
     return az;
   }
 
@@ -108,7 +110,7 @@ export function LangSwitcher({ className = "" }: { className?: string }) {
   );
 }
 
-/** Full 4-language switcher for customer profile pages */
+/** Full language switcher (AZ, EN, DE, FR, RU) for customer profile pages */
 export function ProfileLangSwitcher({ className = "" }: { className?: string }) {
   const { lang, setLang } = useLang();
 
