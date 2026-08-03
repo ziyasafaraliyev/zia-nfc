@@ -71,10 +71,10 @@ export default function AddToWalletButton({
         a.rel = "noopener";
         a.click();
       } else {
-        alert(t("Xəta: ", "Error: ", "Fehler: ", "Erreur : ") + (data.error || t("Bilinməyən xəta", "Unknown error", "Unbekannter Fehler", "Erreur inconnue")));
+        alert(t("Xəta: ", "Error: ", "Fehler: ", "Erreur : ", "Ошибка: ") + (data.error || t("Bilinməyən xəta", "Unknown error", "Unbekannter Fehler", "Erreur inconnue", "Неизвестная ошибка")));
       }
     } catch {
-      alert(t("Şəbəkə xətası baş verdi", "Network error occurred", "Netzwerkfehler aufgetreten", "Une erreur réseau est survenue"));
+      alert(t("Şəbəkə xətası baş verdi", "Network error occurred", "Netzwerkfehler aufgetreten", "Une erreur réseau est survenue", "Произошла ошибка сети"));
     } finally {
       setLoading(false);
     }
@@ -109,11 +109,11 @@ export default function AddToWalletButton({
         <span className="flex min-w-0 flex-col items-start leading-tight">
           <span className="text-sm font-bold text-gray-800">
             {loading
-              ? t("Yüklənir...", "Loading...", "Wird geladen...", "Chargement...")
-              : t("Google Wallet-ə əlavə et", "Add to Google Wallet", "Zu Google Wallet hinzufügen", "Ajouter à Google Wallet")}
+              ? t("Yüklənir...", "Loading...", "Wird geladen...", "Chargement...", "Загрузка...")
+              : t("Google Wallet-ə əlavə et", "Add to Google Wallet", "Zu Google Wallet hinzufügen", "Ajouter à Google Wallet", "Добавить в Google Wallet")}
           </span>
           <span className="mt-0.5 max-w-full truncate text-[10px] font-semibold text-gray-400">
-            {t("Kontaktı telefonuna saxla", "Save contact to phone", "Kontakt auf dem Telefon speichern", "Enregistrer le contact sur le téléphone")}
+            {t("Kontaktı telefonuna saxla", "Save contact to phone", "Kontakt auf dem Telefon speichern", "Enregistrer le contact sur le téléphone", "Сохранить контакт в телефон")}
           </span>
         </span>
       </span>

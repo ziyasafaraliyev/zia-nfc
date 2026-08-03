@@ -10,6 +10,7 @@ import {
   X,
 } from "lucide-react";
 import type { PortfolioSection as PortfolioSectionType } from "@/lib/types";
+import { useLang } from "@/components/language-context";
 
 type GalleryInput = string[] | PortfolioSectionType[];
 
@@ -46,6 +47,7 @@ export default function PortfolioSection({
   gallery: GalleryInput;
   profileName: string;
 }) {
+  const { t } = useLang();
   const sections = normalizeSections(gallery);
   const totalImages = sections.reduce(
     (acc, section) => acc + (section.images?.length ?? 0),
@@ -97,9 +99,9 @@ export default function PortfolioSection({
               <ImageIcon size={18} />
             </span>
             <span className="flex flex-col items-start leading-tight">
-              <span className="text-sm font-bold text-gray-800">Portfolio</span>
+              <span className="text-sm font-bold text-gray-800">{t("Portfolio", "Portfolio", "Portfolio", "Portfolio", "Портфолио")}</span>
               <span className="mt-0.5 text-[10px] font-semibold text-gray-400">
-                {sections.length} bölmə · {totalImages} şəkil
+                {sections.length} {t("bölmə", "sections", "Abschnitte", "sections", "разделов")} · {totalImages} {t("şəkil", "images", "Bilder", "images", "фото")}
               </span>
             </span>
           </span>
@@ -117,15 +119,15 @@ export default function PortfolioSection({
                 key={section.id}
                 type="button"
                 onClick={() =>
-                  openLightbox(section.images, section.name || "Portfolio", 0)
+                  openLightbox(section.images, section.name || t("Portfolio", "Portfolio", "Portfolio", "Portfolio", "Портфолио") as string, 0)
                 }
                 className="lux-save-contact group flex w-full items-center justify-between gap-3 rounded-2xl px-4 py-3.5 transition-all duration-200 hover:scale-[1.01]"
               >
                 <span className="text-sm font-bold text-gray-800">
-                  {section.name || "Portfolio"}
+                  {section.name || t("Portfolio", "Portfolio", "Portfolio", "Portfolio", "Портфолио")}
                 </span>
                 <span className="text-xs font-semibold text-gray-400 transition-colors group-hover:text-[#29AEEE]">
-                  {section.images.length} şəkil
+                  {section.images.length} {t("şəkil", "images", "Bilder", "images", "фото")}
                 </span>
               </button>
             ))}

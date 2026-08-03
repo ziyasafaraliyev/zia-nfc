@@ -8,6 +8,7 @@ import {
   Link2,
 } from "lucide-react";
 import type { CatalogItem } from "@/lib/types";
+import { useLang } from "@/components/language-context";
 
 function normalizeUrl(raw: string): string | null {
   const value = raw.trim();
@@ -36,6 +37,7 @@ export default function CatalogSection({
 }: {
   catalog: CatalogItem[] | null | undefined;
 }) {
+  const { t } = useLang();
   const items = normalizeCatalog(catalog);
   const [open, setOpen] = useState(false);
 
@@ -53,9 +55,9 @@ export default function CatalogSection({
             <Link2 size={18} />
           </span>
           <span className="flex flex-col items-start leading-tight">
-            <span className="text-sm font-bold text-gray-800">Kataloq</span>
+            <span className="text-sm font-bold text-gray-800">{t("Kataloq", "Catalog", "Katalog", "Catalogue", "Каталог")}</span>
             <span className="mt-0.5 text-[10px] font-semibold text-gray-400">
-              {items.length} link
+              {items.length} {t("link", "links", "Links", "liens", "ссылок")}
             </span>
           </span>
         </span>

@@ -19,7 +19,7 @@ export default function ReferralButton({
       href={referralUrl}
       target="_blank"
       rel="noreferrer"
-      aria-label={`${profileName} — ${t("referral linki. Özün qeydiyyatdan keç, linki kopyala və paylaş", "referral link. Register yourself, copy and share the link", "Empfehlungslink. Registrieren Sie sich selbst, kopieren und teilen Sie den Link", "lien de parrainage. Inscrivez-vous, copiez et partagez le lien")}`}
+      aria-label={`${profileName} — ${t("referral linki. Özün qeydiyyatdan keç, linki kopyala və paylaş", "referral link. Register yourself, copy and share the link", "Empfehlungslink. Registrieren Sie sich selbst, kopieren und teilen Sie den Link", "lien de parrainage. Inscrivez-vous, copiez et partagez le lien", "реферальная ссылка. Зарегистрируйтесь, скопируйте и поделитесь ссылкой")}`}
       className="lux-save-contact group flex h-14 w-full items-center justify-between gap-3 rounded-2xl px-4 lux-card-enter-4 transition-transform duration-200 hover:scale-[1.02]"
     >
       <span className="flex min-w-0 items-center gap-3">
@@ -28,14 +28,15 @@ export default function ReferralButton({
         </span>
         <span className="flex min-w-0 flex-col items-start leading-tight">
           <span className="text-sm font-bold text-gray-800">
-            {t("Referral linki", "Referral link", "Empfehlungslink", "Lien de parrainage")}
+            {t("Referral linki", "Referral link", "Empfehlungslink", "Lien de parrainage", "Реферальная ссылка")}
           </span>
           <span className="mt-0.5 max-w-full truncate text-[10px] font-semibold text-gray-400">
             {t(
               "Linki kopyala və paylaş · Özün qeydiyyatdan keç",
               "Copy & share link · Register yourself",
               "Link kopieren & teilen · Selbst registrieren",
-              "Copier et partager le lien · Inscrivez-vous"
+              "Copier et partager le lien · Inscrivez-vous",
+              "Скопируйте и поделитесь ссылкой · Зарегистрируйтесь"
             )}
           </span>
         </span>

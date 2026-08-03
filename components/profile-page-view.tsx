@@ -365,7 +365,7 @@ function ProfilePageViewInner({
               size={18}
               className="transition-transform duration-300 group-hover:scale-110"
             />
-            <span>{t("Zəng et", "Call", "Anrufen", "Appeler")}</span>
+            <span>{t("Zəng et", "Call", "Anrufen", "Appeler", "Позвонить")}</span>
           </a>
         ) : null}
         {profile.phone2 ? (
@@ -377,7 +377,7 @@ function ProfilePageViewInner({
               size={18}
               className="transition-transform duration-300 group-hover:scale-110"
             />
-            <span>{t("Zəng et 2", "Call 2", "Anrufen 2", "Appeler 2")}</span>
+            <span>{t("Zəng et 2", "Call 2", "Anrufen 2", "Appeler 2", "Позвонить 2")}</span>
           </a>
         ) : null}
       </div>
@@ -490,7 +490,7 @@ function ProfilePageViewInner({
               <UserPlus size={16} />
             </span>
             <span className="text-sm font-bold text-gray-800">
-              {t("Kontaktı yadda saxla", "Save Contact", "Kontakt speichern", "Sauvegarder le contact")}
+              {t("Kontaktı yadda saxla", "Save Contact", "Kontakt speichern", "Sauvegarder le contact", "Сохранить контакт")}
             </span>
           </span>
           <ExternalLink
@@ -516,7 +516,7 @@ function ProfilePageViewInner({
                 <Mail size={16} />
               </span>
               <span className="flex min-w-0 flex-col items-start leading-tight">
-                <span className="text-sm font-bold text-gray-800">{t("E-poçt", "Email", "E-Mail", "E-mail")}</span>
+                <span className="text-sm font-bold text-gray-800">{t("E-poçt", "Email", "E-Mail", "E-mail", "Эл. почта")}</span>
                 <span className="mt-0.5 max-w-full truncate text-[10px] font-semibold text-gray-400">
                   {profile.email}
                 </span>
@@ -552,7 +552,7 @@ function ProfilePageViewInner({
               <MapPin size={16} className="text-[#29AEEE]" />
             </span>
             <span className="flex min-w-0 flex-col items-start leading-tight">
-              <span className="text-sm font-bold text-gray-800">{t("Lokasiya", "Location", "Standort", "Localisation")}</span>
+              <span className="text-sm font-bold text-gray-800">{t("Lokasiya", "Location", "Standort", "Localisation", "Локация")}</span>
                 <span className="mt-0.5 max-w-full whitespace-pre-line break-words text-[10px] font-semibold text-gray-400">
                 {profile.location}
               </span>
@@ -578,9 +578,9 @@ function ProfilePageViewInner({
               <Star size={16} className="text-[#29AEEE]" />
             </span>
             <span className="flex flex-col items-start leading-tight">
-              <span className="text-sm font-bold text-gray-800">{t("Rəy bildir", "Leave a Review", "Bewertung abgeben", "Laisser un avis")}</span>
+              <span className="text-sm font-bold text-gray-800">{t("Rəy bildir", "Leave a Review", "Bewertung abgeben", "Laisser un avis", "Оставить отзыв")}</span>
               <span className="text-[10px] font-semibold text-gray-400 mt-0.5">
-                {t("Google-da bizi qiymətləndirin", "Rate us on Google", "Bewerten Sie uns auf Google", "Évaluez-nous sur Google")}
+                {t("Google-da bizi qiymətləndirin", "Rate us on Google", "Bewerten Sie uns auf Google", "Évaluez-nous sur Google", "Оцените нас в Google")}
               </span>
             </span>
           </span>
@@ -632,7 +632,7 @@ function ProfilePageViewInner({
           <span className="flex flex-col items-start leading-tight">
             <span className="text-sm font-bold text-gray-800">CV</span>
             <span className="text-[10px] font-semibold text-gray-400 mt-0.5">
-              {t("PDF formatında endir / bax", "Download / View PDF", "PDF herunterladen / ansehen", "Télécharger / voir le PDF")}
+              {t("PDF formatında endir / bax", "Download / View PDF", "PDF herunterladen / ansehen", "Télécharger / voir le PDF", "Скачать / открыть PDF")}
             </span>
           </span>
         </span>
@@ -681,14 +681,14 @@ function ProfilePageViewInner({
           <div className="lux-stat-divider flex flex-col items-center justify-center border-r border-gray-200/60 pr-1">
             <Eye size={18} className="text-sky-500 mb-1" />
             <span className="text-sm font-black text-gray-800">{viewsCount}</span>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t("Baxış", "Views", "Aufrufe", "Vues")}</span>
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t("Baxış", "Views", "Aufrufe", "Vues", "Просмотры")}</span>
           </div>
 
           {/* 2 — Kontaktı Saxlayanların Sayı */}
           <div className="lux-stat-divider flex flex-col items-center justify-center border-r border-gray-200/60 px-1">
             <UserCheck size={18} className="text-emerald-500 mb-1" />
             <span className="text-sm font-black text-gray-800">{savesCount}</span>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t("Saxlanıldı", "Saved", "Gespeichert", "Enregistré")}</span>
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t("Saxlanıldı", "Saved", "Gespeichert", "Enregistré", "Сохранено")}</span>
           </div>
 
           {/* 3 — Profili Paylaş (iOS/Android Native Share) */}
@@ -699,9 +699,9 @@ function ProfilePageViewInner({
           >
             <Share2 size={18} className="text-sky-600 mb-1 transition-transform group-hover:scale-110" />
             <span className="text-sm font-black text-sky-600">
-              {copied ? t("Kopyalandı!", "Copied!", "Kopiert!", "Copié!") : t("Paylaş", "Share", "Teilen", "Partager")}
+              {copied ? t("Kopyalandı!", "Copied!", "Kopiert!", "Copié!", "Скопировано!") : t("Paylaş", "Share", "Teilen", "Partager", "Поделиться")}
             </span>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t("Profili", "Profile", "Profil", "Profil")}</span>
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t("Profili", "Profile", "Profil", "Profil", "Профиль")}</span>
           </button>
         </div>
       ) : null,

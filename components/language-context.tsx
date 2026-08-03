@@ -1,6 +1,6 @@
 "use client";
 
-import {
+import React, {
   createContext,
   useContext,
   useState,
@@ -54,9 +54,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   function t(az: ReactNode, en: ReactNode, de?: ReactNode, fr?: ReactNode, ru?: ReactNode): ReactNode {
     if (lang === "en") return en;
-    if (lang === "de") return de ?? az;
-    if (lang === "fr") return fr ?? az;
-    if (lang === "ru") return ru ?? az;
+    if (lang === "de") return de ?? en ?? az;
+    if (lang === "fr") return fr ?? en ?? az;
+    if (lang === "ru") return ru ?? en ?? az;
     return az;
   }
 
@@ -121,10 +121,9 @@ export function ProfileLangSwitcher({ className = "" }: { className?: string }) 
       className={`flex shrink-0 items-center overflow-hidden rounded-full border border-slate-200/60 bg-black/20 backdrop-blur-md text-[10px] font-black uppercase tracking-wider shadow-sm ${className}`}
     >
       {LANGS.map((l, i) => (
-        <>
-          {i > 0 && <span key={`sep-${l}`} className="h-3.5 w-px bg-white/20" aria-hidden="true" />}
+        <React.Fragment key={l}>
+          {i > 0 && <span className="h-3.5 w-px bg-white/20" aria-hidden="true" />}
           <button
-            key={l}
             type="button"
             aria-pressed={lang === l}
             onClick={() => setLang(l)}
@@ -136,7 +135,7 @@ export function ProfileLangSwitcher({ className = "" }: { className?: string }) 
           >
             {LANG_LABELS[l]}
           </button>
-        </>
+        </React.Fragment>
       ))}
     </div>
   );

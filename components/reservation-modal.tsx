@@ -124,23 +124,23 @@ export default function ReservationModal({
 
   const handleSubmit = () => {
     if (!firstName || !lastName || !date || !time) {
-      alert(t("Zəhmət olmasa bütün sahələri doldurun", "Please fill in all fields", "Bitte füllen Sie alle Felder aus", "Veuillez remplir tous les champs"));
+      alert(t("Zəhmət olmasa bütün sahələri doldurun", "Please fill in all fields", "Bitte füllen Sie alle Felder aus", "Veuillez remplir tous les champs", "Пожалуйста, заполните все поля"));
       return;
     }
 
     // Format WhatsApp message with date format
     const formattedDate = formatDateAz(date);
     const formattedTime = formatTime24(time);
-    const noteLine = note.trim() ? `\n${t("Qeyd:", "Note:", "Hinweis:", "Note:")} ${note.trim()}` : "";
+    const noteLine = note.trim() ? `\n${t("Qeyd:", "Note:", "Hinweis:", "Note:", "Примечание:")} ${note.trim()}` : "";
 
-    const message = `${t("Salam", "Hello", "Hallo", "Bonjour")} ${profileName}.
+    const message = `${t("Salam", "Hello", "Hallo", "Bonjour", "Здравствуйте")} ${profileName}.
 
-${t("Yeni rezervasiya müraciəti:", "New reservation request:", "Neue Reservierungsanfrage:", "Nouvelle demande de réservation:")}
+${t("Yeni rezervasiya müraciəti:", "New reservation request:", "Neue Reservierungsanfrage:", "Nouvelle demande de réservation:", "Новая заявка на бронирование:")}
 
-${t("Ad:", "First Name:", "Vorname:", "Prénom:")} ${firstName}
-${t("Soyad:", "Last Name:", "Nachname:", "Nom:")} ${lastName}
-${t("Tarix:", "Date:", "Datum:", "Date:")} ${formattedDate}
-${t("Saat:", "Time:", "Uhrzeit:", "Heure:")} ${formattedTime}${noteLine}`;
+${t("Ad:", "First Name:", "Vorname:", "Prénom:", "Имя:")} ${firstName}
+${t("Soyad:", "Last Name:", "Nachname:", "Nom:", "Фамилия:")} ${lastName}
+${t("Tarix:", "Date:", "Datum:", "Date:", "Дата:")} ${formattedDate}
+${t("Saat:", "Time:", "Uhrzeit:", "Heure:", "Время:")} ${formattedTime}${noteLine}`;
 
     // Clean WhatsApp number (remove non-digits)
     const cleanNumber = whatsappNumber.replace(/[^\d]/g, "");
@@ -173,7 +173,7 @@ ${t("Saat:", "Time:", "Uhrzeit:", "Heure:")} ${formattedTime}${noteLine}`;
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-black text-slate-900">
-            {t("Rezervasiya Et", "Make a Reservation", "Reservierung vornehmen", "Faire une réservation")}
+            {t("Rezervasiya Et", "Make a Reservation", "Reservierung vornehmen", "Faire une réservation", "Забронировать")}
           </h2>
           <button
             onClick={onClose}
@@ -188,7 +188,7 @@ ${t("Saat:", "Time:", "Uhrzeit:", "Heure:")} ${formattedTime}${noteLine}`;
           {/* First Name */}
           <div>
             <label className="mb-1.5 block text-xs font-bold text-slate-500 uppercase tracking-wide">
-              {t("Ad", "First Name", "Vorname", "Prénom")}
+              {t("Ad", "First Name", "Vorname", "Prénom", "Имя")}
             </label>
             <div className="relative">
               <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -196,7 +196,7 @@ ${t("Saat:", "Time:", "Uhrzeit:", "Heure:")} ${formattedTime}${noteLine}`;
                 type="text"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                placeholder={t("Adınız", "Your first name", "Ihr Vorname", "Votre prénom") as string}
+                placeholder={t("Adınız", "Your first name", "Ihr Vorname", "Votre prénom", "Ваше имя") as string}
                 className="w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none transition focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/20"
               />
             </div>
@@ -205,7 +205,7 @@ ${t("Saat:", "Time:", "Uhrzeit:", "Heure:")} ${formattedTime}${noteLine}`;
           {/* Last Name */}
           <div>
             <label className="mb-1.5 block text-xs font-bold text-slate-500 uppercase tracking-wide">
-              {t("Soyad", "Last Name", "Nachname", "Nom")}
+              {t("Soyad", "Last Name", "Nachname", "Nom", "Фамилия")}
             </label>
             <div className="relative">
               <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -213,7 +213,7 @@ ${t("Saat:", "Time:", "Uhrzeit:", "Heure:")} ${formattedTime}${noteLine}`;
                 type="text"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                placeholder={t("Soyadınız", "Your last name", "Ihr Nachname", "Votre nom") as string}
+                placeholder={t("Soyadınız", "Your last name", "Ihr Nachname", "Votre nom", "Ваша фамилия") as string}
                 className="w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none transition focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/20"
               />
             </div>
@@ -222,7 +222,7 @@ ${t("Saat:", "Time:", "Uhrzeit:", "Heure:")} ${formattedTime}${noteLine}`;
           {/* Date */}
           <div>
             <label className="mb-1.5 block text-xs font-bold text-slate-500 uppercase tracking-wide">
-              {t("Tarix", "Date", "Datum", "Date")}
+              {t("Tarix", "Date", "Datum", "Date", "Дата")}
             </label>
             <div className="relative">
               <Calendar size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -244,7 +244,7 @@ ${t("Saat:", "Time:", "Uhrzeit:", "Heure:")} ${formattedTime}${noteLine}`;
           {/* Time */}
           <div>
             <label className="mb-1.5 block text-xs font-bold text-slate-500 uppercase tracking-wide">
-              {t("Saat", "Time", "Uhrzeit", "Heure")}
+              {t("Saat", "Time", "Uhrzeit", "Heure", "Время")}
             </label>
             <div className="relative">
               <Clock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -253,7 +253,7 @@ ${t("Saat:", "Time:", "Uhrzeit:", "Heure:")} ${formattedTime}${noteLine}`;
                 onChange={(e) => setTime(e.target.value)}
                 className="w-full appearance-none rounded-2xl border border-slate-200 bg-white pl-11 pr-20 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none transition focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/20"
               >
-                <option value="">{t("Saat seçin", "Select time", "Uhrzeit wählen", "Sélectionnez l'heure")}</option>
+                <option value="">{t("Saat seçin", "Select time", "Uhrzeit wählen", "Sélectionnez l'heure", "Выберите время")}</option>
                 {TIME_OPTIONS.map((option) => (
                   <option key={option} value={option}>
                     {option}
@@ -270,12 +270,12 @@ ${t("Saat:", "Time:", "Uhrzeit:", "Heure:")} ${formattedTime}${noteLine}`;
 
           <div>
             <label className="mb-1.5 block text-xs font-bold text-slate-500 uppercase tracking-wide">
-              {t("Qeyd", "Note", "Hinweis", "Note")}
+              {t("Qeyd", "Note", "Hinweis", "Note", "Примечание")}
             </label>
             <textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder={t("Əlavə qeyd yaza bilərsiniz", "Additional note", "Zusätzliche Anmerkung", "Note supplémentaire") as string}
+              placeholder={t("Əlavə qeyd yaza bilərsiniz", "Additional note", "Zusätzliche Anmerkung", "Note supplémentaire", "Дополнительное примечание") as string}
               rows={3}
               className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none transition focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/20"
             />
@@ -288,7 +288,7 @@ ${t("Saat:", "Time:", "Uhrzeit:", "Heure:")} ${formattedTime}${noteLine}`;
           className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-[#25D366] px-5 py-3.5 text-sm font-bold text-white shadow-md transition-all duration-200 hover:bg-[#20bd5a] hover:shadow-lg active:scale-[0.96]"
         >
           <Send size={16} />
-          {t("WhatsApp ilə göndər", "Send via WhatsApp", "Per WhatsApp senden", "Envoyer via WhatsApp")}
+          {t("WhatsApp ilə göndər", "Send via WhatsApp", "Per WhatsApp senden", "Envoyer via WhatsApp", "Отправить через WhatsApp")}
         </button>
       </div>
     </div>

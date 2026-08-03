@@ -28,7 +28,7 @@ export default function ReservationButton({
             <Calendar size={16} />
           </span>
           <span className="text-sm font-bold text-gray-800">
-            {t("Rezervasiya Et", "Make a Reservation", "Reservieren", "Réserver")}
+            {t("Rezervasiya Et", "Make a Reservation", "Reservieren", "Réserver", "Забронировать")}
           </span>
         </span>
         <ExternalLink
