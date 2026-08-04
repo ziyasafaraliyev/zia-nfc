@@ -668,13 +668,14 @@ export default function ProfileForm({
           defaultValue={profile?.name}
           required
         />
-        <Field
-          name="slug"
-          label="Profil linki / slug"
-          defaultValue={profile?.slug}
-          required
-          readOnly={userRole === "client"}
-        />
+        {userRole === "super_admin" ? (
+          <Field
+            name="slug"
+            label="Profil linki / slug"
+            defaultValue={profile?.slug}
+            required
+          />
+        ) : null}
         {hasProfession ? (
           <Field
             name="profession"
@@ -944,8 +945,8 @@ export default function ProfileForm({
         />
       </div>
 
-      {/* ── PROFİL TEMASI — toxun-aç ── */}
-      <div className="rounded-3xl border border-slate-200 bg-white overflow-hidden">
+      {userRole === "super_admin" ? (
+        <div className="rounded-3xl border border-slate-200 bg-white overflow-hidden">
         <button
           type="button"
           onClick={() => setThemePanelOpen((v) => !v)}
@@ -1172,6 +1173,7 @@ export default function ProfileForm({
           <input type="hidden" name="theme" value={theme} />
         )}
       </div>
+      ) : null}
 
       {/* ── PORTFOLIO — yığcam düymə, basanda açılır ── */}
       {showPortfolioSection ? (
