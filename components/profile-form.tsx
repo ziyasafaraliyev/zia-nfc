@@ -42,6 +42,10 @@ function getSocialFieldValue(
   return value?.trim() ? value : "";
 }
 
+function hasTextValue(value?: string | null) {
+  return typeof value === "string" && value.trim().length > 0;
+}
+
 function getSocialPlaceholder(key: keyof typeof socialBaseUrls) {
   switch (key) {
     case "whatsapp":
@@ -309,11 +313,33 @@ export default function ProfileForm({
   const hasCatalogContent = (catalogItems?.length ?? 0) > 0 || Boolean(profile?.catalog?.length);
   const hasCvContent = Boolean(profile?.cv_url);
   const hasGoogleReview = Boolean(profile?.google_review_url);
-  const showPortfolioSection = (profile?.portfolio_enabled ?? true) && hasPortfolioContent;
-  const showCatalogSection = true;
-  const showCvSection = (profile?.portfolio_enabled ?? true) && hasCvContent;
+  const showPortfolioSection = (profile?.portfolio_enabled ?? true) || hasPortfolioContent;
+  const showCatalogSection = hasCatalogContent;
+  const showCvSection = (profile?.portfolio_enabled ?? true) || hasCvContent;
   const showGoogleReviewSection = hasGoogleReview;
   const showLanguageSection = Boolean(profile?.lang_switcher_enabled);
+  const hasProfession = hasTextValue(profile?.profession);
+  const hasEmail = hasTextValue(profile?.email);
+  const hasPhone = hasTextValue(profile?.phone);
+  const hasPhone2 = hasTextValue(profile?.phone2);
+  const hasWhatsapp = hasTextValue(profile?.whatsapp);
+  const hasWhatsapp2 = hasTextValue(profile?.whatsapp2);
+  const hasLocation = hasTextValue(profile?.location) || hasTextValue(profile?.location_url);
+  const hasBio = hasTextValue(profile?.bio);
+  const hasAvatarOrBackground = Boolean(profile?.avatar_url || profile?.background_url);
+  const hasSocialLinks = [
+    profile?.telegram,
+    profile?.instagram,
+    profile?.tiktok,
+    profile?.website,
+    profile?.facebook,
+    profile?.x,
+    profile?.threads,
+    profile?.linkedin,
+    profile?.youtube,
+    profile?.behance,
+    profile?.waze,
+  ].some(hasTextValue);
   const showReservationSection = Boolean(profile?.reservation_enabled);
   const showReferralSection = Boolean(profile?.referral_enabled);
   const showWalletSection = (profile?.wallet_enabled ?? true);
@@ -649,190 +675,235 @@ export default function ProfileForm({
           required
           readOnly={userRole === "client"}
         />
-        <Field
-          name="profession"
-          label="Peşə"
-          defaultValue={profile?.profession}
-        />
-        <Field
-          name="email"
-          label="E-poçt"
-          defaultValue={profile?.email}
-          placeholder="email@example.com"
-          type="email"
-        />
-        <PhoneField
-          name="phone"
-          label="Telefon"
-          defaultValue={profile?.phone}
-          placeholder="+994 50 123 45 67"
-        />
-        <PhoneField
-          name="phone2"
-          label="Telefon 2"
-          defaultValue={profile?.phone2}
-          placeholder="+994 50 123 45 67"
-        />
-        <PhoneField
-          name="whatsapp"
-          label="WhatsApp"
-          placeholder={getSocialPlaceholder("whatsapp")}
-          defaultValue={getSocialFieldValue("whatsapp", profile?.whatsapp)}
-        />
-        <PhoneField
-          name="whatsapp2"
-          label="WhatsApp 2"
-          placeholder={getSocialPlaceholder("whatsapp")}
-          defaultValue={profile?.whatsapp2}
-        />
+        {hasProfession ? (
+          <Field
+            name="profession"
+            label="Peşə"
+            defaultValue={profile?.profession}
+          />
+        ) : null}
+        {hasEmail ? (
+          <Field
+            name="email"
+            label="E-poçt"
+            defaultValue={profile?.email}
+            placeholder="email@example.com"
+            type="email"
+          />
+        ) : null}
+        {hasPhone ? (
+          <PhoneField
+            name="phone"
+            label="Telefon"
+            defaultValue={profile?.phone}
+            placeholder="+994 50 123 45 67"
+          />
+        ) : null}
+        {hasPhone2 ? (
+          <PhoneField
+            name="phone2"
+            label="Telefon 2"
+            defaultValue={profile?.phone2}
+            placeholder="+994 50 123 45 67"
+          />
+        ) : null}
+        {hasWhatsapp ? (
+          <PhoneField
+            name="whatsapp"
+            label="WhatsApp"
+            placeholder={getSocialPlaceholder("whatsapp")}
+            defaultValue={getSocialFieldValue("whatsapp", profile?.whatsapp)}
+          />
+        ) : null}
+        {hasWhatsapp2 ? (
+          <PhoneField
+            name="whatsapp2"
+            label="WhatsApp 2"
+            placeholder={getSocialPlaceholder("whatsapp")}
+            defaultValue={profile?.whatsapp2}
+          />
+        ) : null}
       </div>
 
-      {/* Sosial şəbəkələr — aydın başlıq ki, admin paneldə asan tapılsın */}
-      <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-5 space-y-4">
-        <div>
-          <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
-            Sosial şəbəkələr
-          </p>
-          <p className="mt-1 text-xs font-medium text-slate-400">
-            Username və ya tam link yazın (məs: username və ya https://t.me/username)
-          </p>
+      {hasSocialLinks ? (
+        <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-5 space-y-4">
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+              Sosial şəbəkələr
+            </p>
+            <p className="mt-1 text-xs font-medium text-slate-400">
+              Username və ya tam link yazın (məs: username və ya https://t.me/username)
+            </p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            {hasTextValue(profile?.telegram) ? (
+              <Field
+                name="telegram"
+                label="Telegram"
+                placeholder="username və ya t.me/username"
+                defaultValue={getSocialFieldValue("telegram", profile?.telegram)}
+              />
+            ) : null}
+            {hasTextValue(profile?.instagram) ? (
+              <Field
+                name="instagram"
+                label="Instagram"
+                placeholder={getSocialPlaceholder("instagram")}
+                defaultValue={getSocialFieldValue("instagram", profile?.instagram)}
+              />
+            ) : null}
+            {hasTextValue(profile?.tiktok) ? (
+              <Field
+                name="tiktok"
+                label="TikTok"
+                placeholder={getSocialPlaceholder("tiktok")}
+                defaultValue={getSocialFieldValue("tiktok", profile?.tiktok)}
+              />
+            ) : null}
+            {hasTextValue(profile?.website) ? (
+              <Field
+                name="website"
+                label="Website"
+                defaultValue={getSocialFieldValue("website", profile?.website)}
+              />
+            ) : null}
+            {hasTextValue(profile?.facebook) ? (
+              <Field
+                name="facebook"
+                label="Facebook"
+                placeholder={getSocialPlaceholder("facebook")}
+                defaultValue={getSocialFieldValue("facebook", profile?.facebook)}
+              />
+            ) : null}
+            {hasTextValue(profile?.x) ? (
+              <Field
+                name="x"
+                label="X (Twitter)"
+                placeholder={getSocialPlaceholder("x")}
+                defaultValue={getSocialFieldValue("x", profile?.x)}
+              />
+            ) : null}
+            {hasTextValue(profile?.threads) ? (
+              <Field
+                name="threads"
+                label="Threads"
+                placeholder={getSocialPlaceholder("threads")}
+                defaultValue={getSocialFieldValue("threads", profile?.threads)}
+              />
+            ) : null}
+            {hasTextValue(profile?.linkedin) ? (
+              <Field
+                name="linkedin"
+                label="LinkedIn"
+                placeholder={getSocialPlaceholder("linkedin")}
+                defaultValue={getSocialFieldValue("linkedin", profile?.linkedin)}
+              />
+            ) : null}
+            {hasTextValue(profile?.youtube) ? (
+              <Field
+                name="youtube"
+                label="YouTube"
+                placeholder={getSocialPlaceholder("youtube")}
+                defaultValue={getSocialFieldValue("youtube", profile?.youtube)}
+              />
+            ) : null}
+            {hasTextValue(profile?.behance) ? (
+              <Field
+                name="behance"
+                label="Behance"
+                placeholder={getSocialPlaceholder("behance")}
+                defaultValue={getSocialFieldValue("behance", profile?.behance)}
+              />
+            ) : null}
+            {hasTextValue(profile?.waze) ? (
+              <Field
+                name="waze"
+                label="Waze"
+                placeholder={getSocialPlaceholder("waze")}
+                defaultValue={getSocialFieldValue("waze", profile?.waze)}
+              />
+            ) : null}
+          </div>
         </div>
+      ) : null}
+
+      {hasLocation ? (
         <div className="grid gap-4 md:grid-cols-2">
-          <Field
-            name="telegram"
-            label="Telegram"
-            placeholder="username və ya t.me/username"
-            defaultValue={getSocialFieldValue("telegram", profile?.telegram)}
-          />
-          <Field
-            name="instagram"
-            label="Instagram"
-            placeholder={getSocialPlaceholder("instagram")}
-            defaultValue={getSocialFieldValue("instagram", profile?.instagram)}
-          />
-          <Field
-            name="tiktok"
-            label="TikTok"
-            placeholder={getSocialPlaceholder("tiktok")}
-            defaultValue={getSocialFieldValue("tiktok", profile?.tiktok)}
-          />
-          <Field
-            name="website"
-            label="Website"
-            defaultValue={getSocialFieldValue("website", profile?.website)}
-          />
-          <Field
-            name="facebook"
-            label="Facebook"
-            placeholder={getSocialPlaceholder("facebook")}
-            defaultValue={getSocialFieldValue("facebook", profile?.facebook)}
-          />
-          <Field
-            name="x"
-            label="X (Twitter)"
-            placeholder={getSocialPlaceholder("x")}
-            defaultValue={getSocialFieldValue("x", profile?.x)}
-          />
-          <Field
-            name="threads"
-            label="Threads"
-            placeholder={getSocialPlaceholder("threads")}
-            defaultValue={getSocialFieldValue("threads", profile?.threads)}
-          />
-          <Field
-            name="linkedin"
-            label="LinkedIn"
-            placeholder={getSocialPlaceholder("linkedin")}
-            defaultValue={getSocialFieldValue("linkedin", profile?.linkedin)}
-          />
-          <Field
-            name="youtube"
-            label="YouTube"
-            placeholder={getSocialPlaceholder("youtube")}
-            defaultValue={getSocialFieldValue("youtube", profile?.youtube)}
-          />
-          <Field
-            name="behance"
-            label="Behance"
-            placeholder={getSocialPlaceholder("behance")}
-            defaultValue={getSocialFieldValue("behance", profile?.behance)}
-          />
-          <Field
-            name="waze"
-            label="Waze"
-            placeholder={getSocialPlaceholder("waze")}
-            defaultValue={getSocialFieldValue("waze", profile?.waze)}
-          />
+          {hasTextValue(profile?.location) ? (
+            <Field
+              name="location"
+              label="Lokasiya adı"
+              defaultValue={profile?.location}
+              placeholder="məs: Bakı, Azərbaycan"
+            />
+          ) : null}
+          {hasTextValue(profile?.location_url) ? (
+            <Field
+              name="location_url"
+              label="Xəritə linki (Google Maps)"
+              defaultValue={profile?.location_url}
+              placeholder="https://maps.google.com/..."
+            />
+          ) : null}
         </div>
-      </div>
+      ) : null}
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <Field
-          name="location"
-          label="Lokasiya adı"
-          defaultValue={profile?.location}
-          placeholder="məs: Bakı, Azərbaycan"
-        />
-        <Field
-          name="location_url"
-          label="Xəritə linki (Google Maps)"
-          defaultValue={profile?.location_url}
-          placeholder="https://maps.google.com/..."
-        />
-      </div>
-
-      <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide">
-        Bio
-        <textarea
-          name="bio"
-          defaultValue={profile?.bio ?? ""}
-          rows={4}
-          placeholder="Özünüz haqqında qısa məlumat..."
-          className={inputClass}
-        />
-      </label>
+      {hasBio ? (
+        <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide">
+          Bio
+          <textarea
+            name="bio"
+            defaultValue={profile?.bio ?? ""}
+            rows={4}
+            placeholder="Özünüz haqqında qısa məlumat..."
+            className={inputClass}
+          />
+        </label>
+      ) : null}
 
       {/* ── ŞƏKİL YÜKLƏMƏ (kiçik) ── */}
-      <div className="grid grid-cols-2 gap-3 max-w-sm">
-        <ImageDropZone
-          label="Profil şəkli"
-          inputName="avatar"
-          preview={avatarPreview}
-          hasExisting={!!profile?.avatar_url}
-          removed={removeAvatar}
-          aspect="square"
-          compact
-          enableCrop
-          cropTitle="Profil şəklini kəsin"
-          onFileChange={(file) => {
-            setAvatarPreview(URL.createObjectURL(file));
-            setRemoveAvatar(false);
-          }}
-          onRemove={() => {
-            setRemoveAvatar(true);
-            setAvatarPreview("");
-          }}
-        />
-        <ImageDropZone
-          label="Cover şəkli"
-          inputName="background"
-          preview={backgroundPreview}
-          hasExisting={!!profile?.background_url}
-          removed={removeBackground}
-          aspect="square"
-          compact
-          enableCrop
-          cropTitle="Cover şəklini kəsin"
-          onFileChange={(file) => {
-            setBackgroundPreview(URL.createObjectURL(file));
-            setRemoveBackground(false);
-          }}
-          onRemove={() => {
-            setRemoveBackground(true);
-            setBackgroundPreview("");
-          }}
-        />
-      </div>
+      {hasAvatarOrBackground ? (
+        <div className="grid grid-cols-2 gap-3 max-w-sm">
+          <ImageDropZone
+            label="Profil şəkli"
+            inputName="avatar"
+            preview={avatarPreview}
+            hasExisting={!!profile?.avatar_url}
+            removed={removeAvatar}
+            aspect="square"
+            compact
+            enableCrop
+            cropTitle="Profil şəklini kəsin"
+            onFileChange={(file) => {
+              setAvatarPreview(URL.createObjectURL(file));
+              setRemoveAvatar(false);
+            }}
+            onRemove={() => {
+              setRemoveAvatar(true);
+              setAvatarPreview("");
+            }}
+          />
+          <ImageDropZone
+            label="Cover şəkli"
+            inputName="background"
+            preview={backgroundPreview}
+            hasExisting={!!profile?.background_url}
+            removed={removeBackground}
+            aspect="square"
+            compact
+            enableCrop
+            cropTitle="Cover şəklini kəsin"
+            onFileChange={(file) => {
+              setBackgroundPreview(URL.createObjectURL(file));
+              setRemoveBackground(false);
+            }}
+            onRemove={() => {
+              setRemoveBackground(true);
+              setBackgroundPreview("");
+            }}
+          />
+        </div>
+      ) : null}
       <input type="hidden" name="remove_avatar" value={removeAvatar ? "on" : "off"} />
       <input type="hidden" name="remove_background" value={removeBackground ? "on" : "off"} />
 
@@ -1103,300 +1174,304 @@ export default function ProfileForm({
       </div>
 
       {/* ── PORTFOLIO — yığcam düymə, basanda açılır ── */}
-      <div className="rounded-3xl border border-slate-200 bg-white overflow-hidden">
-        <div className="flex items-center gap-2 p-2">
-          <button
-            type="button"
-            onClick={() => setPortfolioPanelOpen((v) => !v)}
-            className="flex min-w-0 flex-1 items-center justify-between gap-3 rounded-2xl px-4 py-3.5 text-left transition hover:bg-slate-50"
-          >
-            <span className="flex min-w-0 items-center gap-2.5">
-              <ImagePlus size={16} className="shrink-0 text-[#29AEEE]" />
-              <span className="min-w-0">
-                <span className="block text-sm font-bold text-slate-800">
-                  Portfolio
-                </span>
-                <span className="mt-0.5 block text-[11px] font-medium text-slate-400">
-                  {sections.length === 0
-                    ? "Bölmə yoxdur"
-                    : `${sections.length} bölmə · basıb aç`}
+      {showPortfolioSection ? (
+        <div className="rounded-3xl border border-slate-200 bg-white overflow-hidden">
+          <div className="flex items-center gap-2 p-2">
+            <button
+              type="button"
+              onClick={() => setPortfolioPanelOpen((v) => !v)}
+              className="flex min-w-0 flex-1 items-center justify-between gap-3 rounded-2xl px-4 py-3.5 text-left transition hover:bg-slate-50"
+            >
+              <span className="flex min-w-0 items-center gap-2.5">
+                <ImagePlus size={16} className="shrink-0 text-[#29AEEE]" />
+                <span className="min-w-0">
+                  <span className="block text-sm font-bold text-slate-800">
+                    Portfolio
+                  </span>
+                  <span className="mt-0.5 block text-[11px] font-medium text-slate-400">
+                    {sections.length === 0
+                      ? "Bölmə yoxdur"
+                      : `${sections.length} bölmə · basıb aç`}
+                  </span>
                 </span>
               </span>
-            </span>
-            {portfolioPanelOpen ? (
-              <ChevronUp size={18} className="shrink-0 text-slate-400" />
-            ) : (
-              <ChevronDown size={18} className="shrink-0 text-slate-400" />
-            )}
-          </button>
-          <button
-            type="button"
-            onClick={addSection}
-            className="mr-1 inline-flex shrink-0 items-center gap-1 rounded-xl border border-[#29AEEE] bg-[#29AEEE]/5 px-3 py-2 text-[11px] font-bold text-[#29AEEE] transition hover:bg-[#29AEEE]/10"
-          >
-            <Plus size={14} /> Əlavə et
-          </button>
-        </div>
-
-        {portfolioPanelOpen ? (
-          <div className="space-y-2 border-t border-slate-100 px-3 pb-3 pt-2">
-            {sections.length === 0 ? (
-              <p className="px-2 py-4 text-center text-sm font-medium text-slate-500">
-                Hələ bölmə yoxdur. &quot;Əlavə et&quot; ilə yaradın.
-              </p>
-            ) : (
-              sections.map((section) => {
-                const isOpen = expandedSectionId === section.id;
-                const title = section.name.trim() || "Adsız bölmə";
-                const imgCount =
-                  section.images.length + section.newFiles.length;
-
-                return (
-                  <div
-                    key={section.id}
-                    className="rounded-2xl border border-slate-200 bg-slate-50/80"
-                  >
-                    <div className="flex items-center gap-1 p-1.5">
-                      <button
-                        type="button"
-                        onClick={() => toggleSectionExpanded(section.id)}
-                        className="flex min-w-0 flex-1 items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-left transition hover:bg-white"
-                      >
-                        <span className="truncate text-sm font-semibold text-slate-800">
-                          {title}
-                        </span>
-                        <span className="flex shrink-0 items-center gap-2 text-[11px] font-semibold text-slate-400">
-                          {imgCount} şəkil
-                          {isOpen ? (
-                            <ChevronUp size={15} />
-                          ) : (
-                            <ChevronDown size={15} />
-                          )}
-                        </span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => deleteSection(section.id)}
-                        className="grid size-9 shrink-0 place-items-center rounded-xl border border-red-200 bg-red-50 text-red-600 transition hover:bg-red-100"
-                        title="Sil"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
-
-                    {isOpen ? (
-                      <div className="space-y-3 border-t border-slate-200/80 px-3 pb-3 pt-3">
-                        <input
-                          type="text"
-                          value={section.name}
-                          onChange={(e) =>
-                            updateSectionName(section.id, e.target.value)
-                          }
-                          placeholder="Bölmə adı (məs: Üstəri Layihələri)"
-                          className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/10"
-                        />
-
-                        <div
-                          onClick={() => {
-                            const input = document.createElement("input");
-                            input.type = "file";
-                            input.accept =
-                              "image/jpeg,image/png,image/webp,image/gif";
-                            input.multiple = true;
-                            input.onchange = (e) => {
-                              const files = (e.target as HTMLInputElement)
-                                .files;
-                              if (files) addFilesToSection(section.id, files);
-                            };
-                            input.click();
-                          }}
-                          className="block cursor-pointer rounded-xl border-2 border-dashed border-slate-200 bg-white p-3 text-center transition hover:border-[#29AEEE] hover:bg-[#29AEEE]/5"
-                        >
-                          <div className="flex flex-col items-center gap-1">
-                            <Upload size={18} className="text-[#29AEEE]" />
-                            <span className="text-xs font-semibold text-slate-600">
-                              Şəkil əlavə et
-                            </span>
-                          </div>
-                        </div>
-
-                        {section.images.length > 0 ? (
-                          <div className="grid grid-cols-4 gap-2">
-                            {section.images.map((url, index) => (
-                              <div
-                                key={`${section.id}-${index}`}
-                                className="group relative aspect-square overflow-hidden rounded-xl border border-green-200 bg-white"
-                              >
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                  src={url}
-                                  alt=""
-                                  className="h-full w-full object-cover"
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    removeImageFromSection(section.id, index)
-                                  }
-                                  className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition group-hover:opacity-100"
-                                >
-                                  <Trash2 size={14} className="text-white" />
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                        ) : null}
-
-                        {section.newFiles.length > 0 ? (
-                          <div className="grid grid-cols-4 gap-2">
-                            {section.newFiles.map((file, index) => (
-                              <div
-                                key={`${section.id}-new-${index}`}
-                                className="group relative aspect-square overflow-hidden rounded-xl border border-slate-200 bg-white"
-                              >
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                  src={file.previewUrl}
-                                  alt=""
-                                  className="h-full w-full object-cover"
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    removeNewFileFromSection(
-                                      section.id,
-                                      index,
-                                    )
-                                  }
-                                  className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition group-hover:opacity-100"
-                                >
-                                  <Trash2 size={14} className="text-white" />
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                        ) : null}
-                      </div>
-                    ) : null}
-                  </div>
-                );
-              })
-            )}
+              {portfolioPanelOpen ? (
+                <ChevronUp size={18} className="shrink-0 text-slate-400" />
+              ) : (
+                <ChevronDown size={18} className="shrink-0 text-slate-400" />
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={addSection}
+              className="mr-1 inline-flex shrink-0 items-center gap-1 rounded-xl border border-[#29AEEE] bg-[#29AEEE]/5 px-3 py-2 text-[11px] font-bold text-[#29AEEE] transition hover:bg-[#29AEEE]/10"
+            >
+              <Plus size={14} /> Əlavə et
+            </button>
           </div>
-        ) : null}
-      </div>
+
+          {portfolioPanelOpen ? (
+            <div className="space-y-2 border-t border-slate-100 px-3 pb-3 pt-2">
+              {sections.length === 0 ? (
+                <p className="px-2 py-4 text-center text-sm font-medium text-slate-500">
+                  Hələ bölmə yoxdur. &quot;Əlavə et&quot; ilə yaradın.
+                </p>
+              ) : (
+                sections.map((section) => {
+                  const isOpen = expandedSectionId === section.id;
+                  const title = section.name.trim() || "Adsız bölmə";
+                  const imgCount =
+                    section.images.length + section.newFiles.length;
+
+                  return (
+                    <div
+                      key={section.id}
+                      className="rounded-2xl border border-slate-200 bg-slate-50/80"
+                    >
+                      <div className="flex items-center gap-1 p-1.5">
+                        <button
+                          type="button"
+                          onClick={() => toggleSectionExpanded(section.id)}
+                          className="flex min-w-0 flex-1 items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-left transition hover:bg-white"
+                        >
+                          <span className="truncate text-sm font-semibold text-slate-800">
+                            {title}
+                          </span>
+                          <span className="flex shrink-0 items-center gap-2 text-[11px] font-semibold text-slate-400">
+                            {imgCount} şəkil
+                            {isOpen ? (
+                              <ChevronUp size={15} />
+                            ) : (
+                              <ChevronDown size={15} />
+                            )}
+                          </span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => deleteSection(section.id)}
+                          className="grid size-9 shrink-0 place-items-center rounded-xl border border-red-200 bg-red-50 text-red-600 transition hover:bg-red-100"
+                          title="Sil"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+
+                      {isOpen ? (
+                        <div className="space-y-3 border-t border-slate-200/80 px-3 pb-3 pt-3">
+                          <input
+                            type="text"
+                            value={section.name}
+                            onChange={(e) =>
+                              updateSectionName(section.id, e.target.value)
+                            }
+                            placeholder="Bölmə adı (məs: Üstəri Layihələri)"
+                            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/10"
+                          />
+
+                          <div
+                            onClick={() => {
+                              const input = document.createElement("input");
+                              input.type = "file";
+                              input.accept =
+                                "image/jpeg,image/png,image/webp,image/gif";
+                              input.multiple = true;
+                              input.onchange = (e) => {
+                                const files = (e.target as HTMLInputElement)
+                                  .files;
+                                if (files) addFilesToSection(section.id, files);
+                              };
+                              input.click();
+                            }}
+                            className="block cursor-pointer rounded-xl border-2 border-dashed border-slate-200 bg-white p-3 text-center transition hover:border-[#29AEEE] hover:bg-[#29AEEE]/5"
+                          >
+                            <div className="flex flex-col items-center gap-1">
+                              <Upload size={18} className="text-[#29AEEE]" />
+                              <span className="text-xs font-semibold text-slate-600">
+                                Şəkil əlavə et
+                              </span>
+                            </div>
+                          </div>
+
+                          {section.images.length > 0 ? (
+                            <div className="grid grid-cols-4 gap-2">
+                              {section.images.map((url, index) => (
+                                <div
+                                  key={`${section.id}-${index}`}
+                                  className="group relative aspect-square overflow-hidden rounded-xl border border-green-200 bg-white"
+                                >
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img
+                                    src={url}
+                                    alt=""
+                                    className="h-full w-full object-cover"
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      removeImageFromSection(section.id, index)
+                                    }
+                                    className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition group-hover:opacity-100"
+                                  >
+                                    <Trash2 size={14} className="text-white" />
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          ) : null}
+
+                          {section.newFiles.length > 0 ? (
+                            <div className="grid grid-cols-4 gap-2">
+                              {section.newFiles.map((file, index) => (
+                                <div
+                                  key={`${section.id}-new-${index}`}
+                                  className="group relative aspect-square overflow-hidden rounded-xl border border-slate-200 bg-white"
+                                >
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img
+                                    src={file.previewUrl}
+                                    alt=""
+                                    className="h-full w-full object-cover"
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      removeNewFileFromSection(
+                                        section.id,
+                                        index,
+                                      )
+                                    }
+                                    className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition group-hover:opacity-100"
+                                  >
+                                    <Trash2 size={14} className="text-white" />
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          ) : null}
+                        </div>
+                      ) : null}
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          ) : null}
+        </div>
+      ) : null}
 
       {/* ── KATALOQ — yığcam düymə, basanda açılır ── */}
-      <div className="rounded-3xl border border-slate-200 bg-white overflow-hidden">
-        <div className="flex items-center gap-2 p-2">
-          <button
-            type="button"
-            onClick={() => setCatalogPanelOpen((v) => !v)}
-            className="flex min-w-0 flex-1 items-center justify-between gap-3 rounded-2xl px-4 py-3.5 text-left transition hover:bg-slate-50"
-          >
-            <span className="min-w-0">
-              <span className="block text-sm font-bold text-slate-800">
-                Kataloq
+      {showCatalogSection ? (
+        <div className="rounded-3xl border border-slate-200 bg-white overflow-hidden">
+          <div className="flex items-center gap-2 p-2">
+            <button
+              type="button"
+              onClick={() => setCatalogPanelOpen((v) => !v)}
+              className="flex min-w-0 flex-1 items-center justify-between gap-3 rounded-2xl px-4 py-3.5 text-left transition hover:bg-slate-50"
+            >
+              <span className="min-w-0">
+                <span className="block text-sm font-bold text-slate-800">
+                  Kataloq
+                </span>
+                <span className="mt-0.5 block text-[11px] font-medium text-slate-400">
+                  {catalogItems.length === 0
+                    ? "Link yoxdur"
+                    : `${catalogItems.length} link · basıb aç`}
+                </span>
               </span>
-              <span className="mt-0.5 block text-[11px] font-medium text-slate-400">
-                {catalogItems.length === 0
-                  ? "Link yoxdur"
-                  : `${catalogItems.length} link · basıb aç`}
-              </span>
-            </span>
-            {catalogPanelOpen ? (
-              <ChevronUp size={18} className="shrink-0 text-slate-400" />
-            ) : (
-              <ChevronDown size={18} className="shrink-0 text-slate-400" />
-            )}
-          </button>
-          <button
-            type="button"
-            onClick={addCatalogItem}
-            className="mr-1 inline-flex shrink-0 items-center gap-1 rounded-xl border border-[#29AEEE] bg-[#29AEEE]/5 px-3 py-2 text-[11px] font-bold text-[#29AEEE] transition hover:bg-[#29AEEE]/10"
-          >
-            <Plus size={14} /> Əlavə et
-          </button>
-        </div>
-
-        {catalogPanelOpen ? (
-          <div className="space-y-2 border-t border-slate-100 px-3 pb-3 pt-2">
-            {catalogItems.length === 0 ? (
-              <p className="px-2 py-4 text-center text-sm font-medium text-slate-500">
-                Hələ link yoxdur. &quot;Əlavə et&quot; ilə yaradın.
-              </p>
-            ) : (
-              catalogItems.map((item) => {
-                const isExpanded = expandedCatalogId === item.id;
-                const title = item.name.trim() || "Başlıqsız link";
-
-                return (
-                  <div
-                    key={item.id}
-                    className="rounded-2xl border border-slate-200 bg-slate-50/80"
-                  >
-                    <div className="flex items-center gap-1 p-1.5">
-                      <button
-                        type="button"
-                        onClick={() => toggleCatalogExpanded(item.id)}
-                        className="flex min-w-0 flex-1 items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-left transition hover:bg-white"
-                      >
-                        <span className="truncate text-sm font-semibold text-slate-800">
-                          {title}
-                        </span>
-                        {isExpanded ? (
-                          <ChevronUp
-                            size={15}
-                            className="shrink-0 text-slate-400"
-                          />
-                        ) : (
-                          <ChevronDown
-                            size={15}
-                            className="shrink-0 text-slate-400"
-                          />
-                        )}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => deleteCatalogItem(item.id)}
-                        className="grid size-9 shrink-0 place-items-center rounded-xl border border-red-200 bg-red-50 text-red-600 transition hover:bg-red-100"
-                        title="Sil"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
-
-                    {isExpanded ? (
-                      <div className="space-y-2 border-t border-slate-200/80 px-3 pb-3 pt-2">
-                        <input
-                          type="text"
-                          value={item.name}
-                          onChange={(e) =>
-                            updateCatalogItem(item.id, "name", e.target.value)
-                          }
-                          placeholder="Başlıq (məs: Məhsul kataloqu)"
-                          className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 outline-none focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/10"
-                        />
-                        <input
-                          type="text"
-                          inputMode="url"
-                          autoComplete="url"
-                          value={item.url}
-                          onChange={(e) =>
-                            updateCatalogItem(item.id, "url", e.target.value)
-                          }
-                          placeholder="https://example.com/kataloq"
-                          className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 outline-none focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/10"
-                        />
-                      </div>
-                    ) : null}
-                  </div>
-                );
-              })
-            )}
+              {catalogPanelOpen ? (
+                <ChevronUp size={18} className="shrink-0 text-slate-400" />
+              ) : (
+                <ChevronDown size={18} className="shrink-0 text-slate-400" />
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={addCatalogItem}
+              className="mr-1 inline-flex shrink-0 items-center gap-1 rounded-xl border border-[#29AEEE] bg-[#29AEEE]/5 px-3 py-2 text-[11px] font-bold text-[#29AEEE] transition hover:bg-[#29AEEE]/10"
+            >
+              <Plus size={14} /> Əlavə et
+            </button>
           </div>
-        ) : null}
-      </div>
+
+          {catalogPanelOpen ? (
+            <div className="space-y-2 border-t border-slate-100 px-3 pb-3 pt-2">
+              {catalogItems.length === 0 ? (
+                <p className="px-2 py-4 text-center text-sm font-medium text-slate-500">
+                  Hələ link yoxdur. &quot;Əlavə et&quot; ilə yaradın.
+                </p>
+              ) : (
+                catalogItems.map((item) => {
+                  const isExpanded = expandedCatalogId === item.id;
+                  const title = item.name.trim() || "Başlıqsız link";
+
+                  return (
+                    <div
+                      key={item.id}
+                      className="rounded-2xl border border-slate-200 bg-slate-50/80"
+                    >
+                      <div className="flex items-center gap-1 p-1.5">
+                        <button
+                          type="button"
+                          onClick={() => toggleCatalogExpanded(item.id)}
+                          className="flex min-w-0 flex-1 items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-left transition hover:bg-white"
+                        >
+                          <span className="truncate text-sm font-semibold text-slate-800">
+                            {title}
+                          </span>
+                          {isExpanded ? (
+                            <ChevronUp
+                              size={15}
+                              className="shrink-0 text-slate-400"
+                            />
+                          ) : (
+                            <ChevronDown
+                              size={15}
+                              className="shrink-0 text-slate-400"
+                            />
+                          )}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => deleteCatalogItem(item.id)}
+                          className="grid size-9 shrink-0 place-items-center rounded-xl border border-red-200 bg-red-50 text-red-600 transition hover:bg-red-100"
+                          title="Sil"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+
+                      {isExpanded ? (
+                        <div className="space-y-2 border-t border-slate-200/80 px-3 pb-3 pt-2">
+                          <input
+                            type="text"
+                            value={item.name}
+                            onChange={(e) =>
+                              updateCatalogItem(item.id, "name", e.target.value)
+                            }
+                            placeholder="Başlıq (məs: Məhsul kataloqu)"
+                            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 outline-none focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/10"
+                          />
+                          <input
+                            type="text"
+                            inputMode="url"
+                            autoComplete="url"
+                            value={item.url}
+                            onChange={(e) =>
+                              updateCatalogItem(item.id, "url", e.target.value)
+                            }
+                            placeholder="https://example.com/kataloq"
+                            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 outline-none focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/10"
+                          />
+                        </div>
+                      ) : null}
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          ) : null}
+        </div>
+      ) : null}
 
       {/* ── CV YÜKLƏMƏ (PDF) ── */}
       {showCvSection ? (
