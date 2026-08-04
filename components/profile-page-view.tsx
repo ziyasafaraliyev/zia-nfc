@@ -758,7 +758,11 @@ function ProfilePageViewInner({
 
 export default function ProfilePageView(props: Props) {
   return (
-    <LanguageProvider>
+    <LanguageProvider
+      defaultLang={props.profile.default_lang ?? undefined}
+      enabledLanguages={props.profile.enabled_languages ?? undefined}
+      storageKey={`zia-lang:${props.profile.slug}`}
+    >
       <ProfilePageViewInner {...props} />
     </LanguageProvider>
   );

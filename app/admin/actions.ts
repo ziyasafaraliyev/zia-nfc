@@ -1225,6 +1225,31 @@ export async function saveProfile(formData: FormData) {
     }
   }
 
+  const enabledLanguagesInput = jsonField(formData, "enabled_languages");
+  const parsedEnabledLanguages = Array.isArray(enabledLanguagesInput)
+    ? enabledLanguagesInput.filter((value): value is string => typeof value === "string")
+    : [];
+
+  const normalizedEnabledLanguages = parsedEnabledLanguages.filter((value): value is "az" | "en" | "de" | "fr" | "ru" =>
+    ["az", "en", "de", "fr", "ru"].includes(value),
+  ) as ("az" | "en" | "de" | "fr" | "ru")[];
+
+  const langSwitcherEnabled = isSuper
+    ? bool(formData, "lang_switcher_enabled")
+    : (existingProfile?.lang_switcher_enabled ?? false);
+
+  const nextEnabledLanguages = isSuper
+    ? (langSwitcherEnabled ? normalizedEnabledLanguages : [])
+    : (existingProfile?.enabled_languages ?? ["az", "en", "de", "fr", "ru"]);
+
+  const selectedDefaultLang = isSuper
+    ? (() => {
+        const v = text(formData, "default_lang");
+        const candidate = ["az", "en", "de", "fr", "ru"].includes(v ?? "") ? (v as "az" | "en" | "de" | "fr" | "ru") : "az";
+        return nextEnabledLanguages.includes(candidate) ? candidate : (nextEnabledLanguages[0] ?? "az");
+      })()
+    : (existingProfile?.default_lang ?? "az");
+
   const payload = {
     slug,
     enabled,
@@ -1244,6 +1269,8 @@ export async function saveProfile(formData: FormData) {
     lang_switcher_enabled: isSuper
       ? bool(formData, "lang_switcher_enabled")
       : (existingProfile?.lang_switcher_enabled ?? false),
+    enabled_languages: isSuper ? nextEnabledLanguages : (existingProfile?.enabled_languages ?? ["az", "en", "de", "fr", "ru"]),
+    default_lang: selectedDefaultLang,
     ...(isSuper
       ? { referral_url: sanitizeUrl(formData, "referral_url") || null }
       : {}),

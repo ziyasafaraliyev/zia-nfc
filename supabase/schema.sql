@@ -160,6 +160,7 @@ alter table public.profiles add column if not exists views_count integer not nul
 alter table public.profiles add column if not exists saves_count integer not null default 0;
 alter table public.profiles add column if not exists stats_enabled boolean not null default true;
 alter table public.profiles add column if not exists lang_switcher_enabled boolean not null default false;
+alter table public.profiles add column if not exists default_lang text not null default 'az';
 
 
 alter table public.profiles drop constraint if exists profiles_cover_style_check;
@@ -372,9 +373,16 @@ create table if not exists public.car_profiles (
 
 alter table public.car_profiles enable row level security;
 
+drop policy if exists "Public car_profiles select enabled" on public.car_profiles;
 create policy "Public car_profiles select enabled"
   on public.car_profiles for select
   using (enabled = true);
+
+drop policy if exists "Service role manages car_profiles" on public.car_profiles;
+create policy "Service role manages car_profiles"
+  on public.car_profiles for all
+  using (auth.role() = 'service_role')
+  with check (auth.role() = 'service_role');
 
 grant select on public.car_profiles to anon, authenticated;
 grant all on public.car_profiles to service_role;

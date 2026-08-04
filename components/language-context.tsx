@@ -9,7 +9,17 @@ import React, {
 } from "react";
 
 export type Lang = "az" | "en" | "de" | "fr" | "ru";
-export const LANGS: Lang[] = ["az", "en", "de", "fr", "ru"];
+export const ALL_LANGS: Lang[] = ["az", "en", "de", "fr", "ru"];
+
+export function getLanguageLabel(lang: Lang) {
+  return {
+    az: "AZ",
+    en: "EN",
+    de: "DE",
+    fr: "FR",
+    ru: "RU",
+  }[lang] ?? lang.toUpperCase();
+}
 
 const LANG_LABELS: Record<Lang, string> = {
   az: "AZ",
@@ -22,6 +32,7 @@ const LANG_LABELS: Record<Lang, string> = {
 interface LangContextValue {
   lang: Lang;
   setLang: (l: Lang) => void;
+  enabledLanguages: Lang[];
   /** String overload */
   t(az: string, en: string, de?: string, fr?: string, ru?: string): string;
   /** ReactNode overload — use when passing JSX */
@@ -31,24 +42,53 @@ interface LangContextValue {
 const LangContext = createContext<LangContextValue>({
   lang: "az",
   setLang: () => {},
+  enabledLanguages: ALL_LANGS,
   t: (az: ReactNode) => az,
 } as LangContextValue);
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>("az");
+export function LanguageProvider({
+  children,
+  defaultLang,
+  enabledLanguages,
+  storageKey = "zia-lang",
+}: {
+  children: ReactNode;
+  defaultLang?: Lang;
+  enabledLanguages?: Lang[] | null;
+  storageKey?: string;
+}) {
+  const activeLanguages = (enabledLanguages && enabledLanguages.length > 0 ? enabledLanguages : ALL_LANGS).filter(
+    (langCode): langCode is Lang => ALL_LANGS.includes(langCode),
+  );
 
-  // Hydrate from localStorage on mount
+  const [lang, setLangState] = useState<Lang>(() => {
+    if (defaultLang && activeLanguages.includes(defaultLang)) return defaultLang;
+    try {
+      const stored = localStorage.getItem(storageKey) as Lang | null;
+      if (stored && activeLanguages.includes(stored)) return stored;
+    } catch {}
+    return activeLanguages[0] ?? "az";
+  });
+
+  // Hydrate from localStorage on mount, but give the profile default language priority.
   useEffect(() => {
     try {
-      const stored = localStorage.getItem("zia-lang") as Lang | null;
-      if (stored && LANGS.includes(stored)) setLangState(stored);
+      const nextLang = defaultLang && activeLanguages.includes(defaultLang)
+        ? defaultLang
+        : ((() => {
+            const stored = localStorage.getItem(storageKey) as Lang | null;
+            return stored && activeLanguages.includes(stored) ? stored : activeLanguages[0] ?? "az";
+          })());
+
+      setLangState(nextLang);
+      localStorage.setItem(storageKey, nextLang);
     } catch {}
-  }, []);
+  }, [defaultLang, enabledLanguages, storageKey]);
 
   function setLang(l: Lang) {
     setLangState(l);
     try {
-      localStorage.setItem("zia-lang", l);
+      localStorage.setItem(storageKey, l);
     } catch {}
   }
 
@@ -61,7 +101,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <LangContext.Provider value={{ lang, setLang, t: t as LangContextValue["t"] }}>
+    <LangContext.Provider value={{ lang, setLang, enabledLanguages: activeLanguages, t: t as LangContextValue["t"] }}>
       {children}
     </LangContext.Provider>
   );
@@ -112,7 +152,7 @@ export function LangSwitcher({ className = "" }: { className?: string }) {
 
 /** Full language switcher (AZ, EN, DE, FR, RU) for customer profile pages */
 export function ProfileLangSwitcher({ className = "" }: { className?: string }) {
-  const { lang, setLang } = useLang();
+  const { lang, setLang, enabledLanguages } = useLang();
 
   return (
     <div
@@ -120,7 +160,7 @@ export function ProfileLangSwitcher({ className = "" }: { className?: string }) 
       aria-label="Dil seçimi"
       className={`flex shrink-0 items-center overflow-hidden rounded-full border border-slate-200/60 bg-black/20 backdrop-blur-md text-[10px] font-black uppercase tracking-wider shadow-sm ${className}`}
     >
-      {LANGS.map((l, i) => (
+      {ALL_LANGS.filter((l) => enabledLanguages.includes(l)).map((l, i) => (
         <React.Fragment key={l}>
           {i > 0 && <span className="h-3.5 w-px bg-white/20" aria-hidden="true" />}
           <button

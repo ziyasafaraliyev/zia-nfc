@@ -28,8 +28,12 @@ export type Profile = {
   saves_count?: number;
   /** When false, view/save stats & share panel is hidden on public profile (super admin) */
   stats_enabled?: boolean;
-  /** When true, language switcher (AZ, EN, DE, FR, RU) is shown on public profile (super admin) */
+  /** When true, language switcher is shown on public profile (super admin) */
   lang_switcher_enabled?: boolean;
+  /** Languages enabled for this profile (super admin) */
+  enabled_languages?: ("az" | "en" | "de" | "fr" | "ru")[] | null;
+  /** Default language the profile opens in — set by super admin (az, en, de, fr, ru) */
+  default_lang?: "az" | "en" | "de" | "fr" | "ru" | null;
   name: string;
   profession?: string | null;
   bio?: string | null;

@@ -13,6 +13,7 @@ import {
 import { saveProfile } from "@/app/admin/actions";
 import { handleServerActionRejection } from "@/lib/server-action-client";
 import type { CatalogItem, Profile, PortfolioSection } from "@/lib/types";
+import { ALL_LANGS, type Lang } from "@/components/language-context";
 import ImageCropModal from "@/components/image-crop-modal";
 
 const inputClass =
@@ -292,6 +293,17 @@ export default function ProfileForm({
   const [coverStyle, setCoverStyle] = useState(profile?.cover_style ?? "auto");
   const [coverPosition, setCoverPosition] = useState(profile?.cover_position ?? "center");
   const [avatarShape, setAvatarShape] = useState(profile?.avatar_shape ?? "square");
+  const [langSwitcherEnabled, setLangSwitcherEnabled] = useState(profile?.lang_switcher_enabled ?? false);
+  const [enabledLanguages, setEnabledLanguages] = useState<Lang[]>(() => {
+    const saved = profile?.enabled_languages;
+    if (Array.isArray(saved) && saved.length > 0) {
+      return saved.filter((lang): lang is Lang => ALL_LANGS.includes(lang));
+    }
+    return ["az", "en", "de", "fr", "ru"];
+  });
+  const [defaultLang, setDefaultLang] = useState<Lang>(
+    (profile?.default_lang as Lang | undefined) ?? "az",
+  );
 
   const themeLabel =
     (
@@ -321,6 +333,12 @@ export default function ProfileForm({
   useEffect(() => {
     catalogRef.current = catalogItems;
   }, [catalogItems]);
+
+  useEffect(() => {
+    if (!enabledLanguages.includes(defaultLang)) {
+      setDefaultLang(enabledLanguages[0] ?? "az");
+    }
+  }, [defaultLang, enabledLanguages]);
 
   useEffect(() => {
     setSections(
@@ -1489,15 +1507,80 @@ export default function ProfileForm({
             />
           </label>
 
-          <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition">
-            <span>Dil seçimi (AZ | EN | DE | FR | RU) aktivdir</span>
-            <input
-              type="checkbox"
-              name="lang_switcher_enabled"
-              defaultChecked={profile?.lang_switcher_enabled ?? false}
-              className="size-5 rounded accent-indigo-650"
-            />
-          </label>
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 space-y-4">
+            <label className="flex items-center justify-between gap-3 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition rounded-xl px-1 py-1">
+              <span>Enable Language Selector</span>
+              <input
+                type="checkbox"
+                name="lang_switcher_enabled"
+                checked={langSwitcherEnabled}
+                onChange={(e) => setLangSwitcherEnabled(e.target.checked)}
+                className="size-5 rounded accent-indigo-650"
+              />
+            </label>
+
+            {langSwitcherEnabled ? (
+              <div className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
+                <div className="space-y-2">
+                  <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">
+                    Enabled languages
+                  </p>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {ALL_LANGS.map((langCode) => {
+                      const checked = enabledLanguages.includes(langCode);
+                      return (
+                        <label
+                          key={langCode}
+                          className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700"
+                        >
+                          <span>{langCode === "az" ? "Azerbaijani (AZ)" : langCode === "en" ? "English (EN)" : langCode === "de" ? "German (DE)" : langCode === "fr" ? "French (FR)" : "Russian (RU)"}</span>
+                          <input
+                            type="checkbox"
+                            checked={checked}
+                            onChange={() => {
+                              setEnabledLanguages((current) => {
+                                const next = checked
+                                  ? current.filter((item) => item !== langCode)
+                                  : [...current, langCode];
+                                if (!next.includes(defaultLang)) {
+                                  setDefaultLang(next[0] ?? "az");
+                                }
+                                return next;
+                              });
+                            }}
+                            className="size-4 rounded accent-[#29AEEE]"
+                          />
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide">
+                    Default language
+                  </label>
+                  <select
+                    name="default_lang"
+                    value={defaultLang}
+                    onChange={(e) => setDefaultLang(e.target.value as Lang)}
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-800 outline-none transition focus:border-[#29AEEE] focus:ring-4 focus:ring-[#29AEEE]/20 cursor-pointer"
+                  >
+                    {enabledLanguages.map((langCode) => (
+                      <option key={langCode} value={langCode}>
+                        {langCode === "az" ? "🇦🇿 Azərbaycan (AZ)" : langCode === "en" ? "🇬🇧 English (EN)" : langCode === "de" ? "🇩🇪 Deutsch (DE)" : langCode === "fr" ? "🇫🇷 Français (FR)" : "🇷🇺 Русский (RU)"}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-[10px] text-slate-400 font-medium leading-relaxed">
+                    The selected default language is the first language loaded when the customer profile opens.
+                  </p>
+                </div>
+              </div>
+            ) : null}
+
+            <input type="hidden" name="enabled_languages" value={JSON.stringify(enabledLanguages)} />
+          </div>
 
           <div className="rounded-3xl border border-slate-200 bg-white p-5 space-y-4">
             <span className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide">
