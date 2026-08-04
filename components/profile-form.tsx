@@ -305,6 +305,20 @@ export default function ProfileForm({
     (profile?.default_lang as Lang | undefined) ?? "az",
   );
 
+  const hasPortfolioContent = (sections?.length ?? 0) > 0 || Boolean(profile?.gallery?.length);
+  const hasCatalogContent = (catalogItems?.length ?? 0) > 0 || Boolean(profile?.catalog?.length);
+  const hasCvContent = Boolean(profile?.cv_url);
+  const hasGoogleReview = Boolean(profile?.google_review_url);
+  const showPortfolioSection = (profile?.portfolio_enabled ?? true) && hasPortfolioContent;
+  const showCatalogSection = true;
+  const showCvSection = (profile?.portfolio_enabled ?? true) && hasCvContent;
+  const showGoogleReviewSection = hasGoogleReview;
+  const showLanguageSection = Boolean(profile?.lang_switcher_enabled);
+  const showReservationSection = Boolean(profile?.reservation_enabled);
+  const showReferralSection = Boolean(profile?.referral_enabled);
+  const showWalletSection = (profile?.wallet_enabled ?? true);
+  const showStatsSection = (profile?.stats_enabled ?? true);
+
   const themeLabel =
     (
       {
@@ -1385,6 +1399,7 @@ export default function ProfileForm({
       </div>
 
       {/* ── CV YÜKLƏMƏ (PDF) ── */}
+      {showCvSection ? (
       <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-slate-50/50 p-6">
         <span className="text-xs font-bold text-slate-500 uppercase tracking-wide flex items-center gap-2">
           CV <span className="text-[10px] text-slate-400 font-medium normal-case tracking-normal">(yalnız PDF)</span>
@@ -1409,6 +1424,7 @@ export default function ProfileForm({
         )}
         <input type="hidden" name="remove_cv" value={removeCv ? "on" : "off"} />
       </div>
+      ) : null}
 
       {userRole === "super_admin" && (
         <>
@@ -1445,69 +1461,82 @@ export default function ProfileForm({
             />
           </label>
 
-          <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition">
-            <span>Rezervasiya sistemi aktivdir</span>
-            <input
-              type="checkbox"
-              name="reservation_enabled"
-              defaultChecked={profile?.reservation_enabled ?? false}
-              className="size-5 rounded accent-indigo-650"
-            />
-          </label>
+          {showReservationSection ? (
+            <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition">
+              <span>Rezervasiya sistemi aktivdir</span>
+              <input
+                type="checkbox"
+                name="reservation_enabled"
+                defaultChecked={profile?.reservation_enabled ?? false}
+                className="size-5 rounded accent-indigo-650"
+              />
+            </label>
+          ) : null}
 
-          <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition">
-            <span>Referral link düyməsi aktivdir</span>
-            <input
-              type="checkbox"
-              name="referral_enabled"
-              defaultChecked={profile?.referral_enabled ?? false}
-              className="size-5 rounded accent-indigo-650"
-            />
-          </label>
+          {showReferralSection ? (
+            <>
+              <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition">
+                <span>Referral link düyməsi aktivdir</span>
+                <input
+                  type="checkbox"
+                  name="referral_enabled"
+                  defaultChecked={profile?.referral_enabled ?? false}
+                  className="size-5 rounded accent-indigo-650"
+                />
+              </label>
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 space-y-4">
-            <span className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide">
-              Referral link
-            </span>
-            <Field
-              name="referral_url"
-              label="Xüsusi referral URL (boş buraxsa profil linki istifadə olunur)"
-              defaultValue={profile?.referral_url ?? undefined}
-              placeholder="https://..."
-            />
-          </div>
+              <div className="rounded-3xl border border-slate-200 bg-white p-5 space-y-4">
+                <span className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide">
+                  Referral link
+                </span>
+                <Field
+                  name="referral_url"
+                  label="Xüsusi referral URL (boş buraxsa profil linki istifadə olunur)"
+                  defaultValue={profile?.referral_url ?? undefined}
+                  placeholder="https://..."
+                />
+              </div>
+            </>
+          ) : null}
 
-          <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition">
-            <span>Portfolio düyməsi aktivdir</span>
-            <input
-              type="checkbox"
-              name="portfolio_enabled"
-              defaultChecked={profile?.portfolio_enabled ?? true}
-              className="size-5 rounded accent-indigo-650"
-            />
-          </label>
+          {showPortfolioSection ? (
+            <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition">
+              <span>Portfolio düyməsi aktivdir</span>
+              <input
+                type="checkbox"
+                name="portfolio_enabled"
+                defaultChecked={profile?.portfolio_enabled ?? true}
+                className="size-5 rounded accent-indigo-650"
+              />
+            </label>
+          ) : null}
 
-          <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition">
-            <span>Google Wallet düyməsi aktivdir</span>
-            <input
-              type="checkbox"
-              name="wallet_enabled"
-              defaultChecked={profile?.wallet_enabled ?? true}
-              className="size-5 rounded accent-indigo-650"
-            />
-          </label>
+          {showWalletSection ? (
+            <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition">
+              <span>Google Wallet düyməsi aktivdir</span>
+              <input
+                type="checkbox"
+                name="wallet_enabled"
+                defaultChecked={profile?.wallet_enabled ?? true}
+                className="size-5 rounded accent-indigo-650"
+              />
+            </label>
+          ) : null}
 
-          <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition">
-            <span>Statistika & Paylaşım bloku aktivdir</span>
-            <input
-              type="checkbox"
-              name="stats_enabled"
-              defaultChecked={profile?.stats_enabled ?? true}
-              className="size-5 rounded accent-indigo-650"
-            />
-          </label>
+          {showStatsSection ? (
+            <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition">
+              <span>Statistika & Paylaşım bloku aktivdir</span>
+              <input
+                type="checkbox"
+                name="stats_enabled"
+                defaultChecked={profile?.stats_enabled ?? true}
+                className="size-5 rounded accent-indigo-650"
+              />
+            </label>
+          ) : null}
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 space-y-4">
+          {showLanguageSection ? (
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 space-y-4">
             <label className="flex items-center justify-between gap-3 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition rounded-xl px-1 py-1">
               <span>Enable Language Selector</span>
               <input
@@ -1579,20 +1608,23 @@ export default function ProfileForm({
               </div>
             ) : null}
 
-            <input type="hidden" name="enabled_languages" value={JSON.stringify(enabledLanguages)} />
-          </div>
+              <input type="hidden" name="enabled_languages" value={JSON.stringify(enabledLanguages)} />
+            </div>
+          ) : null}
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 space-y-4">
+          {showGoogleReviewSection ? (
+            <div className="rounded-3xl border border-slate-200 bg-white p-5 space-y-4">
             <span className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide">
               Google Review
             </span>
-            <Field
-              name="google_review_url"
-              label="Google Review linki"
-              defaultValue={profile?.google_review_url}
-              placeholder="https://g.page/r/..."
-            />
-          </div>
+              <Field
+                name="google_review_url"
+                label="Google Review linki"
+                defaultValue={profile?.google_review_url}
+                placeholder="https://g.page/r/..."
+              />
+            </div>
+          ) : null}
         </>
       )}
 

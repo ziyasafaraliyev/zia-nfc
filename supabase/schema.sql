@@ -309,7 +309,10 @@ grant select (
   referral_url,
   views_count,
   saves_count,
-  stats_enabled
+  stats_enabled,
+  lang_switcher_enabled,
+  enabled_languages,
+  default_lang
 ) on table public.profiles to anon, authenticated;
 
 -- Restrict storage select policy so that files under internal/ cannot be accessed publicly
