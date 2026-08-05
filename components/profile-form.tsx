@@ -316,7 +316,8 @@ export default function ProfileForm({
   const showPortfolioSection =
     userRole === "client" ? hasPortfolioContent : (profile?.portfolio_enabled ?? true) || hasPortfolioContent;
   const showCatalogSection = hasCatalogContent;
-  const showCvSection = (profile?.portfolio_enabled ?? true) || hasCvContent;
+  const showCvSection =
+    userRole === "client" ? hasCvContent : (profile?.portfolio_enabled ?? true) || hasCvContent;
   const showGoogleReviewSection = hasGoogleReview;
   const showLanguageSection = Boolean(profile?.lang_switcher_enabled);
   const hasProfession = hasTextValue(profile?.profession);
