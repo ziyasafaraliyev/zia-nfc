@@ -709,29 +709,7 @@ function ProfilePageViewInner({
       </div>
 
       <div className="relative z-10 mx-auto max-w-[440px] px-4 py-6 pb-16">
-        {
-          // Render sections but when `qr` followed by `stats` appear, render them
-          // side-by-side with equal width and gap.
-        }
-        {(() => {
-          const rendered: React.ReactNode[] = [];
-          for (let i = 0; i < sectionOrder.length; i++) {
-            const key = sectionOrder[i];
-            const nextKey = sectionOrder[i + 1];
-            if (key === "qr" && nextKey === "stats") {
-              rendered.push(
-                <div key="qr-stats-pair" className="mt-6 grid grid-cols-2 gap-3">
-                  <div className="col-span-1">{sections["qr"]}</div>
-                  <div className="col-span-1">{sections["stats"]}</div>
-                </div>,
-              );
-              i++; // skip next
-            } else {
-              rendered.push(sections[key]);
-            }
-          }
-          return rendered;
-        })()}
+        {sectionOrder.map((key) => sections[key])}
       </div>
     </main>
   );
