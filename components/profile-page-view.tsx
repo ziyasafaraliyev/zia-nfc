@@ -6,7 +6,6 @@ import { LanguageProvider, ProfileLangSwitcher, useLang } from "@/components/lan
 import { getProfileVcardPath } from "@/lib/urls";
 import {
   ExternalLink,
-  Eye,
   Facebook,
   Globe,
   Instagram,
@@ -21,7 +20,6 @@ import {
   Share2,
   Star,
   Twitter,
-  UserCheck,
   UserPlus,
   Youtube,
 } from "lucide-react";
@@ -117,31 +115,14 @@ function ProfilePageViewInner({
   qrUrl,
   jsonLd,
 }: Props) {
-  const [viewsCount, setViewsCount] = useState(profile.views_count ?? 0);
-  const [savesCount, setSavesCount] = useState(profile.saves_count ?? 0);
+  // Remove server-side view/save counters from UI — not shown anymore
   const [copied, setCopied] = useState(false);
   const { t } = useLang();
 
-  useEffect(() => {
-    const trackedKey = `viewed_${profile.slug}`;
-    if (typeof sessionStorage !== "undefined" && !sessionStorage.getItem(trackedKey)) {
-      sessionStorage.setItem(trackedKey, "1");
-      setViewsCount((prev) => prev + 1);
-      fetch("/api/profile/track", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug: profile.slug, action: "view" }),
-      }).catch(() => {});
-    }
-  }, [profile.slug]);
+  // No client-side view tracking
 
   const handleSaveContact = () => {
-    setSavesCount((prev) => prev + 1);
-    fetch("/api/profile/track", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ slug: profile.slug, action: "save" }),
-    }).catch(() => {});
+    // Intentionally no tracking when saving/downloading vCard
   };
 
   const handleShare = async () => {
@@ -482,7 +463,6 @@ function ProfilePageViewInner({
         {/* 1 — Kontaktı yadda saxla */}
         <a
           href={getProfileVcardPath(profile.slug)}
-          onClick={handleSaveContact}
           className="lux-save-contact group flex h-14 w-full items-center justify-between gap-3 rounded-2xl px-4 lux-card-enter-4 transition-transform duration-200 hover:scale-[1.02]"
         >
           <span className="flex items-center gap-3">
@@ -673,35 +653,14 @@ function ProfilePageViewInner({
     ),
     stats:
       (profile.stats_enabled ?? true) ? (
-        <div
-          key="stats"
-          className="lux-stats-card lux-card mt-6 grid grid-cols-3 gap-2 rounded-2xl p-3 shadow-sm text-center backdrop-blur-md"
-        >
-          {/* 1 — Görülmə (Baxış) Sayı */}
-          <div className="lux-stat-divider flex flex-col items-center justify-center border-r border-gray-200/60 pr-1">
-            <Eye size={18} className="text-sky-500 mb-1" />
-            <span className="text-sm font-black text-gray-800">{viewsCount}</span>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t("Baxış", "Views", "Aufrufe", "Vues", "Просмотры")}</span>
-          </div>
-
-          {/* 2 — Kontaktı Saxlayanların Sayı */}
-          <div className="lux-stat-divider flex flex-col items-center justify-center border-r border-gray-200/60 px-1">
-            <UserCheck size={18} className="text-emerald-500 mb-1" />
-            <span className="text-sm font-black text-gray-800">{savesCount}</span>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t("Saxlanıldı", "Saved", "Gespeichert", "Enregistré", "Сохранено")}</span>
-          </div>
-
-          {/* 3 — Profili Paylaş (iOS/Android Native Share) */}
+        <div key="stats" className="mt-6">
           <button
             type="button"
             onClick={handleShare}
-            className="flex flex-col items-center justify-center pl-1 transition-transform active:scale-95 group cursor-pointer"
+            className="lux-save-contact group flex h-14 w-full items-center justify-center gap-3 rounded-2xl px-4 lux-card-enter-4 transition-transform duration-200 hover:scale-[1.02]"
           >
-            <Share2 size={18} className="text-sky-600 mb-1 transition-transform group-hover:scale-110" />
-            <span className="text-sm font-black text-sky-600">
-              {copied ? t("Kopyalandı!", "Copied!", "Kopiert!", "Copié!", "Скопировано!") : t("Paylaş", "Share", "Teilen", "Partager", "Поделиться")}
-            </span>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t("Profili", "Profile", "Profil", "Profil", "Профиль")}</span>
+            <Share2 size={18} className="text-sky-600" />
+            <span className="text-sm font-black text-sky-600">{copied ? t("Kopyalandı!", "Copied!", "Kopiert!", "Copié!", "Скопировано!") : t("Profili Paylaş", "Share Profile", "Profil teilen", "Partager le profil", "Поделиться профилем")}</span>
           </button>
         </div>
       ) : null,
