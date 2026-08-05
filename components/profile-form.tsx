@@ -865,7 +865,7 @@ export default function ProfileForm({
       ) : null}
 
       {/* ── ŞƏKİL YÜKLƏMƏ (kiçik) ── */}
-      {hasAvatarOrBackground ? (
+      {userRole === "super_admin" && hasAvatarOrBackground ? (
         <div className="grid grid-cols-2 gap-3 max-w-sm">
           <ImageDropZone
             label="Profil şəkli"
@@ -923,28 +923,32 @@ export default function ProfileForm({
             ]}
           />
         )}
-        <SelectField
-          name="cover_style"
-          label="Cover görünüşü"
-          value={coverStyle}
-          onChange={(value) => setCoverStyle(value as typeof coverStyle)}
-          options={[
-            { value: "auto", label: "Auto / premium" },
-            { value: "square", label: "Kvadrat / 1:1" },
-            { value: "banner", label: "Banner / aşağı hündürlük" },
-          ]}
-        />
-        <SelectField
-          name="cover_position"
-          label="Cover fokus yeri"
-          value={coverPosition}
-          onChange={(value) => setCoverPosition(value as typeof coverPosition)}
-          options={[
-            { value: "top", label: "Yuxarı" },
-            { value: "center", label: "Mərkəz" },
-            { value: "bottom", label: "Aşağı" },
-          ]}
-        />
+        {userRole === "super_admin" ? (
+          <>
+            <SelectField
+              name="cover_style"
+              label="Cover görünüşü"
+              value={coverStyle}
+              onChange={(value) => setCoverStyle(value as typeof coverStyle)}
+              options={[
+                { value: "auto", label: "Auto / premium" },
+                { value: "square", label: "Kvadrat / 1:1" },
+                { value: "banner", label: "Banner / aşağı hündürlük" },
+              ]}
+            />
+            <SelectField
+              name="cover_position"
+              label="Cover fokus yeri"
+              value={coverPosition}
+              onChange={(value) => setCoverPosition(value as typeof coverPosition)}
+              options={[
+                { value: "top", label: "Yuxarı" },
+                { value: "center", label: "Mərkəz" },
+                { value: "bottom", label: "Aşağı" },
+              ]}
+            />
+          </>
+        ) : null}
       </div>
 
       {userRole === "super_admin" ? (
