@@ -161,7 +161,7 @@ export default function QrCodeModal({
             open();
           }
         }}
-        className="lux-qr-card lux-card-enter-7 group mt-5 flex cursor-pointer items-center gap-5 rounded-2xl p-4 transition duration-200 hover:scale-[1.02] active:scale-[0.98]"
+        className="lux-qr-card lux-card-enter-7 group mt-3 mb-4 flex cursor-pointer items-center gap-5 rounded-2xl p-4 transition duration-200 hover:scale-[1.02] active:scale-[0.98]"
       >
         <div className="lux-qr-wrap relative grid size-[7rem] shrink-0 place-items-center rounded-xl bg-white p-2">
           {loadQr ? (
