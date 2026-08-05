@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Script from "next/script";
 
 export default function Chatbot() {
   const [ready, setReady] = useState(false);
@@ -23,6 +22,8 @@ export default function Chatbot() {
     if (window.tidioChatApi) {
       handleTidioReady();
     } else {
+      // Do not load the Tidio script on page load — only listen for the ready
+      // event in case the script is already present (e.g., preloaded elsewhere).
       document.addEventListener("tidioChat-ready", handleTidioReady);
     }
 
@@ -32,26 +33,47 @@ export default function Chatbot() {
   }, []);
 
   const handleOpenChat = () => {
+    // If Tidio already loaded, open it immediately
     if (window.tidioChatApi) {
       window.tidioChatApi.show();
       window.tidioChatApi.open();
-    } else {
-      console.warn("Tidio is not loaded yet.");
+      return;
     }
+
+    // Otherwise dynamically inject the Tidio script and open when ready
+    if ((window as any)._tidioLoading) return; // already injecting
+    (window as any)._tidioLoading = true;
+
+    const script = document.createElement("script");
+    script.src = "https://code.tidio.co/czthpvfnredauldg6xwb3irtbvdz8u8y.js";
+    script.async = true;
+    script.onload = () => {
+      // Tidio sets up tidioChatApi and may fire tidioChat-ready event
+      if (window.tidioChatApi) {
+        try {
+          window.tidioChatApi.hide();
+          window.tidioChatApi.show();
+          window.tidioChatApi.open();
+        } catch (e) {
+          // ignore
+        }
+      } else {
+        // In some cases Tidio may dispatch a custom event — listen briefly
+        const onReady = () => {
+          window.tidioChatApi?.hide();
+          window.tidioChatApi?.show();
+          window.tidioChatApi?.open();
+          document.removeEventListener("tidioChat-ready", onReady);
+        };
+        document.addEventListener("tidioChat-ready", onReady);
+      }
+    };
+    document.body.appendChild(script);
   };
 
   return (
     <>
-      <Script
-        src="https://code.tidio.co/czthpvfnredauldg6xwb3irtbvdz8u8y.js"
-        strategy="lazyOnload"
-        onLoad={() => {
-          if (window.tidioChatApi) {
-            window.tidioChatApi.hide();
-            setReady(true);
-          }
-        }}
-      />
+      {/* Tidio script is injected on-demand when the user opens the chat. */}
 
       {/* Custom Trigger Button */}
       <button
