@@ -313,7 +313,8 @@ export default function ProfileForm({
   const hasCatalogContent = (catalogItems?.length ?? 0) > 0 || Boolean(profile?.catalog?.length);
   const hasCvContent = Boolean(profile?.cv_url);
   const hasGoogleReview = Boolean(profile?.google_review_url);
-  const showPortfolioSection = (profile?.portfolio_enabled ?? true) || hasPortfolioContent;
+  const showPortfolioSection =
+    userRole === "client" ? hasPortfolioContent : (profile?.portfolio_enabled ?? true) || hasPortfolioContent;
   const showCatalogSection = hasCatalogContent;
   const showCvSection = (profile?.portfolio_enabled ?? true) || hasCvContent;
   const showGoogleReviewSection = hasGoogleReview;
