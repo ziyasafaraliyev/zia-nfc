@@ -23,7 +23,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sharp": "^0.35.2",
-    "@upstash/redis": "^2.1.0"
+    "@upstash/redis": "^2.0.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
