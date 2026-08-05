@@ -3,7 +3,6 @@
  */
 
 import crypto from "crypto";
-import { Redis } from "@upstash/redis";
 
 // ─── Timing-safe string compare ─────────────────────────────────────────────
 
@@ -81,15 +80,25 @@ type RateBucket = { count: number; resetAt: number };
 
 const rateBuckets = new Map<string, RateBucket>();
 
-let redisClient: Redis | null = null;
+let redisClient: any | null = null;
 
-function getRedisClient(): Redis | null {
+function getRedisClient(): any | null {
   if (redisClient) return redisClient;
   const url = process.env.UPSTASH_REDIS_REST_URL;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;
   if (!url || !token) return null;
-  redisClient = new Redis({ url, token });
-  return redisClient;
+
+  try {
+    // Try to dynamically require the Upstash client if installed.
+    // If it's not available at build time, we gracefully fall back to in-memory limiter.
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { Redis } = require("@upstash/redis");
+    redisClient = new Redis({ url, token });
+    return redisClient;
+  } catch (err) {
+    console.warn("[rate] @upstash/redis not installed or failed to load, falling back to memory");
+    return null;
+  }
 }
 
 /** Prune occasionally to avoid unbounded growth (fallback only) */
