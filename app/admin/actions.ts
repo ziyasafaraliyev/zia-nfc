@@ -140,16 +140,16 @@ function verifySessionToken(token: string): string | null {
 const MAX_LOGIN_ATTEMPTS = 5;
 const RATE_LIMIT_WINDOW_MS = 15 * 60_000; // 15 minutes
 
-function isRateLimited(ip: string): boolean {
-  return isRateLimitedKey(`login:${ip}`, MAX_LOGIN_ATTEMPTS, RATE_LIMIT_WINDOW_MS);
+async function isRateLimited(ip: string): Promise<boolean> {
+  return await isRateLimitedKey(`login:${ip}`, MAX_LOGIN_ATTEMPTS, RATE_LIMIT_WINDOW_MS);
 }
 
-function recordLoginAttempt(ip: string): void {
-  recordRateAttempt(`login:${ip}`, RATE_LIMIT_WINDOW_MS);
+async function recordLoginAttempt(ip: string): Promise<void> {
+  await recordRateAttempt(`login:${ip}`, RATE_LIMIT_WINDOW_MS);
 }
 
-function clearLoginAttempts(ip: string): void {
-  clearRateAttempts(`login:${ip}`);
+async function clearLoginAttempts(ip: string): Promise<void> {
+  await clearRateAttempts(`login:${ip}`);
 }
 
 async function getClientIp(): Promise<string> {
@@ -836,7 +836,7 @@ export async function loginAdmin(formData: FormData) {
   const failRedirect = `/admin?error=login&redirectTo=${encodeURIComponent(redirectTo)}`;
 
   // Rate limit check
-  if (isRateLimited(ip)) {
+  if (await isRateLimited(ip)) {
     redirect(
       `/admin?error=rate-limited&redirectTo=${encodeURIComponent(redirectTo)}`,
     );
@@ -848,7 +848,7 @@ export async function loginAdmin(formData: FormData) {
   const allowedPassword = process.env.ADMIN_PASSWORD;
 
   if (!email || !password || password.length > 200 || email.length > 254) {
-    recordLoginAttempt(ip);
+    await recordLoginAttempt(ip);
     redirect(failRedirect);
   }
 
@@ -859,7 +859,7 @@ export async function loginAdmin(formData: FormData) {
     timingSafeEqualString(email, allowedEmail) &&
     timingSafeEqualString(password, allowedPassword)
   ) {
-    clearLoginAttempts(ip);
+    await clearLoginAttempts(ip);
     const token = createSessionToken(email);
     await setAdminSessionCookie(token);
     redirect(redirectTo);
@@ -876,7 +876,7 @@ export async function loginAdmin(formData: FormData) {
 
     if (profile?.client_password) {
       if (await verifyPassword(password, profile.client_password)) {
-        clearLoginAttempts(ip);
+        await clearLoginAttempts(ip);
         const token = createSessionToken(email);
         await setAdminSessionCookie(token);
         redirect(redirectTo);
@@ -891,7 +891,7 @@ export async function loginAdmin(formData: FormData) {
   }
 
   // Failed login
-  recordLoginAttempt(ip);
+  await recordLoginAttempt(ip);
   redirect(failRedirect);
 }
 
@@ -1766,10 +1766,10 @@ export async function deleteRestaurant(formData: FormData) {
 
 export async function submitRestaurantReview(formData: FormData) {
   const ip = await getClientIp();
-  if (isRateLimitedKey(`review:${ip}`, 10, 60_000)) {
+  if (await isRateLimitedKey(`review:${ip}`, 10, 60_000)) {
     throw new Error("Too many reviews");
   }
-  recordRateAttempt(`review:${ip}`, 60_000);
+  await recordRateAttempt(`review:${ip}`, 60_000);
 
   const supabase = createServiceSupabaseClient();
   const restaurantId = text(formData, "restaurant_id");

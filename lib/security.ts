@@ -3,6 +3,7 @@
  */
 
 import crypto from "crypto";
+import { Redis } from "@upstash/redis";
 
 // ─── Timing-safe string compare ─────────────────────────────────────────────
 
@@ -80,7 +81,18 @@ type RateBucket = { count: number; resetAt: number };
 
 const rateBuckets = new Map<string, RateBucket>();
 
-/** Prune occasionally to avoid unbounded growth */
+let redisClient: Redis | null = null;
+
+function getRedisClient(): Redis | null {
+  if (redisClient) return redisClient;
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!url || !token) return null;
+  redisClient = new Redis({ url, token });
+  return redisClient;
+}
+
+/** Prune occasionally to avoid unbounded growth (fallback only) */
 function pruneBuckets(now: number) {
   if (rateBuckets.size < 5000) return;
   for (const [k, v] of rateBuckets) {
@@ -89,35 +101,84 @@ function pruneBuckets(now: number) {
 }
 
 /**
- * @returns true if the key is currently rate-limited (should reject)
+ * Distributed-aware rate limiter using Upstash Redis with in-memory fallback.
+ * Returns true if the key is currently rate-limited.
  */
-export function isRateLimited(
+export async function isRateLimited(
   key: string,
   maxAttempts: number,
   windowMs: number,
-): boolean {
-  const now = Date.now();
-  pruneBuckets(now);
-  const record = rateBuckets.get(key);
-  if (!record || now > record.resetAt) return false;
-  return record.count >= maxAttempts;
-}
+): Promise<boolean> {
+  const redis = getRedisClient();
+  if (!redis) {
+    const now = Date.now();
+    pruneBuckets(now);
+    const record = rateBuckets.get(key);
+    if (!record || now > record.resetAt) return false;
+    return record.count >= maxAttempts;
+  }
 
-export function recordRateAttempt(
-  key: string,
-  windowMs: number,
-): void {
-  const now = Date.now();
-  const record = rateBuckets.get(key);
-  if (!record || now > record.resetAt) {
-    rateBuckets.set(key, { count: 1, resetAt: now + windowMs });
-  } else {
-    record.count += 1;
+  try {
+    const val = await redis.get(key);
+    const count = val ? parseInt(String(val), 10) : 0;
+    return count >= maxAttempts;
+  } catch (err) {
+    console.warn("[rate] Redis isRateLimited error, falling back to memory", err);
+    const now = Date.now();
+    pruneBuckets(now);
+    const record = rateBuckets.get(key);
+    if (!record || now > record.resetAt) return false;
+    return record.count >= maxAttempts;
   }
 }
 
-export function clearRateAttempts(key: string): void {
-  rateBuckets.delete(key);
+export async function recordRateAttempt(
+  key: string,
+  windowMs: number,
+): Promise<void> {
+  const redis = getRedisClient();
+  const windowSec = Math.max(1, Math.ceil(windowMs / 1000));
+  if (!redis) {
+    const now = Date.now();
+    const record = rateBuckets.get(key);
+    if (!record || now > record.resetAt) {
+      rateBuckets.set(key, { count: 1, resetAt: now + windowMs });
+    } else {
+      record.count += 1;
+    }
+    return;
+  }
+
+  try {
+    const newCount = await redis.incr(key);
+    if (newCount === 1) {
+      await redis.expire(key, windowSec);
+    }
+  } catch (err) {
+    console.warn("[rate] Redis recordRateAttempt error, falling back to memory", err);
+    const now = Date.now();
+    const record = rateBuckets.get(key);
+    if (!record || now > record.resetAt) {
+      rateBuckets.set(key, { count: 1, resetAt: now + windowMs });
+    } else {
+      record.count += 1;
+    }
+  }
+}
+
+export async function clearRateAttempts(key: string): Promise<void> {
+  const redis = getRedisClient();
+  if (!redis) {
+    rateBuckets.delete(key);
+    return;
+  }
+
+  try {
+    await redis.del(key);
+  } catch (err) {
+    console.warn("[rate] Redis clearRateAttempts error, falling back to memory", err);
+    rateBuckets.delete(key);
+  }
 }
 
 // ─── Client IP from headers ─────────────────────────────────────────────────

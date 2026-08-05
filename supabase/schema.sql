@@ -390,3 +390,26 @@ create policy "Service role manages car_profiles"
 grant select on public.car_profiles to anon, authenticated;
 grant all on public.car_profiles to service_role;
 
+-- Orders table for restaurant payments
+create table if not exists public.restaurant_orders (
+  id uuid primary key default gen_random_uuid(),
+  token text not null unique,
+  restaurant_slug text not null,
+  amount numeric not null default 0,
+  status text not null default 'pending', -- pending, paid, cancelled
+  metadata jsonb default '{}',
+  created_at timestamptz not null default now(),
+  paid_at timestamptz
+);
+
+alter table public.restaurant_orders enable row level security;
+
+drop policy if exists "Service role manages restaurant_orders" on public.restaurant_orders;
+create policy "Service role manages restaurant_orders"
+  on public.restaurant_orders for all
+  using (auth.role() = 'service_role')
+  with check (auth.role() = 'service_role');
+
+grant select on public.restaurant_orders to service_role;
+grant all on public.restaurant_orders to service_role;
+

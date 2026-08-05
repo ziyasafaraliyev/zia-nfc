@@ -1,6 +1,7 @@
 import { getRestaurantBySlug } from "@/lib/restaurants";
 import { getProfileBySlug } from "@/lib/profiles";
 import { notFound } from "next/navigation";
+import { createServiceSupabaseClient } from "@/lib/supabase";
 import {
   generateOrderMetadata,
   renderOrderStep,
@@ -8,7 +9,7 @@ import {
 
 export const revalidate = 120;
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ slug: string }>; searchParams?: { order_id?: string } };
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
@@ -20,9 +21,34 @@ export async function generateMetadata({ params }: Props) {
   };
 }
 
-export default async function CombinedDonePage({ params }: Props) {
+export default async function CombinedDonePage({ params, searchParams }: Props) {
   const { slug } = await params;
+
   const profile = await getProfileBySlug(slug);
   if (profile?.enabled) notFound();
+
+  // Require a valid server-side-paid order token
+  const orderToken = searchParams?.order_id;
+  if (!orderToken) {
+    notFound();
+  }
+
+  const supabase = createServiceSupabaseClient();
+  if (!supabase) {
+    // If no service DB key is configured, deny access to avoid accidental bypass
+    notFound();
+  }
+
+  const { data, error } = await supabase
+    .from("restaurant_orders")
+    .select("id, status, restaurant_slug")
+    .eq("token", orderToken)
+    .limit(1)
+    .maybeSingle();
+
+  if (error || !data || data.status !== "paid" || data.restaurant_slug !== slug) {
+    notFound();
+  }
+
   return renderOrderStep(slug, "hazir");
 }

@@ -249,14 +249,32 @@ export default function PayStep() {
       </div>
 
       {canPay ? (
-        <Link
-          href={getRestaurantDonePath(restaurant.slug)}
-          prefetch
-          scroll={false}
+        <button
+          type="button"
+          onClick={async () => {
+            try {
+              const res = await fetch("/api/orders", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ slug: restaurant.slug, amount: payGrandTotal }),
+              });
+              const data = await res.json();
+              if (res.ok && data?.token) {
+                // Navigate with order token (server will verify)
+                router.push(`${getRestaurantDonePath(restaurant.slug)}?order_id=${encodeURIComponent(data.token)}`);
+              } else {
+                // Fallback: still navigate but server will reject if not valid
+                router.push(getRestaurantDonePath(restaurant.slug));
+              }
+            } catch (err) {
+              console.error("order create error", err);
+              router.push(getRestaurantDonePath(restaurant.slug));
+            }
+          }}
           className="flex w-full items-center justify-center rounded-full bg-sky-500 py-4 text-sm font-black text-white shadow-[0_14px_35px_rgba(14,165,233,0.3)] transition hover:bg-sky-400 active:scale-[0.98]"
         >
           {formatPrice(payGrandTotal)} ödə →
-        </Link>
+        </button>
       ) : (
         <button
           type="button"

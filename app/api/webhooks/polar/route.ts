@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
+import { createServiceSupabaseClient } from "@/lib/supabase";
 
 /**
  * Standard Webhooks (Svix) signature verification
@@ -96,6 +97,28 @@ export async function POST(request: Request) {
   const data = (payload as { data?: Record<string, unknown> }).data ?? {};
 
   console.log("[webhook/polar] Event alındı:", type);
+  // Attempt to mark restaurant_orders as paid when webhook contains matching token
+  try {
+    const metadata = (data.metadata as Record<string, unknown>) ?? {};
+    const token = (metadata.order_token as string) || (metadata.token as string) || (data.metadata_token as string) || (data.order_token as string);
+
+    const statusHint = (data.status as string) || "";
+    const typeStr = (type || "").toString();
+    const paidEvent = /paid|succeeded|completed/i.test(typeStr) || /paid|succeeded|completed/i.test(statusHint) || Boolean((data as any).paid);
+
+    if (token && paidEvent) {
+      const supabase = createServiceSupabaseClient();
+      if (supabase) {
+        await supabase
+          .from("restaurant_orders")
+          .update({ status: "paid", paid_at: new Date().toISOString() })
+          .eq("token", token);
+        console.log("[webhook/polar] Marked order paid for token", token);
+      }
+    }
+  } catch (err) {
+    console.warn("[webhook/polar] Error updating order status:", err);
+  }
 
   switch (type) {
     case "order.created":

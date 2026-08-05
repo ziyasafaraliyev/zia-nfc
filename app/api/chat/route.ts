@@ -20,13 +20,13 @@ export async function POST(request: Request) {
 
     const ip = clientIpFromHeaders(request.headers);
     const rateKey = `chat:${ip}`;
-    if (isRateLimited(rateKey, CHAT_RATE_MAX, CHAT_RATE_WINDOW_MS)) {
+    if (await isRateLimited(rateKey, CHAT_RATE_MAX, CHAT_RATE_WINDOW_MS)) {
       return NextResponse.json(
         { error: "Çox sorğu. Bir az sonra yenidən cəhd edin." },
         { status: 429 },
       );
     }
-    recordRateAttempt(rateKey, CHAT_RATE_WINDOW_MS);
+    await recordRateAttempt(rateKey, CHAT_RATE_WINDOW_MS);
 
     let body: unknown;
     try {
