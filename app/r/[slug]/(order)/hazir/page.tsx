@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 
 export const revalidate = 120;
 
-type Props = { params: Promise<{ slug: string }>; searchParams?: { order_id?: string } };
+type Props = { params: Promise<{ slug: string }>; searchParams?: Promise<{ order_id?: string }> };
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
@@ -14,7 +14,8 @@ export async function generateMetadata({ params }: Props) {
 export default async function RestaurantDonePage({ params, searchParams }: Props) {
   const { slug } = await params;
 
-  const orderToken = searchParams?.order_id;
+  const sp = searchParams ? await searchParams : undefined;
+  const orderToken = sp?.order_id;
   if (!orderToken) notFound();
 
   const supabase = createServiceSupabaseClient();

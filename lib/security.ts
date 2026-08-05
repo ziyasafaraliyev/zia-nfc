@@ -90,9 +90,11 @@ function getRedisClient(): any | null {
 
   try {
     // Try to dynamically require the Upstash client if installed.
-    // If it's not available at build time, we gracefully fall back to in-memory limiter.
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { Redis } = require("@upstash/redis");
+    // Use an indirect require to avoid static bundlers attempting to resolve
+    // the dependency during build when it's intentionally not installed.
+    // eslint-disable-next-line no-new-func
+    const req = Function("return require")();
+    const { Redis } = req("@upstash/redis");
     redisClient = new Redis({ url, token });
     return redisClient;
   } catch (err) {

@@ -9,7 +9,7 @@ import {
 
 export const revalidate = 120;
 
-type Props = { params: Promise<{ slug: string }>; searchParams?: { order_id?: string } };
+type Props = { params: Promise<{ slug: string }>; searchParams?: Promise<{ order_id?: string }> };
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
@@ -28,7 +28,8 @@ export default async function CombinedDonePage({ params, searchParams }: Props) 
   if (profile?.enabled) notFound();
 
   // Require a valid server-side-paid order token
-  const orderToken = searchParams?.order_id;
+  const sp = searchParams ? await searchParams : undefined;
+  const orderToken = sp?.order_id;
   if (!orderToken) {
     notFound();
   }
