@@ -768,7 +768,6 @@ function SocialChip({
   return (
     <a
       href={href}
-      target="_blank"
       rel="noreferrer"
       className={`lux-social-chip ${variantClass} group flex min-h-[3.75rem] flex-col items-center justify-center gap-1.5 rounded-2xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.95]`}
     >

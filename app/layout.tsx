@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
-import { Analytics } from "@vercel/analytics/next";
-import VisitTracker from "@/components/VisitTracker";
-import { WebMCPProvider } from "@/components/WebMCPProvider";
 import { LanguageProvider } from "@/components/language-context";
 import "./globals.css";
 
@@ -72,10 +69,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <head />
       <body className="bg-white text-slate-950 antialiased">
         <LanguageProvider>
-          <WebMCPProvider />
-          <VisitTracker />
           {children}
-          <Analytics />
         </LanguageProvider>
       </body>
     </html>

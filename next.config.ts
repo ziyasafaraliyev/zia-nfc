@@ -9,11 +9,11 @@ const isProd = process.env.NODE_ENV === "production";
  */
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isProd ? "" : " 'unsafe-eval'"} https://va.vercel-scripts.com`,
+  `script-src 'self' 'unsafe-inline'${isProd ? "" : " 'unsafe-eval'"}`,
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "img-src 'self' blob: data: https://*.supabase.co https://*.r2.dev",
   "font-src 'self' data: https://fonts.gstatic.com",
-  "connect-src 'self' https://*.supabase.co https://*.r2.dev https://integrate.api.nvidia.com https://va.vercel-scripts.com https://*.vercel-insights.com",
+  "connect-src 'self' https://*.supabase.co https://*.r2.dev https://integrate.api.nvidia.com",
   "frame-src 'self'",
   "media-src 'self'",
   "object-src 'none'",

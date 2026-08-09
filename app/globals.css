@@ -412,6 +412,23 @@ a.dashboard-primary:hover {
     }
 }
 
+/* Page-level reveal — whole profile fades in smoothly */
+.lux-shell {
+    animation: lux-page-reveal 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes lux-page-reveal {
+    from {
+        opacity: 0;
+        transform: scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
 /* Cover gradient (fallback — no background image) */
 .lux-hero {
     background:
