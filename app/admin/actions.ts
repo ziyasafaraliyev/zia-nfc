@@ -1390,25 +1390,11 @@ export async function saveProfile(formData: FormData) {
     redirectWithSaveError("gallery-save-mismatch");
   }
 
-  // Generate & upload pre-generated QR code PNG to R2 to eliminate on-the-fly QR CPU usage
-  if (isR2Configured()) {
-    try {
-      const { buildQrPng } = await import("@/lib/qr");
-      const { getProfileUrl } = await import("@/lib/urls");
-      const qrPng = await buildQrPng(getProfileUrl(slug));
-      await uploadToR2(`qrcodes/${slug}.png`, qrPng, "image/png");
-    } catch (qrErr) {
-      console.error("QR pre-generation failed:", qrErr);
-    }
-  }
-
   revalidatePath("/admin");
   revalidatePath(`/${slug}`);
   revalidatePath(`/u/${slug}`);
   revalidatePath(`/u/${slug}/vcard`);
   revalidatePath(`/${slug}/vcard`);
-  revalidatePath(`/u/${slug}/qr`);
-  revalidatePath(`/${slug}/qr`);
   revalidateTag(profileCacheTag(slug));
   revalidateTag("profiles");
   redirect("/admin?saved=1");
