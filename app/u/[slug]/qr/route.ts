@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { getProfileBySlug } from "@/lib/profiles";
 import { getProfileUrl } from "@/lib/urls";
-import { getR2PublicBaseUrl, isR2Configured } from "@/lib/r2";
 import { buildQrPng, buildQrSvg } from "@/lib/qr";
 
 /** Cache QR PNG at CDN — profile URL rarely changes without admin save */
@@ -45,18 +44,7 @@ export async function GET(
       });
     }
 
-    // If R2 is configured, redirect to pre-generated QR code on CDN
-    if (isR2Configured()) {
-      const r2Base = getR2PublicBaseUrl();
-      if (r2Base) {
-        return NextResponse.redirect(`${r2Base}/qrcodes/${slug}.png`, {
-          status: 302,
-          headers: {
-            "Cache-Control": "public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800",
-          },
-        });
-      }
-    }
+
 
     const png = await buildQrPng(profileUrl);
 
