@@ -29,6 +29,16 @@ export default function PortfolioClient({ profile }: { profile: any }) {
     setLightboxImages(images);
     setCurrentImageIndex(startIndex);
     setIsLightboxOpen(true);
+    if (typeof document !== "undefined") {
+      document.body.style.overflow = "hidden";
+    }
+  }
+
+  function closeLightbox() {
+    setIsLightboxOpen(false);
+    if (typeof document !== "undefined") {
+      document.body.style.overflow = "";
+    }
   }
 
   function nextImage() {
@@ -108,7 +118,7 @@ export default function PortfolioClient({ profile }: { profile: any }) {
       {isLightboxOpen && (
         <div
           className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-black/90 p-4"
-          onClick={() => setIsLightboxOpen(false)}
+          onClick={closeLightbox}
         >
           {/* Top Info Bar */}
           <div className="absolute top-4 inset-x-4 flex items-center justify-between text-white z-10">
@@ -116,7 +126,7 @@ export default function PortfolioClient({ profile }: { profile: any }) {
               {currentImageIndex + 1} / {lightboxImages.length}
             </span>
             <button
-              onClick={() => setIsLightboxOpen(false)}
+              onClick={closeLightbox}
               className="p-2.5 rounded-full bg-black/40 hover:bg-black/60 transition text-white/90"
             >
               <X size={20} />

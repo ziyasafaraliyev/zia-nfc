@@ -67,6 +67,9 @@ export default function PortfolioSection({
     setActiveSectionName(sectionName);
     setCurrentImageIndex(startIndex);
     setIsLightboxOpen(true);
+    if (typeof document !== "undefined") {
+      document.body.style.overflow = "hidden";
+    }
   }
 
   function closeLightbox() {
@@ -74,6 +77,9 @@ export default function PortfolioSection({
     setLightboxImages([]);
     setActiveSectionName("");
     setCurrentImageIndex(0);
+    if (typeof document !== "undefined") {
+      document.body.style.overflow = "";
+    }
   }
 
   function nextImage() {
