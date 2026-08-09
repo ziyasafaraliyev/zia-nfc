@@ -1393,6 +1393,8 @@ export async function saveProfile(formData: FormData) {
   revalidatePath("/admin");
   revalidatePath(`/${slug}`);
   revalidatePath(`/u/${slug}`);
+  revalidatePath(`/u/${slug}/qr`);
+  revalidatePath(`/${slug}/qr`);
   revalidatePath(`/u/${slug}/vcard`);
   revalidatePath(`/${slug}/vcard`);
   revalidateTag(profileCacheTag(slug));
