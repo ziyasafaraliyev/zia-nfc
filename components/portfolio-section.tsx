@@ -192,34 +192,7 @@ export default function PortfolioSection({
             ) : null}
           </div>
 
-          {lightboxImages.length > 1 ? (
-            <div
-              className="z-10 mt-6 flex max-w-full justify-center gap-2 overflow-x-auto p-2"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {lightboxImages.map((image, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => setCurrentImageIndex(idx)}
-                  className={`relative size-12 shrink-0 overflow-hidden rounded-lg border-2 transition duration-200 ${
-                    currentImageIndex === idx
-                      ? "scale-105 border-[#29AEEE]"
-                      : "border-transparent opacity-60 hover:opacity-100"
-                  }`}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={image}
-                    alt=""
-                    className="h-full w-full object-cover"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </button>
-              ))}
-            </div>
-          ) : null}
+
         </div>
       ) : null}
     </>

@@ -154,31 +154,7 @@ export default function PortfolioClient({ profile }: { profile: any }) {
             )}
           </div>
 
-          {/* Thumbnail Strip */}
-          {lightboxImages.length > 1 && (
-            <div
-              className="mt-6 flex justify-center gap-2 overflow-x-auto max-w-full p-2 z-10"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {lightboxImages.map((image, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setCurrentImageIndex(idx)}
-                  className={`relative size-12 shrink-0 rounded-lg overflow-hidden border-2 transition duration-200 ${currentImageIndex === idx ? "border-[#29AEEE] scale-105" : "border-transparent opacity-60 hover:opacity-100"
-                    }`}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={image}
-                    alt=""
-                    className="h-full w-full object-cover"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </button>
-              ))}
-            </div>
-          )}
+
         </div>
       )}
     </main>
