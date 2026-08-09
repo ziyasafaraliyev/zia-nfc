@@ -725,6 +725,7 @@ async function uploadFile(
     mimeType?: string;
     /** avatar | cover | gallery — sets max edge before WebP encode */
     kind?: UploadKind;
+    isSuperAdmin?: boolean;
   },
 ) {
   if (!file || file.size === 0) {
@@ -774,24 +775,34 @@ async function uploadFile(
   let ext: string;
 
   if (looksLikeImage) {
-    // ALWAYS re-encode to WebP (jpg/png/heic/… → .webp)
     const buffer = Buffer.from(await file.arrayBuffer());
-    try {
-      const webpBuffer = await encodeRasterToWebp(buffer, {
-        maxEdge: maxEdgeForKind(options?.kind),
-        quality:
-          options?.kind === "avatar"
-            ? 88
-            : options?.kind === "cover"
-              ? 86
-              : 82,
-      });
-      fileToUpload = webpBuffer;
+    // Super admin uploads always run sharp server-side for max quality / EXIF handling.
+    // Client admin uploads: if browser already compressed to webp, bypass server sharp to save CPU!
+    const isAlreadyWebp = mimeType === "image/webp" || fileName.toLowerCase().endsWith(".webp");
+    const shouldEncodeOnServer = options?.isSuperAdmin || !isAlreadyWebp;
+
+    if (shouldEncodeOnServer) {
+      try {
+        const webpBuffer = await encodeRasterToWebp(buffer, {
+          maxEdge: maxEdgeForKind(options?.kind),
+          quality:
+            options?.kind === "avatar"
+              ? 88
+              : options?.kind === "cover"
+                ? 86
+                : 82,
+        });
+        fileToUpload = webpBuffer;
+        contentType = "image/webp";
+        ext = "webp";
+      } catch (err) {
+        if (err instanceof Error && err.message.includes("too large")) throw err;
+        throw new Error("Invalid image file");
+      }
+    } else {
+      fileToUpload = buffer;
       contentType = "image/webp";
       ext = "webp";
-    } catch (err) {
-      if (err instanceof Error && err.message.includes("too large")) throw err;
-      throw new Error("Invalid image file");
     }
   } else if (mimeType === "application/pdf" || fileName.toLowerCase().endsWith(".pdf")) {
     // PDF only for CV — magic-byte check
@@ -1058,6 +1069,7 @@ export async function saveProfile(formData: FormData) {
         fileName: getUploadFileName(avatarUpload, "avatar.webp"),
         mimeType: guessMimeType(getUploadFileName(avatarUpload, "avatar.webp"), avatarUpload.type),
         kind: "avatar",
+        isSuperAdmin: isSuper,
       }).catch((err) => {
         console.error("Avatar upload failed:", err);
         redirectWithSaveError("upload");
@@ -1068,6 +1080,7 @@ export async function saveProfile(formData: FormData) {
         fileName: getUploadFileName(backgroundUpload, "background.webp"),
         mimeType: guessMimeType(getUploadFileName(backgroundUpload, "background.webp"), backgroundUpload.type),
         kind: "cover",
+        isSuperAdmin: isSuper,
       }).catch((err) => {
         console.error("Background upload failed:", err);
         redirectWithSaveError("upload");
@@ -1077,6 +1090,7 @@ export async function saveProfile(formData: FormData) {
     ? await uploadFile(cvUpload, `cvs/${slug}`, {
         fileName: getUploadFileName(cvUpload, "cv.pdf"),
         mimeType: guessMimeType(getUploadFileName(cvUpload, "cv.pdf"), cvUpload.type),
+        isSuperAdmin: isSuper,
       }).catch((err) => {
         console.error("CV upload failed:", err);
         redirectWithSaveError("upload");
@@ -1093,6 +1107,7 @@ export async function saveProfile(formData: FormData) {
           fileName: upload.fileName,
           mimeType: upload.mimeType,
           kind: "gallery",
+          isSuperAdmin: isSuper,
         });
         if (!url) {
           redirectWithSaveError("upload");
@@ -1375,9 +1390,25 @@ export async function saveProfile(formData: FormData) {
     redirectWithSaveError("gallery-save-mismatch");
   }
 
+  // Generate & upload pre-generated QR code PNG to R2 to eliminate on-the-fly QR CPU usage
+  if (isR2Configured()) {
+    try {
+      const { buildQrPng } = await import("@/lib/qr");
+      const { getProfileUrl } = await import("@/lib/urls");
+      const qrPng = await buildQrPng(getProfileUrl(slug));
+      await uploadToR2(`qrcodes/${slug}.png`, qrPng, "image/png");
+    } catch (qrErr) {
+      console.error("QR pre-generation failed:", qrErr);
+    }
+  }
+
   revalidatePath("/admin");
   revalidatePath(`/${slug}`);
   revalidatePath(`/u/${slug}`);
+  revalidatePath(`/u/${slug}/vcard`);
+  revalidatePath(`/${slug}/vcard`);
+  revalidatePath(`/u/${slug}/qr`);
+  revalidatePath(`/${slug}/qr`);
   revalidateTag(profileCacheTag(slug));
   revalidateTag("profiles");
   redirect("/admin?saved=1");

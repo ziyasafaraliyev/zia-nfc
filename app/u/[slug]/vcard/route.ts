@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 import { createServiceSupabaseClient } from "@/lib/supabase";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -21,7 +21,7 @@ async function getPhotoVCardLine(avatarUrl?: string | null, requestUrl?: string)
 
     const res = await fetch(fullUrl, {
       headers: { Accept: "image/*" },
-      next: { revalidate: 3600 },
+      next: { revalidate: 86400 },
     });
 
     if (!res.ok) return "";
@@ -109,6 +109,7 @@ export async function GET(request: Request, { params }: Props) {
     headers: {
       "Content-Type": "text/vcard; charset=utf-8",
       "Content-Disposition": `attachment; filename="${profile.slug}.vcf"`,
+      "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400",
     },
   });
 }

@@ -1,102 +1,15 @@
 import { NextResponse } from "next/server";
-import path from "path";
-import QRCode from "qrcode";
-import sharp from "sharp";
 import { getProfileBySlug } from "@/lib/profiles";
 import { getProfileUrl } from "@/lib/urls";
+import { getR2PublicBaseUrl, isR2Configured } from "@/lib/r2";
+import { buildQrPng, buildQrSvg } from "@/lib/qr";
 
 /** Cache QR PNG at CDN — profile URL rarely changes without admin save */
-export const revalidate = 300;
-
-const QR_SIZE = 384;
-/**
- * Center logo as large as safe with H error correction (~30% recovery).
- * Pad is only a thin white rim so the logo fills the reserved area.
- */
-const LOGO_RATIO = 0.26;
-const LOGO_PAD_RATIO = 1.06;
-
-/**
- * Brand blue sampled from logoarxafonsuz.png so QR modules match the logo.
- * (avg opaque pixels ≈ #1f99ff)
- */
-const QR_BRAND_COLOR = "#1F99FF";
+export const revalidate = 86400;
 
 // Validate slug format to prevent injection
 function isValidSlug(slug: string): boolean {
   return /^[a-z0-9-]+$/.test(slug) && slug.length >= 2 && slug.length <= 50;
-}
-
-let cachedLogoOverlay: Buffer | null = null;
-
-async function getLogoOverlay(): Promise<Buffer> {
-  if (cachedLogoOverlay) return cachedLogoOverlay;
-
-  const logoPath = path.join(process.cwd(), "public", "logoarxafonsuz.png");
-  const logoSize = Math.round(QR_SIZE * LOGO_RATIO);
-  const padSize = Math.round(logoSize * LOGO_PAD_RATIO);
-
-  // Transparent-bg logo — keep alpha; white pad supplies the background
-  const resizedLogo = await sharp(logoPath)
-    .resize(logoSize, logoSize, {
-      fit: "contain",
-      background: { r: 255, g: 255, b: 255, alpha: 0 },
-    })
-    .png()
-    .toBuffer();
-
-  // White pad behind logo so QR modules don't show through transparent areas
-  cachedLogoOverlay = await sharp({
-    create: {
-      width: padSize,
-      height: padSize,
-      channels: 4,
-      background: { r: 255, g: 255, b: 255, alpha: 1 },
-    },
-  })
-    .composite([{ input: resizedLogo, gravity: "center" }])
-    .png()
-    .toBuffer();
-
-  return cachedLogoOverlay;
-}
-
-async function buildQrPng(profileUrl: string): Promise<Buffer> {
-  // H error correction so center logo does not break scanning
-  const qrBuffer = await QRCode.toBuffer(profileUrl, {
-    type: "png",
-    margin: 2,
-    width: QR_SIZE,
-    errorCorrectionLevel: "H",
-    color: {
-      dark: QR_BRAND_COLOR,
-      light: "#ffffff",
-    },
-  });
-
-  try {
-    const logo = await getLogoOverlay();
-    return await sharp(qrBuffer)
-      .composite([{ input: logo, gravity: "center" }])
-      .png()
-      .toBuffer();
-  } catch {
-    // If logo is missing or sharp fails, still return plain QR
-    return Buffer.from(qrBuffer);
-  }
-}
-
-async function buildQrSvg(profileUrl: string): Promise<string> {
-  return QRCode.toString(profileUrl, {
-    type: "svg",
-    margin: 2,
-    width: QR_SIZE,
-    errorCorrectionLevel: "H",
-    color: {
-      dark: QR_BRAND_COLOR,
-      light: "#ffffff",
-    },
-  });
 }
 
 export async function GET(
@@ -127,9 +40,22 @@ export async function GET(
         headers: {
           "Content-Type": "image/svg+xml",
           "Content-Disposition": `inline; filename="${profile.slug}-qr.svg"`,
-          "Cache-Control": "public, max-age=300, s-maxage=300, stale-while-revalidate=86400",
+          "Cache-Control": "public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800",
         },
       });
+    }
+
+    // If R2 is configured, redirect to pre-generated QR code on CDN
+    if (isR2Configured()) {
+      const r2Base = getR2PublicBaseUrl();
+      if (r2Base) {
+        return NextResponse.redirect(`${r2Base}/qrcodes/${slug}.png`, {
+          status: 302,
+          headers: {
+            "Cache-Control": "public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800",
+          },
+        });
+      }
     }
 
     const png = await buildQrPng(profileUrl);
@@ -139,7 +65,7 @@ export async function GET(
       headers: {
         "Content-Type": "image/png",
         "Content-Disposition": `inline; filename="${profile.slug}-qr.png"`,
-        "Cache-Control": "public, max-age=300, s-maxage=300, stale-while-revalidate=86400",
+        "Cache-Control": "public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800",
       },
     });
   } catch {
