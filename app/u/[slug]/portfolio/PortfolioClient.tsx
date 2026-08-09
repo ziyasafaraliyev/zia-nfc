@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Image as ImageIcon, X, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
-import { useState } from "react";
 
 function normalizeGallery(gallery: any[]) {
   if (!gallery || gallery.length === 0) return [];
@@ -19,11 +19,21 @@ function normalizeGallery(gallery: any[]) {
 }
 
 export default function PortfolioClient({ profile }: { profile: any }) {
+  const [mounted, setMounted] = useState(false);
   const [showProjects, setShowProjects] = useState(true);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxImages, setLightboxImages] = useState<string[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const sections = normalizeGallery(profile.gallery);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => {
+      if (typeof document !== "undefined") {
+        document.body.style.overflow = "";
+      }
+    };
+  }, []);
 
   function openLightbox(images: string[], startIndex: number) {
     setLightboxImages(images);
@@ -48,6 +58,57 @@ export default function PortfolioClient({ profile }: { profile: any }) {
   function prevImage() {
     setCurrentImageIndex((prev) => (prev - 1 + lightboxImages.length) % lightboxImages.length);
   }
+
+  const lightboxContent = isLightboxOpen ? (
+    <div
+      className="fixed inset-0 z-[999999] flex flex-col items-center justify-center bg-black/90 p-4"
+      onClick={closeLightbox}
+    >
+      {/* Top Info Bar */}
+      <div className="absolute top-4 inset-x-4 flex items-center justify-between text-white z-10">
+        <span className="text-xs font-bold uppercase tracking-wider bg-black/50 px-3 py-1.5 rounded-full backdrop-blur-md">
+          {currentImageIndex + 1} / {lightboxImages.length}
+        </span>
+        <button
+          onClick={closeLightbox}
+          className="p-2.5 rounded-full bg-black/50 hover:bg-black/70 transition text-white/90 backdrop-blur-md"
+        >
+          <X size={20} />
+        </button>
+      </div>
+
+      {/* Image Viewer Frame */}
+      <div
+        className="relative flex h-full max-h-[85vh] w-full max-w-4xl items-center justify-center p-2"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={lightboxImages[currentImageIndex]}
+          alt={`${profile.name} portfolio - ${currentImageIndex + 1}`}
+          className="max-h-[80vh] max-w-full rounded-2xl object-contain shadow-2xl"
+          decoding="async"
+        />
+
+        {lightboxImages.length > 1 && (
+          <>
+            <button
+              onClick={prevImage}
+              className="absolute left-2 top-1/2 z-10 -translate-y-1/2 p-3 rounded-full bg-black/50 hover:bg-black/70 text-white transition active:scale-95 backdrop-blur-md"
+            >
+              <ChevronLeft size={24} />
+            </button>
+            <button
+              onClick={nextImage}
+              className="absolute right-2 top-1/2 z-10 -translate-y-1/2 p-3 rounded-full bg-black/50 hover:bg-black/70 text-white transition active:scale-95 backdrop-blur-md"
+            >
+              <ChevronRight size={24} />
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  ) : null;
 
   return (
     <main className="lux-shell relative min-h-screen overflow-x-hidden">
@@ -114,59 +175,9 @@ export default function PortfolioClient({ profile }: { profile: any }) {
         )}
       </div>
 
-      {/* Lightbox Modal */}
-      {isLightboxOpen && (
-        <div
-          className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-black/90 p-4"
-          onClick={closeLightbox}
-        >
-          {/* Top Info Bar */}
-          <div className="absolute top-4 inset-x-4 flex items-center justify-between text-white z-10">
-            <span className="text-xs font-bold uppercase tracking-wider bg-black/40 px-3 py-1.5 rounded-full">
-              {currentImageIndex + 1} / {lightboxImages.length}
-            </span>
-            <button
-              onClick={closeLightbox}
-              className="p-2.5 rounded-full bg-black/40 hover:bg-black/60 transition text-white/90"
-            >
-              <X size={20} />
-            </button>
-          </div>
-
-          {/* Image Viewer Frame */}
-          <div
-            className="relative max-w-3xl w-full aspect-square md:aspect-[4/3] max-h-[75vh] flex items-center justify-center"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={lightboxImages[currentImageIndex]}
-              alt={`${profile.name} portfolio - ${currentImageIndex + 1}`}
-              className="max-h-full max-w-full rounded-2xl object-contain shadow-2xl"
-              decoding="async"
-            />
-
-            {lightboxImages.length > 1 && (
-              <>
-                <button
-                  onClick={prevImage}
-                  className="absolute left-2 top-1/2 z-10 -translate-y-1/2 p-3 rounded-full bg-black/40 hover:bg-black/60 text-white transition active:scale-95"
-                >
-                  <ChevronLeft size={24} />
-                </button>
-                <button
-                  onClick={nextImage}
-                  className="absolute right-2 top-1/2 z-10 -translate-y-1/2 p-3 rounded-full bg-black/40 hover:bg-black/60 text-white transition active:scale-95"
-                >
-                  <ChevronRight size={24} />
-                </button>
-              </>
-            )}
-          </div>
-
-
-        </div>
-      )}
+      {mounted && lightboxContent
+        ? createPortal(lightboxContent, document.body)
+        : null}
     </main>
   );
 }

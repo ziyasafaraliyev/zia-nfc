@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   ChevronDown,
   ChevronLeft,
@@ -54,11 +55,21 @@ export default function PortfolioSection({
     0,
   );
 
+  const [mounted, setMounted] = useState(false);
   const [showSections, setShowSections] = useState(false);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxImages, setLightboxImages] = useState<string[]>([]);
   const [activeSectionName, setActiveSectionName] = useState("");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => {
+      if (typeof document !== "undefined") {
+        document.body.style.overflow = "";
+      }
+    };
+  }, []);
 
   if (totalImages === 0) return null;
 
@@ -91,6 +102,65 @@ export default function PortfolioSection({
       (prev) => (prev - 1 + lightboxImages.length) % lightboxImages.length,
     );
   }
+
+  const lightboxContent = isLightboxOpen ? (
+    <div
+      className="fixed inset-0 z-[999999] flex flex-col items-center justify-center bg-black/90 p-4"
+      onClick={closeLightbox}
+    >
+      <div className="absolute inset-x-4 top-4 z-10 flex items-center justify-between text-white">
+        <div className="flex flex-col gap-1">
+          {activeSectionName ? (
+            <span className="rounded-full bg-black/50 px-3 py-1 text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">
+              {activeSectionName}
+            </span>
+          ) : null}
+          <span className="rounded-full bg-black/50 px-3 py-1.5 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
+            {currentImageIndex + 1} / {lightboxImages.length}
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={closeLightbox}
+          className="rounded-full bg-black/50 p-2.5 text-white/90 transition hover:bg-black/70 backdrop-blur-md"
+        >
+          <X size={20} />
+        </button>
+      </div>
+
+      <div
+        className="relative flex h-full max-h-[85vh] w-full max-w-4xl items-center justify-center p-2"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={lightboxImages[currentImageIndex]}
+          alt={`${profileName} — ${activeSectionName} — ${currentImageIndex + 1}`}
+          className="max-h-[80vh] max-w-full rounded-2xl object-contain shadow-2xl"
+          decoding="async"
+        />
+
+        {lightboxImages.length > 1 ? (
+          <>
+            <button
+              type="button"
+              onClick={prevImage}
+              className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/50 p-3 text-white transition hover:bg-black/70 active:scale-95 backdrop-blur-md"
+            >
+              <ChevronLeft size={24} />
+            </button>
+            <button
+              type="button"
+              onClick={nextImage}
+              className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/50 p-3 text-white transition hover:bg-black/70 active:scale-95 backdrop-blur-md"
+            >
+              <ChevronRight size={24} />
+            </button>
+          </>
+        ) : null}
+      </div>
+    </div>
+  ) : null;
 
   return (
     <>
@@ -141,66 +211,9 @@ export default function PortfolioSection({
         ) : null}
       </div>
 
-      {isLightboxOpen ? (
-        <div
-          className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-black/90 p-4"
-          onClick={closeLightbox}
-        >
-          <div className="absolute inset-x-4 top-4 z-10 flex items-center justify-between text-white">
-            <div className="flex flex-col gap-1">
-              {activeSectionName ? (
-                <span className="rounded-full bg-black/40 px-3 py-1 text-[10px] font-bold uppercase tracking-wider">
-                  {activeSectionName}
-                </span>
-              ) : null}
-              <span className="rounded-full bg-black/40 px-3 py-1.5 text-xs font-bold uppercase tracking-wider">
-                {currentImageIndex + 1} / {lightboxImages.length}
-              </span>
-            </div>
-            <button
-              type="button"
-              onClick={closeLightbox}
-              className="rounded-full bg-black/40 p-2.5 text-white/90 transition hover:bg-black/60"
-            >
-              <X size={20} />
-            </button>
-          </div>
-
-          <div
-            className="relative flex aspect-square max-h-[75vh] w-full max-w-3xl items-center justify-center md:aspect-[4/3]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={lightboxImages[currentImageIndex]}
-              alt={`${profileName} — ${activeSectionName} — ${currentImageIndex + 1}`}
-              className="max-h-full max-w-full rounded-2xl object-contain shadow-2xl"
-              decoding="async"
-            />
-
-            {lightboxImages.length > 1 ? (
-              <>
-                <button
-                  type="button"
-                  onClick={prevImage}
-                  className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/40 p-3 text-white transition hover:bg-black/60 active:scale-95"
-                >
-                  <ChevronLeft size={24} />
-                </button>
-                <button
-                  type="button"
-                  onClick={nextImage}
-                  className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/40 p-3 text-white transition hover:bg-black/60 active:scale-95"
-                >
-                  <ChevronRight size={24} />
-                </button>
-              </>
-            ) : null}
-          </div>
-
-
-        </div>
-      ) : null}
+      {mounted && lightboxContent
+        ? createPortal(lightboxContent, document.body)
+        : null}
     </>
   );
 }
