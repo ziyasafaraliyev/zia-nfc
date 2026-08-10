@@ -314,10 +314,15 @@ export default function ProfileForm({
   const hasCvContent = Boolean(profile?.cv_url);
   const hasGoogleReview = Boolean(profile?.google_review_url);
   const showPortfolioSection =
-    userRole === "client" ? hasPortfolioContent : (profile?.portfolio_enabled ?? true) || hasPortfolioContent;
-  const showCatalogSection = hasCatalogContent;
+    userRole === "super_admin"
+      ? true
+      : (profile?.portfolio_enabled ?? true) || hasPortfolioContent;
+  const showCatalogSection =
+    userRole === "super_admin" ? true : hasCatalogContent;
   const showCvSection =
-    userRole === "client" ? hasCvContent : (profile?.portfolio_enabled ?? true) || hasCvContent;
+    userRole === "super_admin"
+      ? true
+      : (profile?.portfolio_enabled ?? true) || hasCvContent;
   const showGoogleReviewSection = hasGoogleReview;
   const showLanguageSection = Boolean(profile?.lang_switcher_enabled);
   const hasProfession = hasTextValue(profile?.profession);
