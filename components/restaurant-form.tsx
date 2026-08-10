@@ -37,58 +37,96 @@ function getSocialPlaceholder(key: keyof typeof socialBaseUrls) {
   }
 }
 
-/** Client pre-compress → always WebP (server also stores as .webp). */
-async function compressImage(file: File, maxWidth = 1200, quality = 0.82): Promise<File> {
-  return new Promise((resolve) => {
-    if (!file.type.startsWith("image/") || file.type === "image/gif") {
-      return resolve(file);
+/**
+ * Client pre-compress → WebP (final output — server bypasses sharp for WebP).
+ * Uses createImageBitmap with EXIF rotation so phone photos display correctly.
+ */
+async function compressImage(file: File, maxEdge = 1200, quality = 0.82): Promise<File> {
+  if (!file.type.startsWith("image/") || file.type === "image/gif") {
+    return file;
+  }
+
+  try {
+    let sourceWidth = 0;
+    let sourceHeight = 0;
+    let drawSource: CanvasImageSource | null = null;
+    let bitmap: ImageBitmap | null = null;
+
+    if (typeof createImageBitmap === "function") {
+      try {
+        bitmap = await createImageBitmap(file, {
+          imageOrientation: "from-image",
+        } as ImageBitmapOptions);
+        sourceWidth = bitmap.width;
+        sourceHeight = bitmap.height;
+        drawSource = bitmap;
+      } catch {
+        bitmap = null;
+      }
     }
 
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = (event) => {
-      const img = new Image();
-      img.src = event.target?.result as string;
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        let width = img.width;
-        let height = img.height;
+    if (!drawSource) {
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ""));
+        reader.onerror = () => reject(new Error("read failed"));
+        reader.readAsDataURL(file);
+      });
+      const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+        const el = new Image();
+        el.onload = () => resolve(el);
+        el.onerror = () => reject(new Error("decode failed"));
+        el.src = dataUrl;
+      });
+      sourceWidth = img.naturalWidth || img.width;
+      sourceHeight = img.naturalHeight || img.height;
+      drawSource = img;
+    }
 
-        if (width > maxWidth) {
-          height = Math.round((height * maxWidth) / width);
-          width = maxWidth;
-        }
+    if (!sourceWidth || !sourceHeight || !drawSource) {
+      bitmap?.close();
+      return file;
+    }
 
-        canvas.width = width;
-        canvas.height = height;
+    const longest = Math.max(sourceWidth, sourceHeight);
+    const scale = longest > maxEdge ? maxEdge / longest : 1;
+    const width = Math.max(1, Math.round(sourceWidth * scale));
+    const height = Math.max(1, Math.round(sourceHeight * scale));
 
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return resolve(file);
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      bitmap?.close();
+      return file;
+    }
 
-        ctx.drawImage(img, 0, 0, width, height);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(drawSource, 0, 0, width, height);
+    bitmap?.close();
 
-        const mimeType = "image/webp";
-        const baseName =
-          file.name.substring(0, file.name.lastIndexOf(".")) || file.name || "image";
-        const newFileName = `${baseName}.webp`;
-        canvas.toBlob(
-          (blob) => {
-            if (!blob) return resolve(file);
-            const compressedFile = new File([blob], newFileName, {
-              type: mimeType,
-              lastModified: Date.now(),
-            });
-            resolve(compressedFile);
-          },
-          mimeType,
-          quality,
-        );
-      };
-      img.onerror = () => resolve(file);
-    };
-    reader.onerror = () => resolve(file);
-  });
+    const targetMime = "image/webp";
+    const baseName =
+      file.name.substring(0, file.name.lastIndexOf(".")) || file.name || "image";
+    const newFileName = `${baseName}.webp`;
+
+    const blob = await new Promise<Blob | null>((resolve) => {
+      canvas.toBlob((b) => resolve(b), targetMime, quality);
+    });
+
+    if (!blob || blob.size === 0) return file;
+
+    return new File([blob], newFileName, {
+      type: targetMime,
+      lastModified: Date.now(),
+    });
+  } catch {
+    return file;
+  }
 }
+
 
 export default function RestaurantForm({ restaurant, userRole = "super_admin" }: { restaurant?: Restaurant; userRole?: "super_admin" | "client" }) {
   const [submitting, setSubmitting] = useState(false);

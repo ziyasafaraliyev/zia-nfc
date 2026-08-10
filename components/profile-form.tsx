@@ -70,7 +70,7 @@ function getSocialPlaceholder(key: keyof typeof socialBaseUrls) {
 }
 
 /**
- * Client pre-compress → WebP (server also re-encodes with sharp + EXIF rotate).
+ * Client pre-compress → WebP (final output — server bypasses sharp for WebP).
  * Uses max EDGE (not only width) so tall/portrait photos are not left huge,
  * and createImageBitmap imageOrientation so phone EXIF is applied (avoids
  * "zoomed/cropped" wrong orientation after WebP convert).
@@ -524,10 +524,10 @@ export default function ProfileForm({
     const currentSections = sectionsRef.current;
 
     try {
-      // Avatar / cover → client scale (full frame, EXIF-aware) then server sharp → WebP
+      // Avatar / cover → client scale (full frame, EXIF-aware) → server passes through (WebP bypass)
       const avatarFile = formData.get("avatar") as File | null;
       if (avatarFile && avatarFile.size > 0 && !removeAvatar) {
-        const compressed = await compressImage(avatarFile, 1200, 0.88);
+        const compressed = await compressImage(avatarFile, 1200, 0.90);
         const fileName = compressed.name || avatarFile.name || "avatar.webp";
         formData.set("avatar", compressed, fileName);
       } else if (removeAvatar) {

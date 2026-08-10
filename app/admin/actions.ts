@@ -695,7 +695,7 @@ async function encodeRasterToWebp(
     return pipeline
       .webp({
         quality: q,
-        effort: 4,
+        effort: 2,
         smartSubsample: true,
       })
       .toBuffer();
@@ -776,12 +776,12 @@ async function uploadFile(
 
   if (looksLikeImage) {
     const buffer = Buffer.from(await file.arrayBuffer());
-    // Super admin uploads always run sharp server-side for max quality / EXIF handling.
-    // Client admin uploads: if browser already compressed to webp, bypass server sharp to save CPU!
+    // Client-side already compresses to WebP with EXIF rotation (createImageBitmap).
+    // Only run server sharp if the image is NOT already WebP (e.g. direct API upload).
     const isAlreadyWebp = mimeType === "image/webp" || fileName.toLowerCase().endsWith(".webp");
-    const shouldEncodeOnServer = options?.isSuperAdmin || !isAlreadyWebp;
 
-    if (shouldEncodeOnServer) {
+    if (!isAlreadyWebp) {
+      // Non-WebP fallback: still encode server-side (rare — client always sends WebP)
       try {
         const webpBuffer = await encodeRasterToWebp(buffer, {
           maxEdge: maxEdgeForKind(options?.kind),
@@ -800,6 +800,7 @@ async function uploadFile(
         throw new Error("Invalid image file");
       }
     } else {
+      // Already WebP from client — pass through directly, skip sharp CPU cost
       fileToUpload = buffer;
       contentType = "image/webp";
       ext = "webp";
@@ -1097,27 +1098,29 @@ export async function saveProfile(formData: FormData) {
       })
     : null;
 
-  // Upload files for each section (sequential to avoid storage rate limits)
+  // Upload files for each section in parallel (sharp bypass = safe to parallelize)
   const sectionUploads: { [key: string]: string[] } = {};
   for (const { sectionId, files } of sectionFiles) {
-    const uploads: string[] = [];
-    for (const upload of files) {
-      try {
-        const url = await uploadFile(upload.blob, `gallery/${slug}`, {
-          fileName: upload.fileName,
-          mimeType: upload.mimeType,
-          kind: "gallery",
-          isSuperAdmin: isSuper,
-        });
-        if (!url) {
+    const results = await Promise.all(
+      files.map(async (upload) => {
+        try {
+          const url = await uploadFile(upload.blob, `gallery/${slug}`, {
+            fileName: upload.fileName,
+            mimeType: upload.mimeType,
+            kind: "gallery",
+            isSuperAdmin: isSuper,
+          });
+          if (!url) {
+            redirectWithSaveError("upload");
+          }
+          return url;
+        } catch {
           redirectWithSaveError("upload");
+          return "";
         }
-        uploads.push(url);
-      } catch {
-        redirectWithSaveError("upload");
-      }
-    }
-    sectionUploads[sectionId] = uploads;
+      })
+    );
+    sectionUploads[sectionId] = results.filter(Boolean) as string[];
   }
 
   if (expectedUploadCount > 0 && receivedUploadCount > 0) {
