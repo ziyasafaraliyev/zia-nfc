@@ -571,7 +571,7 @@ function ProfilePageViewInner({
         </a>
       ) : null,
     portfolio:
-      (profile.portfolio_enabled ?? true) && profile.gallery.length > 0 ? (
+      Array.isArray(profile.gallery) && profile.gallery.length > 0 ? (
         <PortfolioSection
           key="portfolio"
           gallery={profile.gallery}

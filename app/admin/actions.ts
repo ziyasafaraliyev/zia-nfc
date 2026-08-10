@@ -1273,8 +1273,8 @@ export async function saveProfile(formData: FormData) {
     enabled,
     reservation_enabled: isSuper ? bool(formData, "reservation_enabled") : existingProfile?.reservation_enabled,
     portfolio_enabled: isSuper
-      ? bool(formData, "portfolio_enabled")
-      : (existingProfile?.portfolio_enabled ?? true),
+      ? (bool(formData, "portfolio_enabled") || newSections.some((s) => s.images && s.images.length > 0))
+      : (newSections.some((s) => s.images && s.images.length > 0) ? true : (existingProfile?.portfolio_enabled ?? true)),
     wallet_enabled: isSuper
       ? bool(formData, "wallet_enabled")
       : (existingProfile?.wallet_enabled ?? true),

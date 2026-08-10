@@ -1593,7 +1593,7 @@ export default function ProfileForm({
               <input
                 type="checkbox"
                 name="portfolio_enabled"
-                defaultChecked={profile?.portfolio_enabled ?? true}
+                defaultChecked={(profile?.portfolio_enabled ?? true) || hasPortfolioContent}
                 className="size-5 rounded accent-indigo-650"
               />
             </label>
