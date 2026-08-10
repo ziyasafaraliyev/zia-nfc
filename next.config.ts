@@ -70,7 +70,7 @@ const nextConfig: NextConfig = {
     ],
   },
   experimental: {
-    optimizePackageImports: ["lucide-react", "framer-motion"],
+    optimizePackageImports: ["lucide-react", "framer-motion", "qrcode"],
     serverActions: {
       // Portfolio / multi-image admin uploads (unchanged capacity)
       bodySizeLimit: "50mb",

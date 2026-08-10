@@ -3,8 +3,8 @@ import { getProfileBySlug } from "@/lib/profiles";
 import { getProfileUrl } from "@/lib/urls";
 import { buildQrPng, buildQrSvg } from "@/lib/qr";
 
-/** Cache QR PNG at CDN — profile URL rarely changes without admin save */
-export const revalidate = 60;
+/** Cache QR at CDN — profile URL only changes on admin save (revalidateTag) */
+export const revalidate = 3600;
 
 // Validate slug format to prevent injection
 function isValidSlug(slug: string): boolean {
@@ -39,7 +39,7 @@ export async function GET(
         headers: {
           "Content-Type": "image/svg+xml",
           "Content-Disposition": `inline; filename="${profile.slug}-qr.svg"`,
-          "Cache-Control": "public, max-age=60, s-maxage=60, stale-while-revalidate=300",
+          "Cache-Control": "public, max-age=600, s-maxage=600, stale-while-revalidate=3600",
         },
       });
     }
@@ -51,7 +51,7 @@ export async function GET(
       headers: {
         "Content-Type": "image/png",
         "Content-Disposition": `inline; filename="${profile.slug}-qr.png"`,
-        "Cache-Control": "public, max-age=60, s-maxage=60, stale-while-revalidate=300",
+        "Cache-Control": "public, max-age=600, s-maxage=600, stale-while-revalidate=3600",
       },
     });
   } catch {

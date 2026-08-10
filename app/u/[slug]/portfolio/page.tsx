@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PortfolioClient from "./PortfolioClient";
 
-export const revalidate = 300;
+export const revalidate = 600;
 
 type Props = { params: Promise<{ slug: string }> };
 

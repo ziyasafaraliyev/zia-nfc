@@ -34,10 +34,6 @@ export async function POST(request: NextRequest) {
   revalidateTag("profiles");
   revalidatePath(`/${slug}`);
   revalidatePath(`/u/${slug}`);
-  revalidatePath(`/u/${slug}/qr`);
-  revalidatePath(`/${slug}/qr`);
-  revalidatePath(`/u/${slug}/vcard`);
-  revalidatePath(`/${slug}/vcard`);
   revalidatePath("/admin");
 
   return NextResponse.json({ ok: true, slug, revalidated: true });

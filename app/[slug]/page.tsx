@@ -6,7 +6,7 @@ import { getRestaurantBySlug } from "@/lib/restaurants";
 import { getProfileUrl } from "@/lib/urls";
 import { notFound } from "next/navigation";
 
-export const revalidate = 300;
+export const revalidate = 600;
 
 type Props = {
   params: Promise<{ slug: string }>;

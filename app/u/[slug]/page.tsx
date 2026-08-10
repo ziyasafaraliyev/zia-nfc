@@ -9,7 +9,7 @@ import { notFound } from "next/navigation";
  * Long ISR window — admin save uses revalidatePath + revalidateTag.
  * Cold NFC taps hit CDN/edge cache when available.
  */
-export const revalidate = 300;
+export const revalidate = 600;
 
 type Props = { params: Promise<{ slug: string }> };
 
