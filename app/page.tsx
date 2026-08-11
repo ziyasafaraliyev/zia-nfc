@@ -1,18 +1,31 @@
-import LandingPage from "@/components/landing-page";
+import type { Metadata } from "next";
+import MainPlatformPage from "@/components/main-platform-page";
 import WebChat from "@/components/web-chat";
 
 const BASE_URL = "https://zianfc.vercel.app";
 
-/** Schema.org structured data for the homepage */
+export const metadata: Metadata = {
+  title: "Zia NFC — Rəqəmsal NFC & QR Platforması | Vizitkart, Menu, Pay, Car",
+  description:
+    "Zia NFC platforması: Ağıllı NFC vizit kartları (Zia Vizitkart), rəqəmsal restoran menyusu (Zia Menu), sürətli NFC ödəniş sistemi (Zia Pay) və avto təmas stikeri (Zia Car).",
+  openGraph: {
+    title: "Zia NFC — Rəqəmsal NFC & QR Platforması | Vizitkart, Menu, Pay, Car",
+    description:
+      "Biznesiniz və şəxsi brendiniz üçün 4 fərqli rəqəmsal NFC həlli tək platformada: Zia Vizitkart, Zia Menu, Zia Pay və Zia Car.",
+    images: ["/logo.webp"],
+  },
+};
+
+/** Schema.org structured data for the main homepage platform */
 const homeJsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Zia NFC",
+    name: "Zia NFC Platform",
     alternateName: "Zia NFC Azerbaycan",
     url: BASE_URL,
     description:
-      "Premium NFC vizit kartları, rəqəmsal profillər, portfoliolar və kontakt paylaşımı üçün mükəmməl həll.",
+      "Rəqəmsal NFC vizit kartları, restoran menyuları, NFC ödəniş və avto təmas həlləri birləşdirən platforma.",
     inLanguage: "az",
     potentialAction: {
       "@type": "SearchAction",
@@ -30,7 +43,7 @@ const homeJsonLd = [
     url: BASE_URL,
     logo: `${BASE_URL}/logo.webp`,
     description:
-      "Azərbaycanda premium NFC vizit kart platforması. Rəqəmsal profillər, portfolio və kontakt paylaşımı.",
+      "Azərbaycanda rəqəmsal NFC və QR platforması: Zia Vizitkart, Zia Menu, Zia Pay, Zia Car.",
     foundingLocation: {
       "@type": "Place",
       addressCountry: "AZ",
@@ -40,35 +53,37 @@ const homeJsonLd = [
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer service",
-      availableLanguage: ["az", "ru", "en"],
+      availableLanguage: ["az", "en"],
     },
     offers: [
       {
         "@type": "Offer",
-        name: "Standart Rəqəmsal Profil Hostinqi",
-        description: "Rəqəmsal vizit profil, vCard və sosial platforma hostinq abunəliyi",
+        name: "Zia Vizitkart — Premium NFC Vizit Kartı",
+        description: "Rəqəmsal vizit profil, vCard ixracı və sosial platforma hostinq abunəliyi",
         seller: { "@type": "Organization", name: "Zia NFC" },
       },
       {
         "@type": "Offer",
-        name: "Premium Portfolio & Analitika SaaS",
-        description: "İnteraktiv portfolio hostinq, analitika və brend dizayn servisi",
+        name: "Zia Menu — Rəqəmsal Restoran Menyusu",
+        description: "Restoran və kafelər üçün QR/NFC rəqəmsal menyu platforması",
         seller: { "@type": "Organization", name: "Zia NFC" },
       },
       {
         "@type": "Offer",
-        name: "Komanda & Menyu Rəqəmsal İnteqrasiya Platforması",
-        description: "Restoran və müəssisələr üçün rəqəmsal menyu və profil idarəetmə platforması",
+        name: "Zia Pay — Sürətli NFC Ödəniş və Təşəkkür",
+        description: "Kafelər və xidmət sektoru üçün NFC ödəniş və bəxşiş (tip) sistemi",
+        seller: { "@type": "Organization", name: "Zia NFC" },
+      },
+      {
+        "@type": "Offer",
+        name: "Zia Car — Avto Təmas NFC & QR Stikeri",
+        description: "Avtomobil ön şüşəsi üçün rəqəmsal təmas kartı və parkinq nömrə stikeri",
         seller: { "@type": "Organization", name: "Zia NFC" },
       },
     ],
   },
 ];
 
-/**
- * Landing is a Server Component (static HTML + client islands).
- * WebChat is a tiny client launcher that dynamic-imports chat on first open.
- */
 export default function Home() {
   return (
     <>
@@ -81,9 +96,8 @@ export default function Home() {
             .replace(/&/g, "\\u0026"),
         }}
       />
-      <LandingPage />
+      <MainPlatformPage />
       <WebChat />
     </>
   );
 }
-

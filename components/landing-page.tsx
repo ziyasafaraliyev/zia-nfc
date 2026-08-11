@@ -199,10 +199,10 @@ function LandingPageInner() {
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Link
-                href="/admin"
+                href="/vizitkart"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-6 py-4 font-extrabold text-white shadow-[0_18px_45px_rgba(14,165,233,0.28)] transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98]"
               >
-                {t("Zia NFC", "Zia NFC")} <ArrowRight size={18} />
+                {t("Zia Vizitkart", "Zia Business Card")} <ArrowRight size={18} />
               </Link>
               <Link
                 href="/pay"
