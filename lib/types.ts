@@ -20,6 +20,8 @@ export type Profile = {
   portfolio_enabled?: boolean;
   /** When false, Google Wallet button is hidden on public profile (super admin) */
   wallet_enabled?: boolean;
+  /** When false, QR Code button is hidden on public profile (super admin) */
+  qr_enabled?: boolean;
   /** When true, referral link button is shown on public profile (super admin) */
   referral_enabled?: boolean;
   /** Optional custom referral URL; falls back to profile public URL when empty */

@@ -643,14 +643,15 @@ function ProfilePageViewInner({
           />
         </div>
       ) : null,
-    qr: (
-      <QrCodeModal
-        key="qr"
-        qrUrl={qrUrl}
-        profileName={profile.name}
-        theme={profile.theme}
-      />
-    ),
+    qr:
+      (profile.qr_enabled ?? true) ? (
+        <QrCodeModal
+          key="qr"
+          qrUrl={qrUrl}
+          profileName={profile.name}
+          theme={profile.theme}
+        />
+      ) : null,
     stats:
       (profile.stats_enabled ?? true) ? (
         <div key="stats">

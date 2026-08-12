@@ -1278,6 +1278,9 @@ export async function saveProfile(formData: FormData) {
     wallet_enabled: isSuper
       ? bool(formData, "wallet_enabled")
       : (existingProfile?.wallet_enabled ?? true),
+    qr_enabled: isSuper
+      ? bool(formData, "qr_enabled")
+      : (existingProfile?.qr_enabled ?? true),
     referral_enabled: isSuper
       ? bool(formData, "referral_enabled")
       : (existingProfile?.referral_enabled ?? false),

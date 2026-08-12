@@ -349,7 +349,8 @@ export default function ProfileForm({
   ].some(hasTextValue);
   const showReservationSection = Boolean(profile?.reservation_enabled);
   const showReferralSection = Boolean(profile?.referral_enabled);
-  const showWalletSection = (profile?.wallet_enabled ?? true);
+  const showWalletSection = userRole === "super_admin" || (profile?.wallet_enabled ?? true);
+  const showQrSection = userRole === "super_admin" || (profile?.qr_enabled ?? true);
   const showStatsSection = (profile?.stats_enabled ?? true);
 
   const themeLabel =
@@ -1606,6 +1607,18 @@ export default function ProfileForm({
                 type="checkbox"
                 name="wallet_enabled"
                 defaultChecked={profile?.wallet_enabled ?? true}
+                className="size-5 rounded accent-indigo-650"
+              />
+            </label>
+          ) : null}
+
+          {showQrSection ? (
+            <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs font-bold text-slate-600 uppercase tracking-wide cursor-pointer hover:bg-slate-50 transition">
+              <span>QR Kod yaratma düyməsi aktivdir</span>
+              <input
+                type="checkbox"
+                name="qr_enabled"
+                defaultChecked={profile?.qr_enabled ?? true}
                 className="size-5 rounded accent-indigo-650"
               />
             </label>

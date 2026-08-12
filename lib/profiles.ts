@@ -42,6 +42,7 @@ const PUBLIC_PROFILE_SELECT = [
   "catalog",
   "portfolio_enabled",
   "wallet_enabled",
+  "qr_enabled",
   "cv_url",
   "theme",
   "views_count",
