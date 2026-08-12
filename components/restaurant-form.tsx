@@ -307,7 +307,9 @@ export default function RestaurantForm({ restaurant, userRole = "super_admin" }:
           preview={coverPreview}
           hasExisting={!!restaurant?.cover_url}
           removed={removeCover}
-          aspect="square"
+          aspect="wide"
+          enableCrop
+          cropTitle="Cover şəklini kəsin"
           onFileChange={(file) => {
             setCoverPreview(URL.createObjectURL(file));
             setRemoveCover(false);

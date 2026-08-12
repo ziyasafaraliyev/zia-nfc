@@ -870,7 +870,7 @@ export default function ProfileForm({
       ) : null}
 
       {/* ── ŞƏKİL YÜKLƏMƏ (kiçik) ── */}
-      {userRole === "super_admin" && hasAvatarOrBackground ? (
+      {userRole === "super_admin" ? (
         <div className="grid grid-cols-2 gap-3 max-w-sm">
           <ImageDropZone
             label="Profil şəkli"
@@ -897,7 +897,7 @@ export default function ProfileForm({
             preview={backgroundPreview}
             hasExisting={!!profile?.background_url}
             removed={removeBackground}
-            aspect="square"
+            aspect="wide"
             compact
             enableCrop
             cropTitle="Cover şəklini kəsin"
