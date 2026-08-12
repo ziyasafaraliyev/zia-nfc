@@ -328,24 +328,43 @@ function MainPlatformInner() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden border-b border-slate-200/70 bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_56%,#eef6ff_100%)] px-4 pb-20 pt-14 sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden border-b border-slate-200/70 bg-[linear-gradient(180deg,#f0f9ff_0%,#ffffff_56%,#eef6ff_100%)] px-4 pb-20 pt-14 sm:px-6 lg:px-8">
+        {/* Accent top gradient line */}
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/70 to-transparent" />
+
+        {/* Animated Background Glow Orbs */}
+        <div
+          aria-hidden
+          className="hero-glow-orb pointer-events-none absolute -top-40 left-1/2 h-[550px] w-[550px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(56,189,248,0.22)_0%,transparent_70%)] blur-3xl"
+        />
+        <div
+          aria-hidden
+          className="hero-glow-orb pointer-events-none absolute top-1/4 -right-32 h-[420px] w-[420px] rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.14)_0%,transparent_70%)] blur-3xl"
+          style={{ animationDelay: "3s" }}
+        />
+        <div
+          aria-hidden
+          className="hero-glow-orb pointer-events-none absolute top-1/3 -left-32 h-[380px] w-[380px] rounded-full bg-[radial-gradient(circle,rgba(16,185,129,0.12)_0%,transparent_70%)] blur-3xl"
+          style={{ animationDelay: "1.5s" }}
+        />
         
         <div className="relative mx-auto max-w-7xl text-center">
           {/* Platform Badge */}
-          <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-sky-200/80 bg-sky-50 px-4 py-2 text-xs font-extrabold text-sky-800 shadow-sm sm:text-sm">
+          <div className="hero-stagger-1 mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-sky-200/80 bg-sky-50 px-4 py-2 text-xs font-extrabold text-sky-800 shadow-sm sm:text-sm">
             <Sparkles size={16} className="text-sky-500" />
-            {t("Zia NFC — Bütün Rəqəmsal NFC & QR Xidmətləri Bir Yerdə", "Zia NFC — All Digital NFC & QR Services In One Place")}
+            <span className="hero-badge-shimmer">
+              {t("Zia NFC — Bütün Rəqəmsal NFC & QR Xidmətləri Bir Yerdə", "Zia NFC — All Digital NFC & QR Services In One Place")}
+            </span>
           </div>
 
-          <h1 className="mx-auto max-w-4xl text-balance text-4xl font-black leading-[1.05] tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
+          <h1 className="hero-stagger-2 mx-auto max-w-4xl text-balance text-4xl font-black leading-[1.05] tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
             {t("Biznesiniz və Şəxsi Brendiniz üçün", "Digital NFC Platform for")}{" "}
-            <span className="text-sky-500">
+            <span className="bg-gradient-to-r from-sky-500 via-sky-400 to-indigo-500 bg-clip-text text-transparent">
               {t("Ağıllı Rəqəmsal Platforma", "Your Business & Brand")}
             </span>
           </h1>
 
-          <p className="mx-auto mt-6 max-w-3xl text-pretty text-base leading-8 text-slate-600 sm:text-xl">
+          <p className="hero-stagger-3 mx-auto mt-6 max-w-3xl text-pretty text-base leading-8 text-slate-600 sm:text-xl">
             {t(
               "NFC və QR kod texnologiyası ilə fiziki dünyanı rəqəmsal imkanlara çevirin. Vizitkartlardan restoran menyularına, ani ödənişlərdən avtomobil təmas kartına qədər 4 əsas xidmət — hamısı tək toxunuşla.",
               "Connect physical products to digital experiences via NFC & QR technology. From business cards to restaurant menus, instant payments to car stickers — 4 essential services with a single tap."
@@ -353,20 +372,20 @@ function MainPlatformInner() {
           </p>
 
           {/* 4 Main Service Quick Nav Buttons */}
-          <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="hero-stagger-4 mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {services.map((item) => {
               const IconComp = item.icon;
               return (
                 <Link
                   key={item.id}
                   href={item.href}
-                  className="group relative flex flex-col items-start rounded-3xl border border-slate-200/90 bg-white p-5 text-left shadow-[0_12px_35px_rgba(15,23,42,0.05)] transition duration-200 hover:-translate-y-1 hover:border-sky-300 hover:shadow-[0_20px_50px_rgba(14,165,233,0.15)] active:scale-[0.98]"
+                  className="group relative flex flex-col items-start rounded-3xl border border-slate-200/90 bg-white/90 p-5 text-left shadow-[0_12px_35px_rgba(15,23,42,0.05)] backdrop-blur-sm transition duration-300 ease-out hover:-translate-y-1.5 hover:border-sky-300 hover:shadow-[0_22px_60px_rgba(14,165,233,0.18)] active:scale-[0.98]"
                 >
                   <div className="flex w-full items-center justify-between">
-                    <div className={`grid size-12 place-items-center rounded-2xl ${item.color} shadow-md`}>
+                    <div className={`grid size-12 place-items-center rounded-2xl ${item.color} shadow-md transition-transform duration-300 group-hover:scale-110`}>
                       <IconComp size={24} />
                     </div>
-                    <span className="flex size-8 items-center justify-center rounded-full bg-slate-50 text-slate-400 transition group-hover:bg-sky-500 group-hover:text-white">
+                    <span className="flex size-8 items-center justify-center rounded-full bg-slate-100 text-slate-400 transition-all duration-300 group-hover:bg-sky-500 group-hover:text-white group-hover:translate-x-0.5">
                       <ArrowRight size={16} />
                     </span>
                   </div>
@@ -374,7 +393,7 @@ function MainPlatformInner() {
                   <h2 className="mt-4 text-xl font-black text-slate-950">{item.name}</h2>
                   <p className="mt-1 text-xs font-semibold text-slate-500">{item.badge}</p>
 
-                  <span className="mt-4 inline-flex items-center gap-1 text-xs font-black uppercase tracking-wider text-sky-600 group-hover:underline">
+                  <span className="mt-4 inline-flex items-center gap-1 text-xs font-black uppercase tracking-wider text-sky-600 transition duration-200 group-hover:translate-x-1">
                     {t("Səhifəyə keçid", "Explore Page")} →
                   </span>
                 </Link>
@@ -383,11 +402,11 @@ function MainPlatformInner() {
           </div>
 
           {/* Stats Bar */}
-          <div className="mx-auto mt-14 grid max-w-4xl grid-cols-3 gap-3">
+          <div className="hero-stagger-5 mx-auto mt-14 grid max-w-4xl grid-cols-3 gap-3">
             {metrics.map(([value, label]) => (
               <div
                 key={label}
-                className="rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-sm backdrop-blur-sm"
+                className="rounded-2xl border border-slate-200/80 bg-white/80 p-4 shadow-sm backdrop-blur-sm transition duration-200 hover:border-sky-200 hover:shadow-[0_8px_30px_rgba(14,165,233,0.1)]"
               >
                 <p className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
                   {value}
