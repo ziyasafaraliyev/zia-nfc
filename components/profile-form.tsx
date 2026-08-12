@@ -897,7 +897,7 @@ export default function ProfileForm({
             preview={backgroundPreview}
             hasExisting={!!profile?.background_url}
             removed={removeBackground}
-            aspect="wide"
+            aspect={coverStyle === "square" ? "square" : "wide"}
             compact
             enableCrop
             cropTitle="Cover şəklini kəsin"
