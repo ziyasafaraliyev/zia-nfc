@@ -183,36 +183,25 @@ function LandingPageInner() {
         {/* Top accent line */}
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/70 to-transparent" />
 
-        {/* Background glow orbs */}
-        <div
-          aria-hidden
-          className="hero-glow-orb pointer-events-none absolute -top-32 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(56,189,248,0.18)_0%,transparent_70%)] blur-3xl"
-        />
-        <div
-          aria-hidden
-          className="hero-glow-orb pointer-events-none absolute top-1/3 -right-24 h-[380px] w-[380px] rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.11)_0%,transparent_70%)] blur-3xl"
-          style={{ animationDelay: "3s" }}
-        />
-
         <LandingNavbar />
 
         <div className="mx-auto grid max-w-7xl items-center gap-12 pb-8 pt-14 lg:min-h-[calc(100vh-104px)] lg:grid-cols-[1.02fr_0.98fr] lg:pt-10">
           <div>
-            {/* Animated badge */}
-            <div className="hero-stagger-1 mb-5 inline-flex items-center gap-2 rounded-full border border-sky-200/70 bg-sky-50 px-3.5 py-2 text-sm font-bold text-sky-800">
+            {/* Badge */}
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-sky-200/70 bg-sky-50 px-3.5 py-2 text-sm font-bold text-sky-800">
               <Sparkles size={16} className="text-sky-500" />
-              <span className="hero-badge-shimmer">
+              <span>
                 {t("Premium NFC Vizit Kartları", "Premium NFC Business Cards")}
               </span>
             </div>
 
             {/* Headline */}
-            <h1 className="hero-stagger-2 max-w-4xl text-balance text-5xl font-black leading-[0.96] tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
+            <h1 className="max-w-4xl text-balance text-5xl font-black leading-[0.96] tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
               {t("Ağıllı NFC Vizit Kartları", "Smart NFC Business Cards")}
             </h1>
 
             {/* Sub-text */}
-            <p className="hero-stagger-3 mt-6 max-w-2xl text-pretty text-lg leading-8 text-slate-600 sm:text-xl">
+            <p className="mt-6 max-w-2xl text-pretty text-lg leading-8 text-slate-600 sm:text-xl">
               {t(
                 "Bir toxunuşla əlaqələrinizi, sosial şəbəkələrinizi və biznes profilinizi saniyələr içində paylaşın. Kağız vizitlərdən daha sürətli, daha premium və daha effektiv.",
                 "Share your contacts, social networks, and business profile in seconds with a single tap. Faster, more premium, and more effective than paper cards."
@@ -220,7 +209,7 @@ function LandingPageInner() {
             </p>
 
             {/* CTA buttons */}
-            <div className="hero-stagger-4 mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Link
                 href="/vizitkart"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-6 py-4 font-extrabold text-white shadow-[0_18px_45px_rgba(14,165,233,0.28)] transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98]"

@@ -12,15 +12,15 @@ export default function LandingHeroMockup() {
     <div className="relative mx-auto h-[650px] w-full max-w-[590px]">
 
       {/* ── "Kart toxunduruldu" badge ── */}
-      <div className="hero-badge-float absolute left-2 top-8 hidden rounded-full border border-slate-200 bg-white/95 px-4 py-2 text-sm font-bold text-slate-700 shadow-md backdrop-blur-sm md:flex items-center gap-2">
-        <span className="hero-nfc-tap-anim inline-flex size-6 items-center justify-center rounded-full bg-sky-500 text-white">
+      <div className="absolute left-2 top-8 hidden rounded-full border border-slate-200 bg-white/95 px-4 py-2 text-sm font-bold text-slate-700 shadow-md backdrop-blur-sm md:flex items-center gap-2">
+        <span className="inline-flex size-6 items-center justify-center rounded-full bg-sky-500 text-white">
           <Wifi size={12} />
         </span>
         Kart toxunduruldu
       </div>
 
-      {/* ── NFC Card — CSS float animation ── */}
-      <div className="hero-card-float absolute left-0 top-28 h-60 w-[390px] -rotate-[7deg] overflow-hidden rounded-[1.65rem] border border-white/10 bg-slate-950 text-white shadow-[0_20px_50px_rgba(15,23,42,0.18)] md:shadow-[0_35px_100px_rgba(15,23,42,0.25)]">
+      {/* ── NFC Card ── */}
+      <div className="absolute left-0 top-28 h-60 w-[390px] -rotate-[7deg] overflow-hidden rounded-[1.65rem] border border-white/10 bg-slate-950 text-white shadow-[0_20px_50px_rgba(15,23,42,0.18)] md:shadow-[0_35px_100px_rgba(15,23,42,0.25)]">
         <Image
           src="/1bab6639-1224-4e39-9294-a5194ec7e60c.png"
           alt="NFC Card"
@@ -28,15 +28,8 @@ export default function LandingHeroMockup() {
           sizes="390px"
           className="object-cover"
         />
-        {/* Light shimmer overlay */}
+        {/* Light overlay */}
         <div className="absolute inset-0 rounded-[1.65rem] bg-[linear-gradient(135deg,rgba(56,189,248,0.24),transparent_38%),linear-gradient(115deg,transparent_0%,rgba(255,255,255,0.08)_38%,transparent_56%)]" />
-
-        {/* Animated scan line */}
-        <div
-          aria-hidden
-          className="hero-scan-line pointer-events-none absolute inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-sky-400/80 to-transparent"
-          style={{ top: "10%" }}
-        />
 
         {/* Center logo */}
         <div className="absolute inset-0 z-10 flex items-center justify-center">
@@ -50,25 +43,6 @@ export default function LandingHeroMockup() {
         </div>
       </div>
 
-      {/* ── Double Pulse Rings ── */}
-      <div
-        className="hero-pulse-ring pointer-events-none absolute left-[48%] top-[34%] hidden h-28 w-28 rounded-full border border-sky-300/70 md:block"
-        aria-hidden
-      />
-      <div
-        className="hero-pulse-ring-2 pointer-events-none absolute left-[48%] top-[34%] hidden h-28 w-28 rounded-full border border-sky-400/40 md:block"
-        aria-hidden
-      />
-
-      {/* ── Orbiting dot ── */}
-      <div
-        aria-hidden
-        className="hero-orbit-dot pointer-events-none absolute hidden md:block"
-        style={{ left: "calc(48% + 3.5rem)", top: "calc(34% + 3.5rem)", transformOrigin: "-52px -52px" }}
-      >
-        <span className="block size-2.5 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.8)]" />
-      </div>
-
       {/* ── Phone mockup ── */}
       <div className="absolute bottom-0 right-2 h-[575px] w-[292px] rounded-[2.4rem] border-[8px] border-slate-950 bg-slate-950 shadow-[0_24px_60px_rgba(15,23,42,0.2)] md:shadow-[0_40px_110px_rgba(15,23,42,0.28)]">
         <div className="relative flex h-full w-full flex-col overflow-hidden rounded-[1.85rem] bg-white">
@@ -78,7 +52,7 @@ export default function LandingHeroMockup() {
       </div>
 
       {/* ── Bottom-left stat badge ── */}
-      <div className="hero-badge-float-delayed absolute bottom-16 left-2 hidden w-56 rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_20px_70px_rgba(15,23,42,0.13)] md:block">
+      <div className="absolute bottom-16 left-2 hidden w-56 rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_20px_70px_rgba(15,23,42,0.13)] md:block">
         <div className="flex items-center gap-3">
           <div className="grid size-10 place-items-center rounded-2xl bg-sky-100 text-sky-600">
             <BarChart3 size={20} />
@@ -91,7 +65,7 @@ export default function LandingHeroMockup() {
       </div>
 
       {/* ── Top-right small NFC chip badge ── */}
-      <div className="hero-badge-float absolute right-[15%] top-12 hidden items-center gap-1.5 rounded-2xl border border-sky-100 bg-sky-50 px-3 py-1.5 text-xs font-black text-sky-700 shadow-sm md:flex">
+      <div className="absolute right-[15%] top-12 hidden items-center gap-1.5 rounded-2xl border border-sky-100 bg-sky-50 px-3 py-1.5 text-xs font-black text-sky-700 shadow-sm md:flex">
         <Zap size={13} className="text-sky-500" />
         NFC Ready
       </div>
