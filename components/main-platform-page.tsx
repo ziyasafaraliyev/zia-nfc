@@ -160,12 +160,6 @@ function MainPlatformInner() {
     },
   ];
 
-  const metrics = [
-    [t("4 Əsas", "4 Core"), t("Rəqəmsal Xidmət", "Digital Services")],
-    ["10,000+", t("Uğurlu NFC Toxunuşu", "Successful NFC Taps")],
-    ["100%", t("Tətbiqsiz İşləmə", "No-App Browser Native")],
-  ];
-
   return (
     <main className="min-h-screen bg-white text-slate-950 selection:bg-sky-500 selection:text-white">
       {/* Header / Floating Pill Navbar matching LandingNavbar */}
@@ -383,21 +377,6 @@ function MainPlatformInner() {
                 </Link>
               );
             })}
-          </div>
-
-          {/* Stats Bar */}
-          <div className="mx-auto mt-14 grid max-w-4xl grid-cols-3 gap-3">
-            {metrics.map(([value, label]) => (
-              <div
-                key={label}
-                className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm"
-              >
-                <p className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
-                  {value}
-                </p>
-                <p className="mt-1 text-xs font-bold text-slate-500 sm:text-sm">{label}</p>
-              </div>
-            ))}
           </div>
         </div>
       </section>
