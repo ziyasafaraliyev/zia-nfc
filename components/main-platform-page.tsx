@@ -76,8 +76,8 @@ function MainPlatformInner() {
         "End paper menu expenses. Customers tap or scan the table QR/NFC sticker to view categories, photos, and prices in 1 second."
       ),
       icon: UtensilsCrossed,
-      color: "bg-emerald-500 text-white",
-      badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      color: "bg-sky-500 text-white",
+      badgeColor: "bg-sky-50 text-sky-700 border-sky-200",
       href: "/menu",
       adminHref: "/restoran",
       adminText: "Restoran Admin",
@@ -99,8 +99,8 @@ function MainPlatformInner() {
         "Super fast NFC payment and digital tipping platform for restaurants, cafes, and services. Settle bills without standing in line."
       ),
       icon: Wallet,
-      color: "bg-amber-500 text-white",
-      badgeColor: "bg-amber-50 text-amber-700 border-amber-200",
+      color: "bg-sky-500 text-white",
+      badgeColor: "bg-sky-50 text-sky-700 border-sky-200",
       href: "/pay",
       adminHref: "/pay/demo/skan",
       adminText: t("Sınaq Demosu", "Test Demo"),
@@ -122,8 +122,8 @@ function MainPlatformInner() {
         "Windshield NFC sticker or QR code allows callers to reach your phone number via WhatsApp or call in 1 second during parking."
       ),
       icon: Car,
-      color: "bg-purple-500 text-white",
-      badgeColor: "bg-purple-50 text-purple-700 border-purple-200",
+      color: "bg-sky-500 text-white",
+      badgeColor: "bg-sky-50 text-sky-700 border-sky-200",
       href: "/car",
       adminHref: "/car/admin",
       adminText: "Car Admin",
