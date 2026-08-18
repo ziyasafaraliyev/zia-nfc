@@ -19,7 +19,6 @@ import {
   QrCode,
   ShieldCheck,
   Smartphone,
-  Sparkles,
   Star,
   Users,
   UtensilsCrossed,
@@ -326,23 +325,15 @@ function MainPlatformInner() {
         {/* Accent top gradient line */}
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/70 to-transparent" />
         
-        <div className="relative mx-auto max-w-7xl text-center">
-          {/* Platform Badge */}
-          <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-sky-200/80 bg-sky-50 px-4 py-2 text-xs font-extrabold text-sky-800 shadow-sm sm:text-sm">
-            <Sparkles size={16} className="text-sky-500" />
-            <span>
-              {t("Zia NFC — Bütün Rəqəmsal NFC & QR Xidmətləri Bir Yerdə", "Zia NFC — All Digital NFC & QR Services In One Place")}
-            </span>
-          </div>
-
-          <h1 className="mx-auto max-w-4xl text-balance text-4xl font-black leading-[1.05] tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
+        <div className="relative mx-auto max-w-7xl">
+          <h1 className="max-w-4xl text-balance text-4xl font-black leading-[1.05] tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
             {t("Biznesiniz və Şəxsi Brendiniz üçün", "Digital NFC Platform for")}{" "}
             <span className="text-sky-500">
               {t("Ağıllı Rəqəmsal Platforma", "Your Business & Brand")}
             </span>
           </h1>
 
-          <p className="mx-auto mt-6 max-w-3xl text-pretty text-base leading-8 text-slate-600 sm:text-xl">
+          <p className="mt-6 max-w-3xl text-pretty text-base leading-8 text-slate-600 sm:text-xl">
             {t(
               "NFC və QR kod texnologiyası ilə fiziki dünyanı rəqəmsal imkanlara çevirin. Vizitkartlardan restoran menyularına, ani ödənişlərdən avtomobil təmas kartına qədər 4 əsas xidmət — hamısı tək toxunuşla.",
               "Connect physical products to digital experiences via NFC & QR technology. From business cards to restaurant menus, instant payments to car stickers — 4 essential services with a single tap."
@@ -350,7 +341,7 @@ function MainPlatformInner() {
           </p>
 
           {/* 4 Main Service Quick Nav Buttons */}
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-16 sm:mt-20 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {services.map((item) => {
               const IconComp = item.icon;
               return (
