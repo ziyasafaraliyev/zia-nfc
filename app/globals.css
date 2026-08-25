@@ -2585,3 +2585,40 @@ a.dashboard-primary:hover {
 .template-compact .template-social-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
 }
+
+/* Hero Glass Orbs Float Keyframes */
+@keyframes floatOrb1 {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-9px) rotate(2deg);
+  }
+}
+
+@keyframes floatOrb2 {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-11px) rotate(-2.5deg);
+  }
+}
+
+@keyframes floatOrb3 {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(8px) rotate(-2deg);
+  }
+}
+
+@keyframes floatOrb4 {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(10px) rotate(2.5deg);
+  }
+}

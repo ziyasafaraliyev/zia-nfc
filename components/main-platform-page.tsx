@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -14,6 +14,7 @@ import {
   ExternalLink,
   Globe,
   Layers,
+  Mail,
   Menu as MenuIcon,
   MessageCircle,
   QrCode,
@@ -27,6 +28,7 @@ import {
   Zap,
 } from "lucide-react";
 import { LanguageProvider, useLang } from "@/components/language-context";
+import HeroNfcWidget from "@/components/hero-nfc-widget";
 
 export default function MainPlatformPage() {
   return (
@@ -39,6 +41,9 @@ export default function MainPlatformPage() {
 function MainPlatformInner() {
   const { lang, setLang, t } = useLang();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const heroRef = useRef<HTMLElement>(null);
+  const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
+  const [isHoveringHero, setIsHoveringHero] = useState(false);
   const year = new Date().getFullYear();
 
   const services = [
@@ -321,34 +326,115 @@ function MainPlatformInner() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden border-b border-slate-200/70 bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_56%,#eef6ff_100%)] px-4 pb-20 pt-14 sm:px-6 lg:px-8">
+      <section 
+        ref={heroRef}
+        onMouseMove={(e) => {
+          if (!heroRef.current) return;
+          const rect = heroRef.current.getBoundingClientRect();
+          setMousePos({
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top,
+          });
+        }}
+        onMouseEnter={() => setIsHoveringHero(true)}
+        onMouseLeave={() => setIsHoveringHero(false)}
+        className="relative overflow-hidden border-b border-slate-200/70 bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_56%,#eef6ff_100%)] px-4 py-16 sm:py-24 lg:min-h-[calc(100vh-5rem)] lg:flex lg:items-center sm:px-6 lg:px-8"
+      >
         {/* Accent top gradient line */}
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/70 to-transparent" />
         
-        <div className="relative mx-auto max-w-7xl">
-          <h1 className="max-w-4xl text-balance text-4xl font-black leading-[1.05] tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
-            {t("Biznesiniz və Şəxsi Brendiniz üçün", "Digital NFC Platform for")}{" "}
-            <span className="text-sky-500">
-              {t("Ağıllı Rəqəmsal Platforma", "Your Business & Brand")}
-            </span>
-          </h1>
+        {/* Antigravity Interactive Spotlight Beam (Desktop only) */}
+        <div 
+          className="pointer-events-none absolute inset-0 hidden md:block transition-opacity duration-700 ease-out"
+          style={{
+            opacity: isHoveringHero ? 1 : 0,
+            background: `radial-gradient(800px circle at ${mousePos.x}px ${mousePos.y}px, rgba(41, 174, 238, 0.16), rgba(56, 189, 248, 0.06) 45%, transparent 75%)`,
+          }}
+        />
 
-          <p className="mt-6 max-w-3xl text-pretty text-base leading-8 text-slate-600 sm:text-xl">
-            {t(
-              "NFC və QR kod texnologiyası ilə fiziki dünyanı rəqəmsal imkanlara çevirin. Vizitkartlardan restoran menyularına, ani ödənişlərdən avtomobil təmas kartına qədər 4 əsas xidmət — hamısı tək toxunuşla.",
-              "Connect physical products to digital experiences via NFC & QR technology. From business cards to restaurant menus, instant payments to car stickers — 4 essential services with a single tap."
-            )}
-          </p>
+        {/* Antigravity Interactive Dot Matrix Light Grid (Desktop only) */}
+        <div 
+          className="pointer-events-none absolute inset-0 hidden md:block transition-opacity duration-500"
+          style={{
+            backgroundImage: `radial-gradient(circle, rgba(14, 165, 233, 0.3) 1px, transparent 1px)`,
+            backgroundSize: "32px 32px",
+            opacity: isHoveringHero ? 0.75 : 0,
+            maskImage: `radial-gradient(450px circle at ${mousePos.x}px ${mousePos.y}px, black 15%, transparent 85%)`,
+            WebkitMaskImage: `radial-gradient(450px circle at ${mousePos.x}px ${mousePos.y}px, black 15%, transparent 85%)`,
+          }}
+        />
 
-          {/* 4 Main Service Quick Nav Buttons */}
-          <div className="mt-16 sm:mt-20 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="relative mx-auto w-full max-w-7xl">
+          <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-14">
+            {/* Left Column: Headline, Description & CTAs */}
+            <div className="lg:col-span-7">
+              <h1 className="text-balance text-4xl sm:text-6xl lg:text-6xl xl:text-7xl font-black leading-[1.04] tracking-tight text-slate-950">
+                {t("Biznesiniz və Şəxsi Brendiniz üçün", "Digital NFC Platform for")}{" "}
+                <span className="text-sky-500">
+                  {t("Ağıllı Rəqəmsal Platforma", "Your Business & Brand")}
+                </span>
+              </h1>
+
+              <p className="mt-6 sm:mt-8 max-w-2xl text-pretty text-lg sm:text-xl lg:text-2xl leading-relaxed text-slate-600 font-medium">
+                {t(
+                  "NFC və QR kod texnologiyası ilə fiziki dünyanı rəqəmsal imkanlara çevirin. Vizitkartlardan restoran menyularına, ani ödənişlərdən avtomobil təmas kartına qədər 4 əsas xidmət — hamısı tək toxunuşla.",
+                  "Connect physical products to digital experiences via NFC & QR technology. From business cards to restaurant menus, instant payments to car stickers — 4 essential services with a single tap."
+                )}
+              </p>
+
+              {/* Action Buttons */}
+              <div className="mt-8 sm:mt-12 flex flex-wrap items-center gap-4">
+                <Link
+                  href="/vizitkart"
+                  className="inline-flex items-center gap-2.5 rounded-full bg-sky-500 px-7 py-4 text-sm sm:text-base font-black uppercase tracking-wider text-white shadow-[0_12px_28px_rgba(41,174,238,0.38)] transition duration-200 hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98]"
+                >
+                  {t("Vizitkartını Yarat", "Create Business Card")}
+                  <ArrowRight size={18} />
+                </Link>
+                <a
+                  href="#services"
+                  className="inline-flex items-center gap-2.5 rounded-full border border-slate-200/90 bg-white/95 px-6 py-4 text-sm sm:text-base font-bold text-slate-800 shadow-sm backdrop-blur transition duration-200 hover:border-slate-300 hover:bg-slate-50"
+                >
+                  {t("Xidmətlərlə Tanış Ol", "Explore Services")}
+                </a>
+              </div>
+            </div>
+
+            {/* Right Column: Interactive 3D Animated Hero NFC Hub */}
+            <div className="flex items-center justify-center lg:col-span-5">
+              <HeroNfcWidget />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Main 4 Services Detailed Showcase */}
+      <section id="services" className="bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="text-center">
+            <p className="text-xs font-black uppercase tracking-[0.25em] text-sky-600">
+              {t("Xidmətlərimiz", "Our Ecosystem")}
+            </p>
+            <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-5xl">
+              {t("Zia NFC Platformasının 4 Əsas Həlli", "4 Core Solutions of Zia NFC Platform")}
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-base text-slate-600 sm:text-lg">
+              {t(
+                "İhtiyacınıza uyğun xidməti seçin və 1 toxunuşla istifadəyə başlayın.",
+                "Choose the right digital NFC service for your business and launch in seconds."
+              )}
+            </p>
+          </div>
+
+          {/* 4 Main Service Quick Nav Cards */}
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {services.map((item) => {
               const IconComp = item.icon;
               return (
                 <Link
                   key={item.id}
                   href={item.href}
-                  className="group relative flex flex-col items-start rounded-3xl border border-slate-200 bg-white p-5 text-left shadow-[0_12px_35px_rgba(15,23,42,0.05)] transition duration-200 hover:border-sky-300 hover:shadow-md active:scale-[0.98]"
+                  className="group relative flex flex-col items-start rounded-3xl border border-slate-200/90 bg-white p-5 text-left shadow-[0_12px_35px_rgba(15,23,42,0.04)] transition duration-200 hover:border-sky-300 hover:shadow-md active:scale-[0.98]"
                 >
                   <div className="flex w-full items-center justify-between">
                     <div className={`grid size-12 place-items-center rounded-2xl ${item.color} shadow-md`}>
@@ -368,26 +454,6 @@ function MainPlatformInner() {
                 </Link>
               );
             })}
-          </div>
-        </div>
-      </section>
-
-      {/* Main 4 Services Detailed Showcase */}
-      <section id="services" className="bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="text-center">
-            <p className="text-xs font-black uppercase tracking-[0.25em] text-sky-600">
-              {t("Xidmətlərimiz", "Our Ecosystem")}
-            </p>
-            <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-5xl">
-              {t("Zia NFC Ekosisteminin 4 Əsas Həlli", "4 Core Solutions of Zia NFC Ecosystem")}
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-base text-slate-600 sm:text-lg">
-              {t(
-                "İhtiyacınıza uyğun xidməti seçin və 1 toxunuşla istifadəyə başlayın.",
-                "Choose the right digital NFC service for your business and launch in seconds."
-              )}
-            </p>
           </div>
 
           <div className="mt-16 space-y-12">
@@ -521,38 +587,7 @@ function MainPlatformInner() {
         </div>
       </section>
 
-      {/* CTA WhatsApp Banner */}
-      <section className="relative overflow-hidden bg-slate-950 px-4 py-16 text-white sm:px-6 lg:px-8">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(56,189,248,0.15),transparent_70%)]" />
-        <div className="relative mx-auto max-w-5xl text-center">
-          <h2 className="text-3xl font-black tracking-tight sm:text-5xl">
-            {t("Biznesinizi Rəqəmsal NFC Əsrə Keçirin", "Digitize Your Business with NFC")}
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-400 sm:text-lg">
-            {t(
-              "Zia Vizitkart, Zia Menu, Zia Pay və ya Zia Car sifariş etmək üçün bizimlə dərhal əlaqə saxlayın.",
-              "Contact us directly to order Zia Vizitkart, Zia Menu, Zia Pay, or Zia Car."
-            )}
-          </p>
 
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <a
-              href="https://wa.me/994702990252?text=Salam,%20Zia%20NFC%20xidmetleri%20haqqinda%20melumat%20almaq%20isteyirem"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-8 py-4 text-base font-extrabold text-white shadow-[0_18px_45px_rgba(14,165,233,0.3)] transition hover:-translate-y-0.5 hover:bg-sky-400 active:scale-95"
-            >
-              <MessageCircle size={20} /> {t("WhatsApp ilə Əlaqə", "Contact via WhatsApp")}
-            </a>
-            <Link
-              href="/admin"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-800 bg-slate-900 px-8 py-4 text-base font-extrabold text-white shadow-sm transition hover:border-slate-700 hover:bg-slate-800 active:scale-95"
-            >
-              <ShieldCheck size={18} className="text-sky-400" /> {t("Admin Paneli", "Admin Panel")}
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* Footer */}
       <footer className="border-t border-slate-200 bg-slate-900 text-slate-400 px-4 py-12 sm:px-6 lg:px-8">
@@ -636,19 +671,84 @@ function MainPlatformInner() {
             {/* Contact Col */}
             <div>
               <p className="text-xs font-black uppercase tracking-wider text-white">
-                {t("Əlaqə", "Contact")}
-              </p>
-              <p className="mt-3 text-xs font-semibold text-slate-400">
-                Bakı, Azərbaycan
+                {t("Əlaqə & Sosial Şəbəkələr", "Contact & Social Media")}
               </p>
               <a
                 href="https://wa.me/994702990252"
                 target="_blank"
                 rel="noreferrer"
-                className="mt-2 inline-block text-xs font-bold text-sky-400 hover:underline"
+                className="mt-3 block text-xs font-bold text-sky-400 hover:underline"
               >
                 +994 70 299 02 52 (WhatsApp)
               </a>
+              <a
+                href="mailto:nfczia@gmail.com"
+                className="mt-1 block text-xs font-bold text-sky-400 hover:underline"
+              >
+                nfczia@gmail.com (Gmail)
+              </a>
+              <div className="mt-4 flex items-center gap-3">
+                <a
+                  href="https://wa.me/994702990252"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="WhatsApp"
+                  className="flex size-8 items-center justify-center rounded-full bg-slate-800 text-slate-400 transition hover:bg-emerald-600 hover:text-white"
+                >
+                  <MessageCircle size={16} />
+                </a>
+                <a
+                  href="mailto:nfczia@gmail.com"
+                  aria-label="Gmail"
+                  className="flex size-8 items-center justify-center rounded-full bg-slate-800 text-slate-400 transition hover:bg-sky-600 hover:text-white"
+                >
+                  <Mail size={16} />
+                </a>
+                <a
+                  href="https://www.facebook.com/p/Zia-Nfc-61591544908069/"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Facebook"
+                  className="flex size-8 items-center justify-center rounded-full bg-slate-800 text-slate-400 transition hover:bg-blue-600 hover:text-white"
+                >
+                  <svg className="size-4 fill-current" viewBox="0 0 24 24">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                  </svg>
+                </a>
+                <a
+                  href="https://www.instagram.com/zianfc.az"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Instagram"
+                  className="flex size-8 items-center justify-center rounded-full bg-slate-800 text-slate-400 transition hover:bg-pink-600 hover:text-white"
+                >
+                  <svg className="size-4 fill-current" viewBox="0 0 24 24">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                  </svg>
+                </a>
+                <a
+                  href="https://www.tiktok.com/@zianfc.az"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="TikTok"
+                  className="flex size-8 items-center justify-center rounded-full bg-slate-800 text-slate-400 transition hover:bg-sky-500 hover:text-white"
+                >
+                  <svg className="size-4 fill-current" viewBox="0 0 24 24">
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.86 4.43V12a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-2.04-.43v-3z"/>
+                  </svg>
+                </a>
+                <a
+                  href="https://www.threads.net/@zianfc.az"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Threads"
+                  className="flex size-8 items-center justify-center rounded-full bg-slate-800 text-slate-400 transition hover:bg-slate-700 hover:text-white"
+                >
+                  <svg className="size-4 fill-current" viewBox="0 0 24 24">
+                    <path d="M12.001 2c-5.523 0-10 4.477-10 10s4.477 10 10 10c4.103 0 7.64-2.477 9.176-6.007a1 1 0 1 0-1.842-.777C17.973 18.064 15.19 20 12.001 20c-4.418 0-8-3.582-8-8s3.582-8 8-8c4.321 0 7.848 3.42 7.994 7.712-.047 3.32-2.181 5.378-4.805 5.378-1.574 0-2.858-.87-2.915-2.222.812-.455 1.761-1.127 2.296-2.036.621-1.055.679-2.293.167-3.396-.704-1.517-2.222-2.316-4.062-2.138-2.274.22-3.957 2.052-3.834 4.179.117 2.023 1.758 3.523 3.966 3.523.864 0 1.716-.232 2.47-.674.343.834 1.134 1.366 2.117 1.366 3.738 0 6.602-2.809 6.666-7.292C21.884 6.287 17.472 2 12.001 2zm-1.077 7.771c.974-.094 1.83.332 2.215 1.162.273.589.239 1.258-.094 1.824-.37.629-1.066 1.116-1.748 1.455-.991-.184-1.743-.918-1.796-1.834-.055-.947.669-1.737 1.423-1.807z"/>
+                  </svg>
+                </a>
+              </div>
             </div>
           </div>
 
