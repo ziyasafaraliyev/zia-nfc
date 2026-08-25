@@ -410,7 +410,17 @@ export default function ProfileForm({
     setCoverStyle(profile?.cover_style ?? "auto");
     setCoverPosition(profile?.cover_position ?? "center");
     setAvatarShape(profile?.avatar_shape ?? "square");
-  }, [profile?.id]);
+  }, [
+    profile?.id,
+    profile?.avatar_url,
+    profile?.background_url,
+    profile?.gallery,
+    profile?.catalog,
+    profile?.theme,
+    profile?.cover_style,
+    profile?.cover_position,
+    profile?.avatar_shape,
+  ]);
 
   // Add new section
   const addSection = () => {
