@@ -882,48 +882,46 @@ export default function ProfileForm({
       ) : null}
 
       {/* ── ŞƏKİL YÜKLƏMƏ (kiçik) ── */}
-      {userRole === "super_admin" ? (
-        <div className="grid grid-cols-2 gap-3 max-w-sm">
-          <ImageDropZone
-            label="Profil şəkli"
-            inputName="avatar"
-            preview={avatarPreview}
-            hasExisting={!!profile?.avatar_url}
-            removed={removeAvatar}
-            aspect="square"
-            compact
-            enableCrop
-            cropTitle="Profil şəklini kəsin"
-            onFileChange={(file) => {
-              setAvatarPreview(URL.createObjectURL(file));
-              setRemoveAvatar(false);
-            }}
-            onRemove={() => {
-              setRemoveAvatar(true);
-              setAvatarPreview("");
-            }}
-          />
-          <ImageDropZone
-            label="Cover şəkli"
-            inputName="background"
-            preview={backgroundPreview}
-            hasExisting={!!profile?.background_url}
-            removed={removeBackground}
-            aspect={coverStyle === "square" ? "square" : "wide"}
-            compact
-            enableCrop
-            cropTitle="Cover şəklini kəsin"
-            onFileChange={(file) => {
-              setBackgroundPreview(URL.createObjectURL(file));
-              setRemoveBackground(false);
-            }}
-            onRemove={() => {
-              setRemoveBackground(true);
-              setBackgroundPreview("");
-            }}
-          />
-        </div>
-      ) : null}
+      <div className="grid grid-cols-2 gap-3 max-w-sm">
+        <ImageDropZone
+          label="Profil şəkli"
+          inputName="avatar"
+          preview={avatarPreview}
+          hasExisting={!!profile?.avatar_url}
+          removed={removeAvatar}
+          aspect="square"
+          compact
+          enableCrop
+          cropTitle="Profil şəklini kəsin"
+          onFileChange={(file) => {
+            setAvatarPreview(URL.createObjectURL(file));
+            setRemoveAvatar(false);
+          }}
+          onRemove={() => {
+            setRemoveAvatar(true);
+            setAvatarPreview("");
+          }}
+        />
+        <ImageDropZone
+          label="Cover şəkli"
+          inputName="background"
+          preview={backgroundPreview}
+          hasExisting={!!profile?.background_url}
+          removed={removeBackground}
+          aspect={coverStyle === "square" ? "square" : "wide"}
+          compact
+          enableCrop
+          cropTitle="Cover şəklini kəsin"
+          onFileChange={(file) => {
+            setBackgroundPreview(URL.createObjectURL(file));
+            setRemoveBackground(false);
+          }}
+          onRemove={() => {
+            setRemoveBackground(true);
+            setBackgroundPreview("");
+          }}
+        />
+      </div>
       <input type="hidden" name="remove_avatar" value={removeAvatar ? "on" : "off"} />
       <input type="hidden" name="remove_background" value={removeBackground ? "on" : "off"} />
 
