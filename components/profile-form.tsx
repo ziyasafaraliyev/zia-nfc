@@ -323,18 +323,19 @@ export default function ProfileForm({
     userRole === "super_admin"
       ? true
       : (profile?.portfolio_enabled ?? true) || hasCvContent;
-  const showGoogleReviewSection = hasGoogleReview;
-  const showLanguageSection = Boolean(profile?.lang_switcher_enabled);
-  const hasProfession = hasTextValue(profile?.profession);
-  const hasEmail = hasTextValue(profile?.email);
-  const hasPhone = hasTextValue(profile?.phone);
-  const hasPhone2 = hasTextValue(profile?.phone2);
-  const hasWhatsapp = hasTextValue(profile?.whatsapp);
-  const hasWhatsapp2 = hasTextValue(profile?.whatsapp2);
-  const hasLocation = hasTextValue(profile?.location) || hasTextValue(profile?.location_url);
-  const hasBio = hasTextValue(profile?.bio);
+  const showGoogleReviewSection = userRole === "super_admin" || hasGoogleReview;
+  const showLanguageSection = userRole === "super_admin" || Boolean(profile?.lang_switcher_enabled);
+  const isSuperAdmin = userRole === "super_admin";
+  const hasProfession = isSuperAdmin || hasTextValue(profile?.profession);
+  const hasEmail = isSuperAdmin || hasTextValue(profile?.email);
+  const hasPhone = isSuperAdmin || hasTextValue(profile?.phone);
+  const hasPhone2 = isSuperAdmin || hasTextValue(profile?.phone2);
+  const hasWhatsapp = isSuperAdmin || hasTextValue(profile?.whatsapp);
+  const hasWhatsapp2 = isSuperAdmin || hasTextValue(profile?.whatsapp2);
+  const hasLocation = isSuperAdmin || hasTextValue(profile?.location) || hasTextValue(profile?.location_url);
+  const hasBio = isSuperAdmin || hasTextValue(profile?.bio);
   const hasAvatarOrBackground = Boolean(profile?.avatar_url || profile?.background_url);
-  const hasSocialLinks = [
+  const hasSocialLinks = isSuperAdmin || [
     profile?.telegram,
     profile?.instagram,
     profile?.tiktok,
@@ -347,8 +348,8 @@ export default function ProfileForm({
     profile?.behance,
     profile?.waze,
   ].some(hasTextValue);
-  const showReservationSection = Boolean(profile?.reservation_enabled);
-  const showReferralSection = Boolean(profile?.referral_enabled);
+  const showReservationSection = isSuperAdmin || Boolean(profile?.reservation_enabled);
+  const showReferralSection = isSuperAdmin || Boolean(profile?.referral_enabled);
   const showWalletSection = userRole === "super_admin" || (profile?.wallet_enabled ?? true);
   const showQrSection = userRole === "super_admin" || (profile?.qr_enabled ?? true);
   const showStatsSection = (profile?.stats_enabled ?? true);
@@ -755,7 +756,7 @@ export default function ProfileForm({
             </p>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
-            {hasTextValue(profile?.telegram) ? (
+            {isSuperAdmin || hasTextValue(profile?.telegram) ? (
               <Field
                 name="telegram"
                 label="Telegram"
@@ -763,7 +764,7 @@ export default function ProfileForm({
                 defaultValue={getSocialFieldValue("telegram", profile?.telegram)}
               />
             ) : null}
-            {hasTextValue(profile?.instagram) ? (
+            {isSuperAdmin || hasTextValue(profile?.instagram) ? (
               <Field
                 name="instagram"
                 label="Instagram"
@@ -771,7 +772,7 @@ export default function ProfileForm({
                 defaultValue={getSocialFieldValue("instagram", profile?.instagram)}
               />
             ) : null}
-            {hasTextValue(profile?.tiktok) ? (
+            {isSuperAdmin || hasTextValue(profile?.tiktok) ? (
               <Field
                 name="tiktok"
                 label="TikTok"
@@ -779,14 +780,14 @@ export default function ProfileForm({
                 defaultValue={getSocialFieldValue("tiktok", profile?.tiktok)}
               />
             ) : null}
-            {hasTextValue(profile?.website) ? (
+            {isSuperAdmin || hasTextValue(profile?.website) ? (
               <Field
                 name="website"
                 label="Website"
                 defaultValue={getSocialFieldValue("website", profile?.website)}
               />
             ) : null}
-            {hasTextValue(profile?.facebook) ? (
+            {isSuperAdmin || hasTextValue(profile?.facebook) ? (
               <Field
                 name="facebook"
                 label="Facebook"
@@ -794,7 +795,7 @@ export default function ProfileForm({
                 defaultValue={getSocialFieldValue("facebook", profile?.facebook)}
               />
             ) : null}
-            {hasTextValue(profile?.x) ? (
+            {isSuperAdmin || hasTextValue(profile?.x) ? (
               <Field
                 name="x"
                 label="X (Twitter)"
@@ -802,7 +803,7 @@ export default function ProfileForm({
                 defaultValue={getSocialFieldValue("x", profile?.x)}
               />
             ) : null}
-            {hasTextValue(profile?.threads) ? (
+            {isSuperAdmin || hasTextValue(profile?.threads) ? (
               <Field
                 name="threads"
                 label="Threads"
@@ -810,7 +811,7 @@ export default function ProfileForm({
                 defaultValue={getSocialFieldValue("threads", profile?.threads)}
               />
             ) : null}
-            {hasTextValue(profile?.linkedin) ? (
+            {isSuperAdmin || hasTextValue(profile?.linkedin) ? (
               <Field
                 name="linkedin"
                 label="LinkedIn"
@@ -818,7 +819,7 @@ export default function ProfileForm({
                 defaultValue={getSocialFieldValue("linkedin", profile?.linkedin)}
               />
             ) : null}
-            {hasTextValue(profile?.youtube) ? (
+            {isSuperAdmin || hasTextValue(profile?.youtube) ? (
               <Field
                 name="youtube"
                 label="YouTube"
@@ -826,7 +827,7 @@ export default function ProfileForm({
                 defaultValue={getSocialFieldValue("youtube", profile?.youtube)}
               />
             ) : null}
-            {hasTextValue(profile?.behance) ? (
+            {isSuperAdmin || hasTextValue(profile?.behance) ? (
               <Field
                 name="behance"
                 label="Behance"
@@ -834,7 +835,7 @@ export default function ProfileForm({
                 defaultValue={getSocialFieldValue("behance", profile?.behance)}
               />
             ) : null}
-            {hasTextValue(profile?.waze) ? (
+            {isSuperAdmin || hasTextValue(profile?.waze) ? (
               <Field
                 name="waze"
                 label="Waze"
@@ -848,7 +849,7 @@ export default function ProfileForm({
 
       {hasLocation ? (
         <div className="grid gap-4 md:grid-cols-2">
-          {hasTextValue(profile?.location) ? (
+          {isSuperAdmin || hasTextValue(profile?.location) ? (
             <Field
               name="location"
               label="Lokasiya adı"
@@ -856,7 +857,7 @@ export default function ProfileForm({
               placeholder="məs: Bakı, Azərbaycan"
             />
           ) : null}
-          {hasTextValue(profile?.location_url) ? (
+          {isSuperAdmin || hasTextValue(profile?.location_url) ? (
             <Field
               name="location_url"
               label="Xəritə linki (Google Maps)"
