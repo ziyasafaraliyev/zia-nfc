@@ -130,22 +130,22 @@ export default function WebChatApp({ initialOpen = false }: WebChatAppProps) {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2.5 rounded-full bg-sky-500 px-5 py-3.5 text-sm font-black uppercase tracking-[0.08em] text-white shadow-[0_18px_45px_rgba(14,165,233,0.28)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.97] group border border-white/10"
+          type="button"
+          aria-label="Zia NFC ChatBot"
+          title="Zia NFC ChatBot"
+          className="group relative flex size-14 items-center justify-center rounded-full border-2 border-white/80 bg-white p-1 shadow-[0_10px_30px_rgba(0,0,0,0.18)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(41,174,238,0.4)] active:scale-95"
         >
-          <div className="relative size-7 shrink-0 overflow-hidden rounded-full border border-white/30 bg-white p-0.5 transition-transform duration-300 group-hover:rotate-12">
-            <img
-              src="/logo.webp"
-              alt="Zia NFC"
-              className="h-full w-full rounded-full object-cover"
-              onError={(e) => {
-                e.currentTarget.style.display = "none";
-              }}
-            />
-          </div>
-          <span>ZIANFC ChatBot</span>
-          <span className="relative flex h-2.5 w-2.5">
+          <img
+            src="/logo.webp"
+            alt="Zia NFC"
+            className="h-full w-full rounded-full object-cover transition-transform duration-300 group-hover:scale-105"
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+            }}
+          />
+          <span className="absolute bottom-0 right-0 flex h-3.5 w-3.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+            <span className="relative inline-flex h-3.5 w-3.5 rounded-full border-2 border-white bg-green-500"></span>
           </span>
         </button>
       )}

@@ -78,25 +78,22 @@ export default function Chatbot() {
       {/* Custom Trigger Button */}
       <button
         onClick={handleOpenChat}
-        className="fixed bottom-6 right-6 z-[9999] flex items-center gap-2.5 rounded-full bg-[#29AEEE] px-4 py-3 text-xs font-bold text-white shadow-[0_8px_30px_rgba(41,174,238,0.35)] transition-all duration-300 hover:scale-105 hover:bg-[#1a9ad4] hover:shadow-[0_12px_40px_rgba(41,174,238,0.5)] active:scale-[0.97] group border border-white/10"
+        type="button"
+        className="group fixed bottom-6 right-6 z-[9999] flex size-14 items-center justify-center rounded-full border-2 border-white/80 bg-white p-1 shadow-[0_10px_30px_rgba(0,0,0,0.18)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(41,174,238,0.4)] active:scale-95"
         title="ZIANFC chatbot"
+        aria-label="ZIANFC chatbot"
       >
         {/* Round Logo */}
-        <div className="relative size-6 shrink-0 overflow-hidden rounded-full border border-white/20 bg-white p-0.5 transition-transform duration-300 group-hover:rotate-12">
-          <img
-            src="/logo.webp"
-            alt="Zia NFC"
-            className="h-full w-full rounded-full object-cover"
-          />
-        </div>
-        
-        {/* Label */}
-        <span className="tracking-wide">ZIANFC chatbot</span>
+        <img
+          src="/logo.webp"
+          alt="Zia NFC"
+          className="h-full w-full rounded-full object-cover transition-transform duration-300 group-hover:scale-105"
+        />
 
         {/* Pulse indicator */}
-        <span className="relative flex h-2 w-2">
+        <span className="absolute bottom-0 right-0 flex h-3.5 w-3.5">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+          <span className="relative inline-flex h-3.5 w-3.5 rounded-full border-2 border-white bg-green-500"></span>
         </span>
       </button>
     </>
